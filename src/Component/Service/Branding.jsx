@@ -62,7 +62,7 @@ export default function Branding() {
 
       <div className={`${Pack} flex-col gap-8 items-center justify-center`}>
         <h1 className='text-2xl font-bold'>Web Design package:</h1>
-        <div className='w-[526px] h-90 flex flex-col justify-between rounded-xl overflow-hidden border-gray-300 border-1'>
+        <div className='md:w-[526px] w-[405px] h-110 md:h-100 flex flex-col justify-between rounded-xl overflow-hidden border-gray-300 border-1'>
           <div className='w-full mb-2  bg-gray-300 flex items-center justify-between gap-2 overscroll-none'>
             <h3 onClick={gotobasic} className='text-center w-full cursor-pointer hover:bg-white h-8 flex items-center justify-center'>Basic</h3>
             <h3 onClick={gotostandard} className='text-center w-full cursor-pointer hover:bg-white h-8 flex items-center justify-center'>Standard</h3>

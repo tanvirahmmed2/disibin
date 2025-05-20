@@ -10,7 +10,7 @@ export default function Service(props) {
             <h1> <strong className='font-bold text-2xl text-teal-700'>{props.title} </strong>, provide end-to-end services that blend strategy, creativity, and technology to help businesses thrive in the modern digital landscape.</h1>
             <h1 className='font-bold text-2xl'>Our Services:</h1>
             <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-12 text-teal-700'>
-                <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-gray-300 group hover:bg-gray-200 px-2 py-2 rounded-xl relative'>
+                <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-gray-300 group hover:bg-teal-100 cursor-pointer px-2 py-2 rounded-xl relative'>
                     <FontAwesomeIcon icon={faSwatchbook} className='text-4xl mb-2 text-orange-700' />
                     <h2 className='font-semibold text-lg mb-1'>Ui-Ux Design</h2>
                     <p className='text-center text-sm text-gray-700'>
@@ -19,7 +19,7 @@ export default function Service(props) {
                     
                     <Link to="/ui-ux-dev" className='absolute bottom-3 font-semibold text-sm hidden group-hover:block'>Read More</Link>
                 </div>
-                <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-gray-300 group hover:bg-gray-200 px-2 py-2 rounded-xl relative'>
+                <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-gray-300 group hover:bg-teal-100 cursor-pointer px-2 py-2 rounded-xl relative'>
                     <FontAwesomeIcon icon={faCode} className='text-4xl mb-2 text-orange-700' />
                     
                     <h2 className='font-semibold text-lg mb-1'>Front-End Development</h2>
@@ -28,7 +28,7 @@ export default function Service(props) {
                     </p>
                     <Link to="/front-end-dev" className='absolute bottom-3 font-semibold text-sm hidden group-hover:block'>Read More</Link>
                 </div>
-                <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-gray-300 group hover:bg-gray-200 px-2 py-2 rounded-xl relative'>
+                <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-gray-300 group hover:bg-teal-100 cursor-pointer px-2 py-2 rounded-xl relative'>
                     <FontAwesomeIcon icon={faDatabase} className='text-4xl mb-2 text-orange-700' />
                     <h2 className='font-semibold text-lg mb-1'>Back-End Development</h2>
                     <p className='text-center text-sm text-gray-700'>
@@ -36,7 +36,7 @@ export default function Service(props) {
                     </p>
                     <Link to="/back-end-dev" className='absolute bottom-3 font-semibold text-sm hidden group-hover:block'>Read More</Link>
                 </div>
-                <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-gray-300 group hover:bg-gray-200 px-2 py-2 rounded-xl relative'>
+                <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-gray-300 group hover:bg-teal-100 cursor-pointer px-2 py-2 rounded-xl relative'>
                     <FontAwesomeIcon icon={faLaptopCode} className='text-4xl mb-2 text-orange-700' />
                     <h2 className='font-semibold text-lg mb-1'>Full-Stack Development</h2>
                     <p className='text-center text-sm text-gray-700'>
@@ -44,7 +44,7 @@ export default function Service(props) {
                     </p>
                     <Link to="/full-stack-dev" className='absolute bottom-3 font-semibold text-sm hidden group-hover:block'>Read More</Link>
                 </div>
-                <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-gray-300 group hover:bg-gray-200 px-2 py-2 rounded-xl relative'>
+                <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-gray-300 group hover:bg-teal-100 cursor-pointer px-2 py-2 rounded-xl relative'>
                     <FontAwesomeIcon icon={faTicket} className='text-4xl mb-2 text-orange-700' />
                     <h2 className='font-semibold text-lg mb-1'>Branding</h2>
                     <p className='text-center text-sm text-gray-700'>
@@ -52,7 +52,7 @@ export default function Service(props) {
                     </p>
                     <Link to="/branding" className='absolute bottom-3 font-semibold text-sm hidden group-hover:block'>Read More</Link>
                 </div>
-                <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-gray-300 group hover:bg-gray-200 px-2 py-2 rounded-xl relative'>
+                <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-gray-300 group hover:bg-teal-100 cursor-pointer px-2 py-2 rounded-xl relative'>
                     <FontAwesomeIcon icon={faPeopleArrows} className='text-4xl mb-2 text-orange-700' />
                     
                     <h2 className='font-semibold text-lg mb-1'>Consultation</h2>
