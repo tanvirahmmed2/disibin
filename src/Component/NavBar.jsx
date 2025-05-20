@@ -29,13 +29,15 @@ export default function NavBar(props) {
                         <Link to="/branding" className='w-36 h-10 flex items-center justify-start  hover:scale-110  hover:text-red-600       rounded-xl px-4'>Branding</Link>
 
 
-                        <div className={`main-wrapper relative group/item`}>
-                            <p className='w-36 h-10 flex items-center justify-tart     hover:text-red-600      rounded-xl px-4 select-none cursor-pointer'>Online Maker</p>
-                            <div className=' abosulte group-hover/item:block hidden '>
-                                <Link to='/id-card' className='w-36 h-10 flex items-center justify-tart  hover:scale-110   hover:text-red-600      rounded-xl px-6'>ID Card</Link>
+                        <div className={`main-wrapper  flex relative group/item`}>
+                            <p className='w-36 h-10  items-center justify-tart     hover:text-red-600      rounded-xl px-4 select-none cursor-pointer'>Online Maker</p>
+                            <div className=' absolute left-30 top-0 group-hover/item:block hidden '>
+                                <Link to='/id-card' className='w-36 h-10 flex items-center justify-tart  hover:scale-110   hover:text-red-600      rounded-xl px-4'>ID Card</Link>
+                                
                                 
                             </div>
                         </div>
+                        
                         
                               
 
