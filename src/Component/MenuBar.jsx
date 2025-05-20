@@ -1,22 +1,22 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 export default function MenuBar() {
-    let [Service, setService]= useState('hidden');
-    const servicehandle=()=>{
-        setService(Service=='hidden'? 'flex': 'hidden');
+    let [Service, setService] = useState('hidden');
+    const servicehandle = () => {
+        setService(Service == 'hidden' ? 'flex' : 'hidden');
     }
-    let backbutton= useNavigate();
-    const backbuttonhandle=()=>{
+    let backbutton = useNavigate();
+    const backbuttonhandle = () => {
         backbutton(-1)
     }
     return (
         <div className={`flex items-center justify-center w-full h-[95vh] bg-teal-600`}>
             <div className='flex flex-col items-center justify-between py-4 text-white w-[400px]  h-[95vh] bg-teal-800 relative'>
-                <div className='w-[200px]'>
+                <div className='w-[200px] text-[14px] gap-2 flex flex-col'>
                     <Link to='/'>Home</Link>
                     <div className={`main-wrapper relative `}>
 
@@ -31,7 +31,7 @@ export default function MenuBar() {
 
                         </div>
                     </div>
-                    
+                    <Link to='/card-maker' >Card Maker</Link>
                 </div>
 
                 <div className='flex w-[200px] h-auto flex-col items-center justify-center'>
@@ -39,7 +39,7 @@ export default function MenuBar() {
                     <Link to="/about" className=' w-full  text-start  '>About Us</Link>
                     <Link to="/login" className='w-full  text-start  '>Login</Link>
                 </div>
-                <FontAwesomeIcon icon={faXmark} className='absolute right-8 top-4 cursor-pointer text-xl' onClick={backbuttonhandle}/>
+                <FontAwesomeIcon icon={faXmark} className='absolute right-8 top-4 cursor-pointer text-xl' onClick={backbuttonhandle} />
 
             </div>
 

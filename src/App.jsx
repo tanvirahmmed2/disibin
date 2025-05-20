@@ -13,6 +13,7 @@ import Backend from './Component/Service/Backend'
 import FullStack from './Component/Service/FullStack'
 import Branding from './Component/Service/Branding'
 import MenuBar from './Component/MenuBar'
+import Card from './Component/Card/Card'
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
       <Route path="/full-stack-dev" element={<FullStack/>} />
       <Route path="/branding" element={<Branding/>} />
       <Route path='/menubar' element={<MenuBar/>}/>
+      <Route path='/id-card' element={<Card/>}/>
       
     </Routes>
     <Footer title='DisiBin'/>

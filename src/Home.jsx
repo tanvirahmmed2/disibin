@@ -18,6 +18,7 @@ export default function Home() {
       <Backend/>
       <FullStack/>
       <Branding/>
+      
       <About title="DisiBin"/>
     </div>
   )
