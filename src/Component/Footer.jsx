@@ -2,7 +2,7 @@ import React from 'react'
 
 function Footer(props) {
   return (
-    <div className='h-20 w-full text-[10px] md:text-[14px] lg:text-[18px] text-teal-700 border-0.5 border-teal-700 flex gap-2 flex-row items-center justify-center'>
+    <div className='h-20 w-full text-[10px] md:text-[14px] lg:text-[18px] text-teal-700 border-0.5 bg-gray-200 flex gap-2 flex-row items-center justify-center'>
       <h3>All rights are reserved by</h3>
       <h1 className='text-xl font-bold'>{props.title}</h1>
       <h3>{new Date().getFullYear()}</h3>

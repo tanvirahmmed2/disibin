@@ -1,26 +1,26 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 
 export default function UiUx() {
-  let [Basic, setBasic]=useState("flex");
-  let [Standard, setStandard]=useState('hidden');
-  let [Premium, setPremium]=useState('hidden');
-  let [Pack, setPack]=useState('hidden');
+  let [Basic, setBasic] = useState("flex");
+  let [Standard, setStandard] = useState('hidden');
+  let [Premium, setPremium] = useState('hidden');
+  let [Pack, setPack] = useState('hidden');
 
-  const viewpack=()=>{
-    setPack(Pack=='hidden'?'flex':'hidden')
+  const viewpack = () => {
+    setPack(Pack == 'hidden' ? 'flex' : 'hidden')
   }
 
-  const gotobasic=()=>{
+  const gotobasic = () => {
     setBasic('flex')
     setStandard('hidden')
     setPremium('hidden')
   }
-  const gotostandard=()=>{
+  const gotostandard = () => {
     setBasic('hidden')
     setStandard('flex')
     setPremium('hidden')
   }
-  const gotopremium=()=>{
+  const gotopremium = () => {
     setBasic('hidden')
     setStandard('hidden')
     setPremium('flex')
@@ -53,12 +53,15 @@ export default function UiUx() {
           <li><p>24/7 customer care and much more</p></li>
         </ul>
       </div>
-      
-      <a className='px-4 bg-gray-300 rounded-xl ' href="mailto:disibin@gmail.com">Hire Developer</a>
-      <p className='px-4 bg-gray-300 rounded-xl cursor-pointer' onClick={viewpack}>View Packages</p>
-        
 
-      
+      <div className=' flex md:flex-row flex-col gap-4'>
+        <a className='px-4 bg-gray-300 rounded-xl ' href="mailto:disibin@gmail.com">Hire Developer</a>
+        <p className='px-4 bg-gray-300 rounded-xl cursor-pointer' onClick={viewpack}>View Packages</p>
+      </div>
+
+
+
+
       <div className={`${Pack} flex-col gap-8 items-center justify-center`}>
         <h1 className='text-2xl font-bold'>Web Design package:</h1>
         <div className='md:w-[526px] w-[405px] h-110 md:h-100 flex flex-col justify-between rounded-xl overflow-hidden border-gray-300 border-1'>
@@ -75,18 +78,18 @@ export default function UiUx() {
                 <h3>$100</h3>
               </div>
               <div className='flex flex-col items-start px-4'>
-                
-                  <p className='font-semibold'>Custom Landing Page Design (Upto 5 Sections) with Figma | Responsive | No Coding | Discuss More</p>
-                  <p>1 page</p>
-                  <p>Responsive design</p>
-                  <p>Source file</p>
-                  <p>Unlimited Revisions</p>
-                  <p>3-day delivery</p>
-                
+
+                <p className='font-semibold'>Custom Landing Page Design (Upto 5 Sections) with Figma | Responsive | No Coding | Discuss More</p>
+                <p>1 page</p>
+                <p>Responsive design</p>
+                <p>Source file</p>
+                <p>Unlimited Revisions</p>
+                <p>3-day delivery</p>
+
               </div>
               <button className='w-full bg-gray-300 cursor-pointer'>Continue</button>
             </div>
-            <div  className={`w-full ${Standard} flex-col justify-between gap-6`}>
+            <div className={`w-full ${Standard} flex-col justify-between gap-6`}>
               <div className='w-full flex flex-row items-center justify-around'>
                 <h3>Homepage + 4 Inner Pages in Figma</h3>
                 <h3>$400</h3>
@@ -94,16 +97,16 @@ export default function UiUx() {
               <div className='flex flex-col items-start px-4'>
                 <p className='font-semibold'>Unique Web Homepage + 4 Inner Pages Design in Figma (Desktop + Mobile) | No Coding | Discuss More </p>
 
-                  <p>5 pages</p>
-                  <p>Responsive design</p>
-                  <p>Source file</p>
-                  <p>Unlimited Revisions</p>
-                  <p>7-day delivery</p>
-                
+                <p>5 pages</p>
+                <p>Responsive design</p>
+                <p>Source file</p>
+                <p>Unlimited Revisions</p>
+                <p>7-day delivery</p>
+
               </div>
-              <button  className='w-full bg-gray-300 cursor-pointer'>Continue</button>
+              <button className='w-full bg-gray-300 cursor-pointer'>Continue</button>
             </div>
-            <div  className={`w-full ${Premium} flex-col justify-between gap-6`}>
+            <div className={`w-full ${Premium} flex-col justify-between gap-6`}>
               <div className='w-full flex flex-row items-center justify-around'>
                 <h3>Homepage + 9 Inner Pages in Figma</h3>
                 <h3>$800</h3>
@@ -111,14 +114,14 @@ export default function UiUx() {
               <div className='flex flex-col items-start px-4'>
                 <p className='font-semibold'>Unique Web Homepage + 9 Inner Pages Design in Figma (Desktop + Mobile) | No Coding | Discuss More</p>
 
-                  <p>10 pages</p>
-                  <p>Responsive design</p>
-                  <p>Source file</p>
-                  <p>Unlimited Revisions</p>
-                  <p>10-day delivery</p>
-                
+                <p>10 pages</p>
+                <p>Responsive design</p>
+                <p>Source file</p>
+                <p>Unlimited Revisions</p>
+                <p>10-day delivery</p>
+
               </div>
-              <button  className='w-full bg-gray-300 cursor-pointer'>Continue</button>
+              <button className='w-full bg-gray-300 cursor-pointer'>Continue</button>
             </div>
 
           </div>

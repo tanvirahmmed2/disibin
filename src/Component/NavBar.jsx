@@ -11,7 +11,7 @@ export default function NavBar(props) {
     }
 
     return (
-        <nav className=' border-b-1 text-teal-700 h-12 px-4 py-2 flex  flex-row items-center justify-between w-full z-999 relative'>
+        <nav className=' shadow-xl text-teal-700 h-12 px-4 py-2 flex  flex-row items-center justify-between w-full z-999 relative'>
 
             <Link to="/">
                 <h1 className=' text-2xl font-bold'>{props.title}</h1>

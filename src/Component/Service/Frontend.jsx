@@ -50,8 +50,10 @@ export default function Frontend() {
         </ul>
       </div>
       <p>A strong brand is your most valuable asset — let us help you craft it, grow it, and make it unforgettable.</p>
-      <a className='px-4 bg-gray-300 rounded-xl ' href="mailto:disibin@gmail.com">Hire Developer</a>
-      <p className='px-4 bg-gray-300 rounded-xl cursor-pointer' onClick={viewpack}>View Packages</p>
+      <div className=' flex md:flex-row flex-col gap-4'>
+        <a className='px-4 bg-gray-300 rounded-xl ' href="mailto:disibin@gmail.com">Hire Developer</a>
+        <p className='px-4 bg-gray-300 rounded-xl cursor-pointer' onClick={viewpack}>View Packages</p>
+      </div>
 
 
 

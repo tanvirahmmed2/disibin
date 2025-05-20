@@ -56,8 +56,10 @@ export default function Backend() {
         </ul>
       </div>
       <p>A strong backend is the engine that drives your application — let us build the technology that keeps your business running smoothly and securely.</p>
-      <a className='px-4 bg-gray-300 rounded-xl ' href="mailto:disibin@gmail.com">Hire Developer</a>
-      <p className='px-4 bg-gray-300 rounded-xl cursor-pointer' onClick={viewpack}>View Packages</p>
+      <div className=' flex md:flex-row flex-col gap-4'>
+        <a className='px-4 bg-gray-300 rounded-xl ' href="mailto:disibin@gmail.com">Hire Developer</a>
+        <p className='px-4 bg-gray-300 rounded-xl cursor-pointer' onClick={viewpack}>View Packages</p>
+      </div>
 
 
 

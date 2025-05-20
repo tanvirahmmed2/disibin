@@ -53,8 +53,10 @@ export default function FullStack() {
         </ul>
       </div>
       <p>We bring your digital vision to life — handling every layer of your web application so you can focus on growth, not the tech.</p>
-      <a className='px-4 bg-gray-300 rounded-xl ' href="mailto:disibin@gmail.com">Hire Developer</a>
-      <p className='px-4 bg-gray-300 rounded-xl cursor-pointer' onClick={viewpack}>View Packages</p>
+      <div className=' flex md:flex-row flex-col gap-4'>
+        <a className='px-4 bg-gray-300 rounded-xl ' href="mailto:disibin@gmail.com">Hire Developer</a>
+        <p className='px-4 bg-gray-300 rounded-xl cursor-pointer' onClick={viewpack}>View Packages</p>
+      </div>
 
 
 
