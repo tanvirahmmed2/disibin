@@ -10,7 +10,7 @@ const { scrollYProgress } = useScroll()
 
     return (
         <nav className=' bg-white shadow-xl  h-12  w-full z-999 fixed '>
-            <motion.div style={{ scaleX: scrollYProgress }}  className='origin-left absolute bg-gray-200 w-full h-12 -z-20'></motion.div>
+            <motion.div style={{ scaleX: scrollYProgress }}  className='origin-left absolute bg-teal-50 w-full h-12 -z-20'></motion.div>
             <div className='w-full text-teal-700 h-12 px-4 py-2 flex  flex-row items-center justify-between '>
                 <Link to="/">
                     <h1 className=' text-2xl font-bold'>{props.title}</h1>
