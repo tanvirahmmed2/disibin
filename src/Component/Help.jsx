@@ -5,7 +5,7 @@ export default function Contact() {
     alert('Reposrt Submitted')
   }
   return (
-    <div className='h-[90vh] w-full gap-2 flex flex-col items-center justify-center'>
+    <div className='h-[90vh] w-full gap-2 flex flex-col items-center justify-center pt-20'>
       <div className='flex flex-col gap-2'>
         <a href="https://facebook.com/disibin" className='w-[300px] inset-shadow-teal-400 text-teal-700 border-1   flex items-center justify-center hover:text-red-700'>Facebook</a>
         <a href="https://youtube.com/@disibin" className='w-[300px] inset-shadow-teal-400 text-teal-700 border-1   flex items-center justify-center hover:text-red-700'>Youtube</a>

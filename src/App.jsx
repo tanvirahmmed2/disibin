@@ -6,18 +6,27 @@ import About from './Component/About'
 import Home from './Home'
 import Footer from './Component/Footer'
 import Help from './Component/Help'
-import Service from './Component/Service'
-import UiUx from './Component/Service/UiUx'
-import Frontend from './Component/Service/Frontend'
-import Backend from './Component/Service/Backend'
-import FullStack from './Component/Service/FullStack'
-import Branding from './Component/Service/Branding'
+
+import WebDev from './Component/WebDev'
+import UiUx from './Component/WebDev/UiUx'
+import Frontend from './Component/WebDev/Frontend'
+import Backend from './Component/WebDev/Backend'
+import FullStack from './Component/WebDev/FullStack'
+import WebApp from './Component/WebDev/WebApp'
+
 import MenuBar from './Component/MenuBar'
 import Card from './Component/Card/Card'
 
+import Branding from './Component/Graphics/Branding'
+import ProductDesign from './Component/Graphics/ProductDesign'
+import VectorArt from './Component/Graphics/VectorArt'
+import AdsDesign from './Component/Graphics/AdsDesign'
+import BookDesign from './Component/Graphics/BookDesign'
+import Graphics from './Component/Graphics'
+
 export default function App() {
   return (
-    <div className='relative '>
+    <div className='relative font-sans'>
 
     
     <NavBar title='DisiBin'/>
@@ -26,14 +35,20 @@ export default function App() {
       <Route path='/login' element={<LogIn title='DisiBin'/>}/>
       <Route path="/about" element={<About title='DisiBin' />} />
       <Route path="/help" element={<Help />} />
-      <Route path="/services" element={<Service title='DisiBin'/>} />
+      <Route path="/web-dev" element={<WebDev title='DisiBin'/>} />
       <Route path="/ui-ux-dev" element={<UiUx/>} />
       <Route path="/front-end-dev" element={<Frontend/>} />
       <Route path="/back-end-dev" element={<Backend/>} />
       <Route path="/full-stack-dev" element={<FullStack/>} />
+      <Route path='/web-app' element={<WebApp/>} />
       <Route path="/branding" element={<Branding/>} />
       <Route path='/menubar' element={<MenuBar/>}/>
       <Route path='/id-card' element={<Card/>}/>
+      <Route path='/graphics' element={<Graphics title="DisiBin"/>}/>
+      <Route path='/product-design' element={<ProductDesign/>}/>
+      <Route path='/ads-design' element={<AdsDesign/>}/>
+      <Route path='/book-design' element={<BookDesign/>}/>
+      <Route path='/vector-art' element={<VectorArt/>}/>
       
     </Routes>
     <Footer title='DisiBin'/>

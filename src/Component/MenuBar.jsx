@@ -14,13 +14,13 @@ export default function MenuBar() {
         backbutton(-1)
     }
     return (
-        <div className={`flex items-center justify-center w-full h-[95vh] bg-teal-600`}>
-            <div className='flex flex-col items-center justify-between py-4 text-white w-[400px]  h-[95vh] bg-teal-800 relative'>
+        <div className={`flex items-center justify-center w-full h-[95vh] bg-gray-100 `}>
+            <div className='pt-18 flex flex-col items-center justify-between py-4 text-black font-mono w-[400px]  h-[97vh] bg-gray-200 relative'>
                 <div className='w-[200px] text-[14px] gap-2 flex flex-col'>
-                    <Link to='/'>Home</Link>
+                    <Link to='/' className=' hover:text-red-600 '>Home</Link>
                     <div className={`main-wrapper relative `}>
 
-                        <p className='cursor-pointer w-full text-start ' onClick={servicehandle} >Service</p>
+                        <p className='cursor-pointer w-full text-start  hover:text-red-600 ' onClick={servicehandle} >Service</p>
 
                         <div className={` w-full ${Service} flex-col`}>
                             <Link to="/ui-ux-dev" className='  w-full     text-start hover:scale-110   hover:text-red-600      rounded-xl px-4'>Ui-Ux Design</Link>
@@ -31,15 +31,15 @@ export default function MenuBar() {
 
                         </div>
                     </div>
-                    <Link to='/card-maker' >Card Maker</Link>
+                    <Link to='/id-card' className=' hover:text-red-600 '>Card Maker</Link>
                 </div>
 
                 <div className='flex w-[200px] h-auto flex-col items-center justify-center'>
-                    <Link to="/help" className=' w-full  text-start '>Help</Link>
-                    <Link to="/about" className=' w-full  text-start  '>About Us</Link>
-                    <Link to="/login" className='w-full  text-start  '>Login</Link>
+                    <Link to="/help" className=' w-full  text-start  hover:text-red-600 '>Help</Link>
+                    <Link to="/about" className=' w-full  text-start  hover:text-red-600  '>About Us</Link>
+                    <Link to="/login" className='w-full  text-start   hover:text-red-600 '>Login</Link>
                 </div>
-                <FontAwesomeIcon icon={faXmark} className='absolute right-8 top-4 cursor-pointer text-xl' onClick={backbuttonhandle} />
+                <FontAwesomeIcon icon={faXmark} className='absolute right-8 top-20 text-teal-800 cursor-pointer text-xl' onClick={backbuttonhandle} />
 
             </div>
 

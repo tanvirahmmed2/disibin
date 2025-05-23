@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export default function Branding() {
+export default function UiUx() {
   let [Basic, setBasic] = useState("flex");
   let [Standard, setStandard] = useState('hidden');
   let [Premium, setPremium] = useState('hidden');
@@ -27,38 +27,38 @@ export default function Branding() {
   }
 
   return (
-    <div className='px-18 py-4 flex flex-col gap-8 items-center justify-center w-full  '>
-      <h1 className='text-2xl font-bold'>Create Your Brand Identity</h1>
-      <p className='text-center'>Your brand is more than just a logo — it’s the voice, style, and story that people remember. We'll help you build a strong, memorable brand identity and promote it effectively across digital and offline platforms.      Whether you’re starting fresh or rebranding, we work with you to create a consistent, professional look and feel that connects with your audience, builds trust, and sets you apart from the competition.</p>
+    <div className='px-18 py-4 flex flex-col gap-8 items-center justify-center w-full pt-20 '>
+      <h1 className='text-2xl font-bold'>Design Your WebSite</h1>
+      <p className='text-center'>we design websites that don’t just look good — they work beautifully. Our goal is to create user-friendly, visually appealing websites that reflect your brand and engage your audience.
+
+        Whether you're a small business, a startup, or a personal brand, we design responsive websites that look great on all devices. We focus on clean layouts, easy navigation, and modern design trends to help your visitors find what they need — fast.
+      </p>
       <div className="features flex flex-col lg:flex-row gap-16 mt-4">
         <ul className='bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]'>
-          <h3 className='font-bold'>Brand Identity</h3>
-          <p >We shape the visual and verbal elements of your brand so it speaks clearly and consistently across all platforms.</p>
-          <li><p>Custom logo design</p></li>
-          <li><p>Brand color palette and typography</p></li>
-          <li><p>Brand guidelines/style guide</p></li>
-          <li><p>Business card and stationery design</p></li>
-          <li><p>Voice & tone development</p></li>
-          <li><p>Taglines and brand messaging</p></li>
+          <p className='font-bold'>What’s included in our web design services:</p>
+          <li><p>Custom layout and visual design</p></li>
+          <li><p>User experience (UX) and user interface (UI) focus</p></li>
+          <li><p>Branding and color consistency</p></li>
+          <li><p>SEO-friendly structure</p></li>
+          <li><p>Mobile-friendly (responsive) design</p></li>
 
 
         </ul>
         <ul className='bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]'>
-          <h3 className='font-bold'>Brand Promotion</h3>
-          <p>We help you take your brand to the world with strategic marketing and visibility tools that grow awareness and engagement.</p>
-          <li><p>Social media branding and content design</p></li>
-          <li><p>Digital marketing materials (banners, ads, thumbnails)</p></li>
-          <li><p>Branded templates for posts, stories, and reels</p></li>
-          <li><p>Promotional videos and product intros</p></li>
-          <li><p>Print materials (flyers, brochures, posters)</p></li>
-          <li><p>Event or campaign branding. Email and online ad designs</p></li>
+          <p className='font-bold'>Our Key Features:</p>
+          <li><p>Premium Designs & Luxury Themes</p></li>
+          <li><p>Elegant Look</p></li>
+          <li><p>Premium Features</p></li>
+          <li><p>Custom High End Colors</p></li>
+          <li><p>24/7 customer care and much more</p></li>
         </ul>
       </div>
-      <p>A strong brand is your most valuable asset — let us help you craft it, grow it, and make it unforgettable.</p>
+
       <div className=' flex md:flex-row flex-col gap-4'>
         <a className='px-4 bg-gray-300 rounded-xl ' href="mailto:disibin@gmail.com">Hire Developer</a>
         <p className='px-4 bg-gray-300 rounded-xl cursor-pointer' onClick={viewpack}>View Packages</p>
       </div>
+
 
 
 
@@ -74,52 +74,51 @@ export default function Branding() {
           <div>
             <div className={`w-full ${Basic} flex-col justify-between gap-6`} >
               <div className='w-full flex flex-row items-center justify-around'>
-                <h3>Basic</h3>
-                <h3>$50</h3>
+                <h3>Figma Landing Page Design</h3>
+                <h3>$100</h3>
               </div>
               <div className='flex flex-col items-start px-4'>
 
-                <p className='font-semibold'>1 Logo designs + color Palette + typography Guide + icon + mockup 3D</p>
-                <p>Color palette</p>
-                <p>Typography guidelines</p>
-                <p>Logo usage guidelines</p>
+                <p className='font-semibold'>Custom Landing Page Design (Upto 5 Sections) with Figma | Responsive | No Coding | Discuss More</p>
+                <p>1 page</p>
+                <p>Responsive design</p>
+                <p>Source file</p>
                 <p>Unlimited Revisions</p>
-                <p>7-day delivery</p>
+                <p>3-day delivery</p>
 
               </div>
               <button className='w-full bg-gray-300 cursor-pointer'>Continue</button>
             </div>
             <div className={`w-full ${Standard} flex-col justify-between gap-6`}>
               <div className='w-full flex flex-row items-center justify-around'>
-                <h3>Standard</h3>
-                <h3>$150</h3>
+                <h3>Homepage + 4 Inner Pages in Figma</h3>
+                <h3>$400</h3>
               </div>
               <div className='flex flex-col items-start px-4'>
-                <p className='font-semibold'>2 HQ Logo + vector file + source file + 8 to 10 Pages professional brand guidelines + mockup 3D</p>
+                <p className='font-semibold'>Unique Web Homepage + 4 Inner Pages Design in Figma (Desktop + Mobile) | No Coding | Discuss More </p>
 
-                <p>Includes logo design</p>
-                <p>Logo usage guidelines</p>
-                <p>Color palette</p>
-                <p>Typography guidelines</p>
-                <p>14-day delivery</p>
+                <p>5 pages</p>
+                <p>Responsive design</p>
+                <p>Source file</p>
+                <p>Unlimited Revisions</p>
+                <p>7-day delivery</p>
 
               </div>
               <button className='w-full bg-gray-300 cursor-pointer'>Continue</button>
             </div>
             <div className={`w-full ${Premium} flex-col justify-between gap-6`}>
               <div className='w-full flex flex-row items-center justify-around'>
-                <h3>Premium</h3>
-                <h3>$280</h3>
+                <h3>Homepage + 9 Inner Pages in Figma</h3>
+                <h3>$800</h3>
               </div>
               <div className='flex flex-col items-start px-4'>
-                <p className='font-semibold'>3 creative logo + 4 stationary + social media kit + 28 to 30 pages premium brand guide + mockup 3D</p>
+                <p className='font-semibold'>Unique Web Homepage + 9 Inner Pages Design in Figma (Desktop + Mobile) | No Coding | Discuss More</p>
 
-                <p>Includes logo design</p>
-                <p>Logo usage guidelines</p>
-                <p>Color palette</p>
-                <p>Typography guidelines</p>
-                <p>Brand book design</p>
-                <p>21-day delivery</p>
+                <p>10 pages</p>
+                <p>Responsive design</p>
+                <p>Source file</p>
+                <p>Unlimited Revisions</p>
+                <p>10-day delivery</p>
 
               </div>
               <button className='w-full bg-gray-300 cursor-pointer'>Continue</button>
@@ -133,4 +132,3 @@ export default function Branding() {
     </div>
   )
 }
-

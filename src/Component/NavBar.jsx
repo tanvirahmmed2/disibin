@@ -1,52 +1,79 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion, useScroll } from 'motion/react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 export default function NavBar(props) {
-
+const { scrollYProgress } = useScroll()
 
     return (
-        <nav className=' shadow-xl text-teal-700 h-12 px-4 py-2 flex  flex-row items-center justify-between w-full z-999 relative'>
+        <nav className=' bg-white shadow-xl  h-12  w-full z-999 fixed '>
+            <motion.div style={{ scaleX: scrollYProgress }}  className='origin-left absolute bg-gray-200 w-full h-12 -z-20'></motion.div>
+            <div className='w-full text-teal-700 h-12 px-4 py-2 flex  flex-row items-center justify-between '>
+                <Link to="/">
+                    <h1 className=' text-2xl font-bold'>{props.title}</h1>
+                </Link>
+                <motion.p initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ duration: 5 }}
+                    className='hidden lg:block font-light text-red-600 italic'>beyond your dreams</motion.p>
+                <Link to='/menubar' className='h-12 px-4 cursor-pointer w-16 flex items-center justify-center md:hidden hover:border-b-2' ><FontAwesomeIcon icon={faBars} /></Link>
 
-            <Link to="/">
-                <h1 className=' text-2xl font-bold'>{props.title}</h1>
-            </Link>
-            <Link to='/menubar' className='h-12 px-4 cursor-pointer w-16 flex items-center justify-center md:hidden' ><FontAwesomeIcon icon={faBars} /></Link>
+                <div className=' md:flex hidden mr-2 flex-row h-12 gap-4 items-center justify-center font-medium text-l'>
+                    {/* <Link to="/" className='w-28 h-12 flex items-center justify-center '>Home</Link> */}
+                    <a href="/" className='w-28 h-12 flex items-center justify-center hover:border-b-2'>Home</a>
+                    <div className={`main-wrapper relative group`}>
 
-            <div className=' md:flex hidden mr-2 flex-row h-12 gap-4 items-center justify-center font-medium text-l'>
-                <Link to="/" className='w-28 h-12 flex items-center justify-center '>Home</Link>
-                <div className={`main-wrapper relative group`}>
+                        <p className='w-28 h-12 flex items-center justify-center cursor-pointer hover:border-b-2' >Service </p>
 
-                    <p className='w-28 h-12 flex items-center justify-center cursor-pointer ' >Service </p>
+                        <div className={`absolute group-hover:block hidden bg-gray-50 `}>
+                            <div className={`main-wrapper block relative group/item`}>
+                                <Link to="/web-dev" className='w-36 h-10 flex items-center justify-start  hover:scale-110  hover:text-red-600       rounded-xl px-4'>Web Dev</Link>
+                                <div className='bg-white group-hover/item:block hidden absolute left-36 top-0'>
+                                    <Link to="/ui-ux-dev" className='w-36 h-10 flex items-center justify-tart  hover:scale-110   hover:text-red-600      rounded-xl px-4'>Ui-Ux Design</Link>
+                                    <Link to="/front-end-dev" className='w-36 h-10 flex items-center justify-tart  hover:scale-110   hover:text-red-600  rounded-xl px-4'>Front-End Dev</Link>
+                                    <Link to="/back-end-dev" className='w-36 h-10 flex items-center justify-start  hover:scale-110  hover:text-red-600   rounded-xl px-4'>Back-End Dev</Link>
+                                    <Link to="/full-stack-dev" className='w-36 h-10 flex items-center justify-start hover:scale-110  hover:text-red-600  rounded-xl px-4'>Full-Stack Dev</Link>
+                                    <Link to="/web-app" className='w-36 h-10 flex items-center justify-start hover:scale-110  hover:text-red-600  rounded-xl px-4'>Web App</Link>
 
-                    <div className={`absolute group-hover:block hidden `}>
-                        <Link to="/ui-ux-dev" className='w-36 h-10 flex items-center justify-tart  hover:scale-110   hover:text-red-600      rounded-xl px-4'>Ui-Ux Design</Link>
-                        <Link to="/front-end-dev" className='w-36 h-10 flex items-center justify-tart  hover:scale-110   hover:text-red-600  rounded-xl px-4'>Front-End Dev</Link>
-                        <Link to="/back-end-dev" className='w-36 h-10 flex items-center justify-start  hover:scale-110  hover:text-red-600   rounded-xl px-4'>Back-End Dev</Link>
-                        <Link to="/full-stack-dev" className='w-36 h-10 flex items-center justify-start hover:scale-110  hover:text-red-600  rounded-xl px-4'>Full-Stack Dev</Link>
-                        <Link to="/branding" className='w-36 h-10 flex items-center justify-start  hover:scale-110  hover:text-red-600       rounded-xl px-4'>Branding</Link>
-
-
-                        <div className={`main-wrapper  flex relative group/item`}>
-                            <p className='w-36 h-10  items-center justify-tart     hover:text-red-600      rounded-xl px-4 select-none cursor-pointer'>Online Maker</p>
-                            <div className=' absolute left-30 top-0 group-hover/item:block hidden '>
-                                <Link to='/id-card' className='w-36 h-10 flex items-center justify-tart  hover:scale-110   hover:text-red-600      rounded-xl px-4'>ID Card</Link>
-                                
-                                
+                                </div>
                             </div>
-                        </div>
-                        
-                        
-                              
 
+                            <div className={`main-wrapper block relative group/item2`}>
+                                <Link to="/graphics" className='w-36 h-10 flex items-center justify-start  hover:scale-110  hover:text-red-600       rounded-xl px-4'>Graphics</Link>
+                                <div className='bg-white group-hover/item2:block hidden absolute left-36 top-0'>
+                                    <Link to="/branding" className='w-36 h-10 flex items-center justify-start  hover:scale-110  hover:text-red-600       rounded-xl px-4'>Brand Identity</Link>
+                                    <Link to='/ads-design' className='w-36 h-10 flex items-center justify-tart  hover:scale-110   hover:text-red-600      rounded-xl px-4'>Ads Design</Link>
+                                    <Link to='/book-design' className='w-36 h-10 flex items-center justify-tart  hover:scale-110   hover:text-red-600      rounded-xl px-4'>Book Design</Link>
+                                    <Link to='/product-design' className='w-36 h-10 flex items-center justify-tart  hover:scale-110   hover:text-red-600      rounded-xl px-4'>Product Design</Link>
+                                    <Link to='/vector-art' className='w-36 h-10 flex items-center justify-tart  hover:scale-110   hover:text-red-600      rounded-xl px-4'>Vector Art</Link>
+
+                                </div>
+                            </div>
+
+                            <div className={`main-wrapper block relative group/item3`}>
+                                <Link to="/generator" className='w-36 h-10 flex items-center justify-start  hover:scale-110  hover:text-red-600       rounded-xl px-4'>Generator</Link>
+                                <div className='bg-white group-hover/item3:block hidden absolute left-36 top-0'>
+                                    <Link to='/id-card' className='w-36 h-10 flex items-center justify-tart  hover:scale-110   hover:text-red-600      rounded-xl px-4'>ID Card</Link>
+
+
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
                     </div>
+                    <Link to="/help" className='w-28 h-12 flex items-center justify-center  hover:border-b-2'>Help</Link>
+                    <Link to="/about" className='w-28 h-12 flex items-center justify-center hover:border-b-2'>About Us</Link>
+                    <Link to="/login" className='w-28 h-12 flex items-center justify-center hover:border-b-2'>Login</Link>
                 </div>
-                <Link to="/help" className='w-28 h-12 flex items-center justify-center '>Help</Link>
-                <Link to="/about" className='w-28 h-12 flex items-center justify-center '>About Us</Link>
-                <Link to="/login" className='w-28 h-12 flex items-center justify-center '>Login</Link>
+
             </div>
+
         </nav>
     )
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export default function FullStack() {
+export default function Frontend() {
   let [Basic, setBasic] = useState("flex");
   let [Standard, setStandard] = useState('hidden');
   let [Premium, setPremium] = useState('hidden');
@@ -9,7 +9,6 @@ export default function FullStack() {
   const viewpack = () => {
     setPack(Pack == 'hidden' ? 'flex' : 'hidden')
   }
-
   const gotobasic = () => {
     setBasic('flex')
     setStandard('hidden')
@@ -27,32 +26,30 @@ export default function FullStack() {
   }
 
   return (
-    <div className='px-18 py-4 flex flex-col gap-8 items-center justify-center w-full  '>
-      <h1 className='text-2xl font-bold'>Build Your Interface with Strong DataBase</h1>
-      <p className='text-center'>We deliver complete end-to-end web development solutions — from intuitive user interfaces to robust backend systems. As full stack developers, we handle both the front and back ends of your project, ensuring seamless integration, faster delivery, and unified quality across your entire application. Whether you're building a landing page, SaaS product, or complex business platform, we provide the full technical package.</p>
-
-      <div className="features flex flex-col lg:flex-row gap-16 mt-4">
+    <div className='px-18 py-4 flex flex-col gap-8 items-center justify-center w-full pt-20 '>
+      <h1 className='text-2xl font-bold'>Build Your WebSite</h1>
+      <p className='text-center'>We build websites that go beyond just looking good — we focus on performance, functionality, and user experience. Our web development services are tailored to meet the unique needs of your business, helping you establish a powerful and effective online presence. We work with the latest web technologies to create fast, secure, and scalable websites that work flawlessly across all devices and browsers. Whether you need a simple business website, a feature-rich web application, or a custom solution, we’ve got you covered.</p>
+      <div className="features flex lg:flex-row flex-col gap-16 mt-4">
         <ul className='bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]'>
           <h3 className='font-bold'>What we offer:</h3>
-          <p >Complete Web Development – One team to handle everything from UI design to database management and deployment.</p>
-          <li><p>Modern Frontend Frameworks – Responsive, interactive interfaces built with React, Vue, or other modern technologies.</p></li>
-
-          <li><p>Scalable Backend Architecture – Secure and performant server-side logic built with Node.js, Express, Django, or similar.</p></li>
-          <li><p>Database Integration – Setup and management of relational (PostgreSQL, MySQL) or NoSQL (MongoDB) databases.</p></li>
-          <li><p>API Development & Integration – Seamless connection between frontend, backend, and third-party services.</p></li>
+          <p >Custom Website Development – Built from scratch to match your exact needs and branding.</p>
+          <li><p>Responsive Design – Your site will look great and work perfectly on desktops, tablets, and smartphones.</p></li>
+          <li><p>Content Management Systems (CMS) – Easy-to-manage websites using WordPress, Webflow, or custom CMS.</p></li>
+          <li><p>Web Applications – Dynamic, interactive apps tailored to your business processes.</p></li>
+          <li><p>API Integration – Connect your website with third-party tools and platforms.</p></li>
 
         </ul>
         <ul className='bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]'>
           <h3 className='font-bold'>Why choose us:</h3>
-          <p>Single point of contact for your entire tech stack</p>
-          <li><p>Faster development and better coordination between frontend and backend</p></li>
-          <li><p>Clean, scalable, and maintainable codebase</p></li>
-          <li><p>Transparent communication and agile workflows</p></li>
-          <li><p>Post-launch support, updates, and performance monitoring</p></li>
+          <p>Experienced developers focused on quality code</p>
+          <li><p>Fast-loading, SEO-optimized websites</p></li>
+          <li><p>Secure development practices</p></li>
+          <li><p>Clear communication and collaboration throughout the project</p></li>
+          <li><p>Maintenance & Support – Ongoing updates, bug fixes, and improvements.</p></li>
 
         </ul>
       </div>
-      <p>We bring your digital vision to life — handling every layer of your web application so you can focus on growth, not the tech.</p>
+      <p>A strong brand is your most valuable asset — let us help you craft it, grow it, and make it unforgettable.</p>
       <div className=' flex md:flex-row flex-col gap-4'>
         <a className='px-4 bg-gray-300 rounded-xl ' href="mailto:disibin@gmail.com">Hire Developer</a>
         <p className='px-4 bg-gray-300 rounded-xl cursor-pointer' onClick={viewpack}>View Packages</p>
@@ -61,8 +58,8 @@ export default function FullStack() {
 
 
       <div className={`${Pack} flex-col gap-8 items-center justify-center`}>
-        <h1 className='text-2xl font-bold'>Build Your Fast DataBase</h1>
-        <div className='md:w-[526px] w-[405px] h-110 md:h-100  flex flex-col justify-between rounded-xl overflow-hidden border-gray-300 border-1'>
+        <h1 className='text-2xl font-bold'>Build Your Perfect Website</h1>
+        <div className='md:w-[526px] w-[405px] h-110 md:h-100 flex flex-col justify-between rounded-xl overflow-hidden border-gray-300 border-1'>
           <div className='w-full mb-2  bg-gray-300 flex items-center justify-between gap-2 overscroll-none'>
             <h3 onClick={gotobasic} className='text-center w-full cursor-pointer hover:bg-white h-8 flex items-center justify-center'>Basic</h3>
             <h3 onClick={gotostandard} className='text-center w-full cursor-pointer hover:bg-white h-8 flex items-center justify-center'>Standard</h3>

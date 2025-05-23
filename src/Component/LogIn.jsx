@@ -11,7 +11,7 @@ export default function Signin() {
   }
 
   return (
-    <div className='w-full h-[90vh] flex items-center justify-center '>
+    <div className='w-full h-[100vh] flex items-center justify-center pt-20'>
       <div className='relative w-[400px] md:w-[600px]  h-[400px] rounded-3xl flex  border-solid border-2 overflow-hidden border-gray-200'>
         <div id='signindetails' className={` w-full h-[400px] flex flex-row items-center justify-between ${Log == "signin" ? "flex" : "hidden"} `}>
           

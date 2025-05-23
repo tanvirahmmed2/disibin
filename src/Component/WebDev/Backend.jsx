@@ -27,7 +27,7 @@ export default function Backend() {
   }
 
   return (
-    <div className='px-18 py-4 flex flex-col gap-8 items-center justify-center w-full  '>
+    <div className='px-18 py-4 flex flex-col gap-8 items-center justify-center w-full pt-20 '>
       <h1 className='text-2xl font-bold'>Build Your DataBase</h1>
       <p className='text-center'>We build robust backend systems that power high-performance, scalable, and secure applications. Our backend development services ensure your business logic, data handling, and integrations work seamlessly behind the scenes. Whether you need an API-driven architecture, complex data processing, or scalable infrastructure, we provide the foundation your digital product needs to succeed.</p>
       <div className="features flex lg:flex-row flex-col gap-16 mt-4">
