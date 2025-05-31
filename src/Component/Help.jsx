@@ -10,7 +10,7 @@ export default function Contact() {
         <a href="https://facebook.com/disibin" className='w-[300px] inset-shadow-teal-400 text-teal-700 border-1   flex items-center justify-center hover:text-red-700'>Facebook</a>
         <a href="https://youtube.com/@disibin" className='w-[300px] inset-shadow-teal-400 text-teal-700 border-1   flex items-center justify-center hover:text-red-700'>Youtube</a>
         <a href="https://instagram.com/user.disibin" className='w-[300px] inset-shadow-teal-400 text-teal-700 border-1   flex items-center justify-center hover:text-red-700'>Instagram</a>
-        <a href="https://telegram.com/disibin" className='w-[300px] inset-shadow-teal-400 text-teal-700 border-1   flex items-center justify-center hover:text-red-700'>Teregram</a>
+        <a href="https://t.me/disibin" className='w-[300px] inset-shadow-teal-400 text-teal-700 border-1   flex items-center justify-center hover:text-red-700'>Telegram</a>
       </div>
       <div className='flex flex-col items-center justify-center gap-2 mt-4'>
         <textarea rows={5} cols={5} name="" id="" placeholder='file your report' className='w-[300px] resize-none border-1 outline-0 border-teal-700 text-teal-700 px-2 py-2'></textarea>
