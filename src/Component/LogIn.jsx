@@ -1,7 +1,13 @@
 import React, { useState } from 'react'
 
+import usePageTitle from './usePageTitle'
+
 
 export default function Signin() {
+
+  usePageTitle("User");
+
+  
   let [Log, setLog] = useState("signin");
   const gotosignup = () => {
     setLog("signup")

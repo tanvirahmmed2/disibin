@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
+import usePageTitle from '../usePageTitle'
+
 const adsPackages = [
   {
     name: 'Basic',
@@ -40,6 +42,10 @@ const adsPackages = [
 ];
 
 export default function AdsDesign() {
+
+
+  usePageTitle("Ads Design");
+
   const [isPackVisible, setPackVisible] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState('Basic');
 

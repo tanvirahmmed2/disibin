@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
+
+import usePageTitle from '../usePageTitle'
+
 const bookPackages = [
   {
     name: 'Basic',
@@ -40,6 +43,10 @@ const bookPackages = [
 ];
 
 export default function BookDesign() {
+
+  usePageTitle("Book Design");
+
+
   const [isPackVisible, setPackVisible] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState('Basic');
 

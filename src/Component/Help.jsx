@@ -1,6 +1,8 @@
 import React from 'react'
 
+import usePageTitle from './usePageTitle'
 export default function Contact() {
+  usePageTitle("Help");
   const submission = () => {
     alert('Reposrt Submitted')
   }

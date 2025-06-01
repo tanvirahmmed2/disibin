@@ -10,7 +10,10 @@ import FullStack from './Component/WebDev/FullStack'
 import Branding from './Component/Graphics/Branding'
 import Graphics from './Component/Graphics'
 
+import usePageTitle from './Component/usePageTitle'
+
 export default function Home() {
+  usePageTitle("Home");
   return (
     <div className='px-4 py-2 flex flex-col w-full overflow-x-hidden'>
       <Intro title='DisiBin'/>

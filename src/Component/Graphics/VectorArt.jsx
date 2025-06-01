@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
+import usePageTitle from '../usePageTitle'
+
 const vectorPackages = [
   {
     name: 'Basic',
@@ -40,6 +42,10 @@ const vectorPackages = [
 ];
 
 export default function VectorArt() {
+
+
+  usePageTitle("VectorArt");
+
   const [isPackVisible, setPackVisible] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState('Basic');
 

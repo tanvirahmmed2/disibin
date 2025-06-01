@@ -1,6 +1,11 @@
 import React from 'react'
 import {motion} from 'motion/react'
+
+import usePageTitle from './usePageTitle'
+
+
 export default function About(props) {
+  usePageTitle("About");
   return (
 
     <div className='w-full h-auto flex flex-col items-center justify-center px-12 py-8 mb-8 gap-4 text-center pt-20'>

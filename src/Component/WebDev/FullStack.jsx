@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion'; // Corrected import path for framer-motion
 
+import usePageTitle from '../usePageTitle'
+
 const fullStackPackages = [
   {
     name: 'Basic',
@@ -58,6 +60,9 @@ const fullStackPackages = [
 ];
 
 export default function FullStackServices() { // Renamed component for clarity
+
+  usePageTitle("FullStack");
+
   const [isPackVisible, setPackVisible] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState('Basic'); // Default to Basic
 

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
+import usePageTitle from '../usePageTitle'
+
 const webAppPackages = [
   {
     name: 'Basic',
@@ -38,7 +40,11 @@ const webAppPackages = [
   },
 ];
 
-export default function WebAppDevelopmentServices() { // Renamed component for clarity
+export default function WebApp() { // Renamed component for clarity
+
+
+  usePageTitle("WebDev");
+
   const [isPackVisible, setPackVisible] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState('Basic');
 

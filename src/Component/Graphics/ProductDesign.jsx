@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
+import usePageTitle from '../usePageTitle'
+
 const productPackages = [
   {
     name: 'Basic',
@@ -40,6 +42,10 @@ const productPackages = [
 ];
 
 export default function ProductDesign() {
+
+  usePageTitle("ProductDesign");
+
+
   const [isPackVisible, setPackVisible] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState('Basic');
 
@@ -63,7 +69,7 @@ export default function ProductDesign() {
 
       <div className="features flex flex-col lg:flex-row gap-16 mt-4">
         {/* What We Design */}
-        <motion.ul initial={{opacity:0, scale:0.8}} whileInView={{opacity:1, scale:1}} transition={{duration:0.5}} className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
+        <motion.ul initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
           <h3 className="font-bold">What We Design</h3>
           <li>Consumer electronics</li>
           <li>Wearables & accessories</li>
@@ -74,7 +80,7 @@ export default function ProductDesign() {
         </motion.ul>
 
         {/* How It Helps */}
-        <motion.ul initial={{opacity:0, scale:0.8}} whileInView={{opacity:1, scale:1}} transition={{duration:0.5}} className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
+        <motion.ul initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
           <h3 className="font-bold">Why It Matters</h3>
           <li>Better user experience</li>
           <li>Improved market appeal</li>
@@ -111,9 +117,8 @@ export default function ProductDesign() {
                 <h3
                   key={pkg.name}
                   onClick={() => setSelectedPackage(pkg.name)}
-                  className={`w-full text-center py-2 cursor-pointer hover:bg-white ${
-                    selectedPackage === pkg.name ? 'bg-white' : ''
-                  }`}
+                  className={`w-full text-center py-2 cursor-pointer hover:bg-white ${selectedPackage === pkg.name ? 'bg-white' : ''
+                    }`}
                 >
                   {pkg.name}
                 </h3>

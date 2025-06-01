@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion'; // Corrected import path for framer-motion
 
+
+import usePageTitle from '../usePageTitle'
+
 const brandingPackages = [
   {
     name: 'Basic',
@@ -51,6 +54,10 @@ const brandingPackages = [
 ];
 
 export default function BrandingServices() { // Renamed component for clarity
+
+
+  usePageTitle("Branding");
+
   const [isPackVisible, setPackVisible] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState('Basic');
 

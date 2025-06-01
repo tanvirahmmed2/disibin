@@ -5,8 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSwatchbook, faCode, faPeopleArrows, faDatabase, faLaptopCode, faTicket } from '@fortawesome/free-solid-svg-icons'
 
 
+
+import usePageTitle from './usePageTitle'
 export default function WebDev(props) {
     
+
+    usePageTitle("WebDev");
     return (
 
         <div className='flex flex-col items-center gap-8 justify-center w-full min-h-[95vh] px-4 py-8 pt-20'>

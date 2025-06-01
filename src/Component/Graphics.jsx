@@ -5,8 +5,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBook, faPeopleArrows, faRankingStar, faTimeline, faVectorSquare } from '@fortawesome/free-solid-svg-icons'
 import { faProductHunt } from '@fortawesome/free-brands-svg-icons'
 
+import usePageTitle from './usePageTitle'
+
 
 function Graphics(props) {
+  usePageTitle("Graphics");
   return (
     <div className='flex flex-col items-center gap-8 justify-center w-full min-h-[95vh] px-4 py-20'>
       <h1 className='text-center w-full'> <strong className='font-bold text-2xl text-teal-700'>{props.title} </strong>, specialized in transforming ideas into stunning visual experiences. Our graphic design services are crafted to not only look great but to communicate your brand’s story with clarity and impact. Whether you need eye-catching logos, compelling marketing materials, engaging social media graphics, or a complete brand identity, we bring creativity, precision, and purpose to every project. Let us help you stand out in a crowded market with design that connects and converts</h1>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion'; // Corrected import path for framer-motion
 
+import usePageTitle from '../usePageTitle'
+
 const frontendPackages = [
   {
     name: 'Basic',
@@ -58,6 +60,9 @@ const frontendPackages = [
 ];
 
 export default function FrontendServices() { // Renamed component for clarity
+
+  usePageTitle("FrontEnd");
+
   const [isPackVisible, setPackVisible] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState('Basic'); // Default to Basic
 

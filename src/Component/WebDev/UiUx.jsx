@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion'; // Corrected import path for framer-motion
 
+import usePageTitle from '../usePageTitle'
+
 const uiUxPackages = [
   {
     name: 'Figma Landing Page Design',
@@ -41,6 +43,9 @@ const uiUxPackages = [
 ];
 
 export default function UiUxServices() { // Renamed component for clarity
+
+  usePageTitle("Ui/Ux");
+
   const [isPackVisible, setPackVisible] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState('Figma Landing Page Design'); // Default to the first package's actual name
 
