@@ -16,18 +16,18 @@ function Graphics(props) {
 
       <div className=' grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-12 text-black '>
 
-        <div className='group flex flex-col gap-4 items-center justify-center w-[250px] h-[300px]  text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
+        <motion.div initial={{opacity:0, scale:0.8}} whileInView={{opacity:1, scale:1}} transition={{duration:0.5}} className='group flex flex-col gap-4 items-center justify-center w-[250px] h-[300px]  text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
           <FontAwesomeIcon icon={faRankingStar} className='text-4xl mb-2 text-black' />
           <h2 className='font-semibold text-lg mb-1'>Visual Brand Identity</h2>
           <p className='text-center text-sm text-gray-700'>
             A strong brand is your most valuable asset — let us help you craft it, grow it, and make it unforgettable.
           </p>
           <Link to="/branding" className='absolute bottom-3 font-semibold text-sm hidden group-hover:block'>Read More</Link>
-        </div>
+        </motion.div>
 
 
 
-        <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
+        <motion.div initial={{opacity:0, scale:0.8}} whileInView={{opacity:1, scale:1}} transition={{duration:0.5}} className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
           <FontAwesomeIcon icon={faTimeline} className='text-4xl mb-2 text-black' />
           <h2 className='font-semibold text-lg mb-1'>Marketing / Ads Design</h2>
           <p className='text-center text-sm text-gray-700'>
@@ -35,10 +35,10 @@ function Graphics(props) {
           </p>
           <Link to="/ads-design" className='absolute bottom-3 font-semibold text-sm hidden group-hover:block'>Read More</Link>
 
-        </div>
+        </motion.div>
 
 
-        <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
+        <motion.div initial={{opacity:0, scale:0.8}} whileInView={{opacity:1, scale:1}} transition={{duration:0.5}} className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
           <FontAwesomeIcon icon={faBook} className='text-4xl mb-2 text-black' />
           <h2 className='font-semibold text-lg mb-1'>Book Design</h2>
           <p className='text-center text-sm text-gray-700'>
@@ -46,10 +46,10 @@ function Graphics(props) {
           </p>
           <Link to="/book-design" className='absolute bottom-3 font-semibold text-sm hidden group-hover:block'>Read More</Link>
 
-        </div>
+        </motion.div>
 
 
-        <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
+        <motion.div initial={{opacity:0, scale:0.8}} whileInView={{opacity:1, scale:1}} transition={{duration:0.5}} className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
           <FontAwesomeIcon icon={faProductHunt} className='text-4xl mb-2 text-black' />
           <h2 className='font-semibold text-lg mb-1'>Product Design</h2>
           <p className='text-center text-sm text-gray-700'>
@@ -57,11 +57,11 @@ function Graphics(props) {
           </p>
           <Link to="/product-design" className='absolute bottom-3 font-semibold text-sm hidden group-hover:block'>Read More</Link>
 
-        </div>
+        </motion.div>
 
 
 
-        <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
+        <motion.div initial={{opacity:0, scale:0.8}} whileInView={{opacity:1, scale:1}} transition={{duration:0.5}} className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
           <FontAwesomeIcon icon={faVectorSquare} className='text-4xl mb-2 text-black' />
           <h2 className='font-semibold text-lg mb-1'>Vector Art</h2>
           <p className='text-center text-sm text-gray-700'>
@@ -70,11 +70,11 @@ function Graphics(props) {
 
           <Link to="/vector-art" className='absolute bottom-3 font-semibold text-sm hidden group-hover:block'>Read More</Link>
 
-        </div>
+        </motion.div>
 
 
 
-        <div className='group flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2  cursor-pointer px-2 py-2 rounded-xl relative'>
+        <motion.div initial={{opacity:0, scale:0.8}} whileInView={{opacity:1, scale:1}} transition={{duration:0.5}} className='group flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2  cursor-pointer px-2 py-2 rounded-xl relative'>
           <FontAwesomeIcon icon={faPeopleArrows} className='text-4xl mb-2 text-orange-700' />
 
           <h2 className='font-semibold text-lg mb-1'>Consultation</h2>
@@ -82,7 +82,7 @@ function Graphics(props) {
             Let’s talk! Get expert advice, explore your ideas, and find the best digital solution for your business—no cost, no pressure
           </p>
           <a href="mailto:disibin@gmail.com" className='absolute bottom-3 font-semibold text-sm hidden group-hover:block'>Mail Us</a>
-        </div>
+        </motion.div>
 
 
 
