@@ -23,6 +23,8 @@ import AdsDesign from './Component/Graphics/AdsDesign'
 import BookDesign from './Component/Graphics/BookDesign'
 import Graphics from './Component/Graphics'
 import Generator from './Component/Generator'
+import ClientDash from './Component/Dashboard/ClientDash'
+import DevDash from './Component/Dashboard/DevDash'
 
 export default function App() {
   return (
@@ -53,6 +55,9 @@ export default function App() {
 
       <Route path='/generator' element={<Generator/>} />
       <Route path='/id-card' element={<Card/>}/>
+
+      <Route path='/client-dash' element={<ClientDash/>}/>
+      <Route path='/dev-dash' element={<DevDash/>}/>
       
     </Routes>
     <Footer title='DisiBin'/>
