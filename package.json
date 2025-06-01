@@ -1,6 +1,6 @@
 {
   "name": "disibin",
-  "homepage": "https://tanvirahmmed2.github.io/",
+  "homepage": "https://tanvirahmmed2.github.io/disibin./",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
