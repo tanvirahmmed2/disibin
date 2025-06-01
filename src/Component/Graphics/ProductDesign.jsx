@@ -63,7 +63,7 @@ export default function ProductDesign() {
 
       <div className="features flex flex-col lg:flex-row gap-16 mt-4">
         {/* What We Design */}
-        <ul className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
+        <motion.ul initial={{opacity:0, scale:0.8}} whileInView={{opacity:1, scale:1}} transition={{duration:0.5}} className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
           <h3 className="font-bold">What We Design</h3>
           <li>Consumer electronics</li>
           <li>Wearables & accessories</li>
@@ -71,10 +71,10 @@ export default function ProductDesign() {
           <li>Packaging and enclosures</li>
           <li>3D-printed items</li>
           <li>App-connected products</li>
-        </ul>
+        </motion.ul>
 
         {/* How It Helps */}
-        <ul className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
+        <motion.ul initial={{opacity:0, scale:0.8}} whileInView={{opacity:1, scale:1}} transition={{duration:0.5}} className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
           <h3 className="font-bold">Why It Matters</h3>
           <li>Better user experience</li>
           <li>Improved market appeal</li>
@@ -82,7 +82,7 @@ export default function ProductDesign() {
           <li>Investor-ready presentations</li>
           <li>Supports crowdfunding or MVP</li>
           <li>Gives form to your startup idea</li>
-        </ul>
+        </motion.ul>
       </div>
 
       <p className="max-w-2xl text-center">
@@ -90,12 +90,12 @@ export default function ProductDesign() {
       </p>
 
       <div className="flex md:flex-row flex-col gap-4">
-        <a className="px-4 py-2 bg-gray-300 rounded-xl" href="mailto:disibin@gmail.com">
+        <a className="px-4 py-2 bg-gray-300 rounded-xl cursor-pointer hover:bg-teal-200" href="mailto:disibin@gmail.com">
           Hire Designer
         </a>
         <button
           onClick={togglePackVisibility}
-          className="px-4 py-2 bg-gray-300 rounded-xl"
+          className="px-4 py-2 bg-gray-300 rounded-xl cursor-pointer hover:bg-teal-200"
         >
           {isPackVisible ? 'Hide Packages' : 'View Packages'}
         </button>
@@ -105,7 +105,7 @@ export default function ProductDesign() {
         <div className="flex flex-col gap-8 items-center justify-center mt-4">
           <h1 className="text-2xl font-bold">Product Design Packages:</h1>
 
-          <div className="w-full max-w-[526px] rounded-xl overflow-hidden border border-gray-300">
+          <div className="md:w-[526px] w-[405px] rounded-xl overflow-hidden border border-gray-300">
             <div className="bg-gray-300 flex">
               {productPackages.map((pkg) => (
                 <h3

@@ -14,7 +14,7 @@ export default function Intro(props) {
           <p>Our team is dedicated to building fast, reliable, and user-friendly websites for businesses of all sizes. From simple landing pages to full-featured web applications, we use the latest web technologies to create digital experiences that help you grow online. Partner with us to turn your ideas into a strong online presence.</p>
 
 
-          <div className='flex flex-col md:flex-row  items-center justify-center text-black w-full h-auto mt-4'>
+          <div className='flex flex-col md:flex-row md:gap-0 gap-2  items-center justify-center text-black w-full h-auto mt-4'>
             <div className='relative bg-teal-500 w-50 h-8 overflow-hidden group hover:scale-90'>
               <div className='w-full h-8 bg-teal-700 -z-10 absolute  hidden group-hover:flex' ></div>
               <Link to="/web-dev" className='    w-50 h-8 flex items-center justify-center text-center  hover:text-white px-4'>Web Development</Link>

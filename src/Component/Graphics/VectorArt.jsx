@@ -63,7 +63,7 @@ export default function VectorArt() {
 
       <div className="features flex flex-col lg:flex-row gap-16 mt-4">
         {/* Illustration Design */}
-        <ul className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
+        <motion.ul initial={{opacity:0, scale:0.8}} whileInView={{opacity:1, scale:1}} transition={{duration:0.5}} className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
           <h3 className="font-bold">What We Offer</h3>
           <li>Custom characters and mascots</li>
           <li>Flat, isometric, and 3D styles</li>
@@ -71,10 +71,10 @@ export default function VectorArt() {
           <li>Backgrounds and scenery</li>
           <li>Commercial-use ready files</li>
           <li>Unlimited revisions on Standard & Premium</li>
-        </ul>
+        </motion.ul>
 
         {/* Application Areas */}
-        <ul className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
+        <motion.ul initial={{opacity:0, scale:0.8}} whileInView={{opacity:1, scale:1}} transition={{duration:0.5}} className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
           <h3 className="font-bold">Where You Can Use It</h3>
           <li>Social media posts & stories</li>
           <li>Marketing & presentation materials</li>
@@ -82,7 +82,7 @@ export default function VectorArt() {
           <li>Web & mobile apps</li>
           <li>Print products (stickers, posters, apparel)</li>
           <li>Brand mascots & icons</li>
-        </ul>
+        </motion.ul>
       </div>
 
       <p className="max-w-2xl text-center">
@@ -90,12 +90,12 @@ export default function VectorArt() {
       </p>
 
       <div className="flex md:flex-row flex-col gap-4">
-        <a className="px-4 py-2 bg-gray-300 rounded-xl" href="mailto:disibin@gmail.com">
+        <a className="px-4 py-2 bg-gray-300 rounded-xl cursor-pointer hover:bg-teal-200" href="mailto:disibin@gmail.com">
           Hire Illustrator
         </a>
         <button
           onClick={togglePackVisibility}
-          className="px-4 py-2 bg-gray-300 rounded-xl"
+          className="px-4 py-2 bg-gray-300 rounded-xl cursor-pointer hover:bg-teal-200"
         >
           {isPackVisible ? 'Hide Packages' : 'View Packages'}
         </button>
@@ -105,7 +105,7 @@ export default function VectorArt() {
         <div className="flex flex-col gap-8 items-center justify-center mt-4">
           <h1 className="text-2xl font-bold">Vector Art Packages:</h1>
 
-          <div className="w-full max-w-[526px] rounded-xl overflow-hidden border border-gray-300">
+          <div className="md:w-[526px] w-[405px] rounded-xl overflow-hidden border border-gray-300">
             <div className="bg-gray-300 flex">
               {vectorPackages.map((pkg) => (
                 <h3

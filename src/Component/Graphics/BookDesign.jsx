@@ -63,7 +63,7 @@ export default function BookDesign() {
 
       <div className="features flex flex-col lg:flex-row gap-16 mt-4">
         {/* What We Offer */}
-        <ul className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
+        <motion.ul initial={{opacity:0, scale:0.8}} whileInView={{opacity:1, scale:1}} transition={{duration:0.5}} className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
           <h3 className="font-bold">Design Services</h3>
           <li>Cover design (ebook & print)</li>
           <li>Interior formatting & layout</li>
@@ -71,10 +71,10 @@ export default function BookDesign() {
           <li>Page numbering, headers, footers</li>
           <li>Print-ready and digital files</li>
           <li>Custom illustrations or graphics</li>
-        </ul>
+        </motion.ul>
 
         {/* Ideal For */}
-        <ul className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
+        <motion.ul initial={{opacity:0, scale:0.8}} whileInView={{opacity:1, scale:1}} transition={{duration:0.5}} className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
           <h3 className="font-bold">Perfect For</h3>
           <li>Self-published authors</li>
           <li>Publishing houses</li>
@@ -82,7 +82,7 @@ export default function BookDesign() {
           <li>Novels, memoirs, non-fiction</li>
           <li>Poetry books and journals</li>
           <li>Workbooks and planners</li>
-        </ul>
+        </motion.ul>
       </div>
 
       <p className="max-w-2xl text-center">
@@ -90,12 +90,12 @@ export default function BookDesign() {
       </p>
 
       <div className="flex md:flex-row flex-col gap-4">
-        <a className="px-4 py-2 bg-gray-300 rounded-xl" href="mailto:disibin@gmail.com">
+        <a className="px-4 py-2 bg-gray-300 rounded-xl cursor-pointer hover:bg-teal-200" href="mailto:disibin@gmail.com">
           Hire Book Designer
         </a>
         <button
           onClick={togglePackVisibility}
-          className="px-4 py-2 bg-gray-300 rounded-xl"
+          className="px-4 py-2 bg-gray-300 rounded-xl cursor-pointer hover:bg-teal-200"
         >
           {isPackVisible ? 'Hide Packages' : 'View Packages'}
         </button>
@@ -105,7 +105,7 @@ export default function BookDesign() {
         <div className="flex flex-col gap-8 items-center justify-center mt-4">
           <h1 className="text-2xl font-bold">Book Design Packages:</h1>
 
-          <div className="w-full max-w-[526px] rounded-xl overflow-hidden border border-gray-300">
+          <div className="md:w-[526px] w-[405px] rounded-xl overflow-hidden border border-gray-300">
             <div className="bg-gray-300 flex">
               {bookPackages.map((pkg) => (
                 <h3

@@ -38,7 +38,7 @@ const webAppPackages = [
   },
 ];
 
-export default function WebAppS() {
+export default function WebAppDevelopmentServices() { // Renamed component for clarity
   const [isPackVisible, setPackVisible] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState('Basic');
 
@@ -62,7 +62,7 @@ export default function WebAppS() {
 
       <div className="features flex flex-col lg:flex-row gap-16 mt-4">
         {/* Core Services */}
-        <ul className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
+        <motion.ul initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
           <h3 className="font-bold">What’s Included</h3>
           <li>Modern frontend (React / Next.js)</li>
           <li>Responsive mobile-first design</li>
@@ -70,10 +70,10 @@ export default function WebAppS() {
           <li>Auth, dashboard, admin panel</li>
           <li>API integrations (REST / GraphQL)</li>
           <li>Deployment & maintenance</li>
-        </ul>
+        </motion.ul>
 
         {/* Who It's For */}
-        <ul className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
+        <motion.ul initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
           <h3 className="font-bold">Perfect For</h3>
           <li>Startups building MVPs</li>
           <li>SaaS platforms & admin dashboards</li>
@@ -81,7 +81,7 @@ export default function WebAppS() {
           <li>Booking systems & CRMs</li>
           <li>E-commerce dashboards</li>
           <li>Educational & content platforms</li>
-        </ul>
+        </motion.ul>
       </div>
 
       <p className="max-w-2xl text-center">
@@ -89,12 +89,12 @@ export default function WebAppS() {
       </p>
 
       <div className="flex md:flex-row flex-col gap-4">
-        <a className="px-4 py-2 bg-gray-300 rounded-xl" href="mailto:disibin@gmail.com">
+        <a className="px-4 py-2 bg-gray-300 rounded-xl cursor-pointer hover:bg-teal-200" href="mailto:disibin@gmail.com">
           Hire Developer
         </a>
         <button
           onClick={togglePackVisibility}
-          className="px-4 py-2 bg-gray-300 rounded-xl"
+          className="px-4 py-2 bg-gray-300 rounded-xl cursor-pointer hover:bg-teal-200"
         >
           {isPackVisible ? 'Hide Packages' : 'View Packages'}
         </button>
@@ -104,14 +104,14 @@ export default function WebAppS() {
         <div className="flex flex-col gap-8 items-center justify-center mt-4">
           <h1 className="text-2xl font-bold">Web App Packages:</h1>
 
-          <div className="w-full max-w-[526px] rounded-xl overflow-hidden border border-gray-300">
+          <div className="md:w-[526px] w-[405px] h-auto rounded-xl overflow-hidden border border-gray-300">
             <div className="bg-gray-300 flex">
               {webAppPackages.map((pkg) => (
                 <h3
                   key={pkg.name}
                   onClick={() => setSelectedPackage(pkg.name)}
                   className={`w-full text-center py-2 cursor-pointer hover:bg-white ${selectedPackage === pkg.name ? 'bg-white' : ''
-                    }`}
+                  }`}
                 >
                   {pkg.name}
                 </h3>

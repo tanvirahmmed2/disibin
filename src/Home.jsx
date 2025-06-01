@@ -1,4 +1,5 @@
 import React from 'react'
+
 import Intro from './Component/Intro'
 import WebDev from './Component/WebDev'
 import About from './Component/About'
@@ -20,6 +21,7 @@ export default function Home() {
       <FullStack/>
       <Graphics title="DisiBin"/>
       <Branding/>
+      
       
       <About title="DisiBin"/>
     </div>

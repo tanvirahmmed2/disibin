@@ -16,7 +16,7 @@ function Graphics(props) {
 
       <div className=' grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-12 text-black '>
 
-        <div className='group flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-teal-100 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
+        <div className='group flex flex-col gap-4 items-center justify-center w-[250px] h-[300px]  text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
           <FontAwesomeIcon icon={faRankingStar} className='text-4xl mb-2 text-black' />
           <h2 className='font-semibold text-lg mb-1'>Visual Brand Identity</h2>
           <p className='text-center text-sm text-gray-700'>
@@ -27,7 +27,7 @@ function Graphics(props) {
 
 
 
-        <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-teal-100 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
+        <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
           <FontAwesomeIcon icon={faTimeline} className='text-4xl mb-2 text-black' />
           <h2 className='font-semibold text-lg mb-1'>Marketing / Ads Design</h2>
           <p className='text-center text-sm text-gray-700'>
@@ -38,7 +38,7 @@ function Graphics(props) {
         </div>
 
 
-        <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-teal-100 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
+        <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
           <FontAwesomeIcon icon={faBook} className='text-4xl mb-2 text-black' />
           <h2 className='font-semibold text-lg mb-1'>Book Design</h2>
           <p className='text-center text-sm text-gray-700'>
@@ -49,7 +49,7 @@ function Graphics(props) {
         </div>
 
 
-        <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-teal-100 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
+        <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
           <FontAwesomeIcon icon={faProductHunt} className='text-4xl mb-2 text-black' />
           <h2 className='font-semibold text-lg mb-1'>Product Design</h2>
           <p className='text-center text-sm text-gray-700'>
@@ -61,7 +61,7 @@ function Graphics(props) {
 
 
 
-        <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-teal-100 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
+        <div className='flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2 cursor-pointer px-2 py-2 rounded-xl relative'>
           <FontAwesomeIcon icon={faVectorSquare} className='text-4xl mb-2 text-black' />
           <h2 className='font-semibold text-lg mb-1'>Vector Art</h2>
           <p className='text-center text-sm text-gray-700'>
@@ -74,7 +74,7 @@ function Graphics(props) {
 
 
 
-        <div className='group flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] bg-teal-100 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2  cursor-pointer px-2 py-2 rounded-xl relative'>
+        <div className='group flex flex-col gap-4 items-center justify-center w-[250px] h-[300px] text-white bg-orange-300 group hover:bg-teal-300 hover:shadow-2xl hover:rotate-z-2  cursor-pointer px-2 py-2 rounded-xl relative'>
           <FontAwesomeIcon icon={faPeopleArrows} className='text-4xl mb-2 text-orange-700' />
 
           <h2 className='font-semibold text-lg mb-1'>Consultation</h2>

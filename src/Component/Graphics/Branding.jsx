@@ -1,51 +1,93 @@
-import React, { useState } from 'react'
-import {motion} from 'motion/react'
+import React, { useState } from 'react';
+import { motion } from 'framer-motion'; // Corrected import path for framer-motion
 
-export default function Branding() {
-  let [Basic, setBasic] = useState("flex");
-  let [Standard, setStandard] = useState('hidden');
-  let [Premium, setPremium] = useState('hidden');
-  let [Pack, setPack] = useState('hidden');
+const brandingPackages = [
+  {
+    name: 'Basic',
+    price: '$50',
+    features: [
+      '1 Logo design',
+      'Color palette',
+      'Typography guidelines',
+      'Logo usage guidelines',
+      'Mockup 3D',
+      'Unlimited Revisions',
+      '7-day delivery',
+    ],
+  },
+  {
+    name: 'Standard',
+    price: '$150',
+    features: [
+      '2 HQ Logo',
+      'Vector file',
+      'Source file',
+      '8 to 10 Pages professional brand guidelines',
+      'Mockup 3D',
+      'Includes logo design',
+      'Logo usage guidelines',
+      'Color palette',
+      'Typography guidelines',
+      '14-day delivery',
+    ],
+  },
+  {
+    name: 'Premium',
+    price: '$280',
+    features: [
+      '3 creative logo',
+      '4 stationary',
+      'Social media kit',
+      '28 to 30 pages premium brand guide',
+      'Mockup 3D',
+      'Includes logo design',
+      'Logo usage guidelines',
+      'Color palette',
+      'Typography guidelines',
+      'Brand book design',
+      '21-day delivery',
+    ],
+  },
+];
 
-  const viewpack = () => {
-    setPack(Pack == 'hidden' ? 'flex' : 'hidden')
-  }
+export default function BrandingServices() { // Renamed component for clarity
+  const [isPackVisible, setPackVisible] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState('Basic');
 
-  const gotobasic = () => {
-    setBasic('flex')
-    setStandard('hidden')
-    setPremium('hidden')
-  }
-  const gotostandard = () => {
-    setBasic('hidden')
-    setStandard('flex')
-    setPremium('hidden')
-  }
-  const gotopremium = () => {
-    setBasic('hidden')
-    setStandard('hidden')
-    setPremium('flex')
-  }
+  const togglePackVisibility = () => setPackVisible((prev) => !prev);
+  const currentPackage = brandingPackages.find((pkg) => pkg.name === selectedPackage);
 
   return (
-    <div className='px-18 py-4 flex flex-col gap-8 items-center justify-center w-full  pt-20'>
-      <motion.h1 initial={{x:100, opacity:0}} whileInView={{x:0, opacity:1}} transition={{duration:.5}} className='text-2xl font-bold'>Create Your Brand Identity</motion.h1>
-      <p className='text-center'>Your brand is more than just a logo — it’s the voice, style, and story that people remember. We'll help you build a strong, memorable brand identity and promote it effectively across digital and offline platforms.      Whether you’re starting fresh or rebranding, we work with you to create a consistent, professional look and feel that connects with your audience, builds trust, and sets you apart from the competition.</p>
+    <div className="px-6 py-4 flex flex-col gap-8 items-center justify-center w-full pt-20">
+      <motion.h1
+        initial={{ x: 100, opacity: 0 }}
+        whileInView={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="text-2xl font-bold"
+      >
+        Create Your Brand Identity
+      </motion.h1>
+
+      <p className="text-center max-w-3xl">
+        Your brand is more than just a logo — it’s the voice, style, and story that people remember. We'll help you build a strong, memorable brand identity and promote it effectively across digital and offline platforms. Whether you’re starting fresh or rebranding, we work with you to create a consistent, professional look and feel that connects with your audience, builds trust, and sets you apart from the competition.
+      </p>
+
       <div className="features flex flex-col lg:flex-row gap-16 mt-4">
-        <ul className='bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]'>
-          <h3 className='font-bold'>Brand Identity</h3>
-          <p >We shape the visual and verbal elements of your brand so it speaks clearly and consistently across all platforms.</p>
+        {/* Brand Identity */}
+        <motion.ul initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
+          <h3 className="font-bold">Brand Identity</h3>
+          <p>We shape the visual and verbal elements of your brand so it speaks clearly and consistently across all platforms.</p>
           <li><p>Custom logo design</p></li>
           <li><p>Brand color palette and typography</p></li>
           <li><p>Brand guidelines/style guide</p></li>
           <li><p>Business card and stationery design</p></li>
           <li><p>Voice & tone development</p></li>
           <li><p>Taglines and brand messaging</p></li>
+        </motion.ul>
 
-
-        </ul>
-        <ul className='bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]'>
-          <h3 className='font-bold'>Brand Promotion</h3>
+        {/* Brand Promotion */}
+        <motion.ul initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="bg-gray-300 p-8 rounded-xl flex flex-col gap-3 w-[400px]">
+          <h3 className="font-bold">Brand Promotion</h3>
           <p>We help you take your brand to the world with strategic marketing and visibility tools that grow awareness and engagement.</p>
           <li><p>Social media branding and content design</p></li>
           <li><p>Digital marketing materials (banners, ads, thumbnails)</p></li>
@@ -53,85 +95,59 @@ export default function Branding() {
           <li><p>Promotional videos and product intros</p></li>
           <li><p>Print materials (flyers, brochures, posters)</p></li>
           <li><p>Event or campaign branding. Email and online ad designs</p></li>
-        </ul>
-      </div>
-      <p>A strong brand is your most valuable asset — let us help you craft it, grow it, and make it unforgettable.</p>
-      <div className=' flex md:flex-row flex-col gap-4'>
-        <a className='px-4 bg-gray-300 rounded-xl ' href="mailto:disibin@gmail.com">Hire Developer</a>
-        <p className='px-4 bg-gray-300 rounded-xl cursor-pointer' onClick={viewpack}>View Packages</p>
+        </motion.ul>
       </div>
 
+      <p className="max-w-2xl text-center">
+        A strong brand is your most valuable asset — let us help you craft it, grow it, and make it unforgettable.
+      </p>
 
+      <div className="flex md:flex-row flex-col gap-4">
+        <a className="px-4 py-2 bg-gray-300 rounded-xl cursor-pointer hover:bg-teal-200" href="mailto:disibin@gmail.com">
+          Hire Developer
+        </a>
+        <button
+          onClick={togglePackVisibility}
+          className="px-4 py-2 bg-gray-300 rounded-xl cursor-pointer hover:bg-teal-200"
+        >
+          {isPackVisible ? 'Hide Packages' : 'View Packages'}
+        </button>
+      </div>
 
-      <div className={`${Pack} flex-col gap-8 items-center justify-center`}>
-        <h1 className='text-2xl font-bold'>Web Design package:</h1>
-        <div className='md:w-[526px] w-[405px] h-110 md:h-100 flex flex-col justify-between rounded-xl overflow-hidden border-gray-300 border-1'>
-          <div className='w-full mb-2  bg-gray-300 flex items-center justify-between gap-2 overscroll-none'>
-            <h3 onClick={gotobasic} className='text-center w-full cursor-pointer hover:bg-white h-8 flex items-center justify-center'>Basic</h3>
-            <h3 onClick={gotostandard} className='text-center w-full cursor-pointer hover:bg-white h-8 flex items-center justify-center'>Standard</h3>
-            <h3 onClick={gotopremium} className='text-center w-full cursor-pointer hover:bg-white h-8 flex items-center justify-center' >Premium</h3>
+      {isPackVisible && (
+        <div className="flex flex-col gap-8 items-center justify-center mt-4">
+          <h1 className="text-2xl font-bold">Brand Identity Packages:</h1> {/* Updated heading */}
 
+          <div className="md:w-[526px] w-[405px] rounded-xl overflow-hidden border border-gray-300">
+            <div className="bg-gray-300 flex">
+              {brandingPackages.map((pkg) => ( // Use brandingPackages
+                <h3
+                  key={pkg.name}
+                  onClick={() => setSelectedPackage(pkg.name)}
+                  className={`w-full text-center py-2 cursor-pointer hover:bg-white ${
+                    selectedPackage === pkg.name ? 'bg-white' : ''
+                  }`}
+                >
+                  {pkg.name}
+                </h3>
+              ))}
+            </div>
+
+            <div className="p-4 flex flex-col gap-4">
+              <div className="flex justify-between">
+                <h3>{currentPackage.name}</h3>
+                <h3>{currentPackage.price}</h3>
+              </div>
+              <ul className="list-disc pl-5">
+                {currentPackage.features.map((feature, idx) => (
+                  <li key={idx}>{feature}</li>
+                ))}
+              </ul>
+              <button className="w-full bg-gray-300 py-2 rounded-md">Continue</button>
+            </div>
           </div>
-          <div>
-            <div className={`w-full ${Basic} flex-col justify-between gap-6`} >
-              <div className='w-full flex flex-row items-center justify-around'>
-                <h3>Basic</h3>
-                <h3>$50</h3>
-              </div>
-              <div className='flex flex-col items-start px-4'>
-
-                <p className='font-semibold'>1 Logo designs + color Palette + typography Guide + icon + mockup 3D</p>
-                <p>Color palette</p>
-                <p>Typography guidelines</p>
-                <p>Logo usage guidelines</p>
-                <p>Unlimited Revisions</p>
-                <p>7-day delivery</p>
-
-              </div>
-              <button className='w-full bg-gray-300 cursor-pointer'>Continue</button>
-            </div>
-            <div className={`w-full ${Standard} flex-col justify-between gap-6`}>
-              <div className='w-full flex flex-row items-center justify-around'>
-                <h3>Standard</h3>
-                <h3>$150</h3>
-              </div>
-              <div className='flex flex-col items-start px-4'>
-                <p className='font-semibold'>2 HQ Logo + vector file + source file + 8 to 10 Pages professional brand guidelines + mockup 3D</p>
-
-                <p>Includes logo design</p>
-                <p>Logo usage guidelines</p>
-                <p>Color palette</p>
-                <p>Typography guidelines</p>
-                <p>14-day delivery</p>
-
-              </div>
-              <button className='w-full bg-gray-300 cursor-pointer'>Continue</button>
-            </div>
-            <div className={`w-full ${Premium} flex-col justify-between gap-6`}>
-              <div className='w-full flex flex-row items-center justify-around'>
-                <h3>Premium</h3>
-                <h3>$280</h3>
-              </div>
-              <div className='flex flex-col items-start px-4'>
-                <p className='font-semibold'>3 creative logo + 4 stationary + social media kit + 28 to 30 pages premium brand guide + mockup 3D</p>
-
-                <p>Includes logo design</p>
-                <p>Logo usage guidelines</p>
-                <p>Color palette</p>
-                <p>Typography guidelines</p>
-                <p>Brand book design</p>
-                <p>21-day delivery</p>
-
-              </div>
-              <button className='w-full bg-gray-300 cursor-pointer'>Continue</button>
-            </div>
-
-          </div>
-
-
         </div>
-      </div>
+      )}
     </div>
-  )
+  );
 }
-

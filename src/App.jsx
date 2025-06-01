@@ -22,6 +22,7 @@ import VectorArt from './Component/Graphics/VectorArt'
 import AdsDesign from './Component/Graphics/AdsDesign'
 import BookDesign from './Component/Graphics/BookDesign'
 import Graphics from './Component/Graphics'
+import Generator from './Component/Generator'
 
 export default function App() {
   return (
@@ -34,19 +35,24 @@ export default function App() {
       <Route path='/login' element={<LogIn title='DisiBin'/>}/>
       <Route path="/about" element={<About title='DisiBin' />} />
       <Route path="/help" element={<Help />} />
+      
       <Route path="/web-dev" element={<WebDev title='DisiBin'/>} />
       <Route path="/ui-ux-dev" element={<UiUx/>} />
       <Route path="/front-end-dev" element={<Frontend/>} />
       <Route path="/back-end-dev" element={<Backend/>} />
       <Route path="/full-stack-dev" element={<FullStack/>} />
       <Route path='/web-app' element={<WebApp/>} />
-      <Route path="/branding" element={<Branding/>} />
-      <Route path='/id-card' element={<Card/>}/>
+
+
       <Route path='/graphics' element={<Graphics title="DisiBin"/>}/>
       <Route path='/product-design' element={<ProductDesign/>}/>
       <Route path='/ads-design' element={<AdsDesign/>}/>
       <Route path='/book-design' element={<BookDesign/>}/>
       <Route path='/vector-art' element={<VectorArt/>}/>
+      <Route path="/branding" element={<Branding/>} />
+
+      <Route path='/generator' element={<Generator/>} />
+      <Route path='/id-card' element={<Card/>}/>
       
     </Routes>
     <Footer title='DisiBin'/>
