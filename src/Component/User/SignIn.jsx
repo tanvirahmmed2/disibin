@@ -12,14 +12,7 @@ export default function SignIn() {
 
   const navigate = useNavigate();
 
-  let [Log, setLog] = useState("signin");
-  const gotosignup = () => {
-    setLog("signup")
-  }
-  const gotosignin = () => {
-    setLog("signin")
-  }
-
+  
   let [logdata, setLogdata] = useState({
     username: "",
     password: ""
@@ -47,7 +40,7 @@ export default function SignIn() {
   return (
     <div className='w-full h-[100vh] flex items-center justify-center pt-20'>
       <div className='relative w-[400px] md:w-[600px]  h-[400px] rounded-3xl flex  border-solid border-2 overflow-hidden border-gray-200'>
-        <div id='signindetails' className={` w-full h-[400px] flex flex-row items-center justify-between ${Log == "signin" ? "flex" : "hidden"} `}>
+        <div id='signindetails' className={` w-full h-[400px] flex flex-row items-center justify-between  `}>
 
           <form onSubmit={handlelogin} className='flex flex-col items-center justify-center w-[200px] md:w-[300px] h-[400px] gap-4'>
             <input value={logdata.username} onChange={handlechangelogdata} name='username' type="text" className='w-[150px] md:w-[200px]  border-1 outline-0 border-teal-700 px-2 py-1 shadow-2xl rounded-[5px]  ' placeholder='username or email' />
@@ -60,7 +53,7 @@ export default function SignIn() {
             <h1 className='font-bold text-3xl'>DisiBin</h1>
             <h3>sign in and get back to</h3>
             <h3>your dashboard</h3>
-            <Link to="/signup" className='mt-4 cursor-pointer' onClick={gotosignup}>new here?</Link>
+            <Link to="/signup" className='mt-4 cursor-pointer'>new here?</Link>
           </div>
 
 
