@@ -1,7 +1,6 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import NavBar from './Component/NavBar'
-import LogIn from './Component/LogIn'
 import About from './Component/About'
 import Home from './Home'
 import Footer from './Component/Footer'
@@ -25,6 +24,8 @@ import Graphics from './Component/Graphics'
 import Generator from './Component/Generator'
 import ClientDash from './Component/Dashboard/ClientDash'
 import DevDash from './Component/Dashboard/DevDash'
+import SignIn from './Component/User/SignIn'
+import SignUp from './Component/User/SignUp'
 
 export default function App() {
   return (
@@ -34,7 +35,9 @@ export default function App() {
     <NavBar title='DisiBin'/>
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path='/login' element={<LogIn title='DisiBin'/>}/>
+      <Route path='/signin' element={<SignIn/>}/>
+      <Route path='/signup' element={<SignUp/>}/>
+
       <Route path="/about" element={<About title='DisiBin' />} />
       <Route path="/help" element={<Help />} />
       

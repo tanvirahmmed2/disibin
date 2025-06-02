@@ -57,7 +57,7 @@ export default function NavBar(props) {
 
                         <Link to="/help" className='w-28 h-12 flex items-center justify-center  hover:border-b-2'>Help</Link>
                         <Link to="/about" className='w-28 h-12 flex items-center justify-center hover:border-b-2'>About Us</Link>
-                        <Link to="/login" className='w-28 h-12 flex items-center justify-center hover:border-b-2'>Login</Link>
+                        <Link to="/signin" className='w-28 h-12 flex items-center justify-center hover:border-b-2'>Login</Link>
 
 
 
@@ -114,7 +114,7 @@ export default function NavBar(props) {
                     </div>
                     <Link to="/help" className='w-28 h-12 flex items-center justify-center  hover:border-b-2'>Help</Link>
                     <Link to="/about" className='w-28 h-12 flex items-center justify-center hover:border-b-2'>About Us</Link>
-                    <Link to="/login" className='w-28 h-12 flex items-center justify-center hover:border-b-2'>Login</Link>
+                    <Link to="/signin" className='w-28 h-12 flex items-center justify-center hover:border-b-2'>Login</Link>
                 </div>
 
             </div>
