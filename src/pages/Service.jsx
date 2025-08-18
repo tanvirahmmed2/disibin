@@ -34,7 +34,12 @@ const Service = () => {
         </p>
       </div>
 
+
+
+
       <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-4 p-4">
+
+        
         <div className="w-full h-[200px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
           <p className="text-2xl">
             <FaFigma />
@@ -47,6 +52,8 @@ const Service = () => {
             See examples
           </Link>
         </div>
+
+
         <div className="w-full h-[200px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
           <p className="text-2xl">
             <FaCode />
@@ -57,6 +64,8 @@ const Service = () => {
             What’s included?
           </Link>
         </div>
+
+
         <div className="w-full h-[200px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
           <p className="text-2xl">
             <FaPhotoVideo />
@@ -70,6 +79,7 @@ const Service = () => {
             See options
           </Link>
         </div>
+
         <div className="w-full h-[200px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
           <p className="text-2xl">
             <FaPlane />
@@ -82,6 +92,7 @@ const Service = () => {
             View plans
           </Link>
         </div>
+
       </div>
 
       <div className="flex w-full items-start justify-center gap-2 flex-col">

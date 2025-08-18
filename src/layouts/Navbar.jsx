@@ -23,7 +23,7 @@ const Navbar = () => {
           <Link className='h-16 flex items-center justify-center hover:border-b-2 px-4' to='/projects'>Projects</Link>
           <Link className='h-16 flex items-center justify-center hover:border-b-2 px-4' to="/about">About</Link>
           <Link className='h-16 flex items-center justify-center hover:border-b-2 px-4' to="/contact">Contact</Link>
-          <Link className='h-16 flex items-center justify-center hover:border-b-2 px-4' to="/signup">SignUp</Link>
+          <Link className='h-10 flex items-center justify-center px-4 bg-emerald-400 rounded-lg ' to="/signup">SignUp</Link>
 
         </div>
         <div onClick={handlemenu} className='h-16 cursor-pointer flex md:hidden items-center justify-center hover:border-b-2 px-6'>
@@ -36,7 +36,6 @@ const Navbar = () => {
         <Link className=' flex items-center justify-center p-2' to="/">Home</Link>
         <Link className=' flex items-center justify-center p-2' to='/services'>Services</Link>
         <Link className=' flex items-center justify-center p-2' to='/projects'>Projects</Link>
-        <Link className=' flex items-center justify-center p-2' to='/reviews'>Reviews</Link>
         <Link className=' flex items-center justify-center p-2' to="/about">About</Link>
         <Link className=' flex items-center justify-center p-2' to="/contact">Contact</Link>
         <Link className=' flex items-center justify-center p-2' to="/signup">Sign Up</Link>

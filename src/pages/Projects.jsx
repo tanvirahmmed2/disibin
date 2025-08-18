@@ -36,10 +36,16 @@ const Projects = () => {
         {projectData.map((project) => {
           const { id } = project
           return (
-            <div key={id} className="relative w-[300px] h-[450px] p-2 shadow-sm shadow-indigo-500 bg-white/5 border-2 border-red-400 border-opacity-30 rounded-xl">
+            <div key={id} className="relative w-[300px] h-[450px] p-2 shadow-sm shadow-indigo-500 bg-white/5 border-2 border-red-400 border-opacity-30 rounded-xl flex items-center justify-center">
+                <h1 className="font-semibold text-4xl">Image</h1>
+              <div className="absolute bottom-4 left-4 flex gap-3 flex-col">
+                <h1>Title</h1>
+                <p>Description</p>
+                <div className="flex flex-row gap-4">
+                  <a href="/" className="bg-sky-400 px-4 p-1 rounded-lg">Preview</a>
+                  <a href="/" className="bg-emerald-500 px-4 p-1 rounded-lg">Code</a>
+                </div>
 
-              <div className="absolute bottom-4 left-4">
-                <a href="/" className="bg-sky-400 px-4 p-1 rounded-lg">preview</a>
               </div>
             </div>
           )
