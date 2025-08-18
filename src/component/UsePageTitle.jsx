@@ -5,7 +5,7 @@ const UsePageTitle = (title) => {
   const location = useLocation();
 
   useEffect(() => {
-    document.title = `Disibin - ${title} `;
+    document.title = `Disibin | ${title} `;
   }, [title, location]);
 };
 
