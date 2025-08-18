@@ -29,7 +29,7 @@ const Signup = () => {
                 <label htmlFor="password">password</label>
                 <input type="text" id='password' name='password' required className='w-full p-1 px-2 rounded-lg bg-white/20 outline-none ' />
               </div>
-              <button type='submit' className='px-4 p-1 bg-white/5 rounded-lg'>sign in</button>
+              <button type='submit' className='px-4 p-1 bg-white/5 rounded-lg'>sign up</button>
             </form>
 
           </div>
