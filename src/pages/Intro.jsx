@@ -48,12 +48,12 @@ const Intro = () => {
 
         <div className="w-full rounded-2xl gap-2 m-4 flex flex-col items-center justify-center  shadow-sm shadow-indigo-500 p-4 border-2 border-red-500 border-opacity-20 bg-white/5">
           <div className="w-full h-auto flex flex-row items-center justify-center gap-2">
-            <div className="w-1/3 h-[200px] bg-white/5 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
+            <div className="w-1/3 h-[200px] bg-white/5 cursor-pointer hover:scale-105 transition duration-300 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
               <p><FaFigma /></p>
               <h1>Web design</h1>
               <Link to="/" className="text-base italic text-emerald-400">see more....</Link>
             </div>
-            <div className="w-2/3 h-[200px] bg-emerald-400 bg-opacity-50 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
+            <div className="w-2/3 h-[200px] bg-emerald-400 cursor-pointer hover:scale-105 transition duration-300 bg-opacity-50 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
               <p><FaCode /></p>
               <h1>Website Development</h1>
               <Link to="/" className="text-base italic text-red-400">see more....</Link>
@@ -61,12 +61,12 @@ const Intro = () => {
 
           </div>
           <div className="w-full h-auto flex flex-row items-center justify-center gap-2">
-            <div className="w-2/3 h-[200px] bg-emerald-400 bg-opacity-50 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
+            <div className="w-2/3 h-[200px] bg-emerald-400 cursor-pointer hover:scale-105 transition duration-300 bg-opacity-50 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
               <p><SiAdobe /></p>
               <h1>Graphics Development</h1>
               <Link to="/" className="text-base italic text-red-400">see more....</Link>
             </div>
-            <div className="w-1/3 h-[200px] bg-white/5 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
+            <div className="w-1/3 h-[200px] bg-white/5 cursor-pointer hover:scale-105 transition duration-300  rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
               <p><FaPeopleArrows /></p>
               <h1>Consultation</h1>
               <Link to="/" className="text-base italic text-emerald-400">see more....</Link>
