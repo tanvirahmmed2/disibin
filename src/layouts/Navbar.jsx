@@ -12,7 +12,7 @@ const Navbar = () => {
     setMenu(!menu)
   }
   return (
-    <section className='w-full h-auto fixed bg-black/10 text-white backdrop-blur-lg shadow-2xl'>
+    <section className='w-full h-auto fixed bg-black/10 text-white backdrop-blur-lg shadow-2xl top-0 z-50'>
 
       <nav className='w-full h-16 backdrop-blur-lg flex flex-row items-center justify-between lg:justify-around px-6'>
         <a href="/" className='text-3xl font-semibold'>Disibin</a>

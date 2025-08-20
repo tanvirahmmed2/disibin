@@ -1,22 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import UsePageTitle from "../component/UsePageTitle";
 
-const projectData = [
-  {
-    id: 1
-  },
-  {
-    id: 2
-  },
-  {
-    id: 3
-  },
-  {
-    id: 4
-  },
-]
+import ProjectDatas from "../data"
+
 
 const Projects = () => {
+const [projects, setProjects]= useState(ProjectDatas)
+
   UsePageTitle("Projects");
   return (
     <section className="w-full mt-20  min-h-screen p-8 flex flex-col gap-12 items-center justify-start">
@@ -33,17 +24,17 @@ const Projects = () => {
       </div>
 
       <div className="w-full grid gap-6 grid-cols-[repeat(auto-fill,minmax(300px,1fr))] justify-items-center">
-        {projectData.map((project) => {
-          const { id } = project
+        {projects.map((project) => {
+          const { id, title, description, Image, category } = project
           return (
             <div key={id} className="relative w-[300px] h-[450px] p-2 shadow-sm shadow-indigo-500 bg-white/5 border-2 border-red-400 border-opacity-30 rounded-xl flex items-center justify-center">
-                <h1 className="font-semibold text-4xl">Image</h1>
+                <img src={Image} alt="title image"  className="rounded-lg scale-110"/>
               <div className="absolute bottom-4 left-4 flex gap-3 flex-col">
-                <h1>Title</h1>
-                <p>Description</p>
+                <h1 className="text-black bg-white w-full text-center rounded-lg">{title}</h1>
+                <p></p>
                 <div className="flex flex-row gap-4">
-                  <a href="/" className="bg-sky-400 px-4 p-1 rounded-lg">Preview</a>
-                  <a href="/" className="bg-emerald-500 px-4 p-1 rounded-lg">Code</a>
+                  <Link to={`/projects/${title}`}className="bg-sky-400 px-4 p-1 rounded-lg">Preview</Link>
+                  <p className="bg-emerald-500 px-4 p-1 rounded-lg">{category}</p>
                 </div>
 
               </div>

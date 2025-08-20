@@ -12,6 +12,7 @@ import Signup from "./users/Signup";
 import Projects from "./pages/Projects";
 import Error from "./pages/Error";
 import Service from './pages/Service';
+import Project from './pages/Project';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/services" element={<Service />} />
+        <Route path="/projects/:title" element={<Project />} />
         <Route path='/*' element={<Error />} />
       </Routes>
       <Footer />
