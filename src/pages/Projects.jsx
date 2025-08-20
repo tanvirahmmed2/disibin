@@ -54,7 +54,7 @@ const Projects = () => {
                 </h1>
                 <div className="flex flex-row gap-4">
                   <Link
-                    to={`/projects/${id}`}
+                    to={`/projects/${title}`}
                     className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-1 rounded-lg transition"
                   >
                     Preview
