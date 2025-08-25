@@ -24,7 +24,7 @@ const Footer = () => {
 
         </div>
         <div>
-          <p>{year} Disibin. All right reserved</p>
+          <p>{year} Disibin. All rights are reserved</p>
         </div>
       </footer>
     </section>
