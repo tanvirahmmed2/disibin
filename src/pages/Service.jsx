@@ -40,7 +40,7 @@ const Service = () => {
       <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-4 p-4">
 
         
-        <div className="w-full h-[200px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
+        <div className="w-full h-[230px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
           <p className="text-2xl">
             <FaFigma />
           </p>
@@ -54,7 +54,7 @@ const Service = () => {
         </div>
 
 
-        <div className="w-full h-[200px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
+        <div className="w-full h-[230px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
           <p className="text-2xl">
             <FaCode />
           </p>
@@ -66,7 +66,7 @@ const Service = () => {
         </div>
 
 
-        <div className="w-full h-[200px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
+        <div className="w-full h-[230px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
           <p className="text-2xl">
             <FaPhotoVideo />
           </p>
@@ -80,7 +80,7 @@ const Service = () => {
           </Link>
         </div>
 
-        <div className="w-full h-[200px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
+        <div className="w-full h-[230px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
           <p className="text-2xl">
             <FaPlane />
           </p>
@@ -102,7 +102,7 @@ const Service = () => {
 
       <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-8">
         <div className="w-full flex flex-col gap-8 items-center justify-center">
-          <div className="w-full h-[100px] p-4 flex flex-row items-center justify-start gap-2 shadow-sm shadow-black border-2 border-red-500 rounded-xl border-opacity-20">
+          <div className="w-full h-[120px] p-4 flex flex-row items-center justify-start gap-2 shadow-sm shadow-black border-2 border-red-500 rounded-xl border-opacity-20">
             <p className="text-2xl px-3 py-1 rounded-full bg-white/10">1</p>
             <div>
               <h1 className="text-2xl font-semibold">Discover</h1>
@@ -112,14 +112,14 @@ const Service = () => {
               </p>
             </div>
           </div>
-          <div className="w-full h-[100px] p-4 flex flex-row items-center justify-start gap-2 shadow-sm shadow-black border-2 border-red-500 rounded-xl border-opacity-20">
+          <div className="w-full h-[120px] p-4 flex flex-row items-center justify-start gap-2 shadow-sm shadow-black border-2 border-red-500 rounded-xl border-opacity-20">
             <p className="text-2xl px-3 py-1 rounded-full bg-white/10">2</p>
             <div>
               <h1 className="text-2xl font-semibold">Design</h1>
               <p>Homepage first, then inner pages. Feedback at every step</p>
             </div>
           </div>
-          <div className="w-full h-[100px] p-4 flex flex-row items-center justify-start gap-2 shadow-sm shadow-black border-2 border-red-500 rounded-xl border-opacity-20">
+          <div className="w-full h-[120px] p-4 flex flex-row items-center justify-start gap-2 shadow-sm shadow-black border-2 border-red-500 rounded-xl border-opacity-20">
             <p className="text-2xl px-3 py-1 rounded-full bg-white/10">3</p>
             <div>
               <h1 className="text-2xl font-semibold">Build & Launch</h1>
