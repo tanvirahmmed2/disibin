@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import UsePageTitle from "../component/UsePageTitle";
 import ProjectDatas from "../data";
@@ -36,7 +37,7 @@ const Projects = () => {
         {projects.map((project) => {
           const { id, title, Image, category } = project;
           return (
-            <div
+            <motion.div initial={{scale:0.9, opacity:0}} whileInView={{scale:1, opacity:1}} transition={{duration:0.5}}
               key={id}
               className="relative w-[300px] h-[450px] p-2 bg-white/5 border border-gray-300/30 rounded-xl shadow-lg flex items-center justify-center overflow-hidden group"
             >
@@ -64,7 +65,7 @@ const Projects = () => {
                   </span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>

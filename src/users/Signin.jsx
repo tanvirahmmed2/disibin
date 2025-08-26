@@ -19,11 +19,11 @@ const Signin = () => {
             <form action="" className='w-full flex-col flex items-center justify-center gap-4'>
               <div className='w-full flex flex-col gap-2'>
                 <label htmlFor="username">username</label>
-                <input type="text" id='username' name='username' className='w-full p-1 px-2 rounded-lg bg-white/20 outline-none ' />
+                <input type="text" id='username' name='username' className='w-full p-1 px-2 rounded-lg bg-white/20 outline-none ' required/>
               </div>
               <div className='w-full flex flex-col gap-2'>
                 <label htmlFor="password">password</label>
-                <input type="text" id='password' name='password' className='w-full p-1 px-2 rounded-lg bg-white/20 outline-none ' />
+                <input type="text" id='password' name='password' className='w-full p-1 px-2 rounded-lg bg-white/20 outline-none ' required/>
               </div>
               <button type='submit' className='px-4 p-1 bg-white/5 rounded-lg'>sign in</button>
             </form>

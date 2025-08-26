@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {motion} from "framer-motion"
 import { Link } from "react-router-dom";
 import UsePageTitle from "../component/UsePageTitle"
 import {
@@ -40,7 +41,7 @@ const Service = () => {
       <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-4 p-4">
 
         
-        <div className="w-full h-[230px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
+        <motion.div initial={{scale:0.9, opacity:0}} whileInView={{scale:1, opacity:1}} transition={{duration:0.5}} className="w-full h-[230px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
           <p className="text-2xl">
             <FaFigma />
           </p>
@@ -51,10 +52,10 @@ const Service = () => {
           <Link to="/webdesign" className="italic text-indigo-500">
             See examples
           </Link>
-        </div>
+        </motion.div>
 
 
-        <div className="w-full h-[230px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
+        <motion.div initial={{scale:0.9, opacity:0}} whileInView={{scale:1, opacity:1}} transition={{duration:0.5}} className="w-full h-[230px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
           <p className="text-2xl">
             <FaCode />
           </p>
@@ -63,10 +64,10 @@ const Service = () => {
           <Link to="/webdev" className="italic text-indigo-500">
             What’s included?
           </Link>
-        </div>
+        </motion.div>
 
 
-        <div className="w-full h-[230px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
+        <motion.div initial={{scale:0.9, opacity:0}} whileInView={{scale:1, opacity:1}} transition={{duration:0.5}} className="w-full h-[230px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
           <p className="text-2xl">
             <FaPhotoVideo />
           </p>
@@ -78,9 +79,9 @@ const Service = () => {
           <Link to="/graphicdev" className="italic text-indigo-500">
             See options
           </Link>
-        </div>
+        </motion.div>
 
-        <div className="w-full h-[230px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
+        <motion.div initial={{scale:0.9, opacity:0}} whileInView={{scale:1, opacity:1}} transition={{duration:0.5}} className="w-full h-[230px] p-4 text-center flex flex-col items-center justify-center gap-2 shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
           <p className="text-2xl">
             <FaPlane />
           </p>
@@ -91,7 +92,7 @@ const Service = () => {
           <Link to="/care" className="italic text-indigo-500">
             View plans
           </Link>
-        </div>
+        </motion.div>
 
       </div>
 
@@ -101,7 +102,7 @@ const Service = () => {
       </div>
 
       <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-8">
-        <div className="w-full flex flex-col gap-8 items-center justify-center">
+        <motion.div initial={{ opacity:0, x:-40}} whileInView={{ opacity:1, x:0}} transition={{duration:0.5}} className="w-full flex flex-col gap-8 items-center justify-center">
           <div className="w-full h-[120px] p-4 flex flex-row items-center justify-start gap-2 shadow-sm shadow-black border-2 border-red-500 rounded-xl border-opacity-20">
             <p className="text-2xl px-3 py-1 rounded-full bg-white/10">1</p>
             <div>
@@ -126,9 +127,9 @@ const Service = () => {
               <p>We set up hosting, connect your domain, and go live</p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="w-full h-auto p-2 flex-col flex items-center justify-center  gap-8">
+        <motion.div initial={{ opacity:0, x:40}} whileInView={{ opacity:1, x:0}} transition={{duration:0.5}} className="w-full h-auto p-2 flex-col flex items-center justify-center  gap-8">
           <h1 className="text-2xl">FAQs</h1>
           <div className="w-full p-4 shadow-sm shadow-black flex flex-col gap-2 border-2 border-red-500 rounded-xl border-opacity-20">
             <div className="w-full flex flex-row items-center justify-between">
@@ -163,7 +164,7 @@ const Service = () => {
               Most landing pages: 5–10 days. Small websites: 2–4 weeks.
             </p>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       <div className="w-full flex flex-col items-center justify-center gap-4 p-8">
@@ -173,7 +174,7 @@ const Service = () => {
         </div>
         <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-4">
 
-          <div className="w-full h-[300px] p-4 flex flex-col items-start justify-between shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
+          <motion.div initial={{scale:0.9, opacity:0}} whileInView={{scale:1, opacity:1}} transition={{duration:0.5}} className="w-full h-[300px] p-4 flex flex-col items-start justify-between shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
             <h1 className="text-2xl font-bold">Starter</h1>
             <p className="italic">Perfect for one-page sites</p>
             <div className="w-full flex flex-row items-end gap-2">
@@ -184,10 +185,10 @@ const Service = () => {
             <p>Mobile-ready</p>
             <p>Basic SEO</p>
             <button className="w-full text-center rounded-lg bg-gradient-to-br from-cyan-500 to-indigo-500">Start here</button>
-          </div>
+          </motion.div>
 
 
-          <div className="w-full h-[300px] p-4 flex flex-col items-start justify-between shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
+          <motion.div initial={{scale:0.9, opacity:0}} whileInView={{scale:1, opacity:1}} transition={{duration:0.5}} className="w-full h-[300px] p-4 flex flex-col items-start justify-between shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
             <h1 className="text-2xl font-bold">Business</h1>
             <p className="italic">Great for small teams</p>
             <div className="w-full flex flex-row items-end gap-2">
@@ -198,10 +199,10 @@ const Service = () => {
             <p>Lead forms + analytics</p>
             <p>Speed & SEO setup</p>
             <button className="w-full text-center rounded-lg bg-gradient-to-br from-cyan-500 to-indigo-500">Book a lot</button>
-          </div>
+          </motion.div>
 
 
-          <div className="w-full h-[300px] p-4 flex flex-col items-start justify-between shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
+          <motion.div initial={{scale:0.9, opacity:0}} whileInView={{scale:1, opacity:1}} transition={{duration:0.5}} className="w-full h-[300px] p-4 flex flex-col items-start justify-between shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
             <h1 className="text-2xl font-bold">Care Plan</h1>
             <p className="italic">Keep it fast & secure</p>
             <div className="w-full flex flex-row items-end gap-2">
@@ -212,7 +213,7 @@ const Service = () => {
             <p>Backups & security</p>
             <p>Minor changes</p>
             <button className="w-full text-center rounded-lg bg-gradient-to-br from-cyan-500 to-indigo-500">Subscribe</button>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom'
 
 import UsePageTitle from "../component/UsePageTitle"
@@ -51,30 +52,33 @@ const About = () => {
 
 
       <div className='w-full flex flex-col lg:flex-row items-center justify-center gap-8 '>
+
         <div className='w-full flex flex-col gap-2 items-start justify-center'>
           <h1 className='font-semibold text-3xl'>A small studio with big care</h1>
           <p>We’re a tight-knit team focused on clarity, speed, and friendly collaboration. No fluff—just websites that work hard for your business.</p>
           
         </div>
+
         <div className='w-full text-center p-2 shadow-sm shadow-indigo-400 flex flex-row items-center justify-center gap-2 border-2 border-red-500 rounded-xl border-opacity-20'>
-          <div className='w-full flex flex-col items-center justify-center h-[150px] bg-white/5 rounded-lg text-xl font-semibold'>
+          <motion.div initial={{scale:0.9, opacity:0}} whileInView={{scale:1, opacity:1}} transition={{duration:0.5}} className='w-full flex flex-col items-center justify-center h-[150px] bg-white/5 rounded-lg text-xl font-semibold'>
             <p>20+</p>
             <p>Projects shipped</p>
-          </div>
-          <div className='w-full flex flex-col items-center justify-center h-[150px] bg-white/5 rounded-lg text-xl font-semibold'>
+          </motion.div>
+          <motion.div initial={{scale:0.9, opacity:0}} whileInView={{scale:1, opacity:1}} transition={{duration:0.5}} className='w-full flex flex-col items-center justify-center h-[150px] bg-white/5 rounded-lg text-xl font-semibold'>
             <p className='flex items-center gap-1 text-amber-500'>5 <FaRegStar/></p>
             <p>Customers rated</p>
-          </div>
-          <div className='w-full flex flex-col items-center justify-center h-[150px] bg-white/5 rounded-lg text-xl font-semibold'>
+          </motion.div>
+          <motion.div initial={{scale:0.9, opacity:0}} whileInView={{scale:1, opacity:1}} transition={{duration:0.5}} className='w-full flex flex-col items-center justify-center h-[150px] bg-white/5 rounded-lg text-xl font-semibold'>
             <p>100%</p>
             <p>Remote friendly</p>
-          </div>
+          </motion.div>
 
         </div>
       </div>
 
 
       <div className='w-full p-4 lg:p-8 h-auto gap-8 flex flex-col items-center justify-center shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20'>
+        
         <div className='w-full flex flex-row items-center justify-between'>
           <h1 className='text-2xl font-semibold'>Testimonials</h1>
           <div className='w-auto flex flex-row gap-4 items-center'>

@@ -37,22 +37,22 @@ const Project = () => {
                         key={id}
                     >
                         <h2 className="text-2xl italic font-semibold text-gray-700">
-                            {category}
+                            Category: {category}
                         </h2>
                         <a
                             href={siteUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full flex justify-center"
+                            className="w-3/4 flex justify-center"
                         >
                             <img
                                 src={homeImage}
                                 alt={title}
-                                className="w-4/5 md:w-1/2 shadow-xl hover:scale-105 transition-transform duration-300 cursor-pointer rounded-2xl"
+                                className="w-full  shadow-xl hover:scale-105 transition-transform duration-300 cursor-pointer rounded-2xl"
                             />
                         </a>
 
-                        <p className="text-lg text-gray-600 max-w-3xl">{description}</p>
+                        <p className="text-lg text-gray-600 w-3/4">{description}</p>
 
                         {/* Sections */}
                         {[
@@ -61,18 +61,18 @@ const Project = () => {
                             { label: "User Page", img: userImage },
                             { label: "Contact", img: contactImage },
                         ].map(({ label, img }, idx) => (
-                            <div key={idx} className="w-full flex flex-col gap-3 items-center">
-                                <p className="text-2xl font-mono">{label}</p>
+                            <div key={idx} className="w-full flex flex-col gap-6 items-center">
+                                <p className="text-4xl font-semibold">{label}</p>
                                 <a
                                     href={siteUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="w-full flex justify-center"
+                                    className="w-3/4 flex justify-center"
                                 >
                                     <img
                                         src={img}
                                         alt={label}
-                                        className="w-4/5 md:w-1/2 shadow-xl hover:scale-105 transition-transform duration-300 cursor-pointer rounded-2xl"
+                                        className="w-full  shadow-xl hover:scale-105 transition-transform duration-300 cursor-pointer rounded-2xl"
                                     />
                                 </a>
                             </div>
@@ -84,7 +84,7 @@ const Project = () => {
                                 href={siteUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="px-6 py-2 bg-red-500 text-white rounded-xl hover:scale-105 shadow-md shadow-red-400 transition"
+                                className="px-6 py-2  text-white rounded-xl hover:scale-105 shadow-sm shadow-red-400 transition"
                             >
                                 View Site
                             </a>
@@ -92,7 +92,7 @@ const Project = () => {
                                 href={githubUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="px-6 py-2 bg-emerald-500 text-white rounded-xl hover:scale-105 shadow-md shadow-emerald-400 transition"
+                                className="px-6 py-2  text-white rounded-xl hover:scale-105 shadow-sm shadow-emerald-400 transition"
                             >
                                 Code
                             </a>
