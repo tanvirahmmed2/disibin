@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import UsePageTitle from "../component/UsePageTitle"
@@ -26,11 +26,20 @@ const review=[
 const About = () => {
   UsePageTitle("About")
   const [index, setIndex]= useState(0)
-
+  
   const nextreview=()=>{
     setIndex((prevIndex) => (prevIndex + 1) % review.length)
 
   }
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % review.length);
+    }, 2500); 
+
+    return () => clearInterval(timer); 
+  }, []);
+
+
   const prevreview=()=>{
     setIndex((prevIndex) => (prevIndex - 1 + review.length) % review.length)
   }
