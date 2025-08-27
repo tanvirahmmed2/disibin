@@ -17,14 +17,14 @@ const GraphicsDesign = () => {
       </div>
 
       <div className="w-full h-auto flex flex-col lg:flex-row items-center justify-center gap-20">
-        <div className="p-4 h-60 flex flex-col items-start justify-between px-12 gap-2 rounded-lg bg-white/5">
+        <div className="p-4 h-60 flex flex-col items-start justify-between px-12 gap-2 rounded-lg bg-white/5 w-[400px]">
           <h1 className="text-lg font-semibold italic">What’s included in our graphic design services:</h1>
           <p>Logo and brand design</p>
           <p>Business cards and stationery</p>
           <p>Social media kit design</p>
           <p>Custom creative solutions</p>
         </div>
-        <div className="p-4 h-60 flex flex-col items-start justify-between px-12 gap-2 rounded-lg bg-white/5">
+        <div className="p-4 h-60 flex flex-col items-start justify-between px-12 gap-2 rounded-lg bg-white/5 w-[400px]">
           <h1 className="text-lg font-semibold italic">Our Key Features</h1>
           <p>Unique and professional designs</p>
           <p>High-resolution outputs</p>

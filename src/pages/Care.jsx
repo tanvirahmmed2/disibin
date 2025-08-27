@@ -17,14 +17,14 @@ const Care = () => {
       </div>
 
       <div className="w-full h-auto flex flex-col lg:flex-row items-center justify-center gap-20">
-        <div className="p-4 h-60 flex flex-col items-start justify-between px-12 gap-2 rounded-lg bg-white/5">
+        <div className="p-4 h-60 flex flex-col items-start justify-between px-12 gap-2 rounded-lg bg-white/5 w-[400px]">
           <h1 className="text-lg font-semibold italic">What’s included in our IT care services:</h1>
           <p>Regular security updates</p>
           <p>Website and system monitoring</p>
           <p>Email & chat support</p>
           <p>Backups and disaster recovery</p>
         </div>
-        <div className="p-4 h-60 flex flex-col items-start justify-between px-12 gap-2 rounded-lg bg-white/5">
+        <div className="p-4 h-60 flex flex-col items-start justify-between px-12 gap-2 rounded-lg bg-white/5 w-[400px]">
           <h1 className="text-lg font-semibold italic">Our Key Features</h1>
           <p>24/7 system monitoring</p>
           <p>Dedicated IT support</p>

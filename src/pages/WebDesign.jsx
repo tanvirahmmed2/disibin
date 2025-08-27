@@ -18,14 +18,14 @@ const WebDesign = () => {
 
 
         <div className="w-full h-auto flex flex-col lg:flex-row items-center justify-center gap-20">
-            <div className=" p-4 h-60  flex flex-col items-start justify-between px-12 gap-2 rounded-lg bg-white/5">
+            <div className=" p-4 h-60  flex flex-col items-start justify-between px-12 gap-2 rounded-lg bg-white/5 w-[400px]">
                 <h1 className="text-lg font-semibold italic">What’s included in our web design services:</h1>
                 <p>Custom layout and visual design</p>
                 <p>User experience (UX) and user interface (UI) focus</p>
                 <p>Branding and color consistency</p>
                 <p>Mobile-friendly (responsive) design</p>
             </div>
-            <div className=" p-4 h-60  flex flex-col items-start justify-between px-12 gap-2 rounded-lg bg-white/5">
+            <div className=" p-4 h-60  flex flex-col items-start justify-between px-12 gap-2 rounded-lg bg-white/5 w-[400px]">
                 <h1 className="text-lg font-semibold italic">Our Key Features</h1>
                 <p>Premium Designs & Luxury Themes</p>
                 <p>Elegant Look</p>
