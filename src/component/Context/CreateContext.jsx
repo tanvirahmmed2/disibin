@@ -3,13 +3,10 @@ import packages from "../Asset/packages";
 
 export const CreateContext = createContext(null);
 
-// Initialize cart: nested by category -> package id
 const getDefaultPackage = () => {
   const cart = {};
-  packages.forEach(cat => {
-    cat.packages.forEach(pack => {
-      cart[pack.id] = 0;
-    });
+  packages.forEach(pkg => {
+    cart[pkg.id] = 0;
   });
   return cart;
 };
@@ -29,13 +26,9 @@ const CreateContextProvider = ({ children }) => {
     let total = 0;
     for (const id in packageItems) {
       if (packageItems[id] > 0) {
-        // Find package in nested structure
-        for (const cat of packages) {
-          const item = cat.packages.find(p => p.id === Number(id));
-          if (item) {
-            total += item.price * packageItems[id];
-            break;
-          }
+        const item = packages.find(p => p.id === Number(id));
+        if (item) {
+          total += item.price * packageItems[id];
         }
       }
     }
@@ -49,7 +42,7 @@ const CreateContextProvider = ({ children }) => {
   return (
     <CreateContext.Provider
       value={{
-         packages,
+        packages,
         packageItems,
         addToCart,
         removeFromCart,
