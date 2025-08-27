@@ -10,7 +10,7 @@ import {
   FaPlane,
 } from "react-icons/fa";
 
-const Service = () => {
+const Services = () => {
   UsePageTitle("services")
 
   const [firstfaq, setFirstFaq] = useState(false);
@@ -27,7 +27,7 @@ const Service = () => {
   };
 
   return (
-    <section className="w-full mt-20  min-h-screen p-8 flex flex-col gap-12 items-center justify-start">
+    <section className="w-full   min-h-screen p-8 flex flex-col gap-12 items-center justify-start">
       <div className="flex w-full items-center justify-center gap-2 flex-col">
         <h1 className="text-5xl font-semibold">What we do</h1>
         <p className="text-lg">
@@ -50,7 +50,7 @@ const Service = () => {
             Modern, responsive designs that look great on phones and desktops.
           </p>
           <Link to="/webdesign" className="italic text-indigo-500">
-            See examples
+            See more
           </Link>
         </motion.div>
 
@@ -76,8 +76,8 @@ const Service = () => {
             Branding, social graphics, and marketing visuals that tell your
             story.
           </p>
-          <Link to="/graphicdev" className="italic text-indigo-500">
-            See options
+          <Link to="/graphicsdesign" className="italic text-indigo-500">
+            find more
           </Link>
         </motion.div>
 
@@ -167,57 +167,9 @@ const Service = () => {
         </motion.div>
       </div>
 
-      <div className="w-full flex flex-col items-center justify-center gap-4 p-8">
-        <div className="w-full flex flex-col items-end gap-4">
-          <h1 className="text-4xl font-semibold text-end">Straightforward pricing</h1>
-          <p>Pick what fits today. Upgrade anytime.</p>
-        </div>
-        <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-4">
-
-          <motion.div initial={{scale:0.9, opacity:0}} whileInView={{scale:1, opacity:1}} transition={{duration:0.5}} className="w-full h-[300px] p-4 flex flex-col items-start justify-between shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
-            <h1 className="text-2xl font-bold">Starter</h1>
-            <p className="italic">Perfect for one-page sites</p>
-            <div className="w-full flex flex-row items-end gap-2">
-              <h1 className="text-4xl font-semibold">$499 </h1>
-              <p>/ project</p>
-            </div>
-            <p>1 page, copy help</p>
-            <p>Mobile-ready</p>
-            <p>Basic SEO</p>
-            <button className="w-full text-center rounded-lg bg-gradient-to-br from-cyan-500 to-indigo-500">Start here</button>
-          </motion.div>
-
-
-          <motion.div initial={{scale:0.9, opacity:0}} whileInView={{scale:1, opacity:1}} transition={{duration:0.5}} className="w-full h-[300px] p-4 flex flex-col items-start justify-between shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
-            <h1 className="text-2xl font-bold">Business</h1>
-            <p className="italic">Great for small teams</p>
-            <div className="w-full flex flex-row items-end gap-2">
-              <h1 className="text-4xl font-semibold">$1,499</h1>
-              <p>/ project</p>
-            </div>
-            <p>Up to 5 pages</p>
-            <p>Lead forms + analytics</p>
-            <p>Speed & SEO setup</p>
-            <button className="w-full text-center rounded-lg bg-gradient-to-br from-cyan-500 to-indigo-500">Book a lot</button>
-          </motion.div>
-
-
-          <motion.div initial={{scale:0.9, opacity:0}} whileInView={{scale:1, opacity:1}} transition={{duration:0.5}} className="w-full h-[300px] p-4 flex flex-col items-start justify-between shadow-sm shadow-indigo-500 border-2 border-red-500 rounded-xl border-opacity-20">
-            <h1 className="text-2xl font-bold">Care Plan</h1>
-            <p className="italic">Keep it fast & secure</p>
-            <div className="w-full flex flex-row items-end gap-2">
-              <h1 className="text-4xl font-semibold">$79 </h1>
-              <p>/ mo</p>
-            </div>
-            <p>Hosting & updates</p>
-            <p>Backups & security</p>
-            <p>Minor changes</p>
-            <button className="w-full text-center rounded-lg bg-gradient-to-br from-cyan-500 to-indigo-500">Subscribe</button>
-          </motion.div>
-        </div>
-      </div>
+      
     </section>
   );
 };
 
-export default Service;
+export default Services;

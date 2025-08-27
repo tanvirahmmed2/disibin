@@ -1,5 +1,4 @@
-
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route } from "react-router-dom";
 
 import Navbar from "./layouts/Navbar";
 import Home from "./layouts/Home";
@@ -11,24 +10,34 @@ import Signin from "./users/Signin";
 import Signup from "./users/Signup";
 import Projects from "./pages/Projects";
 import Error from "./pages/Error";
-import Service from './pages/Service';
-import Project from './pages/Project';
+import Services from "./pages/Services";
+import Project from "./pages/Project";
+import Care from "./pages/Care";
+import GraphicsDesign from "./pages/GraphicsDesign";
+import WebDev from "./pages/WebDev";
+import WebDesign from "./pages/WebDesign";
 
 function App() {
   return (
     <div className="w-full relative overflow-x-hidden bg-gradient-to-br from-indigo-950 to-green-950 text-white">
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/signin" element={<Signin />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/services" element={<Service />} />
-        <Route path="/projects/:title" element={<Project />} />
-        <Route path='/*' element={<Error />} />
-      </Routes>
+      <div className="w-full h-auto mt-20">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/webdesign" element={<WebDesign />} />
+          <Route path="/webdev" element={<WebDev />} />
+          <Route path="/graphicsdesign" element={<GraphicsDesign />} />
+          <Route path="/care" element={<Care />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/:title" element={<Project />} />
+          <Route path="/*" element={<Error />} />
+        </Routes>
+      </div>
       <Footer />
     </div>
   );

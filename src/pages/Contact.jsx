@@ -8,7 +8,7 @@ const Contact = () => {
   
 
   return (
-    <section className='w-full pt-20 p-4 min-h-screen flex items-center justify-center'>
+    <section className='w-full px-4 min-h-screen flex items-center justify-center'>
       <div className='w-full bg-white/5 h-auto flex flex-col lg:flex-row rounded-lg p-4 items-center justify-center'>
 
         <div className='w-full flex flex-col gap-2 items-start justify-start'>
