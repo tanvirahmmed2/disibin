@@ -2,7 +2,10 @@ import React, { useContext } from "react";
 import { CreateContext } from "../component/Context/CreateContext";
 import Package from "./Package";
 
+import UsePageTitle from '../component/UsePageTitle'
+
 const Care = () => {
+  UsePageTitle("Care Plans")
   const { packagesData } = useContext(CreateContext);
   const carePackage = packagesData.filter(p => p.category === "care");
 

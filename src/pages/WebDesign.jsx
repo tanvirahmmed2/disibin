@@ -1,10 +1,12 @@
 import React, { useContext } from "react";
 import { CreateContext } from "../component/Context/CreateContext"; // match your file path
 import Package from "./Package";
+import UsePageTitle from '../component/UsePageTitle'
 
 
 
 const WebDesign = () => {
+    UsePageTitle("Web Design")
     const {packagesData} =useContext(CreateContext)
     const webdesignPackage = packagesData.filter(p => p.category === "webdesign");
   return (
