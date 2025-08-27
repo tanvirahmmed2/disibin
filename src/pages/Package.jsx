@@ -17,8 +17,8 @@ const Package = (props) => {
         <p>{title}</p>
         <h1 className="text-xl font-semibold">${price} </h1>
       </div>
-      {features.map((feature) => {
-        return <p key={feature.index} className="flex items-center flex-row gap-2"> <GoDot/> {feature}</p>;
+      {features.map((feature, index) => {
+        return <p key={index} className="flex items-center flex-row gap-2"> <GoDot/> {feature}</p>;
       })}
       <button className="w-full text-center rounded-lg bg-gradient-to-br from-cyan-500 to-indigo-500">
         Start here

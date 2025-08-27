@@ -1,24 +1,32 @@
 import React, { useContext } from "react";
 import { CreateContext } from "../component/Context/CreateContext";
 import Package from "./Package";
-import UsePageTitle from '../component/UsePageTitle'
-
+import UsePageTitle from "../component/UsePageTitle";
 
 const WebDev = () => {
-  UsePageTitle("Web Development")
-  const { packagesData } = useContext(CreateContext);
-  const webDevPackage = packagesData.filter(p => p.category === "webdevelopment");
+  UsePageTitle("Web Development");
+  const { packages } = useContext(CreateContext);
+
+  
+  const webDevCategory = packages.find(cat => cat.category === "webdevelopment");
+
+  
+  const webDevPackages = webDevCategory?.packages || [];
 
   return (
     <div className="w-full my-14 p-4 h-auto flex flex-col gap-6 items-center justify-center">
       <div className="w-full flex text-center flex-col items-center justify-center gap-4">
         <h1 className="text-3xl font-semibold">Build Your Website</h1>
-        <p>We develop responsive, functional websites that grow your business. From startups to enterprise projects, our websites are fast, secure, and SEO-friendly. Focused on usability and modern design trends, we make sure your users have a smooth experience across all devices.</p>
+        <p>
+          We develop responsive, functional websites that grow your business. From startups to enterprise projects, our websites are fast, secure, and SEO-friendly. Focused on usability and modern design trends, we make sure your users have a smooth experience across all devices.
+        </p>
       </div>
 
       <div className="w-full h-auto flex flex-col lg:flex-row items-center justify-center gap-20">
         <div className="p-4 h-60 flex flex-col items-start justify-between px-12 gap-2 rounded-lg bg-white/5 w-[400px]">
-          <h1 className="text-lg font-semibold italic">What’s included in our web development services:</h1>
+          <h1 className="text-lg font-semibold italic">
+            What’s included in our web development services:
+          </h1>
           <p>Responsive design implementation</p>
           <p>SEO-friendly coding</p>
           <p>Custom features and components</p>
@@ -35,16 +43,16 @@ const WebDev = () => {
       </div>
 
       <h1 className="text-3xl font-semibold mt-6">Choose any package</h1>
-      <div className="w-full flex flex-col items-center justify-center gap-6 lg:flex-row">
-        {webDevPackage.map(packages => {
-          const { title, price, description, features, id, pack } = packages;
+      <div className="w-full  grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] justify-items-center gap-12 my-6">
+        {webDevPackages.map(pkg => {
+          const { id, title, price, description, features, pack } = pkg;
           return (
             <Package
               key={id}
               title={title}
               price={price}
               description={description}
-              features={features}
+              features={features || []}
               pack={pack}
             />
           );
