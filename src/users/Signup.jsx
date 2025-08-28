@@ -7,7 +7,7 @@ const Signup = () => {
   UsePageTitle("SignUp")
   return (
     <section className='w-full  h-screen flex items-center justify-center'>
-      <motion.div initial={{ opacity:0, x:30}} whileInView={{ opacity:1, x:0}} transition={{duration:0.5}} className='p-6 gap-6 rounded-lg bg-white/5 w-full m-6 lg:mx-48 flex flex-col lg:flex-row items-center justify-center'>
+      <motion.div initial={{ opacity:0, x:30}} whileInView={{ opacity:1, x:0}} transition={{duration:0.5}} className='p-6 gap-6 rounded-lg bg-white/5 w-full m-6 lg:mx-48 flex flex-col lg:flex-row items-center justify-center shadow-sm shadow-red-300'>
           <div className='w-full text-lg gap-2 font-semibold flex flex-col items-center justify-center'>
             <p>Welcome to</p>
             <h1 className='text-7xl font-semibold'>Disibin</h1>

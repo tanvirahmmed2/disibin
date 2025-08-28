@@ -19,7 +19,7 @@ import WebDesign from "./pages/WebDesign";
 
 function App() {
   return (
-    <div className="w-full relative overflow-x-hidden bg-gradient-to-br from-indigo-950 to-green-950 text-white">
+    <div className="w-full relative overflow-x-hidden bg-gradient-to-br from-indigo-900 to-green-900 text-white">
       <Navbar />
       <div className="w-full h-auto mt-20">
         <Routes>

@@ -23,7 +23,7 @@ const Navbar = () => {
           <Link className='h-16 flex items-center justify-center hover:border-b-2 px-4' to='/projects'>Projects</Link>
           <Link className='h-16 flex items-center justify-center hover:border-b-2 px-4' to="/about">About</Link>
           <Link className='h-16 flex items-center justify-center hover:border-b-2 px-4' to="/contact">Contact</Link>
-          <Link className='h-10 flex items-center justify-center px-4 bg-emerald-400 rounded-lg ' to="/signup">SignUp</Link>
+          <Link className='h-10 flex items-center justify-center px-4 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-lg ' to="/signup">SignUp</Link>
 
         </div>
         <div onClick={handlemenu} className='h-16 cursor-pointer flex md:hidden items-center justify-center hover:border-b-2 px-6'>
