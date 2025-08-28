@@ -10,7 +10,7 @@ import Projects from '../pages/Projects'
 const Home = () => {
   UsePageTitle("Home")
   return (
-    <div className='w-full'>
+    <div className='w-full h-auto flex flex-col items-center justify-center gap-32 my-32'>
       <Intro/>
       <Services/>
       <Projects/>

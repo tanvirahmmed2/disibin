@@ -21,7 +21,7 @@ function App() {
   return (
     <div className="w-full relative overflow-x-hidden bg-gradient-to-br from-indigo-900 to-green-900 text-white">
       <Navbar />
-      <div className="w-full h-auto mt-20">
+      <div className="w-full h-auto mt-20 min-h-screen flex flex-col">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />

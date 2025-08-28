@@ -27,7 +27,7 @@ const Services = () => {
   };
 
   return (
-    <section className="w-full   min-h-screen p-8 flex flex-col gap-12 items-center justify-start">
+    <section className="w-full p-8 flex flex-col gap-12 items-center justify-start">
       <div className="flex w-full items-center justify-center gap-2 flex-col">
         <h1 className="text-5xl font-semibold">What we do</h1>
         <p className="text-lg">

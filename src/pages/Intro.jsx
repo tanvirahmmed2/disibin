@@ -12,8 +12,8 @@ import careimg from "../image/intro/care.jpg"
 
 const Intro = () => {
   return (
-    <section className="w-full my-72 lg:my-0 min-h-screen h-auto p-4">
-      <div className="w-full h-screen flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-2">
+    <section className="w-full  h-auto p-4">
+      <div className="w-full h-auto flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-2">
         <div className="w-full flex flex-col p-4 items-start justify-center gap-3 text-lg">
           <p>Web & Graphics Development Studio</p>
           <p className="text-8xl font-bold">

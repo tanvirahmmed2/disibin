@@ -14,7 +14,7 @@ const Projects = () => {
   UsePageTitle("Projects");
 
   return (
-    <section className="w-full mt-20 min-h-screen p-8 flex flex-col gap-12 items-center justify-start">
+    <section className="w-full  p-8 flex flex-col gap-12 items-center justify-start">
       
       {/* Header */}
       <div className="w-full flex flex-row items-center justify-around">
@@ -33,13 +33,13 @@ const Projects = () => {
       </div>
 
       {/* Projects Grid */}
-      <div className="w-full grid gap-6 grid-cols-[repeat(auto-fill,minmax(300px,1fr))] justify-items-center">
+      <div className="w-full flex flex-wrap justify-center gap-8">
         {projects.map((project) => {
           const { id, title, Image, category } = project;
           return (
             <motion.div initial={{scale:0.9, opacity:0}} whileInView={{scale:1, opacity:1}} transition={{duration:0.5}}
               key={id}
-              className="relative w-[300px] h-[450px] p-2 bg-white/5 border border-gray-300/30 rounded-xl shadow-lg flex items-center justify-center overflow-hidden group"
+              className="relative w-[300px] h-[450px] p-2  shadow-green-500 bg-white/5 border border-gray-300/30 rounded-xl shadow-sm flex items-center justify-center overflow-hidden group"
             >
               {/* Project Image */}
               <img

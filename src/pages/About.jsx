@@ -47,7 +47,7 @@ const About = () => {
 
 
   return (
-    <section className="w-full mt-20  min-h-screen p-8 flex flex-col gap-12 items-center justify-start">
+    <section className="w-full p-8 flex flex-col gap-12 items-center justify-start">
       <h1 className='w-full text-4xl font-semibold text-center'>About</h1>
 
 
