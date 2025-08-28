@@ -61,27 +61,31 @@ const Intro = () => {
 
 
 
-        <div className="w-full rounded-2xl gap-2 m-4 flex flex-col items-center justify-center opacity-70 shadow-sm shadow-indigo-500 p-4 border-2 border-red-500 border-opacity-20 bg-white/5">
+        <div className="w-full rounded-2xl gap-2 m-4 flex flex-col items-center justify-center opacity-100 shadow-sm shadow-indigo-500 p-4 border-2 border-red-500 border-opacity-20 bg-white/5">
+
           <div className="w-full h-auto flex flex-row items-center justify-center gap-2">
-            <div className="w-1/3 h-[200px] bg-white/5 overflow-hidden cursor-pointer hover:scale-105 transition duration-300 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
+            <div className="w-1/3 h-[200px] bg-white/5 overflow-hidden cursor-pointer hover:scale-105 opacity-50 hover:opacity-100 transition duration-300 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
               <img src={webdesignimg} alt="" className="w-full h-[200px] object-cover " />
             </div>
-            <div className="w-2/3 h-[200px] bg-emerald-400 overflow-hidden cursor-pointer hover:scale-105 transition duration-300 bg-opacity-50 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
+            <div className="w-2/3 h-[200px] bg-emerald-400 overflow-hidden cursor-pointer hover:scale-105 transition opacity-50 hover:opacity-100 duration-300 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
               <img src={webdevimg} alt="" className="w-full h-[200px] object-cover " />
             </div>
 
           </div>
+
           <div className="w-full h-auto flex flex-row items-center justify-center gap-2">
-            <div className="w-2/3 h-[200px] overflow-hidden  bg-emerald-400  cursor-pointer hover:scale-105 transition duration-300 bg-opacity-50 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
+            <div className="w-2/3 h-[200px] overflow-hidden  bg-emerald-400  cursor-pointer hover:scale-105 transition duration-300 opacity-50 hover:opacity-100 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
               <img src={grphicsdesignimg} alt="grphicsdesignimg" className="w-full h-[200px] object-cover " />
 
 
             </div>
-            <div className="w-1/3 h-[200px] bg-white/5 cursor-pointer hover:scale-105 transition overflow-hidden duration-300  rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
+            <div className="w-1/3 h-[200px] bg-white/5 cursor-pointer hover:scale-105 transition overflow-hidden duration-300  rounded-lg flex  opacity-50 hover:opacity-100 flex-col items-center justify-center text-xl gap-2 ">
               <img src={careimg} alt="" className="w-full h-[200px] object-cover " />
             </div>
           </div>
+
         </div>
+
       </div>
     </section>
   );
