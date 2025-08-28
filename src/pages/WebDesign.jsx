@@ -39,7 +39,8 @@ const WebDesign = () => {
             </div>
 
             <h1 className="text-3xl font-semibold mt-6">Choose any package</h1>
-            <div className="w-full  grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] justify-items-center gap-12 my-6">
+            
+            <div className="w-full   flex flex-wrap justify-center  gap-4 my-6">
                 {
                     packages.map((pkg) => {
                         if (pkg.category === "webdesign") {
