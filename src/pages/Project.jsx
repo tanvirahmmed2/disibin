@@ -52,13 +52,13 @@ const Project = () => {
                             />
                         </a>
 
-                        <p className="text-lg text-gray-600 w-3/4">{description}</p>
+                        <p className="text-lg text-white opacity-70 w-3/4">{description}</p>
 
                         {/* Sections */}
                         {[
-                            { label: "Product Showcase", img: productImage },
-                            { label: "Services", img: serviceImage },
-                            { label: "User Page", img: userImage },
+                            { label: "Page", img: productImage },
+                            { label: "Page", img: serviceImage },
+                            { label: "Page", img: userImage },
                             { label: "Contact", img: contactImage },
                         ].map(({ label, img }, idx) => (
                             <div key={idx} className="w-full flex flex-col gap-6 items-center">
