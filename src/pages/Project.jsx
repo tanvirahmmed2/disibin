@@ -36,7 +36,7 @@ const Project = () => {
                         className="w-full flex flex-col gap-8 items-center text-center mb-12"
                         key={id}
                     >
-                        <h2 className="text-2xl italic font-semibold text-gray-700">
+                        <h2 className="text-2xl italic font-semibold text-white/70">
                             Category: {category}
                         </h2>
                         <a
@@ -59,7 +59,7 @@ const Project = () => {
                             { label: "Page", img: productImage },
                             { label: "Page", img: serviceImage },
                             { label: "Page", img: userImage },
-                            { label: "Contact", img: contactImage },
+                            { label: "Page", img: contactImage },
                         ].map(({ label, img }, idx) => (
                             <div key={idx} className="w-full flex flex-col gap-6 items-center">
                                 <p className="text-4xl font-semibold">{label}</p>
