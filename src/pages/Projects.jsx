@@ -45,7 +45,7 @@ const Projects = () => {
               <img
                 src={Image}
                 alt={title}
-                className="rounded-lg w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                className="rounded-lg w-full h-full object-cover group-hover:scale-125  transition duration-700 ease-in-out group-hover:rotate-6"
               />
 
               {/* Overlay Info */}
