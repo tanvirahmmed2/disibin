@@ -1,13 +1,5 @@
 
 
-import dbImage from "./image/disibin/disibin.jpg"
-import dbhome from "./image/disibin/home.png"
-import dbcontact from "./image/disibin/contact.png"
-import dbuser from "./image/disibin/user.png"
-import dbservice from "./image/disibin/service.png"
-import dbproduct from "./image/disibin/product.png"
-
-
 
 
 
@@ -63,14 +55,14 @@ const ProjectsData=[
     {
         id:4,
         title: "DisiBin",
-        Image: dbImage,
+        Image: "https://res.cloudinary.com/dz45x9efk/image/upload/v1756875258/disibin_td6q7q.jpg",
         description: "DisiBin, is a dynamic and forward-thinking digital agency committed to transforming ideas into impactful digital experiences. We provide end-to-end services that blend strategy, creativity, and technology to help businesses thrive in the modern digital landscape. Our mission is to empower businesses—big or small—to succeed onne. We believe in honest communication, long-term partnerships, and devering measurable results. Whether you’re launching a new product, redesigning your website, or building a brand from scratch, our team is here to make it happen.",
         category: "online service",
-        homeImage: dbhome,
-        serviceImage: dbservice,
-        userImage: dbuser,
-        productImage: dbproduct,
-        contactImage:dbcontact,
+        homeImage: "https://res.cloudinary.com/dz45x9efk/image/upload/v1756875260/home_pk4nmp.png",
+        serviceImage: "https://res.cloudinary.com/dz45x9efk/image/upload/v1756875259/service_avashs.png",
+        userImage: "https://res.cloudinary.com/dz45x9efk/image/upload/v1756875259/user_hr63nt.png",
+        productImage: "https://res.cloudinary.com/dz45x9efk/image/upload/v1756875259/product_frnmmh.png",
+        contactImage:"https://res.cloudinary.com/dz45x9efk/image/upload/v1756875258/contact_iqxwls.png",
         siteUrl: "https://www.disibin.com",
         githubUrl: "https://github.com/tanvirahmmed2/disibin"
 

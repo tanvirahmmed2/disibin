@@ -5,10 +5,6 @@ import { FaFacebook, FaInstagram, FaPhone, FaTelegram, FaYoutube } from 'react-i
 import { CiMail } from 'react-icons/ci'
 
 
-import webdevimg from "../image/intro/webdev.jpg"
-import webdesignimg from "../image/intro/webdesign.jpg"
-import grphicsdesignimg from "../image/intro/graphicsdesign.jpg"
-import careimg from "../image/intro/care.jpg"
 
 const Intro = () => {
   return (
@@ -65,22 +61,22 @@ const Intro = () => {
 
           <div className="w-full h-auto flex flex-row items-center justify-center gap-2">
             <div className="w-1/3 h-[200px] bg-white/5 overflow-hidden cursor-pointer hover:scale-105 opacity-50 hover:opacity-100 transition duration-300 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
-              <img src={webdesignimg} alt="" className="w-full h-[200px] object-cover " />
+              <img src="https://res.cloudinary.com/dz45x9efk/image/upload/v1756875260/webdesign_eeslve.jpg" alt="" className="w-full h-[200px] object-cover " />
             </div>
             <div className="w-2/3 h-[200px] bg-emerald-400 overflow-hidden cursor-pointer hover:scale-105 transition opacity-50 hover:opacity-100 duration-300 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
-              <img src={webdevimg} alt="" className="w-full h-[200px] object-cover " />
+              <img src="https://res.cloudinary.com/dz45x9efk/image/upload/v1756875256/webdev_aphw47.jpg" alt="" className="w-full h-[200px] object-cover " />
             </div>
 
           </div>
 
           <div className="w-full h-auto flex flex-row items-center justify-center gap-2">
             <div className="w-2/3 h-[200px] overflow-hidden  bg-emerald-400  cursor-pointer hover:scale-105 transition duration-300 opacity-50 hover:opacity-100 rounded-lg flex flex-col items-center justify-center text-xl gap-2 ">
-              <img src={grphicsdesignimg} alt="grphicsdesignimg" className="w-full h-[200px] object-cover " />
+              <img src="https://res.cloudinary.com/dz45x9efk/image/upload/v1756875259/graphicsdesign_va594g.jpg" alt="grphicsdesignimg" className="w-full h-[200px] object-cover " />
 
 
             </div>
             <div className="w-1/3 h-[200px] bg-white/5 cursor-pointer hover:scale-105 transition overflow-hidden duration-300  rounded-lg flex  opacity-50 hover:opacity-100 flex-col items-center justify-center text-xl gap-2 ">
-              <img src={careimg} alt="" className="w-full h-[200px] object-cover " />
+              <img src="https://res.cloudinary.com/dz45x9efk/image/upload/v1756875259/care_rfsmrw.jpg" alt="" className="w-full h-[200px] object-cover " />
             </div>
           </div>
 
