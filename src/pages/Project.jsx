@@ -48,7 +48,7 @@ const Project = () => {
                             <img
                                 src={homeImage}
                                 alt={title}
-                                className="w-full  shadow-xl hover:scale-105 transition-transform duration-300 cursor-pointer rounded-2xl"
+                                className="w-full  shadow-xl hover:scale-[1.02] transition-transform duration-300 cursor-pointer rounded-2xl"
                             />
                         </a>
 
@@ -72,7 +72,7 @@ const Project = () => {
                                     <img
                                         src={img}
                                         alt={label}
-                                        className="w-full  shadow-xl hover:scale-105 transition-transform duration-300 cursor-pointer rounded-2xl"
+                                        className="w-full  shadow-xl hover:scale-[1.02] transition-transform duration-300 cursor-pointer rounded-2xl"
                                     />
                                 </a>
                             </div>
@@ -84,7 +84,7 @@ const Project = () => {
                                 href={siteUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="px-6 py-2  text-white rounded-xl hover:scale-105 shadow-sm shadow-red-400 transition"
+                                className="px-6 py-2  text-white rounded-xl hover:scale-[1.02] shadow-sm shadow-red-400 transition"
                             >
                                 View Site
                             </a>
@@ -92,7 +92,7 @@ const Project = () => {
                                 href={githubUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="px-6 py-2  text-white rounded-xl hover:scale-105 shadow-sm shadow-emerald-400 transition"
+                                className="px-6 py-2  text-white rounded-xl hover:scale-[1.02] shadow-sm shadow-emerald-400 transition"
                             >
                                 Code
                             </a>
