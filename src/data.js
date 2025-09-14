@@ -84,6 +84,22 @@ const ProjectsData=[
 
 
     },
+    {
+        id:6,
+        title: "Razers",
+        Image:"https://res.cloudinary.com/dz45x9efk/image/upload/v1757848644/razers_hwuc4t.jpg",
+        description: "Welcome to Razers. Discover the latest sneakers, boots, and casual shoes. Quality footwear for men, women, and kids. Step into style and comfort today!",
+        category: "Ecommerce",
+        homeImage: "https://res.cloudinary.com/dz45x9efk/image/upload/v1757848644/Screenshot_2025-09-14_171015_gtdocn.png",
+        serviceImage: "https://res.cloudinary.com/dz45x9efk/image/upload/v1757848645/Screenshot_2025-09-14_171041_td5dgc.png",
+        userImage: "https://res.cloudinary.com/dz45x9efk/image/upload/v1757848643/Screenshot_2025-09-14_171119_z7amcp.png",
+        productImage: "https://res.cloudinary.com/dz45x9efk/image/upload/v1757848644/Screenshot_2025-09-14_171058_fc3usf.png",
+        contactImage: "https://res.cloudinary.com/dz45x9efk/image/upload/v1757848643/Screenshot_2025-09-14_171028_nliyxo.png",
+        siteUrl: "https://razersshoe.netlify.app",
+        githubUrl: "https://github.com/tanvirahmmed2/razers"
+
+
+    },
 ]
 
 
