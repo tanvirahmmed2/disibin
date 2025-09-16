@@ -48,6 +48,7 @@ const GraphicsDesign = () => {
                                     description={description}
                                     features={features || []}
                                     pack={pack}
+                                    id={id}
                                 />
                             );
                         }

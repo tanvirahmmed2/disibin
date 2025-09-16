@@ -1,4 +1,4 @@
-const packages = [
+export const allpackages = [
   {
     id: 1,
     category: "webdesign",
@@ -187,4 +187,3 @@ const packages = [
   },
 ];
 
-export default packages;

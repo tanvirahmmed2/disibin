@@ -17,6 +17,7 @@ import GraphicsDesign from "./pages/GraphicsDesign";
 import WebDev from "./pages/WebDev";
 import WebDesign from "./pages/WebDesign";
 import Sidebar from "./layouts/Sidebar";
+import Cart from "./pages/Cart";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/care" element={<Care />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:title" element={<Project />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/*" element={<Error />} />
         </Routes>
       </div>

@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { motion } from "framer-motion";
 import { GoDot } from "react-icons/go";
+import { CreateContext } from "../component/Context/CreateContext";
 
 const Package = (props) => {
-  const { pack, title, price, features, description } = props;
+    const { pack, title, price, features, description , id} = props;
+    const {addToCart}= useContext(CreateContext)
   return (
     <motion.div
       initial={{ scale: 0.9, opacity: 0 }}
@@ -20,7 +22,7 @@ const Package = (props) => {
       {features.map((feature, index) => {
         return <p key={index} className="flex items-center flex-row gap-2"> <GoDot/> {feature}</p>;
       })}
-      <button className="w-full text-center rounded-lg bg-gradient-to-br from-cyan-500 to-green-500 hover:scale-[1.03] transition duration-500">
+      <button onClick={()=> addToCart(id)} className="w-full text-center rounded-lg bg-gradient-to-br from-cyan-500 to-green-500 hover:scale-[1.03] transition duration-500">
         Start here
       </button>
     </motion.div>

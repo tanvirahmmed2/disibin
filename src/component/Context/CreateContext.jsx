@@ -1,55 +1,44 @@
 import React, { createContext, useState } from "react";
-import packages from "../Asset/packages";
+import { allpackages } from "../Asset/packageData";
 
 export const CreateContext = createContext(null);
 
-const getDefaultPackage = () => {
-  const cart = {};
-  packages.forEach(pkg => {
-    cart[pkg.id] = 0;
-  });
-  return cart;
-};
+
 
 const CreateContextProvider = ({ children }) => {
-  const [packageItems, setPackageItems] = useState(getDefaultPackage());
-  const [sidebar, setSidebar]= useState(false)
+  const [packages, setPackages] = useState(allpackages);
+  const [sidebar, setSidebar] = useState(false);
+  const [cartItem, setCartItem] = useState([]);
 
   const addToCart = (id) => {
-    setPackageItems(prev => ({ ...prev, [id]: prev[id] + 1 }));
-  };
-
-  const removeFromCart = (id) => {
-    setPackageItems(prev => ({ ...prev, [id]: Math.max(prev[id] - 1, 0) }));
-  };
-
-  const getTotalCartAmount = () => {
-    let total = 0;
-    for (const id in packageItems) {
-      if (packageItems[id] > 0) {
-        const item = packages.find(p => p.id === Number(id));
-        if (item) {
-          total += item.price * packageItems[id];
+    setCartItem((prev) => {
+      const existing = prev.find((item) => item.id === Number(id));
+      if (existing) {
+        return prev.map((item) =>
+          item.id === Number(id)
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      } else {
+        const selectedItem = packages.find((item) => item.id === Number(id));
+        if (selectedItem) {
+          return [...prev, { ...selectedItem, quantity: 1 }];
         }
       }
-    }
-    return total;
-  };
-
-  const getTotalItems = () => {
-    return Object.values(packageItems).reduce((sum, val) => sum + val, 0);
+      return prev;
+    });
   };
 
   return (
     <CreateContext.Provider
       value={{
         packages,
-        packageItems,
+        setPackages,
+        sidebar,
+        setSidebar,
+        cartItem,
+        setCartItem,
         addToCart,
-        removeFromCart,
-        getTotalCartAmount,
-        getTotalItems,
-        sidebar, setSidebar,
       }}
     >
       {children}

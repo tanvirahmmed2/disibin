@@ -53,6 +53,7 @@ const WebDesign = () => {
                                     description={description}
                                     features={features || []}
                                     pack={pack}
+                                    id={id}
                                 />
                             );
                         }
