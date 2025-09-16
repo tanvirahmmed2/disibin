@@ -13,6 +13,7 @@ const getDefaultPackage = () => {
 
 const CreateContextProvider = ({ children }) => {
   const [packageItems, setPackageItems] = useState(getDefaultPackage());
+  const [sidebar, setSidebar]= useState(false)
 
   const addToCart = (id) => {
     setPackageItems(prev => ({ ...prev, [id]: prev[id] + 1 }));
@@ -47,7 +48,8 @@ const CreateContextProvider = ({ children }) => {
         addToCart,
         removeFromCart,
         getTotalCartAmount,
-        getTotalItems
+        getTotalItems,
+        sidebar, setSidebar,
       }}
     >
       {children}

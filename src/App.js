@@ -16,11 +16,13 @@ import Care from "./pages/Care";
 import GraphicsDesign from "./pages/GraphicsDesign";
 import WebDev from "./pages/WebDev";
 import WebDesign from "./pages/WebDesign";
+import Sidebar from "./layouts/Sidebar";
 
 function App() {
   return (
     <div className="w-full relative overflow-x-hidden bg-gradient-to-br from-indigo-900 to-green-900 text-white">
       <Navbar />
+      <Sidebar />
       <div className="w-full h-auto mt-20 min-h-screen flex flex-col items-center justify-center">
         <Routes>
           <Route path="/" element={<Home />} />
