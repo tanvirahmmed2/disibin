@@ -20,11 +20,12 @@ const Navbar = () => {
           <Link className='h-16 flex items-center justify-center hover:border-b-2 px-4' to='/services'>Services</Link>
           <Link className='h-16 flex items-center justify-center hover:border-b-2 px-4' to='/projects'>Projects</Link>
           <Link className='h-16 flex items-center justify-center hover:border-b-2 px-4' to="/about">About</Link>
+          <Link className='h-16 flex items-center justify-center hover:border-b-2 px-4' to="/cart">Cart</Link>
           <Link className='h-16 flex items-center justify-center hover:border-b-2 px-4' to="/contact">Contact</Link>
         </div>
         <div  className='h-16 cursor-pointer flex  items-center justify-center flex-row gap-4 px-6'>
           
-          <Link className='h-9 flex items-center justify-center px-4 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-lg ' to="/signup">SignUp</Link>
+          <Link className='h-7 flex items-center justify-center px-4 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-lg ' to="/signup">SignUp</Link>
 
           <p className={`${!sidebar? "flex": "hidden"}  text-xl px-4`} onClick={()=> setSidebar(!sidebar)}><CiMenuFries /></p>
           <p className={`${sidebar? "flex": "hidden"}   text-xl px-4`} onClick={()=> setSidebar(!sidebar)}><RxCross1 /></p>

@@ -9,7 +9,7 @@ const Cart = () => {
         <div className='w-full h-auto flex flex-col gap-8 items-center justify-center text-center p-4'>
             <h1 className='text-2xl'>Your selected packages: </h1>
             <div className='w-full flex flex-col items-center justify-center gap-4'>
-                <div className='w-full grid grid-cols-3 justify-items-center gap-3'>
+                <div className='w-full bg-white text-black rounded-md grid grid-cols-3 justify-items-center gap-3'>
                     <p>Package</p>
                     <p>Title</p>
                     <p>Price</p>
@@ -18,7 +18,7 @@ const Cart = () => {
                 {
                     cartItem.map((cart) => {
                         const { pack, title, price, id } = cart
-                        return <div key={id} className='w-full grid grid-cols-4 justify-items-center gap-3'>
+                        return <div key={id} className='w-full grid grid-cols-3 bg-white/20 rounded-md p-4 justify-items-center gap-3'>
                             <p>{pack}</p>
                             <p>{title}</p>
                             <p>{price}</p>
