@@ -8,26 +8,29 @@ export const CreateContext = createContext(null);
 const CreateContextProvider = ({ children }) => {
   const [packages, setPackages] = useState(allpackages);
   const [sidebar, setSidebar] = useState(false);
+
   const [cartItem, setCartItem] = useState([]);
 
   const addToCart = (id) => {
     setCartItem((prev) => {
       const existing = prev.find((item) => item.id === Number(id));
       if (existing) {
-        return prev.map((item) =>
-          item.id === Number(id)
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
+        alert('Check cart');
+        return prev;
       } else {
         const selectedItem = packages.find((item) => item.id === Number(id));
         if (selectedItem) {
-          return [...prev, { ...selectedItem, quantity: 1 }];
+          return [...prev, { ...selectedItem }];
         }
       }
       return prev;
     });
   };
+
+const totalCartAmount = () => {
+  return cartItem.reduce((total, item) => total + item.price, 0);
+};
+
 
   return (
     <CreateContext.Provider
@@ -39,6 +42,8 @@ const CreateContextProvider = ({ children }) => {
         cartItem,
         setCartItem,
         addToCart,
+        totalCartAmount,
+
       }}
     >
       {children}
