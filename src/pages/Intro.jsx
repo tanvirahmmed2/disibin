@@ -10,7 +10,7 @@ const Intro = () => {
   return (
     <section className="w-full  h-auto p-4 items-center justify-center flex">
         <div className="w-full flex flex-col p-4 items-center justify-center gap-3 text-lg">
-          <p>Web & Graphics Development Studio</p>
+          <p className="text-base sm:text-xl md:text-2xl font-semibold">Web & Graphics Development Studio</p>
           <p className="text-8xl font-bold">
             <Typewriter
               words={[" Disibin"]}
