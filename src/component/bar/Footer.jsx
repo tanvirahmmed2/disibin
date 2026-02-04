@@ -50,7 +50,7 @@ const Footer = () => {
             <Link className='px-2 p-2 bg-white/20 rounded-lg hover:scale-125 transition duration-500' href="https://www.instagram.com/user.disibin/"><FaInstagram /></Link>
             <Link className='px-2 p-2 bg-white/20 rounded-lg hover:scale-125 transition duration-500' href="https://www.youtube.com/@Disibin"><FaYoutube /></Link>
             <Link className='px-2 p-2 bg-white/20 rounded-lg hover:scale-125 transition duration-500' href="mailto:disibin@gmail.com"><CiMail /></Link>
-            <Link className='px-2 p-2 bg-white/20 rounded-lg hover:scale-125 transition duration-500' href="tel:+8801987131369"><FaPhone /></Link>
+            <Link className='px-2 p-2 bg-white/20 rounded-lg hover:scale-125 transition duration-500' href="https://api.whatsapp.com/send/?phone=8801805003886&text&type=phone_number&app_absent=0"><FaPhone /></Link>
             <Link className='px-2 p-2 bg-white/20 rounded-lg hover:scale-125 transition duration-500' href="https://t.me/disibin"><FaTelegram /></Link>
           </div>
           <p className='text-center w-auto min-w-50'>2023 Disibin | All rights are reserved</p>
