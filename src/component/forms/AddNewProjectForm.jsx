@@ -33,7 +33,7 @@ const AddNewProjectForm = () => {
         data.append(key, formData[key])
       })
 
-      const response= await axios.post('/api/project', data, {withCredentials:true})
+      const response = await axios.post('/api/project', data, { withCredentials: true })
       alert(response.data.message)
     } catch (error) {
       console.log(error)
@@ -43,37 +43,41 @@ const AddNewProjectForm = () => {
   }
   return (
     <form onSubmit={handleSubmit} className='w-full flex flex-col items-center justify-center gap-4'>
-      <div>
+      <div className='w-full flex flex-col gap-1'>
         <label htmlFor="title">Title</label>
-        <input type="text" name='title' id='title' required value={formData.title} onChange={handleChange}/>
+        <input type="text" name='title' id='title' required value={formData.title} onChange={handleChange} className='w-full px-3 p-1 outline-none border border-emerald-600' />
       </div>
-      <div>
-        <div>
+      <div className='w-full flex flex-col items-center justify-center sm:flex-row gap-4'>
+        <div className='w-full flex flex-col gap-1'>
           <label htmlFor="preview">Preview</label>
-          <input type="text" name='preview' id='preview' onChange={handleChange} required value={formData.preview} placeholder='set preview link'/>
+          <input type="text" name='preview' id='preview' onChange={handleChange} required value={formData.preview} placeholder='set preview link' className='w-full px-3 p-1 outline-none border border-emerald-600' />
         </div>
-        <div>
+        <div className='w-full flex flex-col gap-1'>
           <label htmlFor="category">Category</label>
-          <input type="text" name='category' id='category' value={formData.category} onChange={handleChange} />
+          <input type="text" name='category' id='category' value={formData.category} onChange={handleChange} className='w-full px-3 p-1 outline-none border border-emerald-600' />
         </div>
       </div>
-      <div>
+      <div className='w-full flex flex-col gap-1'>
         <label htmlFor="description">Description</label>
-        <textarea name="description" id="description" required onChange={handleChange} value={formData.description} placeholder='write here'></textarea>
+        <textarea name="description" id="description" required onChange={handleChange} value={formData.description} placeholder='write here' className='w-full px-3 p-1 outline-none border border-emerald-600'></textarea>
       </div>
-      <div>
+      <div className='w-full flex flex-col gap-1'>
         <label htmlFor="tags">Tags</label>
-        <input type="text" name='tags' id='tags' required onChange={handleChange} value={formData.tags} placeholder="tags ('||')"/>
+        <input type="text" name='tags' id='tags' required onChange={handleChange} value={formData.tags} placeholder="use ('||')" className='w-full px-3 p-1 outline-none border border-emerald-600' />
       </div>
-      <div>
+      <div className='w-full flex flex-col gap-1'>
         <label htmlFor="skills">skills</label>
-        <input type="text" name='skills' id='skills' required onChange={handleChange} value={formData.skills} placeholder="skills ('||')"/>
+        <input type="text" name='skills' id='skills' required onChange={handleChange} value={formData.skills} placeholder="use ('||')" className='w-full px-3 p-1 outline-none border border-emerald-600' />
       </div>
-      <div>
-      <label htmlFor="image">Image *</label>
-      <input type="file" accept='*/image' />
+      <div className='w-full flex flex-col gap-1'>
+        <label htmlFor="image">Image *</label>
+        <input type="file" accept='*/image' required id='image' name='image' onChange={formData.image} className='w-full px-3 p-1 outline-none border border-emerald-600' />
       </div>
-
+      <div className='w-full flex flex-col gap-1'>
+        <label htmlFor="price">Price</label>
+        <input type="number" min={0} name='price' id='price' onChange={handleChange} value={formData.price} className='w-full px-3 p-1 outline-none border border-emerald-600' />
+      </div>
+      <button className='p-1 w-full text-center bg-emerald-500 text-white hover:bg-emerald-600 cursor-pointer' type='submit'>Submit</button>
     </form>
   )
 }
