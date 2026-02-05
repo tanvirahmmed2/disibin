@@ -26,10 +26,10 @@ const userSchema = new mongoose.Schema({
         trim: true,
         required: true,
         enum: {
-            values: ['user', 'admin'],
+            values: ['user', 'support', 'admin'],
             message: '{VALUE} is not supporetd'
         },
-        default:'user'
+        default: 'user'
     },
     isBanned: {
         type: Boolean,
@@ -39,6 +39,8 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    resetPasswordToken: { type: String, default: null },
+    resetPasswordExpires: { type: Date, default: null },
 })
 
 const User = mongoose.models.users || mongoose.model('users', userSchema)

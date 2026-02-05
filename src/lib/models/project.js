@@ -13,8 +13,9 @@ const projectSchema = new mongoose.Schema({
         unique: true,
     },
     description: {
-        type: [String],
-        default: []
+        type: String,
+        required: true,
+        trim:true
     },
     image: {
         type: String,
@@ -26,29 +27,20 @@ const projectSchema = new mongoose.Schema({
         trim: true,
         required: true,
     },
-    image2: {
-        type: String,
-        trim: true,
-        required: true,
-    },
-    imageId2: { 
-        type: String,
-        trim: true,
-        required: true,
-    },
     category: {
         type: String,
         trim: true,
         required: true,
     },
-    siteLink: {
+    price: {
+        type: Number,
+        required: [true, "Selling price is required"],
+        min: 0
+    },
+    preview: {
         type: String,
         trim: true,
         required: true,
-    },
-    repository: {
-        type: String,
-        trim: true,
     },
     tags: {
         type: [String],
