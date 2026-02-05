@@ -2,11 +2,11 @@ import AdminSideBar from '@/component/bar/AdminSideBar'
 import React from 'react'
 
 export const metadata={
-    title:'Admin',
-    description:'Admin page'
+    title:'Dashboard',
+    description:'Dashboard page'
 }
 
-const AdminLayout = ({children}) => {
+const DashboardLayout = ({children}) => {
   return (
     <div className='w-full pl-16 relative'>
       <AdminSideBar/>
@@ -15,4 +15,4 @@ const AdminLayout = ({children}) => {
   )
 }
 
-export default AdminLayout
+export default DashboardLayout

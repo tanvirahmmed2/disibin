@@ -28,18 +28,18 @@ const AdminSidebar = () => {
       </div>
       
       <div>
-        <MenuItem href="/admin/newproject" icon={RiUser3Line} label="New Project" />
-        <MenuItem href="/admin/projects" icon={CiBoxList} label="Projects" />
-        <MenuItem href="/admin/newblog" icon={RiUser3Line} label="New Blog" />
-        <MenuItem href="/admin/blogs" icon={CiBoxList} label="Blogs" />
-        <MenuItem href="/admin/newpackage" icon={RiUser3Line} label="New Packages" />
-        <MenuItem href="/admin/packages" icon={CiBoxList} label="Packages" />
-        <MenuItem href="/admin/team" icon={RiUser3Line} label="Team" />
+        <MenuItem href="/dashboard/newproject" icon={RiUser3Line} label="New Project" />
+        <MenuItem href="/dashboard/projects" icon={CiBoxList} label="Projects" />
+        <MenuItem href="/dashboard/newblog" icon={RiUser3Line} label="New Blog" />
+        <MenuItem href="/dashboard/blogs" icon={CiBoxList} label="Blogs" />
+        <MenuItem href="/dashboard/newpackage" icon={RiUser3Line} label="New Packages" />
+        <MenuItem href="/dashboard/packages" icon={CiBoxList} label="Packages" />
+        <MenuItem href="/dashboard/team" icon={RiUser3Line} label="Team" />
         <MenuItem href="/profile" icon={RiUser3Line} label="Account" />
-        <MenuItem href="/admin/usermanagement" icon={RiUserCommunityLine} label="User Management" />
-        <MenuItem href="/admin/supports" icon={RiUserCommunityLine} label="Supports" />
-        <MenuItem href="/admin/settings" icon={RiSettings3Line} label="Setting" />
-        <MenuItem href="/admin/help" icon={TbReport} label="Help" />
+        <MenuItem href="/dashboard/usermanagement" icon={RiUserCommunityLine} label="User Management" />
+        <MenuItem href="/dashboard/supports" icon={RiUserCommunityLine} label="Supports" />
+        <MenuItem href="/dashboard/settings" icon={RiSettings3Line} label="Setting" />
+        <MenuItem href="/dashboard/help" icon={TbReport} label="Help" />
       </div>
     </aside>
   )
