@@ -1,6 +1,6 @@
 import React from 'react'
 
-const AddNewPeopleForm = () => {
+const AddNewPackage = () => {
   return (
     <div>
       
@@ -8,4 +8,4 @@ const AddNewPeopleForm = () => {
   )
 }
 
-export default AddNewPeopleForm
+export default AddNewPackage
