@@ -1,6 +1,6 @@
 import React from 'react'
 
-const SupportPage = () => {
+const TeamManagement = () => {
   return (
     <div>
       
@@ -8,4 +8,4 @@ const SupportPage = () => {
   )
 }
 
-export default SupportPage
+export default TeamManagement
