@@ -1,9 +1,10 @@
+import AddNewProjectForm from '@/component/forms/AddNewProjectForm'
 import React from 'react'
 
 const NewProjectPage = () => {
   return (
-    <div>
-      
+    <div className='w-full'>
+      <AddNewProjectForm/>
     </div>
   )
 }
