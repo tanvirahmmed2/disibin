@@ -7,28 +7,38 @@ export async function POST(req) {
     try {
         await ConnectDB()
 
-        const { id, title, description, category, repository, siteLink, tags, skills } = await req.json()
+        const { id, title, description, category, preview, tags, skills, price, isFeatured } = await req.json()
 
-        if (!title || !description || !id) {
+        
+        if (!id || !title || !description) {
             return NextResponse.json({
                 success: false,
-                message: 'Please fill all data'
+                message: 'ID, title, and description are required'
             }, { status: 400 })
         }
 
         const newSlug = slugify(title, { strict: true, lower: true })
-        const tagsArr = tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
-        const descriptionArr = description.split('||').map(desc => desc.trim()).filter(desc => desc.length > 0);
-        const skillsArr = skills.split(',').map(skill => skill.trim()).filter(skill => skill.length > 0)
+        
+        
+        const tagsArr = tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0) : [];
+        const skillsArr = skills ? skills.split(',').map(skill => skill.trim()).filter(skill => skill.length > 0) : [];
 
-
-
+        
+     
         const updatedProject = await Project.findByIdAndUpdate(
             id,
             {
-                title, description:descriptionArr, slug:newSlug, category, repository, siteLink, tags: tagsArr, skills: skillsArr
+                title, 
+                description, 
+                slug: newSlug, 
+                category, 
+                preview, 
+                tags: tagsArr, 
+                skills: skillsArr,
+                price,
+                isFeatured
             },
-            { new: true }
+            { new: true, runValidators: true }
         )
 
         if (!updatedProject) {
