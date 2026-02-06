@@ -1,11 +1,38 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 
 const AddReviewForm = () => {
-  return (
-    <div>
+  const [formData,setFormData]= useState({
+    name:'',
+    rating:'',
+    comment:'',
+    image:null
+  })
+
+  const handleChange=(e)=>{
+    const {name, files, value}= e.target
+    if(files){
+      setFormData((prev)=>({...prev, image: files[0]}))
+    }
+    else{
+      setFormData((prev)=>({...prev,[name]:value}))
+    }
+  }
+
+  const handleSubmit=async (e) => {
+    e.preventDefault()
+    try {
       
-    </div>
+    } catch (error) {
+      console.log(error)
+      
+    }
+    
+  }
+  return (
+    <form >
+
+    </form>
   )
 }
 
