@@ -71,7 +71,7 @@ const AddNewProjectForm = () => {
       </div>
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="image">Image *</label>
-        <input type="file" accept='*/image' required id='image' name='image' onChange={formData.image} className='w-full px-3 p-1 outline-none border border-emerald-600' />
+        <input type="file" accept='image/*' required id='image' name='image' onChange={formData.image} className='w-full px-3 p-1 outline-none border border-emerald-600' />
       </div>
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="price">Price</label>
