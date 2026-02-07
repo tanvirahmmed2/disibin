@@ -182,16 +182,16 @@ const HappyCustomers = () => {
   const review = dummyReviews[index]
 
   const variants = {
-    enter: { opacity: 0, x: 20 },
-    center: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -20 }
+    enter: { opacity: 0, },
+    center: { opacity: 1 },
+    exit: { opacity: 0,  }
   }
 
   return (
     <div className="w-full p-6 flex flex-col items-center gap-6">
       <h1 className="text-2xl font-semibold">Our Happy Customers</h1>
 
-      <div className="w-full relative  flex items-center justify-center">
+      <div className="w-full relative py-2 flex items-center justify-center">
           <motion.div
             key={review.userImageId}
             variants={variants}
@@ -199,7 +199,7 @@ const HappyCustomers = () => {
             animate="center"
             exit="exit"
             transition={{ duration: 0.5 }}
-            className=" bg-emerald-200 w-full max-w-150 p-4 rounded-xl flex flex-col items-center gap-3 text-center"
+            className=" bg-emerald-200 min-h-70 w-full max-w-150 p-4 rounded-xl flex flex-col items-center gap-3 text-center"
           >
             <Image
               src={review.userImage}
