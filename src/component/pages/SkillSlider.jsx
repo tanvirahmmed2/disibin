@@ -48,7 +48,7 @@ const skills = [
 
 const SkillSlider = () => {
   return (
-    <div className="w-full overflow-hidden  bg-linear-to-br select-none from-teal-900 to-teal-700 text-white  p-8">
+    <div className="w-full overflow-hidden  bg-linear-to-br select-none  from-teal-900 to-teal-700 text-white  p-8">
       <div className="flex gap-10 whitespace-nowrap animate-skill-slide">
 
         {skills.map((skill, index) => {

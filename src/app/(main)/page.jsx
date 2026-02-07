@@ -5,16 +5,14 @@ import Service from '@/component/pages/Service'
 import SkillSlider from '@/component/pages/SkillSlider'
 import Support from '@/component/pages/Support'
 import Team from '@/component/pages/Team'
-import WhyUs from '@/component/pages/WhyUs'
 import React from 'react'
 
 const MainPage = () => {
   return (
     <div className='w-full'>
       <Intro/>
-      <Service/>
       <Bio/>
-      <WhyUs/>
+      <Service/>
       <SkillSlider/>
       <HappyCustomers/>
       <Team/>
