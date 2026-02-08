@@ -28,11 +28,11 @@ const DashboardSidebar = () => {
       </div>
       
       <div>
-        <MenuItem href="/dashboard/newproject" icon={RiUser3Line} label="New Project" />
+        <MenuItem href="/dashboard/new-project" icon={RiUser3Line} label="New Project" />
         <MenuItem href="/dashboard/projects" icon={CiBoxList} label="Projects" />
-        <MenuItem href="/dashboard/newblog" icon={RiUser3Line} label="New Blog" />
+        <MenuItem href="/dashboard/new-blog" icon={RiUser3Line} label="New Blog" />
         <MenuItem href="/dashboard/blogs" icon={CiBoxList} label="Blogs" />
-        <MenuItem href="/dashboard/newpackage" icon={RiUser3Line} label="New Packages" />
+        <MenuItem href="/dashboard/new-package" icon={RiUser3Line} label="New Packages" />
         <MenuItem href="/dashboard/packages" icon={CiBoxList} label="Packages" />
         <MenuItem href="/dashboard/team" icon={RiUser3Line} label="Team" />
         <MenuItem href="/profile" icon={RiUser3Line} label="Account" />

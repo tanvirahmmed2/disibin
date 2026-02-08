@@ -25,8 +25,6 @@ const AddNewProjectForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
-
     try {
       const data = new FormData()
       Object.keys(formData).forEach((key) => {

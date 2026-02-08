@@ -19,11 +19,14 @@ export async function GET() {
     }
 }
 
+
+
 export async function POST(req) {
     try {
         await ConnectDB();
 
         const formData = await req.formData();
+
         const title = formData.get("title");
         const description = formData.get('description');
         const tags = formData.get('tags');
@@ -39,6 +42,7 @@ export async function POST(req) {
         }
 
         const slug = slugify(title, { strict: true, lower: true });
+        
         const existProject = await Project.findOne({ slug });
         if (existProject) {
             return NextResponse.json({ success: false, message: "Please use another title" }, { status: 400 });
