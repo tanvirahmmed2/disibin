@@ -96,7 +96,7 @@ export async function PATCH(req) {
         if (discount !== null) updateData.discount = Number(discount);
         if (category) updateData.category = category;
         if (isPopular !== null) updateData.isPopular = isPopular === "true";
-        if (features) updateData.features = features.split('||').map(f => f.trim());
+        if (features) updateData.features = features.split(',').map(f => f.trim());
 
         if (imageFile && typeof imageFile !== "string") {
             await cloudinary.uploader.destroy(pkg.imageId);
