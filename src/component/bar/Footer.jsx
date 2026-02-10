@@ -31,7 +31,7 @@ const Footer = () => {
         <div className='w-auto min-w-50 flex flex-col gap-1'>
           <p className='font-semibold'>User Manual</p>
           <div className='flex flex-col text-sm w-auto'>
-            <Link href={'/'}>Access</Link>
+            <Link href={'/dashboard'}>Access</Link>
             <Link href={'/'}>Data</Link>
             <Link href={'/'}>Account</Link>
           </div>
