@@ -11,7 +11,7 @@ const ProjectsPage = async () => {
 
   const data = await res.json()
 
-  if (!data.success) return <div>
+  if (!data.success) return <div className='w-full flex items-center justify-center'>
     <p>No Data Found!</p>
   </div>
   const projects= data.payload
