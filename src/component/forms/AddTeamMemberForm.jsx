@@ -1,6 +1,11 @@
-import React from 'react'
+'use client'
+import React, { useState } from 'react'
 
 const AddTeamMemberForm = () => {
+  const [formData, setFormData]= useState({
+    
+  })
+
   return (
     <div>
       
