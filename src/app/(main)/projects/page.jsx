@@ -1,4 +1,5 @@
 
+import ProjectCard from '@/component/card/ProjectCard'
 import { BASE_URL } from '@/lib/database/secret'
 import React from 'react'
 
@@ -13,15 +14,24 @@ const ProjectsPage = async () => {
   if (!data.success) return <div>
     <p>No Data Found!</p>
   </div>
-  console.log(data)
+  const projects= data.payload
+
+
   return (
-    <div className='w-full flex flex-col items-center gap-4 p-4'>
+    <div className='w-full  min-h-screen flex flex-col items-center gap-4 p-4'>
       {
         projects.length === 0 ? <div>
           <p>Project data not found</p>
-        </div> : <div>
+        </div> : <div className='w-full flex flex-col items-center justify-center gap-4 '>
 
-          <h1></h1>
+          <h1 className='text-center text-xl font-semibold'>Our Latest Projects</h1>
+          <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+            {
+              projects.map((project)=>(
+                <ProjectCard key={project._id} project={project}/>
+              ))
+            }
+          </div>
         </div>
       }
     </div>
