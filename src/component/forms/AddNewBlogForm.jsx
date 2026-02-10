@@ -29,7 +29,7 @@ const AddNewBlogForm = () => {
         data.append(key, formData[key])
       })
       const response= await axios.post('/api/blog', data, {withCredentials:true})
-      alert(response.response.data.message)
+      alert(response.data.message)
     } catch (error) {
       console.log(error)
       alert(error?.response?.data?.message || "Failed to add blog")

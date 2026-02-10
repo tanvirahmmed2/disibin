@@ -26,7 +26,7 @@ export async function POST(req) {
         const isFeatured = formData.get("isFeatured") === "true";
         const imageFile = formData.get("image");
 
-        if (!title || !description || !preview || !imageFile) {
+        if (!title || !description  || !imageFile) {
             return NextResponse.json({ success: false, message: "Required fields missing" }, { status: 400 });
         }
 

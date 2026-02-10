@@ -10,7 +10,7 @@ const ProjectCard = ({ project }) => {
                 <Image src={project.image} alt='project cover' width={1000} height={1000} className='w-full h-70 object-cover rounded-xl'/>
             </div>
             <div className='w-full flex flex-col gap-1'>
-                <p>{project.title}</p>
+                <strong>{project.title}</strong>
                 <p>{project.description.slice(0, 70)}...</p>
                 <div className='w-full flex flex-wrap gap-1'>
                     {
