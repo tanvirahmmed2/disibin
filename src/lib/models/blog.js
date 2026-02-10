@@ -30,7 +30,6 @@ const blogsSchema = new mongoose.Schema({
     preview: {
         type: String,
         trim: true,
-        required: true,
     },
     tags: {
         type: [String],
