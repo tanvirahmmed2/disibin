@@ -18,7 +18,7 @@ const Navbar = () => {
       <Link href={'/'} className='text-3xl font-semibold w-50'>Disibin</Link>
 
       <div className='hidden sm:flex w-auto flex-row items-center justify-center gap-2'>
-        <Link href={'/pricing'} className='w-auto h-16 flex items-center justify-center hover:bg-gray-100 px-6 transition ease-in-out duration-500'>Pricing</Link>
+        <Link href={'/packages'} className='w-auto h-16 flex items-center justify-center hover:bg-gray-100 px-6 transition ease-in-out duration-500'>Pricing</Link>
         <Link href={'/projects'} className='w-auto h-16 flex items-center justify-center hover:bg-gray-100 px-6 transition ease-in-out duration-500'>Projects</Link>
         <Link href={'/reviews'} className='w-auto h-16 flex items-center justify-center hover:bg-gray-100 px-6 transition ease-in-out duration-500'>Reviews</Link>
         <Link href={'/blogs'} className='w-auto h-16 flex items-center justify-center hover:bg-gray-100 px-6 transition ease-in-out duration-500'>Blogs</Link>
