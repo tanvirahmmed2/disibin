@@ -37,6 +37,19 @@ const Footer = () => {
           </div>
         </div>
       </div>
+      <div className='w-full max-w-3xl  grid grid-cols-1 md:grid-cols-2 justify-items-center gap-4'>
+        <div className='w-auto flex flex-col gap-1'>
+          <strong>Office</strong>
+          <p>Rahmatpur</p>
+          <p>Sadar, Mymensingh - 2200</p>
+          <p>Bangladesh</p>
+        </div>
+        <div className='w-auto flex flex-col gap-1'>
+          <strong>Hotline</strong>
+          <Link className='' href="https://api.whatsapp.com/send/?phone=8801805003886&text&type=phone_number&app_absent=0">Dial: +8801805003886</Link>
+          <p>Dial: +8801805003887</p>
+        </div>
+      </div>
 
       <div className='w-full grid grid-cols-1 md:grid-cols-2 justify-items-center gap-4 border-t pt-4'>
         <div className='w-auto min-w-50 flex flex-col gap-1 justify-center'>
