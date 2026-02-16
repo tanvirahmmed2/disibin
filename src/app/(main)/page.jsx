@@ -4,7 +4,6 @@ import Intro from '@/component/pages/Intro'
 import Service from '@/component/pages/Service'
 import SkillSlider from '@/component/pages/SkillSlider'
 import Support from '@/component/pages/Support'
-import Team from '@/component/pages/Team'
 import React from 'react'
 
 const MainPage = () => {
@@ -15,7 +14,6 @@ const MainPage = () => {
       <Service/>
       <SkillSlider/>
       <HappyCustomers/>
-      <Team/>
       <Support/>
       
     </div>

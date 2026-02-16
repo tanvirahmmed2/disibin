@@ -34,8 +34,6 @@ const DashboardSidebar = () => {
         <MenuItem href="/dashboard/blogs" icon={CiBoxList} label="Blogs" />
         <MenuItem href="/dashboard/new-package" icon={RiUser3Line} label="New Packages" />
         <MenuItem href="/dashboard/packages" icon={CiBoxList} label="Packages" />
-        <MenuItem href="/dashboard/new-teammember" icon={RiUser3Line} label="New Team Member" />
-        <MenuItem href="/dashboard/team" icon={RiUser3Line} label="Team" />
         <MenuItem href="/profile" icon={RiUser3Line} label="Account" />
         <MenuItem href="/dashboard/teammanagement" icon={RiUserCommunityLine} label="Team Management" />
         <MenuItem href="/dashboard/messages" icon={RiUserCommunityLine} label="Messages" />
