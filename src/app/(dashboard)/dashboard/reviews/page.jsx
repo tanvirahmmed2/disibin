@@ -46,7 +46,8 @@ const ReviewsPage = () => {
 
   return (
     <div className='w-full flex flex-col items-center p-1 sm:p-4 gap-6'>
-      <h1>Hear From Customers</h1>
+      <h1 className='w-full text-center text-xl font-semibold'>Hear From Customers</h1>
+      
       <div className='w-full flex flex-col items-center justify-center gap-2'>
         {
           reviews.map((review) => (

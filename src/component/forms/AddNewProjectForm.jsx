@@ -8,7 +8,6 @@ const AddNewProjectForm = () => {
     description: '',
     image: null,
     category: '',
-    price: '',
     preview: '',
     tags: '',
     skills: ''
@@ -33,6 +32,15 @@ const AddNewProjectForm = () => {
 
       const response = await axios.post('/api/project', data, { withCredentials: true })
       alert(response.data.message)
+      setFormData({
+        title: '',
+        description: '',
+        image: null,
+        category: '',
+        preview: '',
+        tags: '',
+        skills: ''
+      })
     } catch (error) {
       console.log(error)
       alert(error?.response?.data?.message || "Failed to post project")
@@ -61,19 +69,15 @@ const AddNewProjectForm = () => {
       </div>
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="tags">Tags</label>
-        <input type="text" name='tags' id='tags' required onChange={handleChange} value={formData.tags} placeholder="use ('||')" className='w-full px-3 p-1 outline-none border border-emerald-600' />
+        <input type="text" name='tags' id='tags' required onChange={handleChange} value={formData.tags} placeholder="use (',')" className='w-full px-3 p-1 outline-none border border-emerald-600' />
       </div>
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="skills">skills</label>
-        <input type="text" name='skills' id='skills' required onChange={handleChange} value={formData.skills} placeholder="use ('||')" className='w-full px-3 p-1 outline-none border border-emerald-600' />
+        <input type="text" name='skills' id='skills' required onChange={handleChange} value={formData.skills} placeholder="use (',')" className='w-full px-3 p-1 outline-none border border-emerald-600' />
       </div>
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="image">Image *</label>
         <input type="file" accept='image/*' required id='image' name='image' onChange={handleChange} className='w-full px-3 p-1 outline-none border border-emerald-600' />
-      </div>
-      <div className='w-full flex flex-col gap-1'>
-        <label htmlFor="price">Price</label>
-        <input type="number" min={0} name='price' id='price' onChange={handleChange} value={formData.price} className='w-full px-3 p-1 outline-none border border-emerald-600' />
       </div>
       <button className='p-1 w-full text-center bg-emerald-500 text-white hover:bg-emerald-600 cursor-pointer' type='submit'>Submit</button>
     </form>

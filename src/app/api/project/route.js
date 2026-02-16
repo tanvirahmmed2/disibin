@@ -32,7 +32,6 @@ export async function POST(req) {
         const category = formData.get('category');
         const preview = formData.get('preview');
         const skills = formData.get('skills');
-        const price = formData.get('price'); 
         const imageFile = formData.get('image');
 
         if (!title || !description || !category || !preview || !imageFile) {
@@ -63,8 +62,8 @@ export async function POST(req) {
 
         const insertQuery = `
             INSERT INTO public.projects 
-            (title, slug, description, category, price, preview, image, image_id, tags, skills)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            (title, slug, description, category, preview, image, image_id, tags, skills)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING *;
         `;
 
@@ -73,7 +72,6 @@ export async function POST(req) {
             slug,
             description,
             category,
-            Number(price) || 0,
             preview,
             cloudImage.secure_url,
             cloudImage.public_id,

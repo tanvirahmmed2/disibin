@@ -24,11 +24,11 @@ const blogsPage = async () => {
           <p>blog data not found</p>
         </div> : <div className='w-full flex flex-col items-center justify-center gap-4 '>
 
-          <h1 className='text-center text-xl font-semibold'>Our Latest blogs</h1>
+          <h1 className='text-center text-2xl font-semibold text-emerald-600'>Our Latest blogs</h1>
           <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
             {
               blogs.map((blog)=>(
-                <BlogCard key={blog._id} blog={blog}/>
+                <BlogCard key={blog.blog_id} blog={blog}/>
               ))
             }
           </div>

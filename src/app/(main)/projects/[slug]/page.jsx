@@ -16,10 +16,10 @@ const Project = async ({ params }) => {
     </div>
     const project = data.payload
     return (
-        <div className='w-full max-w-3xl mx-auto flex flex-col items-center gap-4 p-4 min-h-screen'>
+        <div className='w-full mx-auto flex flex-col items-center gap-4 p-4 min-h-screen'>
             <div className='w-full overflow-hidden relative'>
                 <p className='absolute top-6 right-6 bg-gray-50/50 px-4 rounded-2xl'>{project.price? `Worth  ৳${project.price}`:`Contact For Price`}</p>
-                <Image src={project.image} alt='project cover' width={1000} height={1000} className='w-full  rounded-xl' />
+                <Image src={project.image} alt='project cover' width={1000} height={1000} className='w-full aspect-video object-cover border border-black/30 shadow rounded-xl' />
             </div>
             <h1 className='text-2xl font-semibold'>{project.title}</h1>
             <p>{project.category}</p>
