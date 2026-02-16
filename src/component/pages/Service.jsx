@@ -1,7 +1,6 @@
 'use client'
 import React from 'react'
 import { FaAndroid, FaCode, FaFigma, FaGamepad, FaPlane } from 'react-icons/fa';
-import { DiIllustrator } from "react-icons/di";
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -166,7 +165,7 @@ const Service = () => {
           <div className="w-20 h-1.5 bg-teal-600 rounded-full"></div>
         </div>
         
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="w-full flex flex-col md:flex-row items-center justify-center gap-8">
           {servicesData.map((service, index) => (
             <motion.div 
               key={service.id} 
@@ -212,7 +211,7 @@ const Service = () => {
             <div className="p-6 md:p-10">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {service.sections.map((section) => (
-                  <div key={section.id} className="group flex flex-col bg-gray-50 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border border-transparent hover:border-teal-100" >
+                  <motion.div initial={{opacity:0}} whileInView={{opacity:1}} transition={{duration:1}} key={section.id} className="group flex flex-col bg-gray-50 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border border-transparent hover:border-teal-100" >
                     {/* Section Thumbnail */}
                     <div className="relative aspect-video w-full overflow-hidden">
                       <Image
@@ -232,7 +231,7 @@ const Service = () => {
                         {section.description}
                       </p>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
