@@ -5,7 +5,7 @@ import React from 'react'
 const ProjectCard = ({ project }) => {
     return (
         <Link href={`/projects/${project.slug}`} className='w-full flex flex-col items-center justify-center gap-1 p-2 shadow hover:shadow-xl transform ease-in-out duration-300 rounded-2xl overflow-hidden relative'>
-            <p className='absolute top-6 right-6 bg-gray-50/50 px-4 rounded-2xl'>{project.price? `Worth  ৳${project.price}`:`Contact For Price`}</p>
+            <p className='absolute top-6 right-6 bg-gray-50/50 px-4 rounded-2xl'>Contact For Price</p>
             <div className='w-full h-70 overflow-hidden'>
                 <Image src={project.image} alt='project cover' width={1000} height={1000} className='w-full h-70 object-cover rounded-xl'/>
             </div>

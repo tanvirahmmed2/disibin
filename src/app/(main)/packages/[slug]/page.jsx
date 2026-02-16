@@ -16,10 +16,10 @@ const Package = async ({ params }) => {
     </div>
     const pack = data.payload
     return (
-        <div className='w-full max-w-3xl mx-auto flex flex-col items-center gap-4 p-4 min-h-screen'>
+        <div className='w-full   mx-auto flex flex-col items-center gap-4 p-4 min-h-screen'>
             <div className='w-full overflow-hidden relative'>
                
-                <Image src={pack.image} alt='package cover' width={1000} height={1000} className='w-full  rounded-xl' />
+                <Image src={pack.image} alt='package cover' width={1000} height={1000} className='w-full  border border-black/30 shadow object-cover aspect-video rounded-xl' />
             </div>
             <h1 className='text-2xl font-semibold'>{pack.title}</h1>
             <p>{pack.category}</p>

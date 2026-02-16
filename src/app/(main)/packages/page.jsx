@@ -28,7 +28,7 @@ const packagesPage = async () => {
           <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
             {
               packages.map((pack)=>(
-                <PackageCard key={pack._id} pack={pack}/>
+                <PackageCard key={pack.package_id} pack={pack}/>
               ))
             }
           </div>

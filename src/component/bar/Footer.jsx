@@ -12,7 +12,7 @@ const Footer = () => {
 
       <div className='w-full grid grid-cols-1 md:grid-cols-3 justify-items-center gap-4'>
         <div className='w-auto min-w-50 flex flex-col gap-1'>
-          <p className='font-semibold'>Links</p>
+          <p className='font-semibold opacity-70 text-lg'>Links</p>
           <div className='flex flex-col text-sm w-auto'>
             <Link href={'/projects'}>Projects</Link>
             <Link href={'/blogs'}>Blogs</Link>
@@ -21,7 +21,7 @@ const Footer = () => {
           </div>
         </div>
         <div className='w-auto min-w-50 flex flex-col gap-1'>
-          <p className='font-semibold'>Policy</p>
+          <p className='font-semibold opacity-70 text-lg'>Policy</p>
           <div className='flex flex-col text-sm w-auto'>
             <Link href={'/'}>Privacy & Policy</Link>
             <Link href={'/'}>Payments</Link>
@@ -29,7 +29,7 @@ const Footer = () => {
           </div>
         </div>
         <div className='w-auto min-w-50 flex flex-col gap-1'>
-          <p className='font-semibold'>User Manual</p>
+          <p className='font-semibold opacity-70 text-lg'>User Manual</p>
           <div className='flex flex-col text-sm w-auto'>
             <Link href={'/dashboard'}>Access</Link>
             <Link href={'/'}>Data</Link>
@@ -37,15 +37,22 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className='w-full max-w-3xl  grid grid-cols-1 md:grid-cols-2 justify-items-center gap-4'>
-        <div className='w-auto flex flex-col gap-1'>
-          <strong>Office</strong>
+      <div className='w-full grid grid-cols-1 md:grid-cols-3 justify-items-center gap-4'>
+        <div className='w-auto min-w-50 flex flex-col gap-1'>
+          <p className='font-semibold opacity-70 text-lg'>FAQ</p>
+          <p>How to order</p>
+          <p>How we work</p>
+          <p>Transparency</p>
+
+        </div>
+        <div className='w-auto min-w-50 flex flex-col gap-1'>
+          <p className='font-semibold opacity-70 text-lg'>Office</p>
           <p>Rahmatpur</p>
           <p>Sadar, Mymensingh - 2200</p>
           <p>Bangladesh</p>
         </div>
-        <div className='w-auto flex flex-col gap-1'>
-          <strong>Hotline</strong>
+        <div className='w-auto min-w-50 flex flex-col gap-1'>
+          <p className='font-semibold opacity-70 text-lg'>Hotline</p>
           <Link className='' href="https://api.whatsapp.com/send/?phone=8801805003886&text&type=phone_number&app_absent=0">Dial: +8801805003886</Link>
           <p>Dial: +8801805003887</p>
         </div>
