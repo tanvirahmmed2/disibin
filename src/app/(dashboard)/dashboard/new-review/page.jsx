@@ -1,9 +1,10 @@
+import AddReviewForm from '@/component/forms/AddReviewForm'
 import React from 'react'
 
 const Review = () => {
   return (
-    <div>
-      
+    <div className='w-full'>
+      <AddReviewForm/>
     </div>
   )
 }

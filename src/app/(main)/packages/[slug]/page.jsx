@@ -24,7 +24,7 @@ const Package = async ({ params }) => {
             <h1 className='text-2xl font-semibold'>{pack.title}</h1>
             <p>{pack.category}</p>
             <p className='w-full'><strong>Description:</strong> {pack.description}</p>
-            <div className='w-full flex flex-wrap gap-1'>
+            <div className='w-full flex flex-col gap-1'>
                 {
                     pack.features?.map((e) => (
                         <p key={e} className='w-auto px-3 bg-gray-50 rounded-2xl'>{e}</p>

@@ -31,7 +31,13 @@ const AddReviewForm = () => {
   }
   return (
     <form >
-
+      <div>
+        <label htmlFor="name">Name</label>
+        <input type="text" id='name' name='name' required onChange={handleChange} value={formData.name}/>
+      </div>
+      <div>
+        
+      </div>
     </form>
   )
 }
