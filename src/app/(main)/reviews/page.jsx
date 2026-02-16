@@ -1,20 +1,21 @@
-'use client'
-import React, { useState } from 'react'
+import { BASE_URL } from '@/lib/database/secret'
+import React from 'react'
 
-const ReviewsPage = () => {
-  const [reviews, setReviews]=useState([])
+const ReviewPage = async() => {
+  const res= await fetch(`${BASE_URL}/api/review`,{
+    method:'GET',
+    cache:'no-store'
+  })
+
+  const data= await res.json()
+  if(!data.success || data.payload.length===0) return <p>No data found</p>
+  const reviews= data.payload
+  console.log(reviews)
   return (
-      <div className='w-full flex flex-col items-center gap-4 p-4'>
-        {
-          reviews.length===0? <div>
-            <p>Review data not found</p>
-          </div>:<div>
-  
-            <h1></h1>
-          </div>
-      }
-      </div>
-    )
+    <div>
+      
+    </div>
+  )
 }
 
-export default ReviewsPage
+export default ReviewPage
