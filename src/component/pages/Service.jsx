@@ -198,7 +198,7 @@ const Service = () => {
                 src={service.image}
                 alt={service.title}
                 fill
-                priority={idx === 0} // Load the first banner immediately
+                priority={idx === 0} 
                 sizes="(max-width: 768px) 100vw, 1200px"
                 className="object-cover transition-transform duration-700 hover:scale-105"
               /> 
