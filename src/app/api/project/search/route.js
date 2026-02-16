@@ -1,11 +1,8 @@
-import ConnectDB from "@/lib/database/mongo";
-import Project from "@/lib/models/project";
+import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
   try {
-    await ConnectDB();
-
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("q");
 
@@ -16,23 +13,26 @@ export async function GET(req) {
       }, { status: 400 });
     }
 
-    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(escapedQuery, "i");
+    // ILIKE is case-insensitive. % is the wildcard for "any characters"
+    const searchTerm = `%${query.trim()}%`;
+    
+    const sqlQuery = `
+      SELECT 
+        project_id, title, slug, description, category, price, 
+        preview, image, tags, skills, created_at 
+      FROM public.projects 
+      WHERE 
+        title ILIKE $1 OR 
+        category ILIKE $1 OR 
+        description ILIKE $1
+      LIMIT 20;
+    `;
 
-    const projects = await Project.find({
-      $or: [
-        { title: regex },
-        { category: regex },
-        { description: regex }
-      ]
-    })
-    .select("-imageId")
-    .limit(20)
-    .lean();
+    const result = await pool.query(sqlQuery, [searchTerm]);
 
-    if (!projects || projects.length === 0) {
+    if (result.rowCount === 0) {
       return NextResponse.json({
-        success: true, // Changed to true: empty result is a valid state
+        success: true,
         message: 'No project Found',
         payload: []
       }, { status: 200 });
@@ -41,7 +41,7 @@ export async function GET(req) {
     return NextResponse.json({
       success: true,
       message: 'Successfully fetched data',
-      payload: projects,
+      payload: result.rows,
     }, { status: 200 });
 
   } catch (error) {

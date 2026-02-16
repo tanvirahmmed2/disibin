@@ -1,43 +1,38 @@
-import ConnectDB from "@/lib/database/mongo";
-import Project from "@/lib/models/project";
+import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
-
 
 export async function GET(req, { params }) {
     try {
-        await ConnectDB()
-        const { slug } = await params
+        const { slug } = await params;
 
         if (!slug) {
             return NextResponse.json({
                 success: false,
-                message: 'id not found'
-            }, { status: 400 })
+                message: 'slug not found'
+            }, { status: 400 });
         }
 
-        const project = await Project.findOne({ slug })
+        const query = "SELECT * FROM public.projects WHERE slug = $1 LIMIT 1";
+        const result = await pool.query(query, [slug]);
 
-        if (!project) {
+        if (result.rowCount === 0) {
             return NextResponse.json({
                 success: false,
                 message: 'No project found with this slug'
-            }, { status: 400 })
+            }, { status: 404 });
         }
 
         return NextResponse.json({
             success: true,
             message: 'Project data found successfully',
-            payload: project
-        }, { status: 200 })
+            payload: result.rows[0]
+        }, { status: 200 });
 
     } catch (error) {
         return NextResponse.json({
             success: false,
             message: 'Failed to fetch data',
             error: error.message
-        }, { status: 500 })
+        }, { status: 500 });
     }
-
 }
-
-

@@ -1,14 +1,12 @@
-import ConnectDB from "@/lib/database/mongo";
-import Project from "@/lib/models/project";
+import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
-        await ConnectDB();
+        const query = "SELECT * FROM public.projects WHERE is_featured = true ORDER BY created_at DESC";
+        const result = await pool.query(query);
 
-        const projects = await Project.find({ isFeatured: true }).sort({ createdAt: -1 }).lean();
-
-        if (!projects || projects.length === 0) {
+        if (result.rowCount === 0) {
             return NextResponse.json({ 
                 success: true, 
                 message: 'No featured projects found', 
@@ -19,7 +17,7 @@ export async function GET() {
         return NextResponse.json({ 
             success: true, 
             message: 'Successfully fetched data', 
-            payload: projects 
+            payload: result.rows 
         }, { status: 200 });
 
     } catch (error) {
@@ -33,29 +31,31 @@ export async function GET() {
 
 export async function POST(req) {
     try {
-        await ConnectDB();
-
         const { id } = await req.json();
 
         if (!id) {
             return NextResponse.json({ success: false, message: 'Id is required' }, { status: 400 });
         }
 
+        const query = `
+            UPDATE public.projects 
+            SET is_featured = NOT is_featured, updated_at = CURRENT_TIMESTAMP 
+            WHERE project_id = $1 
+            RETURNING is_featured;
+        `;
         
-        const project = await Project.findById(id);
+        const result = await pool.query(query, [id]);
 
-        if (!project) {
+        if (result.rowCount === 0) {
             return NextResponse.json({ success: false, message: 'Project not found' }, { status: 404 });
         }
 
-        
-        project.isFeatured = !project.isFeatured;
-        await project.save();
+        const isFeatured = result.rows[0].is_featured;
 
         return NextResponse.json({
             success: true,
-            message: project.isFeatured ? 'Added to featured' : 'Removed from featured',
-            payload: project.isFeatured
+            message: isFeatured ? 'Added to featured' : 'Removed from featured',
+            payload: isFeatured
         }, { status: 200 });
 
     } catch (error) {

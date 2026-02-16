@@ -1,117 +1,131 @@
-import ConnectDB from "@/lib/database/mongo";
+import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
-import bcrypt from 'bcryptjs'
-import User from "@/lib/models/user";
+import bcrypt from 'bcryptjs';
 
+export async function GET() {
+    try {
+        const query = `
+            SELECT 
+                user_id, name, email, phone, role, 
+                address_line1, city, country, is_active, 
+                email_verified, created_at 
+            FROM public.users 
+            WHERE role = 'admin' 
+            ORDER BY created_at DESC
+        `;
+        const result = await pool.query(query);
+
+        if (result.rowCount === 0) {
+            return NextResponse.json({
+                success: false,
+                message: "No admin data found"
+            }, { status: 404 });
+        }
+
+        return NextResponse.json({
+            success: true,
+            message: 'Successfully fetched admin data',
+            payload: result.rows
+        }, { status: 200 });
+        
+    } catch (error) {
+        return NextResponse.json({ 
+            success: false, 
+            message: 'Failed to fetch user data', 
+            error: error.message 
+        }, { status: 500 });
+    }
+}
 
 export async function POST(req) {
     try {
-        await ConnectDB()
+        const { name, email, password, phone, role, city, country } = await req.json();
 
-        const { name, email, password, role } = await req.json()
-        if (!name || !email || !password ) {
-            return NextResponse.json({
-                success: false,
-                message: 'Please fill all information'
-            }, { status: 400 })
+        if (!name || !email || !password) {
+            return NextResponse.json({ 
+                success: false, 
+                message: 'Name, email, and password are required' 
+            }, { status: 400 });
+        }
+
+        const checkEmail = await pool.query("SELECT email FROM public.users WHERE email = $1", [email]);
+        if (checkEmail.rowCount > 0) {
+            return NextResponse.json({ success: false, message: "Email already registered" }, { status: 400 });
         }
 
         const hashedPass = await bcrypt.hash(password, 10);
 
-        const newUser = await User({ name, email, password: hashedPass, role })
+        const insertQuery = `
+            INSERT INTO public.users 
+            (name, email, password, phone, role, city, country)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING user_id, name, email, role, created_at;
+        `;
+        
+        const values = [
+            name, 
+            email, 
+            hashedPass, 
+            phone || null, 
+            role || 'user', 
+            city || null, 
+            country || null
+        ];
 
-        await newUser.save()
+        const result = await pool.query(insertQuery, values);
 
         return NextResponse.json({
             success: true,
             message: 'Successfully created user',
-            payload: newUser
-        }, { status: 200 })
-
-
+            payload: result.rows[0]
+        }, { status: 201 });
 
     } catch (error) {
-        return NextResponse.json({
-            success: false,
-            message: 'Failed to create user',
-            error: error.message
-        }, { status: 500 })
+        return NextResponse.json({ 
+            success: false, 
+            message: 'Failed to create user', 
+            error: error.message 
+        }, { status: 500 });
     }
-
 }
-
 
 export async function DELETE(req) {
     try {
-        await ConnectDB()
+        const { id } = await req.json();
 
-        const { id } = await req.json()
         if (!id) {
-            return NextResponse.json({
-                success: false,
-                message: "User id not found"
-            }, { status: 400 })
+            return NextResponse.json({ success: false, message: "User id required" }, { status: 400 });
         }
 
-        
-        const user = await User.findById(id)
-        if (!user) {
-            return NextResponse.json({
-                success: false,
-                message: 'User not found'
-            }, { status: 400 })
+        const userResult = await pool.query("SELECT role FROM public.users WHERE user_id = $1", [id]);
+        if (userResult.rowCount === 0) {
+            return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
         }
 
-        const users= await User.find({role: 'admin'})
+        const user = userResult.rows[0];
 
-        if(users.length===1 && user.role ==='admin'){
-            return NextResponse.json({
-                success:false,
-                message:"This account can't be removed"
-            },{status:400})
+        if (user.role === 'admin') {
+            const adminCountResult = await pool.query("SELECT COUNT(*) FROM public.users WHERE role = 'admin'");
+            if (parseInt(adminCountResult.rows[0].count) <= 1) {
+                return NextResponse.json({
+                    success: false,
+                    message: "Safety Block: Cannot delete the only remaining admin account."
+                }, { status: 400 });
+            }
         }
 
-
-        await User.findByIdAndDelete(id)
+        await pool.query("DELETE FROM public.users WHERE user_id = $1", [id]);
 
         return NextResponse.json({
             success: true,
-            message: 'Account has been deleted'
-        }, { status: 200 })
+            message: 'User account has been permanently deleted'
+        }, { status: 200 });
 
     } catch (error) {
-        return NextResponse.json({
-            success: false,
-            message: 'Failed to delete user',
-            error: error.message
-        }, { status: 500 })
-
+        return NextResponse.json({ 
+            success: false, 
+            message: 'Failed to delete user', 
+            error: error.message 
+        }, { status: 500 });
     }
-
-}
-
-export async function GET() {
-    try {
-        await ConnectDB()
-
-        const users = await User.find({ role: 'admin' })
-        if (!users || users.length === 0) {
-            return NextResponse.json({
-                success: false,
-                message: "No admin data found"
-            }, { status: 400 })
-        }
-        return NextResponse.json({
-            success: true,
-            message: 'Successfully fetched admin data',
-            payload: users
-        }, { status: 200 })
-    } catch (error) {
-        return NextResponse.json({
-            success: false,
-            message: 'Failed to fetch user data'
-        }, { status: 500 })
-
-    }
-
 }

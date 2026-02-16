@@ -1,14 +1,13 @@
 import cloudinary from "@/lib/database/cloudinary";
-import ConnectDB from "@/lib/database/mongo";
-import Package from "@/lib/models/package";
+import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
 import slugify from "slugify";
 
 export async function GET() {
     try {
-        await ConnectDB();
-        const packages = await Package.find({}).sort({ createdAt: -1 }).lean();
-        return NextResponse.json({ success: true, payload: packages || [] });
+        const query = "SELECT * FROM public.packages ORDER BY created_at DESC";
+        const result = await pool.query(query);
+        return NextResponse.json({ success: true, payload: result.rows || [] });
     } catch (error) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
@@ -16,7 +15,6 @@ export async function GET() {
 
 export async function POST(req) {
     try {
-        await ConnectDB();
         const formData = await req.formData();
 
         const title = formData.get("title");
@@ -33,8 +31,9 @@ export async function POST(req) {
         }
 
         const slug = slugify(title, { strict: true, lower: true });
-        const existingPackage = await Package.findOne({ slug });
-        if (existingPackage) {
+        
+        const checkResult = await pool.query("SELECT slug FROM public.packages WHERE slug = $1", [slug]);
+        if (checkResult.rowCount > 0) {
             return NextResponse.json({ success: false, message: "Package title already exists" }, { status: 400 });
         }
 
@@ -47,20 +46,28 @@ export async function POST(req) {
             stream.end(buffer);
         });
 
-        const newPackage = await Package.create({
+        const query = `
+            INSERT INTO public.packages 
+            (title, slug, description, price, discount, image, image_id, features, category, is_popular)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            RETURNING *;
+        `;
+
+        const values = [
             title,
             slug,
             description,
             price,
             discount,
-            image: cloudImage.secure_url,
-            imageId: cloudImage.public_id,
-            features: features ? features.split(',').map(f => f.trim()) : [],
+            cloudImage.secure_url,
+            cloudImage.public_id,
+            features ? features.split(',').map(f => f.trim()) : [],
             category,
             isPopular
-        });
+        ];
 
-        return NextResponse.json({ success: true, message: "Package created", payload: newPackage });
+        const result = await pool.query(query, values);
+        return NextResponse.json({ success: true, message: "Package created", payload: result.rows[0] });
     } catch (error) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
@@ -68,14 +75,15 @@ export async function POST(req) {
 
 export async function PATCH(req) {
     try {
-        await ConnectDB();
         const formData = await req.formData();
-
         const id = formData.get("id");
+
         if (!id) return NextResponse.json({ success: false, message: "ID required" }, { status: 400 });
 
-        const pkg = await Package.findById(id);
-        if (!pkg) return NextResponse.json({ success: false, message: "Package not found" }, { status: 404 });
+        const findResult = await pool.query("SELECT * FROM public.packages WHERE package_id = $1", [id]);
+        if (findResult.rowCount === 0) return NextResponse.json({ success: false, message: "Package not found" }, { status: 404 });
+
+        const pkg = findResult.rows[0];
 
         const title = formData.get("title");
         const description = formData.get("description");
@@ -86,7 +94,8 @@ export async function PATCH(req) {
         const isPopular = formData.get("isPopular");
         const imageFile = formData.get("image");
 
-        let updateData = {};
+        let updateData = { ...pkg };
+        
         if (title) {
             updateData.title = title;
             updateData.slug = slugify(title, { strict: true, lower: true });
@@ -95,11 +104,11 @@ export async function PATCH(req) {
         if (price) updateData.price = Number(price);
         if (discount !== null) updateData.discount = Number(discount);
         if (category) updateData.category = category;
-        if (isPopular !== null) updateData.isPopular = isPopular === "true";
+        if (isPopular !== null) updateData.is_popular = isPopular === "true";
         if (features) updateData.features = features.split(',').map(f => f.trim());
 
         if (imageFile && typeof imageFile !== "string") {
-            await cloudinary.uploader.destroy(pkg.imageId);
+            await cloudinary.uploader.destroy(pkg.image_id);
             const buffer = Buffer.from(await imageFile.arrayBuffer());
             const cloudImage = await new Promise((resolve, reject) => {
                 const stream = cloudinary.uploader.upload_stream(
@@ -109,11 +118,26 @@ export async function PATCH(req) {
                 stream.end(buffer);
             });
             updateData.image = cloudImage.secure_url;
-            updateData.imageId = cloudImage.public_id;
+            updateData.image_id = cloudImage.public_id;
         }
 
-        const updatedPackage = await Package.findByIdAndUpdate(id, updateData, { new: true });
-        return NextResponse.json({ success: true, message: "Package updated", payload: updatedPackage });
+        const updateQuery = `
+            UPDATE public.packages 
+            SET title = $1, slug = $2, description = $3, price = $4, discount = $5, 
+                image = $6, image_id = $7, features = $8, category = $9, 
+                is_popular = $10, updated_at = CURRENT_TIMESTAMP
+            WHERE package_id = $11
+            RETURNING *;
+        `;
+
+        const updateValues = [
+            updateData.title, updateData.slug, updateData.description, updateData.price,
+            updateData.discount, updateData.image, updateData.image_id, updateData.features,
+            updateData.category, updateData.is_popular, id
+        ];
+
+        const result = await pool.query(updateQuery, updateValues);
+        return NextResponse.json({ success: true, message: "Package updated", payload: result.rows[0] });
     } catch (error) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
@@ -121,15 +145,17 @@ export async function PATCH(req) {
 
 export async function DELETE(req) {
     try {
-        await ConnectDB();
         const { id } = await req.json();
 
-        const pkg = await Package.findById(id);
-        if (!pkg) return NextResponse.json({ success: false, message: "Not found" }, { status: 404 });
+        const findResult = await pool.query("SELECT image_id FROM public.packages WHERE package_id = $1", [id]);
+        if (findResult.rowCount === 0) return NextResponse.json({ success: false, message: "Not found" }, { status: 404 });
 
-        await cloudinary.uploader.destroy(pkg.imageId);
-        await Package.findByIdAndDelete(id);
+        const imageId = findResult.rows[0].image_id;
+        if (imageId) {
+            await cloudinary.uploader.destroy(imageId);
+        }
 
+        await pool.query("DELETE FROM public.packages WHERE package_id = $1", [id]);
         return NextResponse.json({ success: true, message: "Package deleted successfully" });
     } catch (error) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });

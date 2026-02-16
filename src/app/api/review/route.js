@@ -1,16 +1,15 @@
 import cloudinary from "@/lib/database/cloudinary";
-import ConnectDB from "@/lib/database/mongo";
-import { Review } from "@/lib/models/review";
+import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
-        await ConnectDB();
-        const reviews = await Review.find().sort({ createdAt: -1 }).lean();
+        const query = "SELECT * FROM public.reviews ORDER BY created_at DESC";
+        const result = await pool.query(query);
 
         return NextResponse.json({
             success: true,
-            payload: reviews || []
+            payload: result.rows || []
         }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
@@ -19,15 +18,15 @@ export async function GET() {
 
 export async function POST(req) {
     try {
-        await ConnectDB();
-
         const data = await req.formData();
         const name = data.get('name');
+        const email = data.get('email');
+        const company = data.get('company_name');
         const rating = data.get('rating');
         const comment = data.get('comment');
         const imageFile = data.get('image');
 
-        if (!name || !rating || !comment || !imageFile) {
+        if (!name || !email || !rating || !comment || !imageFile) {
             return NextResponse.json({ success: false, message: "Missing fields" }, { status: 400 });
         }
 
@@ -35,24 +34,34 @@ export async function POST(req) {
         
         const cloudImage = await new Promise((resolve, reject) => {
             const stream = cloudinary.uploader.upload_stream(
-                { folder: "reviews" }, // Changed folder name to 'reviews' for better organization
+                { folder: "reviews" },
                 (err, result) => { if (err) reject(err); else resolve(result); }
             );
             stream.end(buffer);
         });
 
-        const newReview = await Review.create({
-            userName: name,
-            userImage: cloudImage.secure_url,
-            userImageId: cloudImage.public_id,
-            rating: Number(rating), // BUG FIX: Ensure rating is stored as a Number
+        const query = `
+            INSERT INTO public.reviews (user_name, user_email, user_image, user_image_id, company_name, rating, comment)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING *;
+        `;
+        
+        const values = [
+            name, 
+            email, 
+            cloudImage.secure_url, 
+            cloudImage.public_id, 
+            company, 
+            Number(rating), 
             comment
-        });
+        ];
+
+        const result = await pool.query(query, values);
 
         return NextResponse.json({
             success: true,
             message: "Review submitted for approval",
-            payload: newReview
+            payload: result.rows[0]
         }, { status: 201 });
     } catch (error) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
@@ -61,21 +70,29 @@ export async function POST(req) {
 
 export async function PATCH(req) {
     try {
-        await ConnectDB();
         const { id } = await req.json();
 
         if (!id) return NextResponse.json({ success: false, message: "Review ID required" }, { status: 400 });
 
-        const review = await Review.findById(id);
-        if (!review) return NextResponse.json({ success: false, message: "Review not found" }, { status: 404 });
+        const query = `
+            UPDATE public.reviews 
+            SET is_approved = NOT is_approved, updated_at = CURRENT_TIMESTAMP 
+            WHERE review_id = $1 
+            RETURNING *;
+        `;
+        
+        const result = await pool.query(query, [id]);
 
-        review.isApproved = !review.isApproved;
-        await review.save();
+        if (result.rowCount === 0) {
+            return NextResponse.json({ success: false, message: "Review not found" }, { status: 404 });
+        }
+
+        const updatedReview = result.rows[0];
 
         return NextResponse.json({
             success: true,
-            message: review.isApproved ? "Review approved" : "Review hidden",
-            payload: review
+            message: updatedReview.is_approved ? "Review approved" : "Review hidden",
+            payload: updatedReview
         }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
@@ -84,18 +101,21 @@ export async function PATCH(req) {
 
 export async function DELETE(req) {
     try {
-        await ConnectDB();
         const { id } = await req.json();
 
-        const review = await Review.findById(id);
-        if (!review) return NextResponse.json({ success: false, message: "Review not found" }, { status: 404 });
+        const findQuery = "SELECT user_image_id FROM public.reviews WHERE review_id = $1";
+        const findResult = await pool.query(findQuery, [id]);
 
-        // BUG FIX: Delete the image from Cloudinary when deleting from DB
-        if (review.userImageId) {
-            await cloudinary.uploader.destroy(review.userImageId);
+        if (findResult.rowCount === 0) {
+            return NextResponse.json({ success: false, message: "Review not found" }, { status: 404 });
         }
 
-        await Review.findByIdAndDelete(id);
+        const imageId = findResult.rows[0].user_image_id;
+        if (imageId) {
+            await cloudinary.uploader.destroy(imageId);
+        }
+
+        await pool.query("DELETE FROM public.reviews WHERE review_id = $1", [id]);
 
         return NextResponse.json({
             success: true,

@@ -1,30 +1,29 @@
 import cloudinary from "@/lib/database/cloudinary";
-import ConnectDB from "@/lib/database/mongo";
-import Project from "@/lib/models/project";
+import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
 import slugify from "slugify";
 
 export async function GET() {
     try {
-        await ConnectDB();
-        const projects = await Project.find({}).sort({ createdAt: -1 }).lean();
+        const query = "SELECT * FROM public.projects ORDER BY created_at DESC";
+        const result = await pool.query(query);
 
         return NextResponse.json({
             success: true,
             message: 'Project data fetched successfully',
-            payload: projects
+            payload: result.rows || []
         });
     } catch (error) {
-        return NextResponse.json({ success: false, message: 'Failed to fetch data', error: error.message }, { status: 500 });
+        return NextResponse.json({ 
+            success: false, 
+            message: 'Failed to fetch data', 
+            error: error.message 
+        }, { status: 500 });
     }
 }
 
-
-
 export async function POST(req) {
     try {
-        await ConnectDB();
-
         const formData = await req.formData();
 
         const title = formData.get("title");
@@ -36,27 +35,24 @@ export async function POST(req) {
         const price = formData.get('price'); 
         const imageFile = formData.get('image');
 
-        
         if (!title || !description || !category || !preview || !imageFile) {
             return NextResponse.json({ success: false, message: "Required fields missing" }, { status: 400 });
         }
 
         const slug = slugify(title, { strict: true, lower: true });
         
-        const existProject = await Project.findOne({ slug });
-        if (existProject) {
+        const checkExist = await pool.query("SELECT slug FROM public.projects WHERE slug = $1", [slug]);
+        if (checkExist.rowCount > 0) {
             return NextResponse.json({ success: false, message: "Please use another title" }, { status: 400 });
         }
 
-        
         const tagsArr = tags ? tags.split(',').map(t => t.trim()).filter(t => t) : [];
         const skillsArr = skills ? skills.split(',').map(s => s.trim()).filter(s => s) : [];
 
-        
         const buffer = Buffer.from(await imageFile.arrayBuffer());
         const cloudImage = await new Promise((resolve, reject) => {
             const stream = cloudinary.uploader.upload_stream(
-                { folder: "disibin" },
+                { folder: "projects" },
                 (err, result) => {
                     if (err) reject(err);
                     else resolve(result);
@@ -65,43 +61,70 @@ export async function POST(req) {
             stream.end(buffer);
         });
 
-        const newProject = new Project({
+        const insertQuery = `
+            INSERT INTO public.projects 
+            (title, slug, description, category, price, preview, image, image_id, tags, skills)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            RETURNING *;
+        `;
+
+        const values = [
             title,
-            description,
             slug,
+            description,
             category,
-            price: price || 0,
+            Number(price) || 0,
             preview,
-            image: cloudImage.secure_url,
-            imageId: cloudImage.public_id,
-            tags: tagsArr,
-            skills: skillsArr
+            cloudImage.secure_url,
+            cloudImage.public_id,
+            tagsArr,
+            skillsArr
+        ];
+
+        const result = await pool.query(insertQuery, values);
+
+        return NextResponse.json({ 
+            success: true, 
+            message: 'Successfully submitted project',
+            payload: result.rows[0]
         });
 
-        await newProject.save();
-
-        return NextResponse.json({ success: true, message: 'Successfully submitted project' });
-
     } catch (error) {
-        return NextResponse.json({ success: false, message: "Failed to add project", error: error.message }, { status: 500 });
+        return NextResponse.json({ 
+            success: false, 
+            message: "Failed to add project", 
+            error: error.message 
+        }, { status: 500 });
     }
 }
 
 export async function DELETE(req) {
     try {
-        await ConnectDB();
         const { id } = await req.json();
 
-        const project = await Project.findById(id);
-        if (!project) {
+        if (!id) {
+            return NextResponse.json({ success: false, message: 'Project ID required' }, { status: 400 });
+        }
+
+        const findResult = await pool.query("SELECT image_id FROM public.projects WHERE project_id = $1", [id]);
+        
+        if (findResult.rowCount === 0) {
             return NextResponse.json({ success: false, message: 'Project not found' }, { status: 404 });
         }
 
-        await cloudinary.uploader.destroy(project.imageId);
-        await Project.findByIdAndDelete(id);
+        const imageId = findResult.rows[0].image_id;
+        if (imageId) {
+            await cloudinary.uploader.destroy(imageId);
+        }
 
-        return NextResponse.json({ success: true, message: 'Successfully deleted product' });
+        await pool.query("DELETE FROM public.projects WHERE project_id = $1", [id]);
+
+        return NextResponse.json({ success: true, message: 'Successfully deleted project' });
     } catch (error) {
-        return NextResponse.json({ success: false, message: 'Failed to delete product', error: error.message }, { status: 500 });
+        return NextResponse.json({ 
+            success: false, 
+            message: 'Failed to delete project', 
+            error: error.message 
+        }, { status: 500 });
     }
 }

@@ -1,15 +1,14 @@
-import ConnectDB from "@/lib/database/mongo";
-import Contact from "@/lib/models/contact";
+import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
-        await ConnectDB();
-        const messages = await Contact.find({}).sort({ createdAt: -1 }).lean();
+        const query = "SELECT * FROM public.supports ORDER BY created_at DESC";
+        const result = await pool.query(query);
 
         return NextResponse.json({
             success: true,
-            payload: messages || []
+            payload: result.rows || []
         }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ 
@@ -21,7 +20,6 @@ export async function GET() {
 
 export async function POST(req) {
     try {
-        await ConnectDB();
         const { name, email, subject, message } = await req.json();
 
         if (!name || !email || !subject || !message) {
@@ -31,17 +29,18 @@ export async function POST(req) {
             }, { status: 400 });
         }
 
-        const newMessage = await Contact.create({
-            name,
-            email,
-            subject,
-            message
-        });
+        const query = `
+            INSERT INTO public.supports (name, email, subject, message, status)
+            VALUES ($1, $2, $3, $4, 'unread')
+            RETURNING *;
+        `;
+        const values = [name, email, subject, message];
+        const result = await pool.query(query, values);
 
         return NextResponse.json({
             success: true,
             message: "Message sent successfully",
-            payload: newMessage
+            payload: result.rows[0]
         }, { status: 201 });
     } catch (error) {
         return NextResponse.json({ 
@@ -53,7 +52,6 @@ export async function POST(req) {
 
 export async function PATCH(req) {
     try {
-        await ConnectDB();
         const { id, status } = await req.json();
 
         if (!id || !status) {
@@ -63,13 +61,15 @@ export async function PATCH(req) {
             }, { status: 400 });
         }
 
-        const updatedContact = await Contact.findByIdAndUpdate(
-            id,
-            { status },
-            { new: true, runValidators: true }
-        );
+        const query = `
+            UPDATE public.supports 
+            SET status = $1 
+            WHERE support_id = $2 
+            RETURNING *;
+        `;
+        const result = await pool.query(query, [status, id]);
 
-        if (!updatedContact) {
+        if (result.rowCount === 0) {
             return NextResponse.json({ 
                 success: false, 
                 message: "Message not found" 
@@ -79,7 +79,7 @@ export async function PATCH(req) {
         return NextResponse.json({
             success: true,
             message: `Status updated to ${status}`,
-            payload: updatedContact
+            payload: result.rows[0]
         }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ 
@@ -91,7 +91,6 @@ export async function PATCH(req) {
 
 export async function DELETE(req) {
     try {
-        await ConnectDB();
         const { id } = await req.json();
 
         if (!id) {
@@ -101,9 +100,10 @@ export async function DELETE(req) {
             }, { status: 400 });
         }
 
-        const deletedContact = await Contact.findByIdAndDelete(id);
+        const query = "DELETE FROM public.supports WHERE support_id = $1 RETURNING *;";
+        const result = await pool.query(query, [id]);
 
-        if (!deletedContact) {
+        if (result.rowCount === 0) {
             return NextResponse.json({ 
                 success: false, 
                 message: "Message not found" 

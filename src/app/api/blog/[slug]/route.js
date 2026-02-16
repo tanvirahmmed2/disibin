@@ -1,43 +1,38 @@
-import ConnectDB from "@/lib/database/mongo";
-import Blog from "@/lib/models/blog";
+import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
-
 
 export async function GET(req, { params }) {
     try {
-        await ConnectDB()
-        const { slug } = await params
+        const { slug } = await params;
 
         if (!slug) {
             return NextResponse.json({
                 success: false,
-                message: 'id not found'
-            }, { status: 400 })
+                message: 'slug not found'
+            }, { status: 400 });
         }
 
-        const blog = await Blog.findOne({ slug })
+        const query = "SELECT * FROM public.blogs WHERE slug = $1 LIMIT 1";
+        const result = await pool.query(query, [slug]);
 
-        if (!blog) {
+        if (result.rowCount === 0) {
             return NextResponse.json({
                 success: false,
                 message: 'No blog found with this slug'
-            }, { status: 400 })
+            }, { status: 404 });
         }
 
         return NextResponse.json({
             success: true,
             message: 'blog data found successfully',
-            payload: blog
-        }, { status: 200 })
+            payload: result.rows[0]
+        }, { status: 200 });
 
     } catch (error) {
         return NextResponse.json({
             success: false,
             message: 'Failed to fetch data',
             error: error.message
-        }, { status: 500 })
+        }, { status: 500 });
     }
-
 }
-
-
