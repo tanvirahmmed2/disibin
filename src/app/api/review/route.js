@@ -1,3 +1,4 @@
+
 import cloudinary from "@/lib/database/cloudinary";
 import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
@@ -9,10 +10,11 @@ export async function GET() {
 
         return NextResponse.json({
             success: true,
-            payload: result.rows || []
+            message:'Sucessfully fetched data',
+            payload: result.rows 
         }, { status: 200 });
     } catch (error) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
@@ -64,7 +66,7 @@ export async function POST(req) {
             payload: result.rows[0]
         }, { status: 201 });
     } catch (error) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
@@ -95,7 +97,7 @@ export async function PATCH(req) {
             payload: updatedReview
         }, { status: 200 });
     } catch (error) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
@@ -122,6 +124,6 @@ export async function DELETE(req) {
             message: "Review and associated image deleted"
         }, { status: 200 });
     } catch (error) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }

@@ -5,7 +5,9 @@ import React, { useState } from 'react'
 const AddReviewForm = () => {
   const [formData, setFormData] = useState({
     name: '',
-    rating: '',
+    email: '',
+    company_name: '', 
+    rating: '5',
     comment: '',
     image: null
   })
@@ -14,8 +16,7 @@ const AddReviewForm = () => {
     const { name, files, value } = e.target
     if (files) {
       setFormData((prev) => ({ ...prev, image: files[0] }))
-    }
-    else {
+    } else {
       setFormData((prev) => ({ ...prev, [name]: value }))
     }
   }
@@ -27,40 +28,61 @@ const AddReviewForm = () => {
       Object.keys(formData).forEach((key) => {
         data.append(key, formData[key])
       })
-      const response = await axios.post('/api/review', data, { withCredentials: true })
+      const response = await axios.post('/api/review', data)
       alert(response.data.message)
       setFormData({
         name: '',
-        rating: '',
+        email: '',
+        company_name: '',
+        rating: '5',
         comment: '',
         image: null
       })
+      e.target.reset(); 
     } catch (error) {
-      console.log(error)
-
+      alert(error.response?.data?.message || "Something went wrong")
     }
-
   }
+
   return (
-    <form onSubmit={handleSubmit} className='w-full max-w-3xl mx-auto flex flex-col items-center gap-3 '>
+    <form onSubmit={handleSubmit} className='w-full max-w-3xl mx-auto flex flex-col items-center gap-3 p-4'>
       <h1 className='text-2xl font-semibold text-emerald-500'>Add Review</h1>
-      <div className='w-full  flex flex-col gap-1'>
-        <label htmlFor="name">Name</label>
+      
+      <div className='w-full flex flex-col gap-1'>
+        <label htmlFor="name">Full Name</label>
         <input type="text" id='name' name='name' required onChange={handleChange} value={formData.name} className='w-full px-3 p-1 border border-emerald-500 outline-none' />
       </div>
-      <div className='w-full  flex flex-col gap-1'>
+
+      <div className='w-full flex flex-col gap-1'>
+        <label htmlFor="email">Email Address</label>
+        <input type="email" id='email' name='email' required onChange={handleChange} value={formData.email} className='w-full px-3 p-1 border border-emerald-500 outline-none' />
+      </div>
+
+      <div className='w-full flex flex-col gap-1'>
+        <label htmlFor="company_name">Company Name (Optional)</label>
+        <input type="text" id='company_name' name='company_name' onChange={handleChange} value={formData.company_name} className='w-full px-3 p-1 border border-emerald-500 outline-none' />
+      </div>
+
+      <div className='w-full flex flex-col gap-1'>
         <label htmlFor="comment">Comment</label>
-        <textarea name="comment" id="comment" required onChange={handleChange} value={formData.comment} className='w-full px-3 p-1 border border-emerald-500 outline-none'></textarea>
+        <textarea name="comment" id="comment" required onChange={handleChange} value={formData.comment} className='w-full px-3 p-1 border border-emerald-500 outline-none h-24'></textarea>
       </div>
-      <div className='w-full  flex flex-col gap-1'>
-        <label htmlFor="rating" className='w-full flex flex-row items-center justify-between'>Rating <span className='text-xl font-extrabold text-emerald-500'>{formData.rating}</span></label>
-        <input type="range" name="rating" id="rating" step={0.5} min={0} required max={5} onChange={handleChange} value={formData.rating} className='w-full  px-3 p-1 border border-emerald-500 outline-none' />
+
+      <div className='w-full flex flex-col gap-1'>
+        <label htmlFor="rating" className='w-full flex flex-row items-center justify-between text-sm'>
+          Rating <span className='text-xl font-extrabold text-emerald-500'>{formData.rating} Stars</span>
+        </label>
+        <input type="range" name="rating" id="rating" step={0.5} min={0} max={5} onChange={handleChange} value={formData.rating} className='w-full cursor-pointer' />
       </div>
-      <div className='w-full  flex flex-col gap-1'>
-        <label htmlFor="image">User Image</label>
+
+      <div className='w-full flex flex-col gap-1'>
+        <label htmlFor="image">Your Profile Photo</label>
         <input type="file" name="image" id="image" accept='image/*' required onChange={handleChange} className='w-full px-3 p-1 border border-emerald-500 outline-none' />
       </div>
-      <button type='submit' className='w-full bg-emerald-600 text-white p-1 cursor-pointer hover:bg-emerald-400'>Submit</button>
+
+      <button type='submit' className='w-full bg-emerald-600 text-white p-2 mt-2 font-bold hover:bg-emerald-500 transition-colors'>
+        Submit Review
+      </button>
     </form>
   )
 }
