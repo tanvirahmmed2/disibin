@@ -37,7 +37,7 @@ const DashboardSidebar = () => {
         <MenuItem href="/profile" icon={RiUser3Line} label="Account" />
         <MenuItem href="/dashboard/new-review" icon={RiUserCommunityLine} label="New Review" />
         <MenuItem href="/dashboard/reviews" icon={RiUserCommunityLine} label="Reviews" />
-        <MenuItem href="/dashboard/messages" icon={RiUserCommunityLine} label="Messages" />
+        <MenuItem href="/dashboard/supports" icon={RiUserCommunityLine} label="Messages" />
         <MenuItem href="/dashboard/settings" icon={RiSettings3Line} label="Setting" />
         <MenuItem href="/dashboard/help" icon={TbReport} label="Help" />
       </div>

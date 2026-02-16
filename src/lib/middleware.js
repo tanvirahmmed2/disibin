@@ -5,8 +5,7 @@ import { pool } from "./database/pg";
 
 async function getAuthenticatedUser() {
     try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('user_token')?.value;
+        const token =(await cookies()).get('user_token')?.value
 
         if (!token) return null;
 

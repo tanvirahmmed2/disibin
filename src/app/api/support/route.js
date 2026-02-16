@@ -1,22 +1,33 @@
 import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req) {
     try {
-        const query = "SELECT * FROM public.supports ORDER BY created_at DESC";
-        const result = await pool.query(query);
+        const { searchParams } = new URL(req.url);
+        const search = searchParams.get("search");
+
+        let query = "SELECT * FROM public.supports";
+        let values = [];
+
+        if (search) {
+            query += " WHERE name ILIKE $1 OR email ILIKE $1 OR subject ILIKE $1";
+            values.push(`%${search}%`);
+        }
+
+        query += " ORDER BY created_at DESC";
+
+        const result = await pool.query(query, values);
 
         return NextResponse.json({
             success: true,
             payload: result.rows || []
         }, { status: 200 });
     } catch (error) {
-        return NextResponse.json({ 
-            success: false, 
-            error: error.message 
-        }, { status: 500 });
+        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
 }
+
+
 
 export async function POST(req) {
     try {
