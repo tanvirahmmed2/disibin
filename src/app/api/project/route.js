@@ -126,3 +126,78 @@ export async function DELETE(req) {
         }, { status: 500 });
     }
 }
+
+
+export async function PATCH(req) {
+    try {
+        const data = await req.formData();
+        
+        const id = data.get('id');
+        const title = data.get('title');
+        const description = data.get('description');
+        const category = data.get('category');
+        const preview = data.get('preview');
+        const is_featured = data.get('is_featured') === 'true';
+        
+        // Parse the JSON strings from the form back into real JS Arrays
+        const tags = data.get('tags') ? JSON.parse(data.get('tags')) : [];
+        const skills = data.get('skills') ? JSON.parse(data.get('skills')) : [];
+        
+        const imageFile = data.get('image');
+
+        // Verify project exists and get old image info
+        const existing = await pool.query("SELECT image_id FROM public.projects WHERE project_id = $1", [id]);
+        if (existing.rowCount === 0) {
+            return NextResponse.json({ success: false, message: "Project not found" }, { status: 404 });
+        }
+
+        let imageUrl = null;
+        let imageId = null;
+
+        if (imageFile && typeof imageFile !== 'string') {
+            const oldImageId = existing.rows[0].image_id;
+            if (oldImageId) {
+                await cloudinary.uploader.destroy(oldImageId);
+            }
+
+            const buffer = Buffer.from(await imageFile.arrayBuffer());
+            const cloudImage = await new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream(
+                    { folder: "projects" },
+                    (err, result) => { if (err) reject(err); else resolve(result); }
+                );
+                stream.end(buffer);
+            });
+            imageUrl = cloudImage.secure_url;
+            imageId = cloudImage.public_id;
+        }
+
+        let query;
+        let values;
+
+        if (imageUrl) {
+            query = `
+                UPDATE public.projects 
+                SET title=$1, description=$2, category=$3, preview=$4, tags=$5, skills=$6, is_featured=$7, image=$8, image_id=$9
+                WHERE project_id=$10 RETURNING *`;
+            values = [title, description, category, preview, tags, skills, is_featured, imageUrl, imageId, id];
+        } else {
+            query = `
+                UPDATE public.projects 
+                SET title=$1, description=$2, category=$3, preview=$4, tags=$5, skills=$6, is_featured=$7
+                WHERE project_id=$8 RETURNING *`;
+            values = [title, description, category, preview, tags, skills, is_featured, id];
+        }
+
+        const result = await pool.query(query, values);
+
+        return NextResponse.json({
+            success: true,
+            message: "Project updated successfully",
+            payload: result.rows[0]
+        }, { status: 200 });
+
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}
