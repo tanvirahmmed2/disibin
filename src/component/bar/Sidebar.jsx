@@ -11,7 +11,7 @@ const Sidebar = () => {
     return (
         <div className={`w-40 transition ease-in-out duration-500 ${sidebar ? 'translate-x-0' : '-translate-x-full'} sm:-translate-x-full fixed top-16 left-0 h-[calc(100vh-4rem)] p-4 border-r bg-white z-40 flex flex-col gap-2`}>
             <Link href={'/'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Home</Link>
-            <Link href={'/pricing'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Pricing</Link>
+            <Link href={'/packages'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Pricing</Link>
             <Link href={'/projects'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Projects</Link>
             <Link href={'/reviews'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Reviews</Link>
             <Link href={'/blogs'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Blogs</Link>

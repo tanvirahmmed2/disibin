@@ -45,7 +45,7 @@ const Intro = () => {
       </p>
 
       <div className='flex gap-4 mt-6'>
-        <Link href={'/pricing'} className='px-6 py-3 rounded-full bg-teal-500 hover:bg-teal-600 transition font-semibold text-black'>
+        <Link href={'/packages'} className='px-6 py-3 rounded-full bg-teal-500 hover:bg-teal-600 transition font-semibold text-black'>
           Get Started
         </Link>
         <Link href={'/projects'} className='px-6 py-3 rounded-full border border-teal-400 hover:bg-teal-400/10 transition font-semibold'>
