@@ -12,7 +12,7 @@ export async function GET(req, { params }) {
             }, { status: 400 });
         }
 
-        const query = "SELECT * FROM public.packages WHERE slug = $1 LIMIT 1";
+        const query = "SELECT * FROM packages WHERE slug = $1 LIMIT 1";
         const result = await pool.query(query, [slug]);
 
         if (result.rowCount === 0) {
@@ -31,8 +31,7 @@ export async function GET(req, { params }) {
     } catch (error) {
         return NextResponse.json({
             success: false,
-            message: 'Failed to fetch data',
-            error: error.message
+            message: error.message
         }, { status: 500 });
     }
 }
