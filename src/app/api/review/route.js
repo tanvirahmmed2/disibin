@@ -10,8 +10,8 @@ export async function GET() {
 
         return NextResponse.json({
             success: true,
-            message:'Sucessfully fetched data',
-            payload: result.rows 
+            message: 'Sucessfully fetched data',
+            payload: result.rows
         }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -31,9 +31,14 @@ export async function POST(req) {
         if (!name || !email || !rating || !comment || !imageFile) {
             return NextResponse.json({ success: false, message: "Missing fields" }, { status: 400 });
         }
-
+        const existReview = await pool.query(`SELECT * FROM reviews WHERE user_email=$1`, [email])
+        if (existReview.rowCount !== 0) {
+            return NextResponse.json({
+                success: false, message: 'Already has been reviewed'
+            }, { status: 400 })
+        }
         const buffer = Buffer.from(await imageFile.arrayBuffer());
-        
+
         const cloudImage = await new Promise((resolve, reject) => {
             const stream = cloudinary.uploader.upload_stream(
                 { folder: "reviews" },
@@ -47,14 +52,14 @@ export async function POST(req) {
             VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *;
         `;
-        
+
         const values = [
-            name, 
-            email, 
-            cloudImage.secure_url, 
-            cloudImage.public_id, 
-            company, 
-            Number(rating), 
+            name,
+            email,
+            cloudImage.secure_url,
+            cloudImage.public_id,
+            company,
+            Number(rating),
             comment
         ];
 
@@ -82,7 +87,7 @@ export async function PATCH(req) {
             WHERE review_id = $1 
             RETURNING *;
         `;
-        
+
         const result = await pool.query(query, [id]);
 
         if (result.rowCount === 0) {

@@ -8,6 +8,8 @@ export const Context = createContext()
 const ContextProvider = ({ children }) => {
     const [sidebar, setSidebar] = useState(false)
     const [isLoggedin, setIsLogggedin] = useState(false)
+    const [userData, setUserData]= useState([])
+
 
     useEffect(()=>{
         const fetchLogin=async () => {
@@ -16,9 +18,12 @@ const ContextProvider = ({ children }) => {
              if(!res.data.success){
                 setIsLogggedin(false)
              }
+             console.log(res)
              setIsLogggedin(true)
+             setUserData(res.data.payload)
           } catch (error) {
             setIsLogggedin(false)
+            setUserData([])
           }
         }
         fetchLogin()
@@ -26,7 +31,7 @@ const ContextProvider = ({ children }) => {
 
 
     const contextValues = {
-        sidebar, setSidebar,isLoggedin
+        sidebar, setSidebar,isLoggedin,userData
     }
 
     return <Context.Provider value={contextValues}>

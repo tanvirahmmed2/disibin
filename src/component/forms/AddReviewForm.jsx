@@ -1,11 +1,13 @@
 'use client'
 import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { Context } from '../helper/Context'
 
 const AddReviewForm = () => {
+  const {userData}= useContext(Context)
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    name: userData.name || '',
+    email: userData.email ||  '',
     company_name: '', 
     rating: '5',
     comment: '',
@@ -45,42 +47,42 @@ const AddReviewForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className='w-full max-w-3xl mx-auto flex flex-col items-center gap-3 p-4'>
-      <h1 className='text-2xl font-semibold text-emerald-500'>Add Review</h1>
+    <form onSubmit={handleSubmit} className='w-full mx-auto flex flex-col items-center gap-3 p-4'>
+      <h1 className='text-2xl font-semibold text-emerald-600'>Add Review</h1>
       
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="name">Full Name</label>
-        <input type="text" id='name' name='name' required onChange={handleChange} value={formData.name} className='w-full px-3 p-1 border border-emerald-500 outline-none' />
+        <input type="text" id='name' name='name' required onChange={handleChange} value={formData.name} className='w-full px-3 p-1 border border-emerald-600 outline-none' />
       </div>
 
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="email">Email Address</label>
-        <input type="email" id='email' name='email' required onChange={handleChange} value={formData.email} className='w-full px-3 p-1 border border-emerald-500 outline-none' />
+        <input type="email" id='email' name='email' required onChange={handleChange} value={formData.email} className='w-full px-3 p-1 border border-emerald-600 outline-none' />
       </div>
 
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="company_name">Company Name (Optional)</label>
-        <input type="text" id='company_name' name='company_name' onChange={handleChange} value={formData.company_name} className='w-full px-3 p-1 border border-emerald-500 outline-none' />
+        <input type="text" id='company_name' name='company_name' onChange={handleChange} value={formData.company_name} className='w-full px-3 p-1 border border-emerald-600 outline-none' />
       </div>
 
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="comment">Comment</label>
-        <textarea name="comment" id="comment" required onChange={handleChange} value={formData.comment} className='w-full px-3 p-1 border border-emerald-500 outline-none h-24'></textarea>
+        <textarea name="comment" id="comment" required onChange={handleChange} value={formData.comment} className='w-full px-3 p-1 border border-emerald-600 outline-none h-24'></textarea>
       </div>
 
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="rating" className='w-full flex flex-row items-center justify-between text-sm'>
-          Rating <span className='text-xl font-extrabold text-emerald-500'>{formData.rating} Stars</span>
+          Rating <span className='text-xl font-extrabold text-emerald-600'>{formData.rating} Stars</span>
         </label>
         <input type="range" name="rating" id="rating" step={0.5} min={0} max={5} onChange={handleChange} value={formData.rating} className='w-full cursor-pointer' />
       </div>
 
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="image">Your Profile Photo</label>
-        <input type="file" name="image" id="image" accept='image/*' required onChange={handleChange} className='w-full px-3 p-1 border border-emerald-500 outline-none' />
+        <input type="file" name="image" id="image" accept='image/*' required onChange={handleChange} className='w-full px-3 p-1 border border-emerald-600 outline-none' />
       </div>
 
-      <button type='submit' className='w-full bg-emerald-600 text-white p-2 mt-2 font-bold hover:bg-emerald-500 transition-colors'>
+      <button type='submit' className='w-full bg-emerald-700 text-white p-2 mt-2 font-bold hover:bg-emerald-600 transition-colors'>
         Submit Review
       </button>
     </form>
