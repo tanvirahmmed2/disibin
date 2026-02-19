@@ -47,7 +47,11 @@ const RegisterForm = () => {
                 <label htmlFor="password">Password</label>
                 <input type="password" name='password' id='password' required onChange={handleChange} value={formData.password} className='w-full px-3 p-1 border rounded-sm outline-none' />
             </div>
-            <Link className='text-right text-sm text-teal-900' href={'/login'}>already user?</Link>
+            <div className='w-full flex flex-row items-center justify-between'>
+                <Link className='' href={'/recover'}>forget password?</Link>
+                <Link className='' href={'/login'}>Already registered?</Link>
+
+            </div>
             <button type='submit' className='px-4 bg-teal-900 text-white p-1 cursor-pointer hover:bg-teal-700 transition-colors'>
                 Register
             </button>
