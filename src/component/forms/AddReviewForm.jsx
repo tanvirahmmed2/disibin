@@ -48,7 +48,7 @@ const AddReviewForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className='w-full mx-auto flex flex-col items-center gap-3 p-4'>
-      <h1 className='text-2xl font-semibold text-emerald-600'>Add Review</h1>
+      <h1 className='text-2xl font-light text-emerald-600'>Add Review</h1>
       
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="name">Full Name</label>
