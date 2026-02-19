@@ -18,7 +18,6 @@ const ContextProvider = ({ children }) => {
              if(!res.data.success){
                 setIsLogggedin(false)
              }
-             console.log(res)
              setIsLogggedin(true)
              setUserData(res.data.payload)
           } catch (error) {
