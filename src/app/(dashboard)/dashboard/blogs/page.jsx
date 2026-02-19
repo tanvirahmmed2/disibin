@@ -29,7 +29,8 @@ const blogs = () => {
       fetchBlogs()
       alert(res.data.message)
     } catch (error) {
-      alert(error?.response?.data?.message || "Failed to delete blog")
+      alert(error?.response?.data?.message || "Failed to delete blog data")
+      
     }
   }
 

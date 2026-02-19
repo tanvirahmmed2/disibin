@@ -136,14 +136,14 @@ export async function DELETE(req) {
     try {
         const { id } = await req.json();
 
-        const findResult = await pool.query("SELECT image_id FROM public.blogs WHERE id = $1", [id]);
+        const findResult = await pool.query("SELECT * FROM public.blogs WHERE blog_id = $1", [id]);
         if (findResult.rowCount === 0) return NextResponse.json({ success: false, message: "Not found" }, { status: 404 });
 
         await cloudinary.uploader.destroy(findResult.rows[0].image_id);
-        await pool.query("DELETE FROM public.blogs WHERE id = $1", [id]);
+        await pool.query("DELETE FROM public.blogs WHERE blog_id = $1", [id]);
 
         return NextResponse.json({ success: true, message: "Deleted successfully" });
     } catch (error) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }

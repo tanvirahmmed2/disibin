@@ -21,7 +21,7 @@ const UpdateUserForm = ({ user }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.patch('/api/user/profile', {
+            const res = await axios.patch('/api/user/', {
                 id: user.user_id,
                 ...formData
             });
@@ -32,47 +32,47 @@ const UpdateUserForm = ({ user }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className='w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4 border p-6 rounded-xl bg-white shadow-sm'>
+        <form onSubmit={handleSubmit} className='w-full max-w-4xl flex flex-col  items-center gap-4'>
             <h2 className='col-span-full text-xl font-bold border-b pb-2'>Account Information</h2>
             
-            <div className='flex flex-col gap-1'>
+            <div className='flex flex-col gap-1 w-full'>
                 <label className='text-sm font-semibold'>Full Name</label>
                 <input name="name" value={formData.name} onChange={handleChange} className='border p-2 rounded' required />
             </div>
 
-            <div className='flex flex-col gap-1'>
+            <div className='flex flex-col gap-1 w-full'>
                 <label className='text-sm font-semibold'>Phone Number</label>
                 <input name="phone" value={formData.phone} onChange={handleChange} className='border p-2 rounded' />
             </div>
 
             <h2 className='col-span-full text-xl font-bold border-b pb-2 mt-4'>Address Details</h2>
 
-            <div className='flex flex-col gap-1 col-span-full'>
+            <div className='flex flex-col gap-1 w-full col-span-full'>
                 <label className='text-sm font-semibold'>Address Line 1</label>
                 <input name="address_line1" value={formData.address_line1} onChange={handleChange} className='border p-2 rounded' />
             </div>
 
-            <div className='flex flex-col gap-1 col-span-full'>
+            <div className='flex flex-col gap-1 w-full col-span-full'>
                 <label className='text-sm font-semibold'>Address Line 2</label>
                 <input name="address_line2" value={formData.address_line2} onChange={handleChange} className='border p-2 rounded' />
             </div>
 
-            <div className='flex flex-col gap-1'>
+            <div className='flex flex-col gap-1 w-full'>
                 <label className='text-sm font-semibold'>City</label>
                 <input name="city" value={formData.city} onChange={handleChange} className='border p-2 rounded' />
             </div>
 
-            <div className='flex flex-col gap-1'>
+            <div className='flex flex-col gap-1 w-full'>
                 <label className='text-sm font-semibold'>State / Division</label>
                 <input name="state" value={formData.state} onChange={handleChange} className='border p-2 rounded' />
             </div>
 
-            <div className='flex flex-col gap-1'>
+            <div className='flex flex-col gap-1 w-full'>
                 <label className='text-sm font-semibold'>Postal Code</label>
                 <input name="postal_code" value={formData.postal_code} onChange={handleChange} className='border p-2 rounded' />
             </div>
 
-            <div className='flex flex-col gap-1'>
+            <div className='flex flex-col gap-1 w-full'>
                 <label className='text-sm font-semibold'>Country</label>
                 <input name="country" value={formData.country} onChange={handleChange} className='border p-2 rounded' />
             </div>
