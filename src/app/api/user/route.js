@@ -5,70 +5,25 @@ import { NextResponse } from "next/server";
 export async function GET() {
     try {
         const auth = await isLogin();
-        
-        if (!auth.success) {
-            return NextResponse.json({
-                success: false, 
-                message: 'Please login to access this data'
-            }, { status: 401 });
-        }
+        if (!auth.success) return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
 
-        // Use auth.payload.user_id to filter for only the logged-in user
         const query = `
-            SELECT 
-                u.user_id, u.name, u.email, u.phone, u.role, 
-                u.address_line1, u.city, u.country, u.is_active, 
-                u.email_verified, u.created_at,
-                
-                COALESCE(
-                    (SELECT json_agg(pkg) 
-                     FROM public.purchased_packages pkg 
-                     WHERE pkg.user_id = u.user_id), 
-                    '[]'
-                ) AS purchase_packages,
-
-                COALESCE(
-                    (SELECT json_agg(rev) 
-                     FROM public.reviews rev 
-                     WHERE rev.user_email = u.email), 
-                    '[]'
-                ) AS reviews,
-
-                COALESCE(
-                    (SELECT json_agg(sup) 
-                     FROM public.supports sup 
-                     WHERE sup.email = u.email), 
-                    '[]'
-                ) AS support_messages
-
-            FROM public.users u
-            WHERE u.user_id = $1
-            LIMIT 1
+            SELECT user_id, name, email, phone, role, address_line1, city, country, is_active, created_at 
+            FROM public.users 
+            WHERE user_id = $1
         `;
-
         const result = await pool.query(query, [auth.payload.user_id]);
-
-        if (result.rowCount === 0) {
-            return NextResponse.json({
-                success: false,
-                message: "User profile not found"
-            }, { status: 404 });
-        }
 
         return NextResponse.json({
             success: true,
-            message: 'Profile data fetched successfully',
-            payload: result.rows[0] // Return only the single user object
+            payload: result.rows[0]
         }, { status: 200 });
-
     } catch (error) {
-        return NextResponse.json({ 
-            success: false, 
-            message: 'Internal server error', 
-            error: error.message 
-        }, { status: 500 });
+        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
 }
+
+
 export async function DELETE(req) {
     try {
         const { id } = await req.json();

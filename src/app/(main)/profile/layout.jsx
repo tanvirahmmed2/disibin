@@ -11,7 +11,7 @@ const ProfileLayout = async({children}) => {
     const auth=await isLogin()
     if(!auth.success) return redirect('/login')
   return (
-    <div className='w-full'>
+    <div className='w-full overflow-x-hidden'>
       {children}
     </div>
   )
