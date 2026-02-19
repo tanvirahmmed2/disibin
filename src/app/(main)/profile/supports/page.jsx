@@ -1,11 +1,117 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { FaHeadset, FaPaperPlane, FaChevronRight, FaRegDotCircle, FaCheckCircle, FaInbox } from 'react-icons/fa';
 
 const Supports = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  const [tickets, setTickets] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-export default Supports
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        const res = await axios.get('/api/user/sent_supports', { withCredentials: true });
+        setTickets(res.data.payload);
+      } catch (error) {
+        console.error("Error loading support tickets:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTickets();
+  }, []);
+
+  if (loading) return (
+    <div className="space-y-4">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="h-20 w-full bg-white rounded-2xl animate-pulse border border-slate-100" />
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      
+      {/* Header with Action */}
+      <div className="flex justify-between items-center px-2">
+        <h2 className="text-xl font-light text-slate-800 tracking-tight">Support History</h2>
+        <button className="flex items-center gap-2 px-4 py-2 bg-sky-50 text-sky-600 text-[11px] font-bold uppercase tracking-widest rounded-xl hover:bg-sky-100 transition-all active:scale-95">
+          <FaPaperPlane className="text-[10px]" /> New Ticket
+        </button>
+      </div>
+
+      {tickets.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 bg-white/40 border border-dashed border-slate-200 rounded-3xl">
+          <FaInbox className="text-slate-100 text-5xl mb-4" />
+          <p className="text-slate-400 font-light tracking-wide">No support requests found.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-3">
+          {tickets.map((ticket, i) => (
+            <div 
+              key={i} 
+              className="group bg-white p-5 rounded-2xl border border-slate-200/60 flex items-center justify-between hover:border-sky-200 hover:shadow-lg hover:shadow-sky-50/50 transition-all cursor-pointer"
+            >
+              <div className="flex items-center gap-5">
+                {/* Status Icon Indicator */}
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-lg transition-colors ${
+                  ticket.status === 'read' 
+                    ? 'bg-emerald-50 text-emerald-500' 
+                    : 'bg-slate-50 text-slate-300 group-hover:bg-sky-50 group-hover:text-sky-500'
+                }`}>
+                  {ticket.status === 'read' ? <FaCheckCircle /> : <FaRegDotCircle />}
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium text-slate-800 group-hover:text-sky-600 transition-colors">
+                    {ticket.subject}
+                  </h4>
+                  <div className="flex items-center gap-3 mt-1">
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                      ID: #S-{1000 + (ticket.support_id || i)}
+                    </p>
+                    <span className="text-slate-200">•</span>
+                    <p className="text-[10px] text-slate-400">
+                      {new Date(ticket.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-6">
+                <div className="hidden sm:block text-right">
+                  <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-md border ${
+                    ticket.status === 'read' 
+                      ? 'border-emerald-100 text-emerald-500' 
+                      : 'border-slate-100 text-slate-400'
+                  }`}>
+                    {ticket.status}
+                  </span>
+                </div>
+                <FaChevronRight className="text-slate-200 group-hover:text-sky-300 transition-all group-hover:translate-x-1" />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Trust Footer */}
+      <div className="mt-10 p-6 bg-linear-to-r from-sky-600 to-indigo-600 rounded-3xl text-white flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl shadow-sky-100">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-xl">
+            <FaHeadset />
+          </div>
+          <div>
+            <h3 className="font-medium">Need immediate help?</h3>
+            <p className="text-white/70 text-xs font-light">Our dedicated team is available for 24/7 technical assistance.</p>
+          </div>
+        </div>
+        <button className="px-6 py-2 bg-white text-sky-600 text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-opacity-90 transition-all active:scale-95">
+          Live Chat
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Supports;
