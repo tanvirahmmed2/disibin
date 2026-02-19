@@ -73,7 +73,7 @@ const UserProfile = () => {
           <Link className='w-full text-center bg-gray-200 rounded-2xl hover:bg-white' href={'/profile/review'}>Reviews</Link>
           <Link className='w-full text-center bg-gray-200 rounded-2xl hover:bg-white' href={'/profile/supports'}>Supports</Link>
         </div>
-        <button className='w-full text-center p-1 bg-emerald-600 text-white hover:bg-emerald-400 rounded-2xl cursor-pointer' onClick={async()=>{
+        <button className='w-full text-center px-6 py-2.5 bg-emerald-600 text-white hover:bg-emerald-400 rounded-2xl cursor-pointer' onClick={async()=>{
           try {
             const res= await axios.get('/api/user/logout', {withCredentials:true})
             alert(res.data.message)
