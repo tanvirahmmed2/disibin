@@ -11,7 +11,7 @@ const ContextProvider = ({ children }) => {
     const [userData, setUserData] = useState([])
 
     const [hydrated, setHydrated] = useState(false)
-    const [cart, setCart] = useState({ items: [] })
+    const [wishlist, setWishList] = useState({ items: [] })
 
     useEffect(() => {
         const fetchLogin = async () => {
@@ -31,73 +31,73 @@ const ContextProvider = ({ children }) => {
     }, [])
 
 
-    const fetchCart = () => {
+    const fetchWishList = () => {
         if (typeof window === 'undefined') return
-        const storedCart = localStorage.getItem('cart')
+        const storedwishlist = localStorage.getItem('wishlist')
 
-        if (!storedCart || storedCart === 'undefined') {
-            setCart({ items: [] })
+        if (!storedwishlist || storedwishlist === 'undefined') {
+            setWishList({ items: [] })
             setHydrated(true)
             return
         }
 
         try {
-            const parsed = JSON.parse(storedCart)
+            const parsed = JSON.parse(storedwishlist)
             if (parsed && Array.isArray(parsed.items)) {
-                setCart(parsed)
+                setWishList(parsed)
             } else {
-                setCart({ items: [] })
+                setWishList({ items: [] })
             }
         } catch (err) {
-            localStorage.removeItem('cart')
-            setCart({ items: [] })
+            localStorage.removeItem('wishlist')
+            setWishList({ items: [] })
         }
         setHydrated(true)
     }
 
     useEffect(() => {
         if (typeof window !== 'undefined' && hydrated) {
-            localStorage.setItem('cart', JSON.stringify(cart))
+            localStorage.setItem('wishlist', JSON.stringify(wishlist))
         }
-    }, [cart, hydrated])
+    }, [wishlist, hydrated])
 
-    const addToCart = (product) => {
-        if (!product?.product_id) return;
+    const addToWishList = (pack) => {
+        if (!pack?.pack_id) return;
 
-        if (Number(product.stock) <= 0) {
+        if (Number(pack.stock) <= 0) {
             toast.error("Item is out of stock!");
             return;
         }
 
-        const existingInCart = cart.items.find(item => item.product_id === product.product_id);
+        const existingInwishlist = wishlist.items.find(item => item.pack_id === pack.pack_id);
 
-        if (existingInCart) {
-            if (existingInCart.quantity >= Number(product.stock)) {
-                toast.warning(`Only ${product.stock} items available in stock`);
+        if (existingInwishlist) {
+            if (existingInwishlist.quantity >= Number(pack.stock)) {
+                toast.warning(`Only ${pack.stock} items available in stock`);
                 return;
             }
 
-            setCart((prev) => ({
+            setWishList((prev) => ({
                 ...prev,
                 items: prev.items.map(item =>
-                    item.product_id === product.product_id
+                    item.pack_id === pack.pack_id
                         ? { ...item, quantity: item.quantity + 1 }
                         : item
                 )
             }));
             toast.info("Quantity increased");
         } else {
-            const salePrice = parseFloat(product?.sale_price) || 0;
-            const wholeSalePrice = parseFloat(product?.wholesale_price) || 0;
-            const discountAmount = parseFloat(product?.discount_price) || 0;
+            const salePrice = parseFloat(pack?.sale_price) || 0;
+            const wholeSalePrice = parseFloat(pack?.wholesale_price) || 0;
+            const discountAmount = parseFloat(pack?.discount_price) || 0;
 
-            setCart((prev) => ({
+            setwishlist((prev) => ({
                 ...prev,
                 items: [
                     ...prev.items,
                     {
-                        product_id: product.product_id,
-                        name: product.name,
+                        pack_id: pack.pack_id,
+                        name: pack.name,
                         quantity: 1,
                         sale_price: salePrice,
                         wholesale_price: wholeSalePrice,
@@ -106,11 +106,11 @@ const ContextProvider = ({ children }) => {
                     }
                 ]
             }));
-            toast.success("Added to cart");
+            toast.success("Added to wishlist");
         }
     };
-    const removeFromCart = (id) => {
-        setCart(prev => ({ ...prev, items: prev.items.filter(item => item.product_id !== id) }))
+    const removeFromwishlist = (id) => {
+        setwishlist(prev => ({ ...prev, items: prev.items.filter(item => item.pack_id !== id) }))
     }
 
 
