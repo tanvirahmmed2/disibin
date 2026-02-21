@@ -12,13 +12,7 @@ const PackageCard = ({pack}) => {
             <div className='w-full flex flex-col gap-1'>
                 <strong>{pack.title}</strong>
                 <p>{pack.description.slice(0, 70)}...</p>
-                <div className='w-full flex flex-wrap gap-1'>
-                    {
-                        pack.features.map((e) => (
-                            <p key={e} className='w-auto px-3 bg-emerald-50 rounded-2xl'>{e}</p>
-                        ))
-                    }
-                </div>
+                <p className='w-full text-center bg-orange-400 text-white rounded-2xl p-1'>View</p>
             </div>
         </Link>
   )

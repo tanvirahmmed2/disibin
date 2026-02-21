@@ -99,7 +99,7 @@ const ContextProvider = ({ children }) => {
     }
 
     const contextValues = {
-        sidebar, setSidebar, isLoggedin, userData, removeFromwishlist, addToWishList, wishlist, hydrated
+        sidebar, setSidebar, isLoggedin, userData, removeFromwishlist, addToWishList, wishlist
     }
 
     return (
