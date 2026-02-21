@@ -4,12 +4,10 @@ import { createContext, useEffect, useState } from "react";
 
 export const Context = createContext()
 
-
 const ContextProvider = ({ children }) => {
     const [sidebar, setSidebar] = useState(false)
     const [isLoggedin, setIsLogggedin] = useState(false)
     const [userData, setUserData] = useState([])
-
     const [hydrated, setHydrated] = useState(false)
     const [wishlist, setWishList] = useState({ items: [] })
 
@@ -17,11 +15,13 @@ const ContextProvider = ({ children }) => {
         const fetchLogin = async () => {
             try {
                 const res = await axios.get('/api/user/islogin', { withCredentials: true })
-                if (!res.data.success) {
+                if (res.data.success) {
+                    setIsLogggedin(true)
+                    setUserData(res.data.payload)
+                } else {
                     setIsLogggedin(false)
+                    setUserData([])
                 }
-                setIsLogggedin(true)
-                setUserData(res.data.payload)
             } catch (error) {
                 setIsLogggedin(false)
                 setUserData([])
@@ -29,7 +29,6 @@ const ContextProvider = ({ children }) => {
         }
         fetchLogin()
     }, [])
-
 
     const fetchWishList = () => {
         if (typeof window === 'undefined') return
@@ -56,72 +55,58 @@ const ContextProvider = ({ children }) => {
     }
 
     useEffect(() => {
+        fetchWishList()
+    }, [])
+
+    useEffect(() => {
         if (typeof window !== 'undefined' && hydrated) {
             localStorage.setItem('wishlist', JSON.stringify(wishlist))
         }
     }, [wishlist, hydrated])
 
     const addToWishList = (pack) => {
-        if (!pack?.pack_id) return;
+        if (!pack?.package_id) return;
 
-        if (Number(pack.stock) <= 0) {
-            toast.error("Item is out of stock!");
-            return;
-        }
-
-        const existingInwishlist = wishlist.items.find(item => item.pack_id === pack.pack_id);
+        const existingInwishlist = wishlist.items.find(item => item.package_id === pack.package_id);
 
         if (existingInwishlist) {
-            if (existingInwishlist.quantity >= Number(pack.stock)) {
-                toast.warning(`Only ${pack.stock} items available in stock`);
-                return;
-            }
+            alert('Please checkout in your wishlist')
+        } else {
+            const salePrice = parseFloat(pack?.price) || 0;
+            const discountPrice = parseFloat(pack?.discount) || 0;
 
             setWishList((prev) => ({
-                ...prev,
-                items: prev.items.map(item =>
-                    item.pack_id === pack.pack_id
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                )
-            }));
-            toast.info("Quantity increased");
-        } else {
-            const salePrice = parseFloat(pack?.sale_price) || 0;
-            const wholeSalePrice = parseFloat(pack?.wholesale_price) || 0;
-            const discountAmount = parseFloat(pack?.discount_price) || 0;
-
-            setwishlist((prev) => ({
                 ...prev,
                 items: [
                     ...prev.items,
                     {
-                        pack_id: pack.pack_id,
-                        name: pack.name,
-                        quantity: 1,
-                        sale_price: salePrice,
-                        wholesale_price: wholeSalePrice,
-                        discount_price: discountAmount,
-                        price: salePrice
+                        package_id: pack.package_id,
+                        title: pack.title,
+                        price: salePrice,
+                        discount: discountPrice,
                     }
                 ]
             }));
-            toast.success("Added to wishlist");
+            alert("Added to wishlist");
         }
     };
-    const removeFromwishlist = (id) => {
-        setwishlist(prev => ({ ...prev, items: prev.items.filter(item => item.pack_id !== id) }))
-    }
 
+    const removeFromwishlist = (id) => {
+        setWishList(prev => ({ 
+            ...prev, 
+            items: prev.items.filter(item => item.package_id !== id) 
+        }))
+    }
 
     const contextValues = {
-        sidebar, setSidebar, isLoggedin, userData
+        sidebar, setSidebar, isLoggedin, userData, removeFromwishlist, addToWishList, wishlist, hydrated
     }
 
-    return <Context.Provider value={contextValues}>
-        {children}
-    </Context.Provider>
-
+    return (
+        <Context.Provider value={contextValues}>
+            {children}
+        </Context.Provider>
+    )
 }
 
 export default ContextProvider
