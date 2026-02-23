@@ -4,6 +4,7 @@ import React, { useContext } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { MdDeleteOutline } from 'react-icons/md'
+import axios from 'axios'
 
 const WishlistPage = () => {
     const { removeFromwishlist, wishlist } = useContext(Context)
@@ -12,6 +13,16 @@ const WishlistPage = () => {
     const totalDiscount = wishlist?.items?.reduce((acc, item) => acc + (Number(item.discount) || 0), 0) || 0;
     const totalAmount = subTotal - totalDiscount;
 
+
+    const handleSubmit = async() => {
+        const data= {totalAmount, items:wishlist.items}
+        try {
+            const res= await axios.post('/api/purchase', data, {withCredentials:true})
+            alert(res.data.message)
+        } catch (error) {
+            alert(error?.response?.data?.message || 'Failed to place order')
+        }
+    }
     return (
         <div className="w-full p-1 sm:p-4">
             <h1 className="text-3xl font-bold mb-8 text-gray-800 text-center md:text-left">
@@ -19,38 +30,42 @@ const WishlistPage = () => {
             </h1>
 
             {wishlist?.items?.length > 0 ? (
-                <div className="w-full flex flex-col items-center justify-center gap-4">
-                    {wishlist.items.map((product) => (
-                        <div key={product.package_id} className="w-full grid grid-cols-6 border p-6 shadow-sm rounded-2xl border-black/30">
-                            <div className="relative col-span-1 ">
-                                <Image
-                                    src={product.image || '/placeholder.jpg'}
-                                    alt={product.title}
-                                    width={50}
-                                    height={50}
-                                />
+                <div className="w-full grid grid-cols-1 md:grid-cols-5 gap-8">
+                    <div className='w-full col-span-1 md:col-span-3 flex flex-col items-center gap-2'>
+                        {wishlist.items.map((product) => (
+                            <div key={product.package_id} className="w-full grid grid-cols-10  border p-6 even:bg-gray-200 shadow-sm rounded-2xl border-black/30">
+                                <div className="relative col-span-1 p-2 ">
+                                    <Image
+                                        src={product.image || '/placeholder.jpg'}
+                                        alt={product.title}
+                                        width={500}
+                                        height={500}
+                                        className='w-full rounded-lg'
+                                    />
+                                </div>
+                                <Link href={`/packages/${product.slug}`} className='col-span-5'>{product.title} </Link>
+                                <p className='col-span-3 text-center'>
+                                    BDT <strong className='text-xl'>{product.price - product.discount}</strong> {product.discount > 0 && <span className='text-red-500 line-through'>{product.price}</span>}
+                                </p>
+                                <MdDeleteOutline onClick={() => removeFromwishlist(product.package_id)} className='text-2xl text-center col-span-1 cursor-pointer' />
                             </div>
-                            <Link href={`/packages/${product.slug}`} className='col-span-3'>{product.title} </Link>
-                            <p className='col-span-1'>
-                                BDT <strong className='text-xl'>{product.price}</strong> {product.discount > 0 && <span>-{product.discount}</span>}
-                            </p>
-                            <MdDeleteOutline onClick={() => removeFromwishlist(product.package_id)} className='text-2xl col-span-1 cursor-pointer' />
-                        </div>
-                    ))}
+                        ))}
 
-                    <div className="w-full flex flex-col md:flex-row justify-between items-start p-6 border rounded-2xl border-black/30 shadow-xl mt-4">
-                        <div className="space-y-2">
-                            <p className="flex justify-between gap-10">Sub Total: <span>BDT {subTotal}</span></p>
-                            <p className="flex justify-between gap-10 text-red-500">Discount: <span>- BDT {totalDiscount}</span></p>
-                            <p className="flex justify-between gap-10 font-bold text-xl border-t pt-2">Total Amount: <span>BDT {totalAmount}</span></p>
-                        </div>
-                        
-                        <Link 
-                            href="/checkout" 
-                            className="mt-6 md:mt-0 bg-black text-white px-10 py-4 rounded-xl font-bold hover:bg-gray-800 transition-all"
+                    </div>
+                    <div className="w-full col-span-1 md:col-span-2 p-3 rounded-xl flex flex-col justify-between items-center border border-black/30">
+
+                        <p className="w-full flex justify-between gap-10">Sub Total: <span>BDT {subTotal}</span></p>
+                        <p className="w-full flex justify-between gap-10 text-red-500">Discount: <span>- BDT {totalDiscount}</span></p>
+                        <p className="w-full flex justify-between gap-10 font-bold text-xl border-t pt-2">Total Amount: <span>BDT {totalAmount}</span></p>
+
+
+                        <button
+                            onClick={handleSubmit}
+                            disabled={!wishlist?.items?.length}
+                            className="w-full bg-emerald-500 cursor-pointer text-white p-2 mt-8 text-center rounded-lg flex gap-2 items-center justify-center "
                         >
                             Place Order
-                        </Link>
+                        </button>
                     </div>
                 </div>
             ) : (
