@@ -22,29 +22,28 @@ const UpdatePackageForm = ({ pack }) => {
         }));
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const data = new FormData();
-            data.append('id', pack.package_id);
-            data.append('title', formData.title);
-            data.append('description', formData.description);
-            data.append('price', formData.price);
-            data.append('discount', formData.discount);
-            data.append('category', formData.category);
-            data.append('is_popular', formData.is_popular);
-            
-            const featuresArray = formData.features.split(',').map(f => f.trim()).filter(f => f);
-            data.append('features', JSON.stringify(featuresArray));
-            
-            if (image) data.append('image', image);
+   const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        const data = new FormData();
+        data.append('id', pack.package_id);
+        data.append('title', formData.title);
+        data.append('description', formData.description);
+        data.append('price', formData.price);
+        data.append('discount', formData.discount);
+        data.append('category', formData.category);
+        data.append('is_popular', formData.is_popular);
+        
+        data.append('features', formData.features); 
+        
+        if (image) data.append('image', image);
 
-            const res = await axios.patch('/api/package', data);
-            alert(res.data.message);
-        } catch (error) {
-            alert(error?.response?.data?.message || "Update failed");
-        }
-    };
+        const res = await axios.patch('/api/package', data);
+        alert(res.data.message);
+    } catch (error) {
+        alert(error?.response?.data?.message || "Update failed");
+    }
+};
 
     return (
         <form onSubmit={handleSubmit} className='w-full flex flex-col items-center gap-4 p-1 sm:p-4'>

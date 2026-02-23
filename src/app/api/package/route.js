@@ -78,20 +78,26 @@ export async function PATCH(req) {
         const formData = await req.formData();
         const id = formData.get("id");
 
-        if (!id) return NextResponse.json({ success: false, message: "ID required" }, { status: 400 });
+        if (!id) {
+            return NextResponse.json({ success: false, message: "ID required" }, { status: 400 });
+        }
 
+        // 1. Check if package exists
         const findResult = await pool.query("SELECT * FROM public.packages WHERE package_id = $1", [id]);
-        if (findResult.rowCount === 0) return NextResponse.json({ success: false, message: "Package not found" }, { status: 404 });
+        if (findResult.rowCount === 0) {
+            return NextResponse.json({ success: false, message: "Package not found" }, { status: 404 });
+        }
 
         const pkg = findResult.rows[0];
 
+        // 2. Extract data from FormData
         const title = formData.get("title");
         const description = formData.get("description");
         const price = formData.get("price");
         const discount = formData.get("discount");
         const category = formData.get("category");
-        const features = formData.get("features");
-        const isPopular = formData.get("isPopular");
+        const features = formData.get("features"); // Received as: "Feature 1, Feature 2"
+        const isPopular = formData.get("is_popular"); // Name matched to frontend
         const imageFile = formData.get("image");
 
         let updateData = { ...pkg };
@@ -104,11 +110,23 @@ export async function PATCH(req) {
         if (price) updateData.price = Number(price);
         if (discount !== null) updateData.discount = Number(discount);
         if (category) updateData.category = category;
-        if (isPopular !== null) updateData.is_popular = isPopular === "true";
-        if (features) updateData.features = features.split(',').map(f => f.trim());
 
+        if (isPopular !== null) {
+            updateData.is_popular = isPopular === "true";
+        }
+
+        if (features) {
+            updateData.features = features
+                .split(',')
+                .map(f => f.trim())
+                .filter(f => f !== ""); // Remove empty entries
+        }
         if (imageFile && typeof imageFile !== "string") {
-            await cloudinary.uploader.destroy(pkg.image_id);
+            // Delete old image from Cloudinary if it exists
+            if (pkg.image_id) {
+                await cloudinary.uploader.destroy(pkg.image_id);
+            }
+
             const buffer = Buffer.from(await imageFile.arrayBuffer());
             const cloudImage = await new Promise((resolve, reject) => {
                 const stream = cloudinary.uploader.upload_stream(
@@ -117,32 +135,59 @@ export async function PATCH(req) {
                 );
                 stream.end(buffer);
             });
+
             updateData.image = cloudImage.secure_url;
             updateData.image_id = cloudImage.public_id;
         }
 
         const updateQuery = `
             UPDATE public.packages 
-            SET title = $1, slug = $2, description = $3, price = $4, discount = $5, 
-                image = $6, image_id = $7, features = $8, category = $9, 
-                is_popular = $10, updated_at = CURRENT_TIMESTAMP
+            SET title = $1, 
+                slug = $2, 
+                description = $3, 
+                price = $4, 
+                discount = $5, 
+                image = $6, 
+                image_id = $7, 
+                features = $8, 
+                category = $9, 
+                is_popular = $10, 
+                updated_at = CURRENT_TIMESTAMP
             WHERE package_id = $11
             RETURNING *;
         `;
 
         const updateValues = [
-            updateData.title, updateData.slug, updateData.description, updateData.price,
-            updateData.discount, updateData.image, updateData.image_id, updateData.features,
-            updateData.category, updateData.is_popular, id
+            updateData.title, 
+            updateData.slug, 
+            updateData.description, 
+            updateData.price,
+            updateData.discount, 
+            updateData.image, 
+            updateData.image_id, 
+            updateData.features, 
+            updateData.category, 
+            updateData.is_popular, 
+            id
         ];
 
         const result = await pool.query(updateQuery, updateValues);
-        return NextResponse.json({ success: true, message: "Package updated", payload: result.rows[0] });
+
+        return NextResponse.json({ 
+            success: true, 
+            message: "Package updated successfully", 
+            payload: result.rows[0] 
+        });
+
     } catch (error) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        console.error("Update Error:", error);
+        return NextResponse.json({ 
+            success: false, 
+            message: "Internal server error", 
+            error: error.message 
+        }, { status: 500 });
     }
 }
-
 export async function DELETE(req) {
     try {
         const { id } = await req.json();

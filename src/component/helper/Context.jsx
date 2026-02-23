@@ -81,7 +81,9 @@ const ContextProvider = ({ children }) => {
                     ...prev.items,
                     {
                         package_id: pack.package_id,
+                        image:pack.image,
                         title: pack.title,
+                        slug: pack.slug,
                         price: salePrice,
                         discount: discountPrice,
                     }

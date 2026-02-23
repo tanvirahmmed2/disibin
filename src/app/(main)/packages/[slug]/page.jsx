@@ -1,3 +1,4 @@
+import AddToWishlist from '@/component/button/AddToWishlist'
 import { BASE_URL } from '@/lib/database/secret'
 import Image from 'next/image'
 import React from 'react'
@@ -32,8 +33,7 @@ const Package = async ({ params }) => {
                     ))
                 }
             </div>
-            <button href={`${pack.preview}`} className='w-full bg-orange-600 cursor-pointer text-white p-2 text-center rounded-lg flex gap-2 items-center justify-center'><FaPlus/> Wishlist</button>
-            
+            <AddToWishlist pack={pack}/>
         </div>
     )
 }
