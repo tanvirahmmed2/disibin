@@ -18,7 +18,11 @@ const Sidebar = () => {
             <Link href={'/about'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>About</Link>
             {
                 isLoggedin ?
-                    <Link href={'/profile'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Profile</Link>
+                    <div className='flex flex-col gap-2'>
+                        <Link href={'/profile'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Profile</Link>
+                        <Link href={'/wishlist'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Wishlist</Link>
+
+                    </div>
                     :
                     <div className='flex flex-col gap-2'>
                         <Link href={'/login'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Login</Link>
