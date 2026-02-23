@@ -3,10 +3,14 @@ import { Context } from '@/component/helper/Context'
 import React, { useContext } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { MdDeleteOutline } from 'react-icons/md'
 
 const WishlistPage = () => {
-    // Note: Ensuring we grab removeFromwishlist and wishlist from context
     const { removeFromwishlist, wishlist } = useContext(Context)
+
+    const subTotal = wishlist?.items?.reduce((acc, item) => acc + (Number(item.price) || 0), 0) || 0;
+    const totalDiscount = wishlist?.items?.reduce((acc, item) => acc + (Number(item.discount) || 0), 0) || 0;
+    const totalAmount = subTotal - totalDiscount;
 
     return (
         <div className="w-full p-1 sm:p-4">
@@ -17,53 +21,37 @@ const WishlistPage = () => {
             {wishlist?.items?.length > 0 ? (
                 <div className="w-full flex flex-col items-center justify-center gap-4">
                     {wishlist.items.map((product) => (
-                        <div key={product.package_id} className="w-full flex flex-col md:flex-row items-center justify-between relative border p-2 shadow-2xl rounded-2xl">
-                            
-                            <button 
-                                onClick={() => removeFromwishlist(product.package_id)}
-                                className="absolute top-2 right-2 z-10 bg-white/80 backdrop-blur-sm text-red-500 hover:bg-red-500 hover:text-white p-2 rounded-full shadow-sm transition-all border border-red-100"
-                                title="Remove from Wishlist"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-
-                            <div className="relative h-48  ">
-                                <Image 
-                                    src={product.image || '/placeholder.jpg'} 
+                        <div key={product.package_id} className="w-full grid grid-cols-6 border p-6 shadow-sm rounded-2xl border-black/30">
+                            <div className="relative col-span-1 ">
+                                <Image
+                                    src={product.image || '/placeholder.jpg'}
                                     alt={product.title}
-                                    fill
-                                    sizes="(max-width: 768px) 100vw, 25vw"
-                                    className="object-contain"
+                                    width={50}
+                                    height={50}
                                 />
                             </div>
-
-                            {/* Product Info */}
-                            <div className="flex-grow">
-                                <h2 className="font-semibold text-lg line-clamp-2 min-h-[3.5rem] text-gray-800">
-                                    {product.title}
-                                </h2>
-                                <div className="mt-2 flex items-baseline gap-2">
-                                    <span className="text-xl font-bold text-blue-600">${product.price}</span>
-                                    {product.discount > 0 && (
-                                        <span className="text-sm text-gray-400 line-through">
-                                            ${(product.price + product.discount).toFixed(2)}
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="mt-6 flex flex-col gap-2">
-                                <Link 
-                                    href={`/product/${product.slug}`} // Changed to slug to match your addToWishList object
-                                    className="text-center bg-gray-900 text-white py-2.5 rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
-                                >
-                                    View Details
-                                </Link>
-                            </div>
+                            <Link href={`/packages/${product.slug}`} className='col-span-3'>{product.title} </Link>
+                            <p className='col-span-1'>
+                                BDT <strong className='text-xl'>{product.price}</strong> {product.discount > 0 && <span>-{product.discount}</span>}
+                            </p>
+                            <MdDeleteOutline onClick={() => removeFromwishlist(product.package_id)} className='text-2xl col-span-1 cursor-pointer' />
                         </div>
                     ))}
+
+                    <div className="w-full flex flex-col md:flex-row justify-between items-start p-6 border rounded-2xl border-black/30 shadow-xl mt-4">
+                        <div className="space-y-2">
+                            <p className="flex justify-between gap-10">Sub Total: <span>BDT {subTotal}</span></p>
+                            <p className="flex justify-between gap-10 text-red-500">Discount: <span>- BDT {totalDiscount}</span></p>
+                            <p className="flex justify-between gap-10 font-bold text-xl border-t pt-2">Total Amount: <span>BDT {totalAmount}</span></p>
+                        </div>
+                        
+                        <Link 
+                            href="/checkout" 
+                            className="mt-6 md:mt-0 bg-black text-white px-10 py-4 rounded-xl font-bold hover:bg-gray-800 transition-all"
+                        >
+                            Place Order
+                        </Link>
+                    </div>
                 </div>
             ) : (
                 <div className="text-center py-24 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
@@ -73,9 +61,9 @@ const WishlistPage = () => {
                         </svg>
                     </div>
                     <h3 className="text-xl font-medium text-gray-600">Your wishlist is empty</h3>
-                    <p className="text-gray-400 mt-2">Looks like you haven't added anything yet.</p>
-                    <Link href="/shop" className="mt-6 inline-block bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition-all font-medium">
-                        Explore Products
+                    <p className="text-gray-400 mt-2">Looks like you have not added anything yet.</p>
+                    <Link href="/packages" className="mt-6 inline-block bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition-all font-medium">
+                        Explore Packages
                     </Link>
                 </div>
             )}
