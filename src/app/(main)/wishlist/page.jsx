@@ -7,7 +7,7 @@ import { MdDeleteOutline } from 'react-icons/md'
 import axios from 'axios'
 
 const WishlistPage = () => {
-    const { removeFromwishlist, wishlist } = useContext(Context)
+    const { removeFromwishlist, wishlist,clearWishlist } = useContext(Context)
     const [isPopUp, setIsPopUp] = useState(false)
     const [payment_method, setPayment_method] = useState('bkash')
 
@@ -22,6 +22,8 @@ const WishlistPage = () => {
         try {
             const res = await axios.post('/api/purchase', data, { withCredentials: true })
             alert(res.data.message)
+            clearWishlist()
+            setIsPopUp(false)
         } catch (error) {
             alert(error?.response?.data?.message || 'Failed to place order')
         }
@@ -60,7 +62,7 @@ const WishlistPage = () => {
                         ))}
 
                     </div>
-                    <div className="w-full text-xs gap-2 col-span-1 md:col-span-2 p-3 rounded-xl  flex flex-col justify-between items-center">
+                    <div className="w-full text-xs md:text-base gap-2 col-span-1 md:col-span-2 p-3 rounded-xl  flex flex-col justify-between items-center">
 
                         <p className="w-full flex justify-between gap-10">Sub Total: <span>BDT {subTotal}</span></p>
                         <p className="w-full flex justify-between gap-10 text-red-500">Discount: <span>- BDT {totalDiscount}</span></p>

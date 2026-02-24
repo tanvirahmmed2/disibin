@@ -81,7 +81,7 @@ const ContextProvider = ({ children }) => {
                     ...prev.items,
                     {
                         package_id: pack.package_id,
-                        image:pack.image,
+                        image: pack.image,
                         title: pack.title,
                         slug: pack.slug,
                         price: salePrice,
@@ -94,16 +94,22 @@ const ContextProvider = ({ children }) => {
     };
 
     const removeFromwishlist = (id) => {
-        const confirm= window.confirm('Are you sure?')
-        if(!confirm) return
-        setWishList(prev => ({ 
-            ...prev, 
-            items: prev.items.filter(item => item.package_id !== id) 
+        const confirm = window.confirm('Are you sure?')
+        if (!confirm) return
+        setWishList(prev => ({
+            ...prev,
+            items: prev.items.filter(item => item.package_id !== id)
         }))
     }
 
+    const clearWishlist = () => {
+        setWishList({ items: [] });
+        if (typeof window !== 'undefined') localStorage.removeItem('wishlist');
+        alert("wishlist cleared");
+    }
+
     const contextValues = {
-        sidebar, setSidebar, isLoggedin, userData, removeFromwishlist, addToWishList, wishlist
+        sidebar, setSidebar, isLoggedin, userData, removeFromwishlist, addToWishList, wishlist, clearWishlist
     }
 
     return (
