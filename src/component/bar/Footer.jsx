@@ -10,7 +10,8 @@ const Footer = () => {
     <footer className='w-full from-teal-900 to-teal-700 bg-linear-to-br text-white px-4 py-8 flex flex-col items-center justify-center gap-4'>
 
 
-      <div className='w-full grid grid-cols-1 md:grid-cols-3 justify-items-center gap-4'>
+      <div className='w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center gap-4'>
+
         <div className='w-auto min-w-50 flex flex-col gap-1'>
           <p className='font-semibold opacity-70 text-lg'>Links</p>
           <div className='flex flex-col text-sm w-auto'>
@@ -36,8 +37,6 @@ const Footer = () => {
             <Link href={'/'}>Account</Link>
           </div>
         </div>
-      </div>
-      <div className='w-full grid grid-cols-1 md:grid-cols-3 justify-items-center gap-4'>
         <div className='w-auto min-w-50 flex flex-col gap-1'>
           <p className='font-semibold opacity-70 text-lg'>FAQ</p>
           <p>How to order</p>
@@ -57,6 +56,7 @@ const Footer = () => {
           <p>Dial: +8801805003887</p>
         </div>
       </div>
+
 
       <div className='w-full grid grid-cols-1 md:grid-cols-2 justify-items-center gap-4 border-t pt-4'>
         <div className='w-auto min-w-50 flex flex-col gap-1 justify-center'>

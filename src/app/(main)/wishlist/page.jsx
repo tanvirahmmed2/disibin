@@ -33,7 +33,7 @@ const WishlistPage = () => {
                 <div className="w-full grid grid-cols-1 md:grid-cols-5 gap-8">
                     <div className='w-full col-span-1 md:col-span-3 flex flex-col items-center gap-2'>
                         {wishlist.items.map((product) => (
-                            <div key={product.package_id} className="w-full grid grid-cols-10  border p-6 even:bg-gray-200 shadow-sm rounded-2xl border-black/30">
+                            <div key={product.package_id} className="w-full grid grid-cols-10  border p-6 even:bg-gray-100 shadow-sm rounded-2xl border-black/20">
                                 <div className="relative col-span-1 p-2 ">
                                     <Image
                                         src={product.image || '/placeholder.jpg'}
