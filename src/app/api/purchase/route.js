@@ -123,3 +123,62 @@ export async function PATCH(req) {
         client.release();
     }
 }
+
+
+export async function GET() {
+    const client = await pool.connect();
+    try {
+        // We use a LEFT JOIN for packages to ensure we see the purchase 
+        // even if something went wrong with the package links.
+        const query = `
+            SELECT 
+                p.purchase_id,
+                p.total_amount,
+                p.discount_amount,
+                p.payable_amount,
+                p.purchase_status,
+                p.purchase_date,
+                p.created_at as purchase_created_at,
+                -- User Details
+                u.name as user_name,
+                u.email as user_email,
+                -- Payment Details
+                pay.payment_id,
+                pay.transaction_id,
+                pay.amount_paid,
+                pay.payment_method,
+                pay.status as payment_status,
+                pay.paid_at,
+                -- Nested JSON array of all packages in this purchase
+                (
+                    SELECT json_agg(pkg)
+                    FROM (
+                        SELECT purchased_pkg_id, package_id, package_title, status, expiry_date
+                        FROM public.purchased_packages
+                        WHERE purchase_id = p.purchase_id
+                    ) pkg
+                ) as items
+            FROM public.purchases p
+            INNER JOIN public.users u ON p.user_id = u.user_id
+            LEFT JOIN public.payments pay ON p.purchase_id = pay.purchase_id
+            ORDER BY p.created_at DESC;
+        `;
+
+        const result = await client.query(query);
+
+        return NextResponse.json({ 
+            success: true, 
+            count: result.rowCount,
+            data: result.rows 
+        });
+
+    } catch (error) {
+        console.error('Fetch All Purchases Error:', error);
+        return NextResponse.json({ 
+            success: false, 
+            message: 'Failed to fetch purchase history' 
+        }, { status: 500 });
+    } finally {
+        client.release();
+    }
+}
