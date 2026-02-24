@@ -33,15 +33,15 @@ const WishlistPage = () => {
 
     return (
         <div className="w-full p-1 sm:p-4 relative">
-            <h1 className="text-3xl font-bold mb-8 text-gray-800 text-center md:text-left">
+            <h1 className="text-xl font-bold mb-8 text-gray-800 text-center md:text-left">
                 My Wishlist ({wishlist?.items?.length || 0})
             </h1>
 
             {wishlist?.items?.length > 0 ? (
                 <div className="w-full grid grid-cols-1 md:grid-cols-5 gap-8">
-                    <div className='w-full col-span-1 md:col-span-3 flex flex-col items-center gap-2'>
+                    <div className='w-full col-span-1 md:col-span-3 flex flex-col mb-10 p-1 items-center gap-2'>
                         {wishlist.items.map((product) => (
-                            <div key={product.package_id} className="w-full grid grid-cols-10  border p-6 even:bg-gray-100 shadow-sm rounded-2xl border-black/20">
+                            <div key={product.package_id} className="w-full grid text-xs sm:text-base grid-cols-10 p-6 even:bg-gray-100 shadow-sm rounded-2xl ">
                                 <div className="relative col-span-1 p-2 ">
                                     <Image
                                         src={product.image || '/placeholder.jpg'}
@@ -53,18 +53,18 @@ const WishlistPage = () => {
                                 </div>
                                 <Link href={`/packages/${product.slug}`} className='col-span-5'>{product.title} </Link>
                                 <p className='col-span-3 text-center'>
-                                    BDT <strong className='text-xl'>{product.price - product.discount}</strong> {product.discount > 0 && <span className='text-red-500 line-through'>{product.price}</span>}
+                                    BDT <strong className=''>{product.price - product.discount}</strong> {product.discount > 0 && <span className='text-red-500 line-through'>{product.price}</span>}
                                 </p>
                                 <MdDeleteOutline onClick={() => removeFromwishlist(product.package_id)} className='text-2xl text-center col-span-1 cursor-pointer' />
                             </div>
                         ))}
 
                     </div>
-                    <div className="w-full col-span-1 md:col-span-2 p-3 rounded-xl flex flex-col justify-between items-center border border-black/30">
+                    <div className="w-full text-xs gap-2 col-span-1 md:col-span-2 p-3 rounded-xl  flex flex-col justify-between items-center">
 
                         <p className="w-full flex justify-between gap-10">Sub Total: <span>BDT {subTotal}</span></p>
                         <p className="w-full flex justify-between gap-10 text-red-500">Discount: <span>- BDT {totalDiscount}</span></p>
-                        <p className="w-full flex justify-between gap-10 font-bold text-xl border-t pt-2">Total Amount: <span>BDT {totalAmount}</span></p>
+                        <p className="w-full flex justify-between gap-10 font-bold border-t pt-2">Total Amount: <span>BDT {totalAmount}</span></p>
 
 
                         <button
