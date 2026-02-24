@@ -1,6 +1,6 @@
 'use client'
 import { Context } from '@/component/helper/Context'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { MdDeleteOutline } from 'react-icons/md'
@@ -8,23 +8,31 @@ import axios from 'axios'
 
 const WishlistPage = () => {
     const { removeFromwishlist, wishlist } = useContext(Context)
+    const [isPopUp, setIsPopUp] = useState(false)
+    const [payment_method, setPayment_method] = useState('bkash')
 
     const subTotal = wishlist?.items?.reduce((acc, item) => acc + (Number(item.price) || 0), 0) || 0;
     const totalDiscount = wishlist?.items?.reduce((acc, item) => acc + (Number(item.discount) || 0), 0) || 0;
     const totalAmount = subTotal - totalDiscount;
 
 
-    const handleSubmit = async() => {
-        const data= {totalAmount, items:wishlist.items}
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        const data = { totalAmount, items: wishlist.items }
         try {
-            const res= await axios.post('/api/purchase', data, {withCredentials:true})
+            const res = await axios.post('/api/purchase', data, { withCredentials: true })
             alert(res.data.message)
         } catch (error) {
             alert(error?.response?.data?.message || 'Failed to place order')
         }
     }
+
+    const handlePopUp = () => {
+        setIsPopUp(!isPopUp)
+    }
+
     return (
-        <div className="w-full p-1 sm:p-4">
+        <div className="w-full p-1 sm:p-4 relative">
             <h1 className="text-3xl font-bold mb-8 text-gray-800 text-center md:text-left">
                 My Wishlist ({wishlist?.items?.length || 0})
             </h1>
@@ -60,7 +68,7 @@ const WishlistPage = () => {
 
 
                         <button
-                            onClick={handleSubmit}
+                            onClick={handlePopUp}
                             disabled={!wishlist?.items?.length}
                             className="w-full bg-emerald-500 cursor-pointer text-white p-2 mt-8 text-center rounded-lg flex gap-2 items-center justify-center "
                         >
@@ -80,6 +88,73 @@ const WishlistPage = () => {
                     <Link href="/packages" className="mt-6 inline-block bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition-all font-medium">
                         Explore Packages
                     </Link>
+                </div>
+            )}
+
+            {isPopUp && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+
+                        <div className="bg-gray-50 border-b p-6">
+                            <h2 className="text-xl font-bold text-gray-800 text-center">Checkout Summary</h2>
+                        </div>
+
+                        <div className="p-6 space-y-6">
+                            <div className="space-y-3 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                                <div className="flex justify-between text-gray-600">
+                                    <span>Sub Total</span>
+                                    <span>BDT {subTotal}</span>
+                                </div>
+                                <div className="flex justify-between text-red-500">
+                                    <span>Discount</span>
+                                    <span>- BDT {totalDiscount}</span>
+                                </div>
+                                <div className="flex justify-between font-bold text-xl text-gray-900 border-t pt-2">
+                                    <span>Total Amount</span>
+                                    <span>BDT {totalAmount}</span>
+                                </div>
+                            </div>
+
+                            <div className="text-sm text-gray-500 bg-amber-50 border-l-4 border-amber-400 p-3 italic">
+                                <p>After placing the order, our representative will call you to confirm. Please complete payment before confirmation.</p>
+                            </div>
+
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div className="flex flex-col gap-2">
+                                    <label htmlFor="payment_method" className="text-sm font-semibold text-gray-700">
+                                        Select Payment Method
+                                    </label>
+                                    <select
+                                        className="w-full h-11 px-4 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all appearance-none cursor-pointer"
+                                        name="payment_method"
+                                        id="payment_method"
+                                        value={payment_method}
+                                        onChange={(e) => setPayment_method(e.target.value)}
+                                    >
+                                        <option value="bkash">bKash</option>
+                                        <option value="nagad">Nagad</option>
+                                        <option value="bank">Bank Transfer</option>
+                                    </select>
+                                </div>
+
+                                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                                    <button
+                                        type="button"
+                                        onClick={handlePopUp}
+                                        className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-100 transition-colors uppercase text-sm tracking-wider"
+                                    >
+                                        Back
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="flex-1 px-4 py-3 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all uppercase text-sm tracking-wider"
+                                    >
+                                        Confirm Order
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
