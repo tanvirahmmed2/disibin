@@ -94,6 +94,8 @@ const ContextProvider = ({ children }) => {
     };
 
     const removeFromwishlist = (id) => {
+        const confirm= window.confirm('Are you sure?')
+        if(!confirm) return
         setWishList(prev => ({ 
             ...prev, 
             items: prev.items.filter(item => item.package_id !== id) 

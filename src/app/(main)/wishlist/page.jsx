@@ -55,7 +55,7 @@ const WishlistPage = () => {
                                 <p className='col-span-3 text-center'>
                                     BDT <strong className=''>{product.price - product.discount}</strong> {product.discount > 0 && <span className='text-red-500 line-through'>{product.price}</span>}
                                 </p>
-                                <MdDeleteOutline onClick={() => removeFromwishlist(product.package_id)} className='text-2xl text-center col-span-1 cursor-pointer' />
+                                <MdDeleteOutline onClick={() => removeFromwishlist(product.package_id)} className='text-base sm:text-xl md:text-2xl text-red-500 text-center col-span-1 cursor-pointer' />
                             </div>
                         ))}
 
