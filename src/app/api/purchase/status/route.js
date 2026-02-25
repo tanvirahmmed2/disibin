@@ -51,7 +51,7 @@ export async function GET(req) {
     }
 }
 
-export async function POST(req) {
+export async function PATCH(req) {
     const client = await pool.connect();
     try {
         const { purchase_id, status } = await req.json();

@@ -73,49 +73,73 @@ export async function POST(req) {
 export async function PATCH(req) {
     const client = await pool.connect();
     try {
-        const body = await req.json();
-        const { purchase_id, transaction_id } = body;
+        const auth = await isManager();
+        if (!auth.success) {
+            return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+        }
 
-        if (!purchase_id || !transaction_id) {
-            return NextResponse.json({ message: 'Missing Purchase ID or Transaction ID' }, { status: 400 });
+        const { purchase_id, payment_method, transaction_id } = await req.json();
+
+        if (!purchase_id || !payment_method || !transaction_id) {
+            return NextResponse.json({ 
+                success: false, 
+                message: 'Missing required payment details' 
+            }, { status: 400 });
         }
 
         await client.query('BEGIN');
 
-        const updatePayment = `
-            UPDATE public.payments 
-            SET transaction_id = $1, status = 'completed', paid_at = CURRENT_TIMESTAMP
-            WHERE purchase_id = $2
-            RETURNING payment_id;
-        `;
-        const payRes = await client.query(updatePayment, [transaction_id, purchase_id]);
+        // 1. Check if payment record exists and is not already completed
+        const paymentCheck = await client.query(
+            `SELECT status FROM payments WHERE purchase_id = $1`,
+            [purchase_id]
+        );
 
-        if (payRes.rowCount === 0) {
-            throw new Error('Payment record not found');
+        if (paymentCheck.rowCount === 0) {
+            await client.query('ROLLBACK');
+            return NextResponse.json({ success: false, message: 'Payment record not found' }, { status: 404 });
         }
 
-        const updatePurchase = `
-            UPDATE public.purchases 
-            SET purchase_status = 'active', updated_at = CURRENT_TIMESTAMP
-            WHERE purchase_id = $1;
-        `;
-        await client.query(updatePurchase, [purchase_id]);
+        if (paymentCheck.rows[0].status === 'completed') {
+            await client.query('ROLLBACK');
+            return NextResponse.json({ success: false, message: 'Payment already verified' }, { status: 400 });
+        }
 
-        const updatePackages = `
-            UPDATE public.purchased_packages 
-            SET status = 'active'
-            WHERE purchase_id = $1;
+        // 2. Update the payment record
+        const updatePaymentQuery = `
+            UPDATE payments 
+            SET 
+                transaction_id = $1, 
+                payment_method = $2, 
+                status = 'completed', 
+                paid_at = CURRENT_TIMESTAMP,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE purchase_id = $3
+            RETURNING *;
         `;
-        await client.query(updatePackages, [purchase_id]);
+        
+        await client.query(updatePaymentQuery, [transaction_id, payment_method, purchase_id]);
+
+        // 3. Optional: Update the purchase status to 'completed' (waiting for final activation)
+        await client.query(
+            `UPDATE purchases SET purchase_status = 'completed', updated_at = CURRENT_TIMESTAMP WHERE purchase_id = $1`,
+            [purchase_id]
+        );
 
         await client.query('COMMIT');
 
-        return NextResponse.json({ success: true, message: 'Payment verified and package activated!' });
+        return NextResponse.json({ 
+            success: true, 
+            message: 'Payment successfully recorded and verified' 
+        }, { status: 200 });
 
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Verification Error:', error);
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+        console.error('Payment Update Error:', error);
+        return NextResponse.json({ 
+            success: false, 
+            message: error.message 
+        }, { status: 500 });
     } finally {
         client.release();
     }
