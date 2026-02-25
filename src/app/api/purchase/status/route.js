@@ -52,40 +52,70 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
+    const client = await pool.connect();
     try {
-        const { purchase_id, status } = await req.json()
+        const { purchase_id, status } = await req.json();
 
         if (!purchase_id || !status) {
             return NextResponse.json({
-                success: false, message: 'Purchase id or status not recieved',
-            }, { status: 400 })
-        }
-
-        const purchase = await pool.query(`SELECT purchase_status FROM purchases WHERE purchase_id=$1`, [purchase_id])
-        if (purchase.rowCount === 0) {
-            return NextResponse.json({
-                success: false, message: 'Purchase not found'
-            }, { status: 400 })
-        }
-        const data = purchase.rows[0]
-        const purchaseStatus = data.purchase_status
-
-        if (['completed', 'expired', 'cancelled'].includes(purchaseStatus)) {
-            return NextResponse.json({
-                success: false,
-                message: 'Purchase already processed or closed'
+                success: false, 
+                message: 'Purchase ID or status not received',
             }, { status: 400 });
         }
 
-        const update= await pool.query(`UPDATE purchases SET purchase_status=$1 WHERE`)
+        const purchaseCheck = await client.query(`SELECT purchase_status FROM purchases WHERE purchase_id=$1`, [purchase_id]);
+        if (purchaseCheck.rowCount === 0) {
+            return NextResponse.json({ success: false, message: 'Purchase not found' }, { status: 404 });
+        }
+        
+        const currentPurchaseStatus = purchaseCheck.rows[0].purchase_status;
+
+        if (['completed', 'expired', 'cancelled'].includes(currentPurchaseStatus)) {
+            return NextResponse.json({
+                success: false,
+                message: `Cannot update a purchase that is already ${currentPurchaseStatus}`
+            }, { status: 400 });
+        }
+
+        const paymentCheck = await client.query(`SELECT status FROM payments WHERE purchase_id=$1`, [purchase_id]);
+        if (paymentCheck.rowCount === 0) {
+            return NextResponse.json({ success: false, message: 'Payment data not found' }, { status: 400 });
+        }
+
+        const paymentStatus = paymentCheck.rows[0].status;
+
+        if ((status === 'completed' || status === 'active') && paymentStatus !== 'completed') {
+            return NextResponse.json({
+                success: false, 
+                message: `Please verify payment before setting status to ${status}`
+            }, { status: 400 });
+        }
+
+        await client.query('BEGIN');
+
+        await client.query(
+            `UPDATE purchases SET purchase_status=$1, updated_at = CURRENT_TIMESTAMP WHERE purchase_id=$2`,
+            [status, purchase_id]
+        );
+
+        await client.query(
+            `UPDATE purchased_packages SET status=$1 WHERE purchase_id=$2`,
+            [status, purchase_id]
+        );
+
+        await client.query('COMMIT');
+
         return NextResponse.json({
-            success: true, message: 'Successfully updated status', payload: purchaseStatus
-        }, { status: 200 })
+            success: true, 
+            message: `Purchase status updated to ${status}`
+        }, { status: 200 });
+
     } catch (error) {
+        await client.query('ROLLBACK');
         return NextResponse.json({
             success: false, message: error.message
-        }, { status: 500 })
-
+        }, { status: 500 });
+    } finally {
+        client.release();
     }
-
 }
