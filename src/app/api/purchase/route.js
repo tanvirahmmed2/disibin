@@ -1,5 +1,5 @@
 import { pool } from '@/lib/database/pg';
-import { isLogin } from '@/lib/middleware';
+import { isLogin, isManager } from '@/lib/middleware';
 import { NextResponse } from 'next/server';
 
 export async function POST(req) {
@@ -125,8 +125,8 @@ export async function PATCH(req) {
 export async function GET() {
     const client = await pool.connect();
     try {
-        const auth = await isLogin();
-        if (!auth.success || auth.payload.role !== 'admin') {
+        const auth = await isManager();
+        if (!auth.success) {
             return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
         }
 
@@ -162,8 +162,8 @@ export async function GET() {
 
         return NextResponse.json({ 
             success: true, 
-            count: result.rowCount,
-            data: result.rows 
+            message: 'Sucessfully fetched data',
+           payload: result.rows 
         });
 
     } catch (error) {
