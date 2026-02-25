@@ -1,4 +1,5 @@
 import { pool } from '@/lib/database/pg';
+import { isManager } from '@/lib/middleware';
 import { NextResponse } from 'next/server';
 
 async function getPurchasesByStatus(status) {
