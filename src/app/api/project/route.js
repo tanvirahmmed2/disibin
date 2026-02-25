@@ -139,13 +139,11 @@ export async function PATCH(req) {
         const preview = data.get('preview');
         const is_featured = data.get('is_featured') === 'true';
         
-        // Parse the JSON strings from the form back into real JS Arrays
         const tags = data.get('tags') ? JSON.parse(data.get('tags')) : [];
         const skills = data.get('skills') ? JSON.parse(data.get('skills')) : [];
         
         const imageFile = data.get('image');
 
-        // Verify project exists and get old image info
         const existing = await pool.query("SELECT image_id FROM public.projects WHERE project_id = $1", [id]);
         if (existing.rowCount === 0) {
             return NextResponse.json({ success: false, message: "Project not found" }, { status: 404 });

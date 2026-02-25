@@ -61,12 +61,26 @@ export async function POST(req) {
             }, { status: 400 })
         }
 
-        const purchaseStatus = await pool.query(`SELECT perchase_status FROM purchases WHERE purchase_id=$1`, [purchase_id])
-        if (purchaseStatus.rowCount === 0) {
+        const purchase = await pool.query(`SELECT purchase_status FROM purchases WHERE purchase_id=$1`, [purchase_id])
+        if (purchase.rowCount === 0) {
             return NextResponse.json({
                 success: false, message: 'Purchase not found'
             }, { status: 400 })
         }
+        const data = purchase.rows[0]
+        const purchaseStatus = data.purchase_status
+
+        if (['completed', 'expired', 'cancelled'].includes(purchaseStatus)) {
+            return NextResponse.json({
+                success: false,
+                message: 'Purchase already processed or closed'
+            }, { status: 400 });
+        }
+
+        const update= await pool.query(`UPDATE purchases SET purchase_status=$1 WHERE`)
+        return NextResponse.json({
+            success: true, message: 'Successfully updated status', payload: purchaseStatus
+        }, { status: 200 })
     } catch (error) {
         return NextResponse.json({
             success: false, message: error.message
