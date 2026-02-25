@@ -69,11 +69,11 @@ const UserProfile = () => {
           </Link>
         </div>
         <div className='w-full flex flex-col sm:flex-row items-center justify-center gap-2'>
-          <Link className='w-full text-center bg-gray-200 rounded-2xl hover:bg-white' href={'/profile/purchased_package'}>Orders</Link>
-          <Link className='w-full text-center bg-gray-200 rounded-2xl hover:bg-white' href={'/profile/review'}>Reviews</Link>
-          <Link className='w-full text-center bg-gray-200 rounded-2xl hover:bg-white' href={'/profile/supports'}>Supports</Link>
+          <Link className='w-full text-center bg-gray-200 rounded-2xl hover:bg-white py-2' href={'/profile/purchased_package'}>Orders</Link>
+          <Link className='w-full text-center bg-gray-200 rounded-2xl hover:bg-white py-2' href={'/profile/review'}>Reviews</Link>
+          <Link className='w-full text-center bg-gray-200 rounded-2xl hover:bg-white py-2' href={'/profile/supports'}>Supports</Link>
         </div>
-        <button className='w-full text-center px-6 py-2.5 bg-emerald-600 text-white hover:bg-emerald-400 rounded-2xl cursor-pointer' onClick={async()=>{
+        <button className='w-full text-center px-6 py-2 bg-emerald-600 text-white hover:bg-emerald-400 rounded-2xl cursor-pointer' onClick={async()=>{
           try {
             const res= await axios.get('/api/user/logout', {withCredentials:true})
             alert(res.data.message)

@@ -178,11 +178,11 @@ const PurchasesPage = () => {
               <div className="grid grid-cols-2 gap-3">
                 {paymentStatus === 'completed' ? (
                   <>
-                    <button onClick={() => changeStatus('active')} className="flex items-center justify-center gap-2 bg-emerald-600 text-white py-2.5 rounded-lg text-xs font-bold hover:bg-emerald-700 transition-colors">
-                      <FaCheckDouble /> Activate
+                    <button onClick={() => changeStatus('completed')} className="flex items-center justify-center gap-2 bg-emerald-600 text-white py-2.5 rounded-lg text-xs font-bold hover:bg-emerald-700 transition-colors">
+                      <FaCheckDouble /> Completed
                     </button>
-                    <button onClick={() => changeStatus('cancelled')} className="flex items-center justify-center gap-2 bg-amber-500 text-white py-2.5 rounded-lg text-xs font-bold hover:bg-amber-600 transition-colors">
-                      <FaBan /> Refund/Cancel
+                    <button onClick={() => changeStatus('expired')} className="flex items-center justify-center gap-2 bg-amber-500 text-white py-2.5 rounded-lg text-xs font-bold hover:bg-amber-600 transition-colors">
+                      <FaBan /> Refund
                     </button>
                   </>
                 ) : (

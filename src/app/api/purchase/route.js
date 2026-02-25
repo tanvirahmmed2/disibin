@@ -81,65 +81,41 @@ export async function PATCH(req) {
         const { purchase_id, payment_method, transaction_id } = await req.json();
 
         if (!purchase_id || !payment_method || !transaction_id) {
-            return NextResponse.json({ 
-                success: false, 
-                message: 'Missing required payment details' 
-            }, { status: 400 });
+            return NextResponse.json({ success: false, message: 'Missing required details' }, { status: 400 });
         }
 
         await client.query('BEGIN');
 
-        // 1. Check if payment record exists and is not already completed
-        const paymentCheck = await client.query(
-            `SELECT status FROM payments WHERE purchase_id = $1`,
-            [purchase_id]
+        const payUpdate = await client.query(
+            `UPDATE payments 
+             SET transaction_id = $1, payment_method = $2, status = 'completed', paid_at = CURRENT_TIMESTAMP 
+             WHERE purchase_id = $3 RETURNING *`,
+            [transaction_id, payment_method, purchase_id]
         );
 
-        if (paymentCheck.rowCount === 0) {
+        if (payUpdate.rowCount === 0) {
             await client.query('ROLLBACK');
             return NextResponse.json({ success: false, message: 'Payment record not found' }, { status: 404 });
         }
 
-        if (paymentCheck.rows[0].status === 'completed') {
-            await client.query('ROLLBACK');
-            return NextResponse.json({ success: false, message: 'Payment already verified' }, { status: 400 });
-        }
-
-        // 2. Update the payment record
-        const updatePaymentQuery = `
-            UPDATE payments 
-            SET 
-                transaction_id = $1, 
-                payment_method = $2, 
-                status = 'completed', 
-                paid_at = CURRENT_TIMESTAMP,
-                updated_at = CURRENT_TIMESTAMP
-            WHERE purchase_id = $3
-            RETURNING *;
-        `;
-        
-        await client.query(updatePaymentQuery, [transaction_id, payment_method, purchase_id]);
-
-        // 3. Optional: Update the purchase status to 'completed' (waiting for final activation)
         await client.query(
-            `UPDATE purchases SET purchase_status = 'completed', updated_at = CURRENT_TIMESTAMP WHERE purchase_id = $1`,
+            `UPDATE purchases SET purchase_status = 'active', updated_at = CURRENT_TIMESTAMP WHERE purchase_id = $1`,
+            [purchase_id]
+        );
+
+        await client.query(
+            `UPDATE purchased_packages 
+             SET status = 'active', start_date = CURRENT_TIMESTAMP, expiry_date = CURRENT_TIMESTAMP + INTERVAL '30 days' 
+             WHERE purchase_id = $1`,
             [purchase_id]
         );
 
         await client.query('COMMIT');
-
-        return NextResponse.json({ 
-            success: true, 
-            message: 'Payment successfully recorded and verified' 
-        }, { status: 200 });
+        return NextResponse.json({ success: true, message: 'Payment verified and service activated' });
 
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Payment Update Error:', error);
-        return NextResponse.json({ 
-            success: false, 
-            message: error.message 
-        }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     } finally {
         client.release();
     }
@@ -201,43 +177,24 @@ export async function GET() {
 }
 
 export async function DELETE(req) {
-    const { id } =await req.json()
     const client = await pool.connect();
-
     try {
-        if (!id) {
-            return NextResponse.json({ message: 'Purchase ID is required' }, { status: 400 });
-        }
+        const auth = await isManager();
+        if (!auth.success) return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+
+        const { purchase_id } = await req.json();
 
         await client.query('BEGIN');
-
-        const checkQuery = `SELECT purchase_id FROM public.purchases WHERE purchase_id = $1`;
-        const checkRes = await client.query(checkQuery, [id]);
-
-        if (checkRes.rowCount === 0) {
-            return NextResponse.json({ success: false, message: 'Purchase not found' }, { status: 404 });
-        }
-
-        // Delete the purchase. 
-        // Note: Because of ON DELETE CASCADE in your schema, 
-        // related rows in payments and purchased_packages will be deleted automatically.
-        const deleteQuery = `DELETE FROM public.purchases WHERE purchase_id = $1`;
-        await client.query(deleteQuery, [id]);
-
+        // cascade deletes if foreign keys are set, otherwise delete manually:
+        await client.query('DELETE FROM purchased_packages WHERE purchase_id = $1', [purchase_id]);
+        await client.query('DELETE FROM payments WHERE purchase_id = $1', [purchase_id]);
+        await client.query('DELETE FROM purchases WHERE purchase_id = $1', [purchase_id]);
         await client.query('COMMIT');
 
-        return NextResponse.json({ 
-            success: true, 
-            message: `Purchase #${id} and all related records deleted successfully.` 
-        });
-
+        return NextResponse.json({ success: true, message: 'Purchase record deleted' });
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Delete Error:', error);
-        return NextResponse.json({ 
-            success: false, 
-            message: 'Internal Server Error' 
-        }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     } finally {
         client.release();
     }

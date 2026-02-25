@@ -51,70 +51,59 @@ export async function GET(req) {
     }
 }
 
-export async function PATCH(req) {
+export async function POST(req) {
     const client = await pool.connect();
     try {
+        const auth = await isManager();
+        if (!auth.success) {
+            return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+        }
+
         const { purchase_id, status } = await req.json();
-
-        if (!purchase_id || !status) {
-            return NextResponse.json({
-                success: false, 
-                message: 'Purchase ID or status not received',
-            }, { status: 400 });
-        }
-
-        const purchaseCheck = await client.query(`SELECT purchase_status FROM purchases WHERE purchase_id=$1`, [purchase_id]);
-        if (purchaseCheck.rowCount === 0) {
-            return NextResponse.json({ success: false, message: 'Purchase not found' }, { status: 404 });
-        }
-        
-        const currentPurchaseStatus = purchaseCheck.rows[0].purchase_status;
-
-        if (['completed', 'expired', 'cancelled'].includes(currentPurchaseStatus)) {
-            return NextResponse.json({
-                success: false,
-                message: `Cannot update a purchase that is already ${currentPurchaseStatus}`
-            }, { status: 400 });
-        }
-
-        const paymentCheck = await client.query(`SELECT status FROM payments WHERE purchase_id=$1`, [purchase_id]);
-        if (paymentCheck.rowCount === 0) {
-            return NextResponse.json({ success: false, message: 'Payment data not found' }, { status: 400 });
-        }
-
-        const paymentStatus = paymentCheck.rows[0].status;
-
-        if ((status === 'completed' || status === 'active') && paymentStatus !== 'completed') {
-            return NextResponse.json({
-                success: false, 
-                message: `Please verify payment before setting status to ${status}`
-            }, { status: 400 });
-        }
 
         await client.query('BEGIN');
 
-        await client.query(
-            `UPDATE purchases SET purchase_status=$1, updated_at = CURRENT_TIMESTAMP WHERE purchase_id=$2`,
-            [status, purchase_id]
-        );
+        // Get current payment status
+        const payRes = await client.query('SELECT status FROM payments WHERE purchase_id = $1', [purchase_id]);
+        if (payRes.rowCount === 0) {
+            await client.query('ROLLBACK');
+            return NextResponse.json({ success: false, message: 'Payment record not found' }, { status: 404 });
+        }
+        const currentPaymentStatus = payRes.rows[0].status;
 
-        await client.query(
-            `UPDATE purchased_packages SET status=$1 WHERE purchase_id=$2`,
-            [status, purchase_id]
-        );
+        if (status === 'completed') {
+            // Logic: Only work when payment status is completed
+            if (currentPaymentStatus !== 'completed') {
+                await client.query('ROLLBACK');
+                return NextResponse.json({ 
+                    success: false, 
+                    message: 'Cannot set to completed. Payment must be verified first.' 
+                }, { status: 400 });
+            }
+
+            await client.query(`UPDATE purchases SET purchase_status = 'completed' WHERE purchase_id = $1`, [purchase_id]);
+            await client.query(`UPDATE purchased_packages SET status = 'completed' WHERE purchase_id = $1`, [purchase_id]);
+        } 
+        
+        else if (status === 'expired') {
+            // Logic: Purchase status becomes expired, payment status becomes refunded
+            await client.query(`UPDATE purchases SET purchase_status = 'expired' WHERE purchase_id = $1`, [purchase_id]);
+            await client.query(`UPDATE purchased_packages SET status = 'expired' WHERE purchase_id = $1`, [purchase_id]);
+            await client.query(`UPDATE payments SET status = 'refunded' WHERE purchase_id = $1`, [purchase_id]);
+        }
+
+        else if (status === 'cancelled') {
+            await client.query(`UPDATE purchases SET purchase_status = 'cancelled' WHERE purchase_id = $1`, [purchase_id]);
+            await client.query(`UPDATE purchased_packages SET status = 'cancelled' WHERE purchase_id = $1`, [purchase_id]);
+            await client.query(`UPDATE payments SET status = 'failed' WHERE purchase_id = $1`, [purchase_id]);
+        }
 
         await client.query('COMMIT');
-
-        return NextResponse.json({
-            success: true, 
-            message: `Purchase status updated to ${status}`
-        }, { status: 200 });
+        return NextResponse.json({ success: true, message: `Status successfully changed to ${status}` });
 
     } catch (error) {
         await client.query('ROLLBACK');
-        return NextResponse.json({
-            success: false, message: error.message
-        }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     } finally {
         client.release();
     }
