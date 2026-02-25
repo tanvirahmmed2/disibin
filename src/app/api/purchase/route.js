@@ -125,6 +125,11 @@ export async function PATCH(req) {
 export async function GET() {
     const client = await pool.connect();
     try {
+        const auth = await isLogin();
+        if (!auth.success || auth.payload.role !== 'admin') {
+            return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+        }
+
         const query = `
             SELECT 
                 p.purchase_id,
@@ -132,19 +137,13 @@ export async function GET() {
                 p.discount_amount,
                 p.payable_amount,
                 p.purchase_status,
-                p.purchase_date,
-                p.created_at as purchase_created_at,
-                -- User Details
-                u.name as user_name,
-                u.email as user_email,
-                -- Payment Details
-                pay.payment_id,
+                p.created_at AS order_date,
+                u.name AS customer_name,
+                u.email AS customer_email,
                 pay.transaction_id,
-                pay.amount_paid,
                 pay.payment_method,
-                pay.status as payment_status,
+                pay.status AS payment_status,
                 pay.paid_at,
-                -- Nested JSON array of all packages in this purchase
                 (
                     SELECT json_agg(pkg)
                     FROM (
@@ -152,7 +151,7 @@ export async function GET() {
                         FROM public.purchased_packages
                         WHERE purchase_id = p.purchase_id
                     ) pkg
-                ) as items
+                ) AS items
             FROM public.purchases p
             INNER JOIN public.users u ON p.user_id = u.user_id
             LEFT JOIN public.payments pay ON p.purchase_id = pay.purchase_id
@@ -168,10 +167,9 @@ export async function GET() {
         });
 
     } catch (error) {
-        console.error('Fetch All Purchases Error:', error);
         return NextResponse.json({ 
             success: false, 
-            message: 'Failed to fetch purchase history' 
+            message: error.message 
         }, { status: 500 });
     } finally {
         client.release();
