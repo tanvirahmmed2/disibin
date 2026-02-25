@@ -46,9 +46,6 @@ export async function POST(req) {
             await client.query(pkgQuery, [purchaseId, user_id, item.package_id, item.title]);
         }
 
-        // 3. Insert into payments table
-        // Generating a unique transaction ID (You can replace this with gateway-specific IDs)
-        const transactionId = `TXN-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
         const paymentQuery = `
     INSERT INTO public.payments (purchase_id, user_id, amount_paid, payment_method, status)
     VALUES ($1, $2, $3, $4, 'pending');
@@ -128,8 +125,6 @@ export async function PATCH(req) {
 export async function GET() {
     const client = await pool.connect();
     try {
-        // We use a LEFT JOIN for packages to ensure we see the purchase 
-        // even if something went wrong with the package links.
         const query = `
             SELECT 
                 p.purchase_id,
@@ -177,6 +172,49 @@ export async function GET() {
         return NextResponse.json({ 
             success: false, 
             message: 'Failed to fetch purchase history' 
+        }, { status: 500 });
+    } finally {
+        client.release();
+    }
+}
+
+export async function DELETE(req) {
+    const { id } =await req.json()
+    const client = await pool.connect();
+
+    try {
+        if (!id) {
+            return NextResponse.json({ message: 'Purchase ID is required' }, { status: 400 });
+        }
+
+        await client.query('BEGIN');
+
+        const checkQuery = `SELECT purchase_id FROM public.purchases WHERE purchase_id = $1`;
+        const checkRes = await client.query(checkQuery, [id]);
+
+        if (checkRes.rowCount === 0) {
+            return NextResponse.json({ success: false, message: 'Purchase not found' }, { status: 404 });
+        }
+
+        // Delete the purchase. 
+        // Note: Because of ON DELETE CASCADE in your schema, 
+        // related rows in payments and purchased_packages will be deleted automatically.
+        const deleteQuery = `DELETE FROM public.purchases WHERE purchase_id = $1`;
+        await client.query(deleteQuery, [id]);
+
+        await client.query('COMMIT');
+
+        return NextResponse.json({ 
+            success: true, 
+            message: `Purchase #${id} and all related records deleted successfully.` 
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Delete Error:', error);
+        return NextResponse.json({ 
+            success: false, 
+            message: 'Internal Server Error' 
         }, { status: 500 });
     } finally {
         client.release();

@@ -38,28 +38,28 @@ const PurchasedPackages = () => {
   );
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="w-full flex flex-col items-center gap-4 p-1 sm:p-4">
       {purchases.map((item) => (
         <div 
           key={item.purchase_id} 
-          className="group bg-white rounded-3xl border border-slate-200/60 overflow-hidden flex flex-col md:flex-row transition-all hover:shadow-2xl hover:shadow-sky-100/50"
+          className="group w-full flex flex-row shadow bg-gray-100 rounded-xl overflow-hidden"
         >
-          {/* Visual Side */}
           <div className="md:w-64 h-48 md:h-auto relative overflow-hidden bg-slate-100">
             <Image 
-              src={item.package_details?.image} 
+              src={item.package_info?.thumbnail} 
               alt={item.package_title} 
+              width={1000}
+              height={1000}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent opacity-60" />
             <div className="absolute bottom-4 left-4">
                <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-[10px] font-bold uppercase tracking-widest text-slate-800 rounded-lg">
-                {item.package_details?.category || 'Service'}
+                {item.package_info?.category || 'Service'}
               </span>
             </div>
           </div>
 
-          {/* Content Side */}
           <div className="flex-1 p-6 md:p-8 flex flex-col justify-between">
             <div>
               <div className="flex justify-between items-start mb-2">
@@ -67,25 +67,24 @@ const PurchasedPackages = () => {
                   {item.package_title}
                 </h3>
                 <div className="flex flex-col items-end">
-                  <p className="text-2xl font-light text-slate-900">৳{item.amount_paid}</p>
+                  <p className="text-2xl font-light text-slate-900">৳{item.total_price}</p>
                   <span className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider mt-1 px-3 py-1 rounded-full ${
-                    item.subscription_status === 'active' 
+                    item.access_status === 'active' 
                       ? 'bg-emerald-50 text-emerald-600' 
                       : 'bg-amber-50 text-amber-600'
                   }`}>
-                    {item.subscription_status === 'active' ? <FaRegCheckCircle /> : <FaHourglassHalf />}
-                    {item.subscription_status}
+                    {item.access_status === 'active' ? <FaRegCheckCircle /> : <FaHourglassHalf />}
+                    {item.access_status}
                   </span>
                 </div>
               </div>
 
               <p className="text-sm text-slate-500 font-light line-clamp-2 mb-4 max-w-xl">
-                {item.package_details?.description}
+                {item.package_info?.brief}
               </p>
 
-              {/* Feature Tags */}
               <div className="flex flex-wrap gap-2 mb-6">
-                {item.package_details?.features?.slice(0, 3).map((feature, i) => (
+                {item.package_info?.feature_list?.slice(0, 3).map((feature, i) => (
                   <span key={i} className="text-[10px] text-slate-400 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-md">
                     {feature}
                   </span>
@@ -93,14 +92,13 @@ const PurchasedPackages = () => {
               </div>
             </div>
 
-            {/* Footer Data */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-slate-50">
               <div className="space-y-1">
                 <p className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-tighter">
                   <FaCalendarAlt className="text-sky-400" /> Subscription Period
                 </p>
                 <p className="text-xs text-slate-700 font-medium">
-                  {new Date(item.start_date).toLocaleDateString()} — {new Date(item.expiry_date).toLocaleDateString()}
+                  {item.start_date ? new Date(item.start_date).toLocaleDateString() : 'N/A'} — {item.expiry_date ? new Date(item.expiry_date).toLocaleDateString() : 'N/A'}
                 </p>
               </div>
 
@@ -109,7 +107,7 @@ const PurchasedPackages = () => {
                   <FaCreditCard className="text-sky-400" /> Payment Method
                 </p>
                 <p className="text-xs text-slate-700 font-medium">
-                  {item.payment_info?.method || 'Direct'} ({item.payment_info?.gateway || 'System'})
+                  {item.billing_info?.method || 'Direct'} ({item.billing_info?.payment_status || 'System'})
                 </p>
               </div>
 

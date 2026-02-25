@@ -17,57 +17,50 @@ export async function GET() {
             SELECT 
                 pp.purchase_id,
                 pp.package_title,
-                pp.amount_paid,
-                pp.status AS subscription_status,
+                pur.payable_amount AS total_price,
+                pur.created_at AS order_date,
+                pp.status AS access_status,
                 pp.start_date,
                 pp.expiry_date,
                 pp.is_auto_renew,
-                pp.created_at AS purchase_date,
-                
-                -- Deep data from the main Packages table
                 json_build_object(
-                    'id', p.package_id,
+                    'package_id', p.package_id,
                     'slug', p.slug,
-                    'image', p.image,
+                    'thumbnail', p.image,
                     'category', p.category,
-                    'features', p.features,
-                    'description', p.description
-                ) AS package_details,
-
-                -- Deep data from the Payments table
-                COALESCE(
-                    (SELECT json_build_object(
-                        'transaction_id', pay.transaction_id,
+                    'feature_list', p.features,
+                    'brief', p.description
+                ) AS package_info,
+                CASE WHEN pay.payment_id IS NOT NULL THEN
+                    json_build_object(
+                        'txn_id', pay.transaction_id,
                         'method', pay.payment_method,
                         'gateway', pay.payment_gateway,
-                        'status', pay.status,
+                        'payment_status', pay.status,
                         'paid_at', pay.paid_at,
                         'currency', pay.currency
                     )
-                    FROM public.payments pay 
-                    WHERE pay.purchase_id = pp.purchase_id 
-                    LIMIT 1), 
-                    null
-                ) AS payment_info
-
+                ELSE null END AS billing_info
             FROM public.purchased_packages pp
             LEFT JOIN public.packages p ON pp.package_id = p.package_id
+            LEFT JOIN public.purchases pur ON pp.purchase_id = pur.purchase_id
+            LEFT JOIN public.payments pay ON pp.purchase_id = pay.purchase_id
             WHERE pp.user_id = $1
-            ORDER BY pp.created_at DESC
+            ORDER BY pur.created_at DESC
         `;
 
         const result = await pool.query(query, [auth.payload.user_id]);
 
         return NextResponse.json({
             success: true,
-            message: 'Deep purchase history retrieved',
+            message: 'Subscription and purchase history retrieved',
             payload: result.rows
         }, { status: 200 });
 
     } catch (error) {
         return NextResponse.json({ 
             success: false, 
-            message: 'Failed to fetch deep data', 
+            message: 'Internal server error', 
             error: error.message 
         }, { status: 500 });
     }

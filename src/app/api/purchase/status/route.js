@@ -1,7 +1,6 @@
 import { pool } from '@/lib/database/pg';
 import { NextResponse } from 'next/server';
 
-// Helper function to get purchases by status
 async function getPurchasesByStatus(status) {
     const client = await pool.connect();
     try {
@@ -50,4 +49,29 @@ export async function GET(req) {
         console.error('Fetch Error:', error);
         return NextResponse.json({ success: false, message: 'Internal Server Error' }, { status: 500 });
     }
+}
+
+export async function POST(req) {
+    try {
+        const { purchase_id, status } = await req.json()
+
+        if (!purchase_id || !status) {
+            return NextResponse.json({
+                success: false, message: 'Purchase id or status not recieved',
+            }, { status: 400 })
+        }
+
+        const purchaseStatus = await pool.query(`SELECT perchase_status FROM purchases WHERE purchase_id=$1`, [purchase_id])
+        if (purchaseStatus.rowCount === 0) {
+            return NextResponse.json({
+                success: false, message: 'Purchase not found'
+            }, { status: 400 })
+        }
+    } catch (error) {
+        return NextResponse.json({
+            success: false, message: error.message
+        }, { status: 500 })
+
+    }
+
 }
