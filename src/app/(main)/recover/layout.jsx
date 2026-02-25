@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import React from 'react'
 
 export const metadata={
-    title:"Recover",
+    title:"Recover | Disibin",
     description:'Recover in Disibin'
 }
 

@@ -4,7 +4,7 @@ import React from 'react'
 
 
 export const metadata={
-    title:'Wishlist',
+    title:'Wishlist | Disibin',
     description:'Wishlist page'
 }
 

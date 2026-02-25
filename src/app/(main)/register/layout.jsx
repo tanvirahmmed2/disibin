@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import React from 'react'
 
 export const metadata={
-    title:"Register",
+    title:"Register | Disibin",
     description:'Register in Disibin'
 }
 
