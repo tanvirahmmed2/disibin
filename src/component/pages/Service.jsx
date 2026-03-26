@@ -190,10 +190,10 @@ const Service = () => {
 
       <div className=" w-full flex flex-col gap-10 relative p-1">
         {customServices.map((service, idx) => (
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.7 }} key={service.id}
+          <div key={service.id}
             className="w-full overflow-hidden min-h-screen py-10 flex flex-col items-center justify-center bg-white sticky top-0">
 
-            <div className=" w-full flex flex-col items-center justify-center gap-4">
+            <div className=" w-full flex flex-col items-center justify-center gap-4 ">
               <h1 className='w-full text-center text-2xl font-semibold md:text-4xl'>{service.title}</h1>
               <div className="w-full flex flex-col md:flex-row items-center justify-center gap-1 p-2">
                 {service.sections.map((section) => (
@@ -210,7 +210,7 @@ const Service = () => {
                     </div>
 
                     <div className="w-full absolute z-10 bottom-0 bg-white p-2">
-                      <strong className="text-lg text-gray-800 mb-2 block group-hover:text-teal-600 transition-colors font-bold">
+                      <strong className="text-lg text-gray-800  block group-hover:text-teal-600 transition-colors font-bold">
                         {section.title}
                       </strong>
                       <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
@@ -222,7 +222,7 @@ const Service = () => {
               </div>
             </div>
 
-            <div className="absolute h-screen -z-1 opacity-25 blur-xs scale-125 w-full overflow-hidden ">
+            <div className="absolute h-screen -z-1 opacity-10 scale-125 w-full overflow-hidden ">
               <Image
                 src={service.image}
                 alt={service.title}
@@ -233,7 +233,7 @@ const Service = () => {
             </div>
 
 
-          </motion.div>
+          </div>
         ))}
       </div>
     </div>
