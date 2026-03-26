@@ -27,7 +27,7 @@ const Navbar = () => {
             <Link href={'/wishlist'} className='w-auto h-16 flex items-center justify-center hover:bg-gray-100 px-1 sm:px-2 md:px-6 transition ease-in-out duration-500'>Wishlist</Link>
           </div>
             :
-            <Link href={'/login'} className='w-auto h-16 flex items-center justify-center hover:bg-gray-100 px-1 sm:px-2 md:px-6 transition ease-in-out duration-500'>Login</Link>
+            <Link href={'/login'} className='w-auto h-10 rounded-2xl bg-emerald-500 text-white flex items-center justify-center  px-1 sm:px-2 md:px-6 transition ease-in-out duration-500'>Login</Link>
         }
 
       </div>
