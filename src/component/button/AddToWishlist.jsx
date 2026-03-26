@@ -6,7 +6,7 @@ import { Context } from '../helper/Context'
 const AddToWishlist = ({pack}) => {
     const {addToWishList}= useContext(Context)
   return (
-    <button onClick={()=>addToWishList(pack)} className='w-full bg-orange-600 cursor-pointer text-white p-2 text-center rounded-lg flex gap-2 items-center justify-center'><FaPlus/> Wishlist</button>
+    <button onClick={()=>addToWishList(pack)} className='w-full bg-black cursor-pointer text-white p-1 font-mono text-center rounded-lg flex gap-2 items-center justify-center'><FaPlus/> Wishlist</button>
             
   )
 }

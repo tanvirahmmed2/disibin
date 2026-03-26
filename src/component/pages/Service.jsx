@@ -158,22 +158,22 @@ const customServices = [
 
 const Service = () => {
   return (
-    <div className='w-full flex flex-col items-center justify-center gap-12 py-8 p-4 bg-gray-50/30'>
+    <div className='w-full flex flex-col items-center justify-center gap-12 py-8  bg-gray-50/30'>
       <div className="py-12 w-full">
         <div className="flex flex-col items-center mb-12">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 text-center mb-2">Our Core Services</h1>
           <div className="w-20 h-1.5 bg-teal-600 rounded-full"></div>
         </div>
-        
+
         <div className="w-full flex flex-col md:flex-row items-center justify-center gap-8">
           {servicesData.map((service, index) => (
-            <motion.div 
-              key={service.id} 
-              initial={{ opacity: 0, y: 20 }} 
-              whileInView={{ opacity: 1, y: 0 }} 
-              viewport={{ once: true }} 
-              transition={{ duration: 0.5, delay: index * 0.1 }} 
-              whileHover={{ scale: 1.02 }} 
+            <motion.div
+              key={service.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ scale: 1.02 }}
               className="group relative w-full h-72 flex flex-col items-center justify-center bg-white border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-teal-500/10 cursor-pointer transition-all duration-500 rounded-2xl p-8 gap-4 overflow-hidden"
             >
               <div className="absolute -right-4 -top-4 w-24 h-24 bg-teal-50 rounded-full transition-all duration-500 group-hover:bg-teal-600 group-hover:scale-[6] opacity-20 group-hover:opacity-5 z-0" />
@@ -188,42 +188,28 @@ const Service = () => {
         </div>
       </div>
 
-      <div className=" w-full flex flex-col gap-10">
+      <div className=" w-full flex flex-col gap-10 relative p-1">
         {customServices.map((service, idx) => (
-          <div key={service.id} className="w-full mb-12 bg-white border border-gray-100 shadow-2xl rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-teal-500/5">
-            {/* Main Service Banner */}
-            <div className="relative h-64 md:h-80 w-full">
-              <Image
-                src={service.image}
-                alt={service.title}
-                fill
-                priority={idx === 0} 
-                sizes="(max-width: 768px) 100vw, 1200px"
-                className="object-cover transition-transform duration-700 hover:scale-105"
-              /> 
-              <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent flex items-center justify-center">
-                <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-md">
-                  {service.title}
-                </h2>
-              </div>
-            </div>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.7 }} key={service.id}
+            className="w-full overflow-hidden min-h-screen py-10 flex flex-col items-center justify-center bg-white sticky top-0">
 
-            <div className="p-6 md:p-10">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className=" w-full flex flex-col items-center justify-center gap-4">
+              <h1 className='w-full text-center text-2xl font-semibold md:text-4xl'>{service.title}</h1>
+              <div className="w-full flex flex-col md:flex-row items-center justify-center gap-1 p-2">
                 {service.sections.map((section) => (
-                  <motion.div initial={{opacity:0}} whileInView={{opacity:1}} transition={{duration:1}} key={section.id} className="group flex flex-col bg-gray-50 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border border-transparent hover:border-teal-100" >
-                    {/* Section Thumbnail */}
-                    <div className="relative aspect-video w-full overflow-hidden">
+                  <motion.div initial={{ opacity: 0, scale:0.9 }} whileInView={{ opacity: 1 , scale:1}} transition={{ duration: 1 }} key={section.id} className="group w-full aspect-video overflow-hidden relative shadow border border-black/50 rounded-xl" >
+
+                    <div className="relative aspect-video w-full overflow-hidden ">
                       <Image
                         src={section.image}
                         alt={section.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
-                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        width={1000}
+                        height={1000}
+                        className="w-full aspect-video object-cover"
                       />
                     </div>
 
-                    <div className="p-5 flex flex-col grow">
+                    <div className="w-full absolute z-10 bottom-0 bg-white p-2">
                       <strong className="text-lg text-gray-800 mb-2 block group-hover:text-teal-600 transition-colors font-bold">
                         {section.title}
                       </strong>
@@ -235,7 +221,19 @@ const Service = () => {
                 ))}
               </div>
             </div>
-          </div>
+
+            <div className="absolute h-screen -z-1 opacity-25 blur-xs scale-125 w-full overflow-hidden ">
+              <Image
+                src={service.image}
+                alt={service.title}
+                width={1000}
+                height={1000}
+                className="w-full  h-screen object-cover"
+              />
+            </div>
+
+
+          </motion.div>
         ))}
       </div>
     </div>

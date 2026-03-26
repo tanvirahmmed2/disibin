@@ -24,6 +24,16 @@ const Package = async ({ params }) => {
                 <Image src={pack.image} alt='package cover' width={1000} height={1000} className='w-full  border border-black/30 shadow object-cover aspect-video rounded-xl' />
             </div>
             <h1 className='text-2xl font-semibold'>{pack.title}</h1>
+            <div className='w-full flex flex-col md:flex-row items-center justify-between gap-2 sm:gap-6'>
+                <p className='w-full bg-emerald-500 cursor-pointer text-white p-1 font-mono text-center rounded-lg flex gap-2 items-center justify-center'>BDT {pack.discount > 0 ?
+                    <span>
+                        <strong>{pack.price - pack.discount}<span className='line-through text-red-300 px-4'>{pack.price}</span></strong>
+                    </span> :
+                    <strong>{pack.price}</strong>}
+                </p>
+                <AddToWishlist pack={pack} />
+                
+            </div>
             <p>{pack.category}</p>
             <p className='w-full'><strong>Description:</strong> {pack.description}</p>
             <div className='w-full flex flex-col gap-1'>
@@ -34,16 +44,8 @@ const Package = async ({ params }) => {
                     ))
                 }
             </div>
-            <div className='w-full flex flex-col md:flex-row items-center justify-between gap-2 sm:gap-6'>
-                <p className='w-full bg-emerald-500 cursor-pointer text-white p-2 text-center rounded-lg flex gap-2 items-center justify-center'>BDT {pack.discount > 0 ?
-                    <span>
-                        <strong>{pack.price - pack.discount}<span className='line-through text-red-300 px-4'>{pack.price}</span></strong>
-                    </span> :
-                    <strong>{pack.price}</strong>}
-                </p>
-                <AddToWishlist pack={pack} />
-                <Link className='w-full bg-emerald-500 cursor-pointer text-white p-2 text-center rounded-lg flex gap-2 items-center justify-center' href="https://api.whatsapp.com/send/?phone=8801805003886&text&type=phone_number&app_absent=0">Ask for demo</Link>
-            </div>
+            
+            <Link className='w-full bg-emerald-500 cursor-pointer text-white p-1 font-mono text-center rounded-lg flex gap-2 items-center justify-center' href="https://api.whatsapp.com/send/?phone=8801805003886&text&type=phone_number&app_absent=0">Ask for demo</Link>
         </div>
     )
 }

@@ -16,7 +16,7 @@ const Intro = () => {
         className='absolute -z-20 object-cover scale-110 blur-[3px]'
       />
 
-      <div className='absolute inset-0 -z-10 bg-linear-to-b from-black/70  to-teal-700/80'></div>
+      <div className='absolute inset-0 -z-10 bg-linear-to-b from-black/10  to-teal-900/80'></div>
 
       <p className='tracking-widest text-sm sm:text-base text-gray-300 uppercase'>
         A Leading Software Development Company
