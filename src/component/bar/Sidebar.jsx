@@ -13,7 +13,6 @@ const Sidebar = () => {
             <Link href={'/'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Home</Link>
             <Link href={'/packages'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Pricing</Link>
             <Link href={'/projects'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Projects</Link>
-            <Link href={'/reviews'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Reviews</Link>
             <Link href={'/blogs'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Blogs</Link>
             <Link href={'/about'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>About</Link>
             {
