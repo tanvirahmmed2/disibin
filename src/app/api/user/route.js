@@ -72,14 +72,13 @@ export async function PATCH(req) {
             id, name, phone, city, country, 
             address_line1, address_line2, state, 
             postal_code, 
-            role, is_active // Sensitive fields
+            role, is_active 
         } = body;
 
         if (!id) {
             return NextResponse.json({ success: false, message: "User ID is required" }, { status: 400 });
         }
 
-        // 1. Fetch the user's current data
         const userCheck = await pool.query("SELECT role FROM public.users WHERE user_id = $1", [id]);
         if (userCheck.rowCount === 0) {
             return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });

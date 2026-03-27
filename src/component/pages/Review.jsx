@@ -42,7 +42,7 @@ const Review = () => {
         <div className='w-full flex flex-row items-center justify-center gap-2'>
             {
                reviews.length>0 && reviews.map((_,i)=>(
-                <div key={i} className={`h-2 bg-emerald-700 rounded-2xl transition-all duration-500 ${i===index? 'w-2':'w-6'}`}/>
+                <div key={i} className={`h-2 bg-emerald-700 rounded-2xl transition-all duration-500 ${i!==index? 'w-2':'w-6'}`}/>
                ))
             }
         </div>
