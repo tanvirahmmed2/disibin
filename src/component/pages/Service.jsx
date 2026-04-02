@@ -191,7 +191,7 @@ const Service = () => {
       <div className=" w-full flex flex-col gap-10 relative p-1">
         {customServices.map((service, idx) => (
           <div key={service.id}
-            className="w-full overflow-hidden min-h-screen py-10 flex flex-col items-center justify-center bg-white sticky top-0">
+            className="w-full overflow-hidden even:bg-teal-400 min-h-screen py-10 flex flex-col items-center justify-center bg-white sticky top-0">
 
             <div className=" w-full flex flex-col items-center justify-center gap-4 ">
               <h1 className='w-full text-center text-2xl font-semibold md:text-4xl'>{service.title}</h1>
