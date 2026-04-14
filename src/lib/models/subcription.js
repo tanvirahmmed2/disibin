@@ -1,18 +1,17 @@
 import mongoose from "mongoose";
 
-
-const packSchema= mongoose.Schema({
+const subscriptionSchema=mongoose.Schema({
     title:{type:String, trim:true, required:true},
     slug:{type:String, trim:true, required:true},
     code:{type:String, trim:true, required:true},
     description:{type:String, trim:true, required:true},
-    features: [String],
+    price:{type:Num, required:true},
+    discount:{type:Num, default:0},
     image:{type:String, trim:true, required:true},
     imageId:{type:String, trim:true, required:true},
-    price:{type:Number, required:true},
-    discount:{type:Number, default:0},
-    category:{type:String, trim:true, required:true},
+    startDate:{type:Date},
+    endDate:{type:Date},
     createdAt:{type:Date, default:Date.now}
-}, { timestamps: true })
+})
 
-export const Package=mongoose.models.Package || mongoose.model('Package', packSchema)
+export const Subscription=mongoose.models.Subscription || mongoose.model('Subscription',subscriptionSchema)
