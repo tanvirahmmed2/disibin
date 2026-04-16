@@ -4,9 +4,9 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import {
   FaMapMarkerAlt,
-  FaEnvelope, FaPhone, FaCalendarAlt, FaShieldAlt,
+  FaEnvelope, FaPhone, FaCalendarAlt
 } from 'react-icons/fa';
-import { RiUserLine, RiSettings3Line, RiLogoutBoxRLine, RiShoppingBag3Line, RiMessage2Line, RiStarLine } from 'react-icons/ri';
+import { RiUserLine, RiSettings3Line, RiLogoutBoxRLine } from 'react-icons/ri';
 
 const UserProfile = () => {
   const [userData, setUserData] = useState(null);
@@ -18,7 +18,7 @@ const UserProfile = () => {
         const res = await axios.get('/api/user/islogin', { withCredentials: true });
         setUserData(res.data.payload);
       } catch (error) {
-        console.error("Fetch error:", error);
+        // Handle silently
       } finally {
         setLoading(false);
       }
@@ -28,7 +28,7 @@ const UserProfile = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await axios.get('/api/user/logout', { withCredentials: true })
+      await axios.get('/api/user/logout', { withCredentials: true })
       window.location.replace('/login')
     } catch (error) {
       alert(error?.response?.data?.message || 'Failed to logout')
@@ -37,10 +37,7 @@ const UserProfile = () => {
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-white">
-      <div className="flex flex-col items-center">
-        <div className="w-16 h-16 border-4 border-emerald-100 border-t-emerald-600 rounded-full animate-spin mb-4"></div>
-        <div className="text-slate-400 font-medium animate-pulse">Loading profile...</div>
-      </div>
+        <div className="w-12 h-12 border-4 border-slate-100 border-t-emerald-600 rounded-full animate-spin"></div>
     </div>
   );
 
@@ -58,70 +55,63 @@ const UserProfile = () => {
   );
 
   return (
-    <div className="w-full min-h-screen bg-slate-50/50 py-12 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header Card */}
-        <div className="card-premium p-8 md:p-12 mb-8 bg-white overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full -mr-32 -mt-32 opacity-50"></div>
+    <div className="w-full min-h-screen bg-slate-50/50 py-16 px-6">
+      <div className="max-w-4xl mx-auto space-y-8">
+        
+        <div className="card-premium p-12 flex flex-col md:flex-row items-center gap-10">
+          <div className="w-32 h-32 rounded-[2.5rem] bg-emerald-600 flex items-center justify-center text-white text-4xl font-black shadow-xl shadow-emerald-500/20 shrink-0">
+            {userData.name?.charAt(0)}
+          </div>
           
-          <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-            <div className="w-32 h-32 rounded-[2.5rem] bg-emerald-600 flex items-center justify-center text-white text-4xl font-black shadow-2xl shadow-emerald-500/40 shrink-0">
-              {userData.name?.charAt(0)}
+          <div className="flex-1 text-center md:text-left">
+            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+              <h1 className="text-4xl font-black text-slate-900 tracking-tight">{userData.name}</h1>
+              <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest rounded-full w-fit mx-auto md:mx-0">
+                {userData.role}
+              </span>
             </div>
-            
-            <div className="flex-1 text-center md:text-left">
-              <div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
-                <h1 className="text-4xl font-black text-slate-900 tracking-tight">{userData.name}</h1>
-                <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-black uppercase tracking-widest rounded-full w-fit mx-auto md:mx-0">
-                  {userData.role}
-                </span>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-slate-500 text-sm font-medium">
-                <span className="flex items-center justify-center md:justify-start gap-2">
-                  <FaEnvelope className="text-emerald-500" /> {userData.email}
-                </span>
-                <span className="flex items-center justify-center md:justify-start gap-2">
-                  <FaPhone className="text-emerald-500" /> {userData.phone || 'Phone unset'}
-                </span>
-                <span className="flex items-center justify-center md:justify-start gap-2">
-                  <FaMapMarkerAlt className="text-emerald-500" /> {userData.city ? `${userData.city}, ${userData.country}` : 'Location unset'}
-                </span>
-                <span className="flex items-center justify-center md:justify-start gap-2">
-                  <FaCalendarAlt className="text-emerald-500" />
-                  Joined {new Date(userData.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
-                </span>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-8 text-slate-500 text-sm font-bold">
+              <span className="flex items-center justify-center md:justify-start gap-3">
+                <FaEnvelope className="text-slate-300" /> {userData.email}
+              </span>
+              <span className="flex items-center justify-center md:justify-start gap-3">
+                <FaPhone className="text-slate-300" /> {userData.phone || 'N/A'}
+              </span>
+              <span className="flex items-center justify-center md:justify-start gap-3">
+                <FaMapMarkerAlt className="text-slate-300" /> {userData.city ? `${userData.city}, ${userData.country}` : 'Global'}
+              </span>
+              <span className="flex items-center justify-center md:justify-start gap-3">
+                <FaCalendarAlt className="text-slate-300" /> Member since {new Date(userData.created_at).getFullYear()}
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Dashboard Link Zone */}
-        <div className="card-premium p-8 bg-white mb-8 border border-emerald-50">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="text-center md:text-left">
-              <h3 className="text-lg font-bold text-slate-800 mb-1">Access Dashboard</h3>
-              <p className="text-slate-500 text-sm">Update your profile settings, view purchases, and manage support tickets inside your unified control panel.</p>
+        <div className="card-premium p-10 bg-white">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="text-center md:text-left space-y-1">
+              <h3 className="text-xl font-black text-slate-800">Operational Dashboard</h3>
+              <p className="text-slate-500 font-medium">Manage your subscription, tickets and security.</p>
             </div>
              <Link 
               href={'/dashboard'}
-              className="px-8 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-emerald-600 shadow-xl shadow-slate-900/10 hover:shadow-emerald-500/30 transition-all flex items-center gap-2 active:scale-95 whitespace-nowrap"
+              className="px-8 py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-black transition-all flex items-center gap-3 active:scale-95 whitespace-nowrap"
             >
               <RiSettings3Line size={20} /> Open Dashboard
             </Link>
           </div>
         </div>
 
-        {/* Dangerous Zone */}
-        <div className="card-premium p-8 bg-white border-red-50">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="text-center md:text-left">
-              <h3 className="text-lg font-bold text-slate-800 mb-1">Account Actions</h3>
-              <p className="text-slate-500 text-sm">Logout of your account or manage security settings.</p>
+        <div className="card-premium p-10">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="text-center md:text-left space-y-1">
+              <h3 className="text-xl font-black text-slate-800">Account Security</h3>
+              <p className="text-slate-500 font-medium">Terminate your current session safely.</p>
             </div>
             <button 
               onClick={handleLogout}
-              className="px-8 py-3 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-600 hover:text-white transition-all flex items-center gap-2 active:scale-95"
+              className="px-8 py-4 bg-rose-50 text-rose-600 font-bold rounded-2xl hover:bg-rose-600 hover:text-white transition-all flex items-center gap-2 active:scale-95"
             >
               <RiLogoutBoxRLine size={20} /> Logout
             </button>
@@ -132,4 +122,5 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default UserProfile;
+

@@ -7,7 +7,7 @@ import { MdDeleteOutline } from 'react-icons/md'
 import axios from 'axios'
 
 const WishlistPage = () => {
-    const { removeFromwishlist, wishlist,clearWishlist } = useContext(Context)
+    const { removeFromwishlist, wishlist, clearWishlist } = useContext(Context)
     const [isPopUp, setIsPopUp] = useState(false)
     const [payment_method, setPayment_method] = useState('bkash')
 
@@ -15,15 +15,16 @@ const WishlistPage = () => {
     const totalDiscount = wishlist?.items?.reduce((acc, item) => acc + (Number(item.discount) || 0), 0) || 0;
     const totalAmount = subTotal - totalDiscount;
 
-
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const data = { totalAmount, items: wishlist.items }
+        const data = { totalAmount, items: wishlist.items, payment_method }
         try {
             const res = await axios.post('/api/purchase', data, { withCredentials: true })
-            alert(res.data.message)
-            clearWishlist()
-            setIsPopUp(false)
+            if (res.data.success) {
+                alert(res.data.message)
+                clearWishlist()
+                setIsPopUp(false)
+            }
         } catch (error) {
             alert(error?.response?.data?.message || 'Failed to place order')
         }
@@ -34,124 +35,134 @@ const WishlistPage = () => {
     }
 
     return (
-        <div className="w-full p-1 sm:p-4 relative">
-            <h1 className="text-xl font-bold mb-8 text-gray-800 text-center md:text-left">
+        <div className="w-full p-4 relative">
+            <h1 className="text-2xl font-black mb-8 text-slate-800">
                 My Wishlist ({wishlist?.items?.length || 0})
             </h1>
 
             {wishlist?.items?.length > 0 ? (
-                <div className="w-full grid grid-cols-1 md:grid-cols-5 gap-8">
-                    <div className='w-full col-span-1 md:col-span-3 flex flex-col mb-10 p-1 items-center gap-2'>
+                <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className='lg:col-span-2 space-y-4'>
                         {wishlist.items.map((product) => (
-                            <div key={product.package_id} className="w-full grid text-xs sm:text-base grid-cols-10 p-6 even:bg-gray-100 shadow-sm rounded-2xl ">
-                                <div className="relative col-span-1 p-2 ">
+                            <div key={product.packageId} className="w-full flex items-center gap-6 p-6 bg-white border border-slate-100 rounded-3xl transition-all hover:shadow-xl hover:shadow-slate-200/50">
+                                <div className="w-24 h-24 relative rounded-2xl overflow-hidden flex-shrink-0">
                                     <Image
                                         src={product.image || '/placeholder.jpg'}
                                         alt={product.title}
-                                        width={500}
-                                        height={500}
-                                        className='w-full rounded-lg'
+                                        fill
+                                        className='object-cover'
                                     />
                                 </div>
-                                <Link href={`/packages/${product.slug}`} className='col-span-5'>{product.title} </Link>
-                                <p className='col-span-3 text-center'>
-                                    BDT <strong className=''>{product.price - product.discount}</strong> {product.discount > 0 && <span className='text-red-500 line-through'>{product.price}</span>}
-                                </p>
-                                <MdDeleteOutline onClick={() => removeFromwishlist(product.package_id)} className='text-base sm:text-xl md:text-2xl text-red-500 text-center col-span-1 cursor-pointer' />
+                                <div className="flex-1">
+                                    <Link href={`/packages/${product.slug}`} className='font-bold text-slate-800 hover:text-emerald-600 transition-colors'>{product.title}</Link>
+                                    <div className="mt-2 flex items-center gap-3">
+                                        <span className='font-black text-emerald-600'>BDT {product.price - product.discount}</span>
+                                        {product.discount > 0 && (
+                                            <span className='text-xs text-slate-400 line-through'>BDT {product.price}</span>
+                                        )}
+                                    </div>
+                                </div>
+                                <button 
+                                    onClick={() => removeFromwishlist(product.packageId)}
+                                    className='p-3 bg-rose-50 text-rose-500 rounded-2xl hover:bg-rose-500 hover:text-white transition-all'
+                                >
+                                    <MdDeleteOutline size={20} />
+                                </button>
                             </div>
                         ))}
-
                     </div>
-                    <div className="w-full text-xs md:text-base gap-2 col-span-1 md:col-span-2 p-3 rounded-xl  flex flex-col justify-between items-center">
-
-                        <p className="w-full flex justify-between gap-10">Sub Total: <span>BDT {subTotal}</span></p>
-                        <p className="w-full flex justify-between gap-10 text-red-500">Discount: <span>- BDT {totalDiscount}</span></p>
-                        <p className="w-full flex justify-between gap-10 font-bold border-t pt-2">Total Amount: <span>BDT {totalAmount}</span></p>
-
+                    
+                    <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/40 h-fit space-y-6">
+                        <h3 className="text-xl font-bold text-slate-800">Order Summary</h3>
+                        <div className="space-y-4 border-t border-slate-50 pt-6">
+                            <div className="flex justify-between text-slate-500 font-medium">
+                                <span>Sub Total</span>
+                                <span>BDT {subTotal}</span>
+                            </div>
+                            <div className="flex justify-between text-rose-500 font-medium">
+                                <span>Total Discount</span>
+                                <span>- BDT {totalDiscount}</span>
+                            </div>
+                            <div className="flex justify-between text-xl font-black text-slate-900 border-t border-slate-50 pt-4">
+                                <span>Total Payable</span>
+                                <span>BDT {totalAmount}</span>
+                            </div>
+                        </div>
 
                         <button
                             onClick={handlePopUp}
-                            disabled={!wishlist?.items?.length}
-                            className="w-full bg-emerald-500 cursor-pointer text-white p-2 mt-8 text-center rounded-lg flex gap-2 items-center justify-center "
+                            className="w-full py-5 bg-emerald-600 text-white font-black rounded-2xl shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 active:scale-[0.98] transition-all mt-4"
                         >
-                            Place Order
+                            Checkout Now
                         </button>
                     </div>
                 </div>
             ) : (
-                <div className="text-center py-24 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
-                    <div className="mb-4 flex justify-center">
-                        <svg className="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                <div className="text-center py-20 bg-white rounded-[3rem] border border-slate-100 shadow-sm flex flex-col items-center gap-6">
+                    <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">
+                         <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                         </svg>
                     </div>
-                    <h3 className="text-xl font-medium text-gray-600">Your wishlist is empty</h3>
-                    <p className="text-gray-400 mt-2">Looks like you have not added anything yet.</p>
-                    <Link href="/packages" className="mt-6 inline-block bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition-all font-medium">
+                    <div className="max-w-xs uppercase tracking-widest text-[10px] font-black text-slate-400">Empty Wishlist</div>
+                    <h3 className="text-2xl font-bold text-slate-800">Your wishlist feels lonely</h3>
+                    <Link href="/packages" className="px-8 py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-black transition-all">
                         Explore Packages
                     </Link>
                 </div>
             )}
 
             {isPopUp && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                    <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
+                    <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-10 space-y-8">
+                            <div className="text-center space-y-2">
+                                <h2 className="text-3xl font-black text-slate-800">Complete Purchase</h2>
+                                <p className="text-slate-500 font-medium">Review your order before confirming</p>
+                            </div>
 
-                        <div className="bg-gray-50 border-b p-6">
-                            <h2 className="text-xl font-bold text-gray-800 text-center">Checkout Summary</h2>
-                        </div>
-
-                        <div className="p-6 space-y-6">
-                            <div className="space-y-3 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-                                <div className="flex justify-between text-gray-600">
+                            <div className="space-y-4 bg-emerald-50/50 p-8 rounded-3xl border border-emerald-100">
+                                <div className="flex justify-between text-slate-600 font-medium">
                                     <span>Sub Total</span>
                                     <span>BDT {subTotal}</span>
                                 </div>
-                                <div className="flex justify-between text-red-500">
+                                <div className="flex justify-between text-rose-500 font-medium">
                                     <span>Discount</span>
                                     <span>- BDT {totalDiscount}</span>
                                 </div>
-                                <div className="flex justify-between font-bold text-xl text-gray-900 border-t pt-2">
-                                    <span>Total Amount</span>
+                                <div className="flex justify-between font-black text-3xl text-slate-900 border-t border-emerald-100/50 pt-4">
+                                    <span>Total</span>
                                     <span>BDT {totalAmount}</span>
                                 </div>
                             </div>
 
-                            <div className="text-sm text-gray-500 bg-amber-50 border-l-4 border-amber-400 p-3 italic">
-                                <p>After placing the order, our representative will call you to confirm. Please complete payment before confirmation.</p>
-                            </div>
-
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <div className="flex flex-col gap-2">
-                                    <label htmlFor="payment_method" className="text-sm font-semibold text-gray-700">
-                                        Select Payment Method
-                                    </label>
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div className="space-y-3">
+                                    <label className="text-sm font-bold text-slate-700 ml-1">Payment Method</label>
                                     <select
-                                        className="w-full h-11 px-4 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all appearance-none cursor-pointer"
-                                        name="payment_method"
-                                        id="payment_method"
+                                        className="w-full h-16 px-6 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-emerald-500 transition-all font-bold text-slate-700 appearance-none cursor-pointer"
                                         value={payment_method}
                                         onChange={(e) => setPayment_method(e.target.value)}
                                     >
-                                        <option value="bkash">bKash</option>
-                                        <option value="nagad">Nagad</option>
+                                        <option value="bkash">bKash (Manual)</option>
+                                        <option value="nagad">Nagad (Manual)</option>
                                         <option value="bank">Bank Transfer</option>
                                     </select>
                                 </div>
 
-                                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                                <div className="flex gap-4 pt-4">
                                     <button
                                         type="button"
                                         onClick={handlePopUp}
-                                        className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-100 transition-colors uppercase text-sm tracking-wider"
+                                        className="flex-1 py-5 bg-slate-100 text-slate-600 font-black rounded-2xl hover:bg-slate-200 transition-all"
                                     >
-                                        Back
+                                        CANCEL
                                     </button>
                                     <button
                                         type="submit"
-                                        className="flex-1 px-4 py-3 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all uppercase text-sm tracking-wider"
+                                        className="flex-3 py-5 bg-emerald-600 text-white font-black rounded-2xl shadow-xl shadow-emerald-500/20 hover:bg-emerald-700 transition-all"
                                     >
-                                        Confirm Order
+                                        CONFIRM ORDER
                                     </button>
                                 </div>
                             </form>

@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import connectDB from "./database/db";
-import User from "./models/user";
 import { JWT_SECRET } from "./database/secret";
+import { User } from "./models/user";
 
 async function getAuthenticatedUser() {
     try {

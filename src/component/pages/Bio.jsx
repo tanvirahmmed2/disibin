@@ -1,40 +1,58 @@
 'use client'
 import React from 'react'
 import { motion } from 'framer-motion'
-import { FaRegStar } from 'react-icons/fa'
+import { RiRocketLine, RiHeartLine, RiGlobalLine, RiTeamLine } from 'react-icons/ri'
 
 const Bio = () => {
-    return (
-        <div className='w-full  flex  items-center justify-center p-4 py-8'>
-            <div className='w-full  flex flex-col items-center justify-center gap-6'>
-                <div className='w-full flex flex-col gap-2 items-start justify-center'>
-                    <h1 className='font-semibold text-3xl'>A great studio with high care</h1>
-                    <p>We’re a tight-knit team focused on clarity, speed, and friendly collaboration. No fluff—just websites that work hard for your business.</p>
+    const stats = [
+        { label: 'Projects Shipped', value: '150+', icon: <RiRocketLine /> },
+        { label: 'Happy Clients', value: '100+', icon: <RiHeartLine /> },
+        { label: 'Global Reach', value: '24/7', icon: <RiGlobalLine /> },
+        { label: 'Expert Staff', value: '10+', icon: <RiTeamLine /> },
+    ]
 
+    return (
+        <section className='w-full py-24 bg-white'>
+            <div className='container-custom grid grid-cols-1 lg:grid-cols-2 gap-20 items-center'>
+                <div className='space-y-8'>
+                    <div className='space-y-4'>
+                        <h3 className='text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600'>Our Philosophy</h3>
+                        <h2 className='text-4xl md:text-5xl font-black text-slate-900 tracking-tighter leading-tight'>
+                            A High-Care Studio Built On <span className='text-slate-400'>Clarity & Impact.</span>
+                        </h2>
+                    </div>
+                    <p className='text-slate-500 font-medium leading-relaxed max-w-lg'>
+                        We’re a team focused on clarity, speed, and friendly collaboration. We strip away the fluff to build digital infrastructure that works as hard as you do.
+                    </p>
+                    <div className='pt-4'>
+                         <button className='px-8 py-4 bg-slate-50 text-slate-900 font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-slate-100 transition-all active:scale-95'>
+                            Learn Our Method
+                         </button>
+                    </div>
                 </div>
 
-                <div className='w-full text-center grid grid-cols-2 md:grid-cols-4 gap-2'>
-                    <motion.div initial={{ scale: 0.9, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5 }} className='w-full flex flex-col items-center justify-center  border border-teal-500/40 h-37.5 rounded-lg text-xl font-semibold cursor-pointer hover:-mt-2 ease-in-out duration-300 hover:shadow-xl transform shadow shadow-teal-900'>
-                        <p>150+</p>
-                        <p>Projects Shipped</p>
-                    </motion.div>
-                    <motion.div initial={{ scale: 0.9, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5 }} className='w-full flex flex-col items-center justify-center  border border-teal-500/40 h-37.5 rounded-lg text-xl font-semibold cursor-pointer hover:-mt-2 ease-in-out duration-300 hover:shadow-xl transform shadow shadow-teal-900'>
-                        <p>100+</p>
-                        <p>Happy Clients</p>
-                    </motion.div>
-                    <motion.div initial={{ scale: 0.9, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5 }} className='w-full flex flex-col items-center justify-center  border border-teal-500/40 h-37.5 rounded-lg text-xl font-semibold cursor-pointer hover:-mt-2 ease-in-out duration-300 hover:shadow-xl transform shadow shadow-teal-900'>
-                        <p className='flex items-center gap-1 text-teal-500'>5 <FaRegStar /></p>
-                        <p>Customers Rated</p>
-                    </motion.div>
-                    <motion.div initial={{ scale: 0.9, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5 }} className='w-full flex flex-col items-center justify-center  border border-teal-500/40 h-37.5 rounded-lg text-xl font-semibold cursor-pointer hover:-mt-2 ease-in-out duration-300 hover:shadow-xl transform shadow shadow-teal-900'>
-                        <p>10+</p>
-                        <p>Senior Experts</p>
-                    </motion.div>
-                    
-
+                <div className='grid grid-cols-2 gap-6'>
+                    {stats.map((stat, idx) => (
+                        <motion.div 
+                            key={idx}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ delay: idx * 0.1, duration: 0.5 }}
+                            viewport={{ once: true }}
+                            className='p-10 bg-slate-50/50 border border-slate-100 rounded-[2.5rem] flex flex-col items-center text-center space-y-4 hover:border-emerald-500/20 transition-all group'
+                        >
+                            <div className='text-2xl text-slate-300 group-hover:text-emerald-500 transition-colors'>
+                                {stat.icon}
+                            </div>
+                            <div>
+                                <h4 className='text-3xl font-black text-slate-900 tracking-tighter'>{stat.value}</h4>
+                                <p className='text-[10px] font-black uppercase tracking-widest text-slate-400'>{stat.label}</p>
+                            </div>
+                        </motion.div>
+                    ))}
                 </div>
             </div>
-        </div>
+        </section>
     )
 }
 

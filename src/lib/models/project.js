@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-
 const projectSchema= mongoose.Schema({
     title:{type:String, trim:true, required:true},
     slug:{type:String, trim:true, required:true},
@@ -18,4 +17,5 @@ const projectSchema= mongoose.Schema({
     createdAt:{type:Date, default:Date.now}
 }, { timestamps: true })
 
-export const Project=mongoose.models.Project || mongoose.model('Project', projectSchema)
+export const Project = mongoose.models.Project || mongoose.model('Project', projectSchema)
+export default Project;

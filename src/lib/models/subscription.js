@@ -19,7 +19,8 @@ const subscriptionSchema=mongoose.Schema({
     discount:{type:Number, default:0},
     transactionId:{type:String, trim:true, required:true},
     createdAt:{type:Date, default:Date.now},
-    paidAt:{Type:Date, required:true}
+    paidAt: { type: Date, required: true }
 })
 
-export const Subscription=mongoose.models.Subscription || mongoose.model('Subscription',subscriptionSchema)
+export const Subscription = mongoose.models.Subscription || mongoose.model('Subscription', subscriptionSchema)
+export default Subscription;

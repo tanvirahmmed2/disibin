@@ -13,7 +13,6 @@ const userSchema = mongoose.Schema({
     isActive: { type: Boolean, default: true },
     isVerified: { type: Boolean, default: false },
     
-    // Profile Fields
     city: { type: String, trim: true },
     country: { type: String, trim: true },
     address_line1: { type: String, trim: true },
@@ -26,5 +25,5 @@ const userSchema = mongoose.Schema({
 
 }, { timestamps: true })
 
-
-export default User= mongoose.models.User || mongoose.model("User", userSchema)
+export const User = mongoose.models.User || mongoose.model("User", userSchema)
+export default User;

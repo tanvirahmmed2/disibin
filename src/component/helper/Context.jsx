@@ -117,6 +117,7 @@ const customServices = [
     ]
   }
 ];
+
 const ContextProvider = ({ children }) => {
     const [sidebar, setSidebar] = useState(false)
     const [isLoggedin, setIsLogggedin] = useState(false)
@@ -178,12 +179,12 @@ const ContextProvider = ({ children }) => {
     }, [wishlist, hydrated])
 
     const addToWishList = (pack) => {
-        if (!pack?.package_id) return;
+        if (!pack?.packageId) return;
 
-        const existingInwishlist = wishlist.items.find(item => item.package_id === pack.package_id);
+        const existingInwishlist = wishlist.items.find(item => item.packageId === pack.packageId);
 
         if (existingInwishlist) {
-            alert('Please checkout in your wishlist')
+            alert('Item already in wishlist')
         } else {
             const salePrice = parseFloat(pack?.price) || 0;
             const discountPrice = parseFloat(pack?.discount) || 0;
@@ -193,7 +194,7 @@ const ContextProvider = ({ children }) => {
                 items: [
                     ...prev.items,
                     {
-                        package_id: pack.package_id,
+                        packageId: pack.packageId,
                         image: pack.image,
                         title: pack.title,
                         slug: pack.slug,
@@ -211,14 +212,13 @@ const ContextProvider = ({ children }) => {
         if (!confirm) return
         setWishList(prev => ({
             ...prev,
-            items: prev.items.filter(item => item.package_id !== id)
+            items: prev.items.filter(item => item.packageId !== id)
         }))
     }
 
     const clearWishlist = () => {
         setWishList({ items: [] });
         if (typeof window !== 'undefined') localStorage.removeItem('wishlist');
-        alert("wishlist cleared");
     }
 
     const contextValues = {
@@ -232,4 +232,4 @@ const ContextProvider = ({ children }) => {
     )
 }
 
-export default ContextProvider
+export default ContextProvider

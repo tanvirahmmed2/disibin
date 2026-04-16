@@ -19,31 +19,38 @@ const ProjectsPage = async () => {
   )
   const projects = data.payload
 
-  return (
-    <div className='w-full min-h-screen bg-slate-50 py-20'>
-      <div className="container-custom">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">Our Portfolio</h1>
-          <p className="text-lg text-slate-500 max-w-2xl mx-auto">Explore our successful projects and digital transformations.</p>
-          <div className="w-24 h-1.5 bg-emerald-500 rounded-full mx-auto mt-8 shadow-lg shadow-emerald-200"></div>
+    return (
+    <main className='w-full min-h-screen bg-white pt-20'>
+      <section className='py-24 border-b border-slate-50'>
+        <div className="container-custom">
+            <div className="max-w-3xl">
+                <span className='px-4 py-1.5 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-[0.3em] rounded-full inline-block mb-6'>Portfolio</span>
+                <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none mb-8">Selected Works<span className='text-emerald-500'>.</span></h1>
+                <p className="text-xl text-slate-500 font-medium leading-relaxed">A curated collection of digital products, brand experiences, and technical solutions crafted with precision.</p>
+            </div>
         </div>
+      </section>
 
-        {projects.length === 0 ? (
-          <div className="card-premium p-16 text-center">
-            <h3 className="text-2xl font-bold text-slate-800 mb-2">No Projects Found</h3>
-            <p className="text-slate-500">We are busy building amazing things. Come back soon!</p>
-          </div>
-        ) : (
-          <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-            {projects.map((project) => (
-              <ProjectCard key={project.project_id} project={project}/>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  )
+      <section className='py-24 bg-slate-50/30'>
+        <div className='container-custom'>
+            {projects.length === 0 ? (
+            <div className="p-24 text-center border-2 border-dashed border-slate-200 rounded-[3rem]">
+                <h3 className="text-2xl font-black text-slate-900 mb-2">No Projects Found</h3>
+                <p className="text-slate-500 font-medium">We are busy building amazing things. Come back soon!</p>
+            </div>
+            ) : (
+            <div className='w-full grid grid-cols-1 md:grid-cols-2 gap-12'>
+                {projects.map((project) => (
+                <ProjectCard key={project.project_id} project={project}/>
+                ))}
+            </div>
+            )}
+        </div>
+      </section>
+    </main>
+    )
 }
+
 
 export default ProjectsPage
 

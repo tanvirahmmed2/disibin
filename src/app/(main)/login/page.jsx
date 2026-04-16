@@ -20,8 +20,8 @@ const LoginPage = () => {
             <h1 className="text-5xl font-black tracking-tight mb-4">Disibin</h1>
             <p className="text-emerald-50 text-xl font-medium mb-8">Your ultimate digital assistant.</p>
             <div className="space-y-4 text-emerald-100/80">
-              <p className="flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-white"></span> Manage your projects seamlessly.</p>
-              <p className="flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-white"></span> Track your tasks and support tickets.</p>
+              <p className="flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-white"></span> Manage your business seamlessly.</p>
+              <p className="flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-white"></span> Track your orders and support tickets.</p>
               <p className="flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-white"></span> Scale your digital empire.</p>
             </div>
           </div>

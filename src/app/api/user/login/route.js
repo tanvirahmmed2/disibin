@@ -44,6 +44,22 @@ export async function POST(req) {
         const cookieStore = await cookies();
         cookieStore.set('token', token, {
             httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            path: '/',
+        });
+
+        const response = NextResponse.json({
+            success: true,
+            message: `Welcome back, ${user.name}!`,
+            payload: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
+        });
+
         return response;
 
     } catch (error) {

@@ -49,7 +49,7 @@ const Sidebar = ({ collapsed }) => {
         ],
         manager: [
             { label: 'Business', href: '/dashboard', icon: RiDashboardLine },
-            { label: 'User Management', href: '/dashboard/admin/users', icon: RiTeamLine }, // Shared with admin but restricted actions
+            { label: 'User Management', href: '/dashboard/admin/users', icon: RiTeamLine },
             { label: 'All Tasks', href: '/dashboard/manager/tasks', icon: RiStackLine },
             { label: 'All Tickets', href: '/dashboard/support', icon: RiInboxLine },
             { label: 'Internal Mail', href: '/dashboard/mail', icon: RiMailSendLine },
@@ -78,10 +78,10 @@ const Sidebar = ({ collapsed }) => {
         ],
         client: [
             { label: 'Home', href: '/dashboard', icon: RiDashboardLine },
-            { label: 'My Tickets', href: '/dashboard/client/tickets', icon: RiInboxLine },
-            { label: 'Purchases', href: '/dashboard/client/purchases', icon: RiStackLine },
-            { label: 'Subscription', href: '/dashboard/client/subscription', icon: RiShieldUserLine },
-            { label: 'Reviews', href: '/dashboard/client/reviews', icon: RiPriceTag3Line },
+            { label: 'My Tickets', href: '/dashboard/tickets', icon: RiInboxLine },
+            { label: 'Purchases', href: '/dashboard/purchases', icon: RiStackLine },
+            { label: 'Subscription', href: '/dashboard/subscription', icon: RiShieldUserLine },
+            { label: 'Reviews', href: '/dashboard/reviews', icon: RiPriceTag3Line },
             { label: 'Profile', href: '/profile', icon: RiUserLine },
         ]
     }
@@ -89,9 +89,9 @@ const Sidebar = ({ collapsed }) => {
     const currentMenu = menuConfigs[role] || menuConfigs['client']
 
     return (
-        <aside className={`${collapsed ? 'w-20' : 'w-64'} bg-white border-r border-slate-100 h-screen sticky top-0 transition-all duration-300 flex flex-col p-4 gap-8 z-30 shadow-sm`}>
+        <aside className={`${collapsed ? 'w-20' : 'w-64'} bg-white border-r border-slate-100 h-screen sticky top-0 transition-all duration-300 flex flex-col p-4 gap-8 z-30 shadow-sm font-sans`}>
             <div className={`flex items-center ${collapsed ? 'justify-center' : 'px-2'} gap-3 mt-2`}>
-                <div className="w-10 h-10 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-emerald-500/30">
+                <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-emerald-500/20">
                     D
                 </div>
                 {!collapsed && <span className="text-2xl font-black text-slate-800 tracking-tight">Disibin</span>}
@@ -113,9 +113,9 @@ const Sidebar = ({ collapsed }) => {
                 />
                 <button 
                   onClick={() => window.location.replace('/api/user/logout')}
-                  className={`flex items-center gap-3 px-3 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-all duration-300 group
+                  className={`flex items-center gap-3 px-3 py-3 rounded-xl text-rose-500 hover:bg-rose-50 transition-all duration-300 group
                     ${collapsed ? 'justify-center' : ''}`}>
-                    <RiLogoutBoxRLine className="text-xl text-red-400 group-hover:text-red-500 transition-colors" />
+                    <RiLogoutBoxRLine className="text-xl text-rose-400 group-hover:text-rose-500 transition-colors" />
                     {!collapsed && <span className="font-bold">Logout</span>}
                 </button>
             </div>
@@ -124,4 +124,5 @@ const Sidebar = ({ collapsed }) => {
 }
 
 export default Sidebar
+
 

@@ -1,6 +1,4 @@
-
 import mongoose, { Schema } from "mongoose";
-
 
 const ticketSchema = new Schema({
     senderId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
@@ -40,4 +38,5 @@ const ticketSchema = new Schema({
     lastMessageAt: { type: Date, default: Date.now }
 }, { timestamps: true })
 
-export const Ticket = mongoose.models.Ticket || mongoose.model('Ticket', ticketSchema)
+export const Ticket = mongoose.models.Ticket || mongoose.model('Ticket', ticketSchema)
+export default Ticket;

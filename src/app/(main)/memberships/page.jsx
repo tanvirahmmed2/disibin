@@ -1,91 +1,127 @@
-import { BASE_URL } from '@/lib/database/secret'
-import React from 'react'
+'use client'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import Link from 'next/link'
-import { RiCheckLine, RiStarFill } from 'react-icons/ri'
+import { RiCheckLine, RiStarFill, RiCloseLine, RiInformationLine, RiShieldFlashLine } from 'react-icons/ri'
 
-export const metadata = {
-  title: 'Premium Memberships | Disibin',
-  description: 'Join our premium memberships to unlock exclusive access to the best digital services.',
-}
+const Memberships = () => {
+  const [memberships, setMemberships] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [selectedPlan, setSelectedPlan] = useState(null)
+  const [purchaseLoading, setPurchaseLoading] = useState(false)
+  const [purchaseForm, setPurchaseForm] = useState({
+      payMethod: 'bkash',
+      transactionId: ''
+  })
 
-const Memberships = async () => {
-  // We'll stub out the API fetch. Assuming it returns an array of membership objects under payload.
-  // We fallback to empty array if it fails so the empty state renders beautifully instead of crashing.
-  let memberships = []
-  try {
-    const res = await fetch(`${BASE_URL}/api/package`, { method: 'GET', cache: 'no-store' })
-    const data = await res.json()
-    // Using packages as a placeholder if there is no explicit memberships endpoint yet, or stub it entirely.
-    if (data.success && data.payload) {
-       // Filter to just show highest tier packages or format them
-       memberships = data.payload.slice(0, 3)
+  useEffect(() => {
+    const fetchMemberships = async () => {
+      try {
+        const res = await axios.get('/api/membership')
+        if (res.data.success) {
+           setMemberships(res.data.payload)
+        }
+      } catch (error) {
+        // Silent error for production
+      } finally {
+        setLoading(false)
+      }
     }
-  } catch (error) {
-    console.error("Error fetching memberships", error)
+    fetchMemberships()
+  }, [])
+
+  const handlePurchase = async (e) => {
+      e.preventDefault()
+      setPurchaseLoading(true)
+      try {
+          const res = await axios.post('/api/subscription', {
+              membershipId: selectedPlan._id,
+              payMethod: purchaseForm.payMethod,
+              transactionId: purchaseForm.transactionId
+          })
+          if (res.data.success) {
+              alert('Subscription request submitted! Please check your dashboard for confirmation.')
+              setSelectedPlan(null)
+          }
+      } catch (error) {
+          alert(error.response?.data?.message || 'Failed to submit purchase request. Please login first.')
+      } finally {
+          setPurchaseLoading(false)
+      }
   }
 
+  if (loading) return (
+      <div className="flex items-center justify-center min-h-screen bg-white">
+          <div className="w-12 h-12 border-4 border-slate-100 border-t-emerald-600 rounded-full animate-spin"></div>
+      </div>
+  )
+
   return (
-    <div className='w-full min-h-screen bg-slate-50 py-20'>
+    <div className='w-full min-h-screen bg-slate-50/50 py-24'>
       <div className="container-custom">
-        <div className="text-center mb-16">
-          <span className="text-emerald-600 font-bold tracking-widest uppercase text-sm mb-2 block">Exclusive Access</span>
-          <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">Premium Memberships</h1>
-          <p className="text-lg text-slate-500 max-w-2xl mx-auto">Elevate your digital presence with our top-tier tailored solutions. Built for professionals who demand excellence.</p>
-          <div className="w-24 h-1.5 bg-emerald-500 rounded-full mx-auto mt-8 shadow-lg shadow-emerald-200"></div>
+        <div className="text-center mb-20 space-y-4">
+          <span className="text-emerald-600 font-black tracking-[0.2em] uppercase text-[10px] block">Exclusive Access</span>
+          <h1 className="text-5xl font-black text-slate-900 tracking-tight">Premium Memberships</h1>
+          <p className="text-slate-500 max-w-xl mx-auto font-medium">Elevate your digital presence with our top-tier tailored solutions for professionals.</p>
         </div>
 
         {memberships.length === 0 ? (
-          <div className="card-premium p-16 text-center max-w-3xl mx-auto border-2 border-emerald-100 bg-emerald-50/30">
-            <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 text-emerald-600">
-               <RiStarFill size={40} />
+          <div className="card-premium p-20 text-center max-w-2xl mx-auto flex flex-col items-center gap-8">
+            <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">
+               <RiStarFill size={32} />
             </div>
-            <h3 className="text-3xl font-black text-slate-800 mb-4">Coming Soon</h3>
-            <p className="text-slate-600 text-lg mb-8">We are crafting the perfect premium membership plans for you. Please check back later to unlock exclusive access.</p>
-            <Link href="/services" className="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 shadow-xl shadow-emerald-600/20 transition-all hover:-translate-y-1">
-              Explore Our Services
+            <div className="space-y-2">
+                <h3 className="text-3xl font-black text-slate-800 tracking-tight">Coming Soon</h3>
+                <p className="text-slate-500 font-medium">We are crafting the perfect premium plans for you.</p>
+            </div>
+            <Link href="/services" className="btn-primary">
+              Explore Services
             </Link>
           </div>
         ) : (
-          <div className='w-full grid grid-cols-1 md:grid-cols-3 gap-8 items-center max-w-6xl mx-auto'>
+          <div className='w-full grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto'>
             {memberships.map((plan, idx) => (
               <div 
-                key={plan._id || idx} 
-                className={`card-premium relative overflow-hidden flex flex-col ${idx === 1 ? 'border-2 border-emerald-500 shadow-2xl scale-105 z-10' : 'mt-4 md:mt-0'}`}
+                key={plan._id} 
+                className={`card-premium relative flex flex-col ${idx === 1 ? 'border-2 border-emerald-500 shadow-2xl scale-105 z-10' : ''}`}
               >
                 {idx === 1 && (
-                  <div className="absolute top-0 inset-x-0 w-full bg-emerald-500 text-white text-xs font-bold text-center py-1.5 uppercase tracking-wider">
+                  <div className="bg-emerald-500 text-white text-[10px] font-black text-center py-2 uppercase tracking-widest">
                     Most Popular
                   </div>
                 )}
                 
-                <div className={`p-8 ${idx === 1 ? 'pt-10' : ''}`}>
-                  <h3 className="text-2xl font-black text-slate-900 mb-2">{plan.title}</h3>
-                  <p className="text-slate-500 text-sm mb-6 h-10 line-clamp-2">{plan.description}</p>
+                <div className="p-10 space-y-6">
+                  <div className="space-y-1">
+                    <h3 className="text-2xl font-black text-slate-900">{plan.title}</h3>
+                    <p className="text-slate-500 text-xs font-medium line-clamp-2">{plan.description}</p>
+                  </div>
                   
-                  <div className="flex items-end gap-1 mb-6">
-                    <span className="text-4xl font-black text-slate-900">${plan.price || '199'}</span>
-                    <span className="text-slate-500 font-medium mb-1">/month</span>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-black text-slate-900">${plan.price}</span>
+                    <span className="text-slate-400 font-bold text-xs">/{plan.duration}</span>
                   </div>
 
-                  <Link 
-                    href={idx === 1 ? '/register' : '/contact'} 
-                    className={`block w-full py-4 rounded-xl text-center font-bold transition-all ${
+                  <button 
+                    onClick={() => setSelectedPlan(plan)}
+                    className={`block w-full py-4 rounded-2xl text-center font-black text-sm tracking-wider uppercase transition-all ${
                       idx === 1 
-                      ? 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-500/30' 
-                      : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                      ? 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-500/20' 
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                     }`}
                   >
-                    Get Started
-                  </Link>
+                    Subscribe
+                  </button>
                 </div>
                 
-                <div className="p-8 pt-0 flex-1 flex flex-col gap-4 border-t border-slate-100 bg-slate-50">
-                   {['Full access to core tools', 'Priority 24/7 support', 'Advanced analytics dashboard', 'Custom onboarding session'].map((feature, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <div className="mt-1 w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 text-emerald-600">
-                          <RiCheckLine size={14} />
+                <div className="p-10 pt-0 flex-1 space-y-4 border-t border-slate-50 mt-auto">
+                   <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-8 mb-4">Core Features</div>
+                   {plan.features?.map((feature, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="w-5 h-5 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0 text-emerald-600">
+                          <RiCheckLine size={12} />
                         </div>
-                        <span className="text-slate-600 text-sm font-medium">{feature}</span>
+                        <span className="text-slate-600 text-xs font-bold">{feature}</span>
                       </div>
                    ))}
                 </div>
@@ -94,8 +130,78 @@ const Memberships = async () => {
           </div>
         )}
       </div>
+
+      {selectedPlan && (
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] flex items-center justify-center p-6">
+              <div className="bg-white rounded-[3rem] w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+                  <div className="p-10 flex justify-between items-center border-b border-slate-50">
+                    <div>
+                        <h3 className="text-2xl font-black text-slate-900 tracking-tight">Checkout</h3>
+                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">{selectedPlan.title} Plan</p>
+                    </div>
+                    <button onClick={() => setSelectedPlan(null)} className="p-3 bg-slate-50 text-slate-400 hover:text-slate-600 rounded-2xl transition-all">
+                        <RiCloseLine size={24} />
+                    </button>
+                  </div>
+                  
+                  <form onSubmit={handlePurchase} className="p-10 space-y-8">
+                      <div className="p-8 bg-slate-50 rounded-3xl border border-slate-100 flex justify-between items-center">
+                          <div className="flex flex-col">
+                              <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Payable Amount</span>
+                              <span className="text-4xl font-black text-slate-900">${selectedPlan.price - (selectedPlan.discount || 0)}</span>
+                          </div>
+                          <div className="w-14 h-14 bg-emerald-600 text-white rounded-[1.25rem] flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                              <RiShieldFlashLine size={28} />
+                          </div>
+                      </div>
+
+                      <div className="space-y-6">
+                          <div className="space-y-2">
+                              <label className="text-sm font-bold text-slate-700 ml-1">Payment Method</label>
+                              <select 
+                                value={purchaseForm.payMethod}
+                                onChange={(e) => setPurchaseForm({ ...purchaseForm, payMethod: e.target.value })}
+                                className="input-standard appearance-none cursor-pointer"
+                              >
+                                  <option value="bkash">bKash (Manual)</option>
+                                  <option value="nagad">Nagad (Manual)</option>
+                                  <option value="bank">Bank Transfer</option>
+                              </select>
+                          </div>
+                          <div className="space-y-2">
+                              <label className="text-sm font-bold text-slate-700 ml-1">Transaction ID</label>
+                              <input 
+                                required
+                                type="text"
+                                value={purchaseForm.transactionId}
+                                onChange={(e) => setPurchaseForm({ ...purchaseForm, transactionId: e.target.value })}
+                                placeholder="Enter TXID from receipt"
+                                className="input-standard"
+                              />
+                          </div>
+                      </div>
+
+                      <div className="flex gap-4 p-5 bg-amber-50 rounded-2xl text-amber-800 border border-amber-100">
+                          <RiInformationLine size={20} className="mt-0.5 shrink-0" />
+                          <p className="text-[10px] font-bold leading-relaxed uppercase tracking-wide">
+                            Manual verification required. Please complete the payment and provide your TXID above.
+                          </p>
+                      </div>
+
+                      <button 
+                         disabled={purchaseLoading}
+                         type="submit"
+                         className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-sm tracking-widest hover:bg-black active:scale-[0.98] transition-all disabled:opacity-50 uppercase shadow-xl shadow-slate-900/10"
+                      >
+                          {purchaseLoading ? 'Processing...' : 'Complete Payment'}
+                      </button>
+                  </form>
+              </div>
+          </div>
+      )}
     </div>
   )
 }
 
 export default Memberships
+

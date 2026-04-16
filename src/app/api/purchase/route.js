@@ -30,7 +30,7 @@ export async function POST(req) {
             subTotal += price;
             totalDiscount += discount;
             return {
-                packageId: item.package_id,
+                packageId: item.packageId,
                 price,
                 discount,
                 total
@@ -42,7 +42,6 @@ export async function POST(req) {
         session = await mongoose.startSession();
         session.startTransaction();
 
-        // 1. Create Payment record
         const payment = await Payment.create([{
             total: payableAmount,
             subTotal,
@@ -51,10 +50,9 @@ export async function POST(req) {
             transactionId: "PENDING_" + Date.now(),
             status: 'pending',
             paidAt: new Date(),
-            purchaseId: new mongoose.Types.ObjectId() // Temporary ID
+            purchaseId: new mongoose.Types.ObjectId()
         }], { session });
 
-        // 2. Create Purchase record
         const purchase = await Purchase.create([{
             userId: auth.payload._id,
             items: purchaseItems,
@@ -65,7 +63,6 @@ export async function POST(req) {
             status: 'pending'
         }], { session });
 
-        // 3. Update Payment with real Purchase ID
         await Payment.findByIdAndUpdate(payment[0]._id, { purchaseId: purchase[0]._id }, { session });
 
         await session.commitTransaction();
@@ -74,7 +71,7 @@ export async function POST(req) {
         return NextResponse.json({
             success: true,
             message: 'Order placed successfully!',
-            purchase_id: purchase[0]._id
+            payload: purchase[0]
         }, { status: 201 });
 
     } catch (error) {
@@ -93,7 +90,7 @@ export async function GET() {
         if (!auth.success) return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
 
         const purchases = await Purchase.find()
-            .populate('userId', 'name email')
+            .populate('userId', 'name email shadow')
             .populate('paymentId')
             .populate('items.packageId', 'title')
             .sort({ createdAt: -1 });
@@ -111,22 +108,20 @@ export async function PATCH(req) {
         const auth = await isManager();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
-        const { purchase_id, status, transaction_id } = await req.json();
+        const { id, status, transactionId } = await req.json();
 
         session = await mongoose.startSession();
         session.startTransaction();
 
-        const purchase = await Purchase.findById(purchase_id);
+        const purchase = await Purchase.findById(id);
         if (!purchase) throw new Error('Purchase not found');
 
-        // Update Purchase status
         purchase.status = status || 'completed';
         await purchase.save({ session });
 
-        // Update associated Payment
         await Payment.findByIdAndUpdate(purchase.paymentId, {
             status: status === 'completed' ? 'completed' : 'pending',
-            transactionId: transaction_id || undefined,
+            transactionId: transactionId || undefined,
             paidAt: new Date()
         }, { session });
 

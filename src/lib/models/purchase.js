@@ -19,5 +19,5 @@ const purchaseSchema= mongoose.Schema({
 
 })
 
-
-export const Purchase= mongoose.models.Purchase || mongoose.model('Purchase', purchaseSchema)
+export const Purchase = mongoose.models.Purchase || mongoose.model('Purchase', purchaseSchema)
+export default Purchase;

@@ -11,4 +11,5 @@ const blogSchema= mongoose.Schema({
     createdAt:{type:Date, default:Date.now}
 }, { timestamps: true })
 
-export const Blog= mongoose.models.Blog || mongoose.model('Blog', blogSchema)
+export const Blog = mongoose.models.Blog || mongoose.model('Blog', blogSchema)
+export default Blog;

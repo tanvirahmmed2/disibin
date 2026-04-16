@@ -11,10 +11,7 @@ if (!cached) {
 }
 
 const connectDB = async () => {
-    if (!MONGODB_URI) {
-        console.error("No MongoDB URI found in environment variables!");
-        return;
-    }
+    if (!MONGODB_URI) return;
 
     if (cached.conn) {
         return cached.conn;
@@ -26,7 +23,6 @@ const connectDB = async () => {
         };
 
         cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-            console.log("Database connected successfully");
             return mongoose;
         });
     }
@@ -35,7 +31,6 @@ const connectDB = async () => {
         cached.conn = await cached.promise;
     } catch (e) {
         cached.promise = null;
-        console.error("Failed to connect to database:", e.message);
         throw e;
     }
 

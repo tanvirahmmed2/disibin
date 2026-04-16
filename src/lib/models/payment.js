@@ -17,7 +17,8 @@ const paymentSchema=mongoose.Schema({
     },
     transactionId:{type:String, trim:true, required:true},
     createdAt:{type:Date, default:Date.now},
-    paidAt:{Type:Date, required:true}
+    paidAt:{type:Date, required:true}
 })
 
-export const Payment= mongoose.models.Payment || mongoose.model('Payment', paymentSchema)
+export const Payment = mongoose.models.Payment || mongoose.model('Payment', paymentSchema)
+export default Payment;

@@ -1,5 +1,7 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
+import axios from 'axios'
+import { Context } from '@/component/helper/Context'
 import { RiSearchLine, RiSendPlane2Line, RiUserLine, RiAtLine, RiInformationLine } from 'react-icons/ri'
 
 const ChatItem = ({ item, active, onClick }) => (

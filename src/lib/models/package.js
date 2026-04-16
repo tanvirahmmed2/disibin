@@ -15,4 +15,5 @@ const packSchema= mongoose.Schema({
     createdAt:{type:Date, default:Date.now}
 }, { timestamps: true })
 
-export const Package=mongoose.models.Package || mongoose.model('Package', packSchema)
+export const Package = mongoose.models.Package || mongoose.model('Package', packSchema)
+export default Package;

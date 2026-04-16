@@ -48,45 +48,43 @@ const skills = [
 
 const SkillSlider = () => {
   return (
-    <div className="w-full overflow-hidden  bg-linear-to-br select-none  from-teal-900 to-teal-700 text-white  p-8">
-      <div className="flex gap-10 whitespace-nowrap animate-skill-slide">
+    <section className="w-full py-32 bg-white overflow-hidden border-y border-slate-50">
+      <div className="container-custom mb-16 text-center">
+         <span className='text-emerald-600 font-black tracking-[0.4em] uppercase text-[10px] mb-4 inline-block'>Infrastructure</span>
+         <h2 className='text-4xl md:text-5xl font-black text-slate-900 tracking-tighter'>The Stack We Master.</h2>
+      </div>
 
-        {skills.map((skill, index) => {
+      <div className="flex gap-16 whitespace-nowrap animate-slide select-none">
+        {/* First set of icons */}
+        {[...skills, ...skills].map((skill, index) => {
           const Icon = skill.icon
           return (
             <div
               key={index}
-              className="flex items-center gap-2 text-lg font-semibold  uppercase"
+              className="flex items-center gap-4 text-slate-200 group hover:text-emerald-500 transition-colors duration-500"
             >
-              <Icon className="text-6xl text-white/50 hover:scale-105 cursor-pointer" />
-              <span className='opacity-20'>{skill.name}</span>
+              <Icon size={40} className="filter grayscale group-hover:grayscale-0 transition-all" />
+              <span className='text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all'>{skill.name}</span>
             </div>
           )
         })}
+      </div>
 
-        {skills.map((skill, index) => {
-          const Icon = skill.icon
-          return (
-            <div
-              key={`dup-${index}`}
-              className="flex items-center gap-2 text-lg font-semibold  uppercase"
+      <div className='container-custom mt-20'>
+        <div className='flex flex-wrap items-center justify-center gap-2 max-w-4xl mx-auto'>
+            {skills.map((skill) => (
+            <span 
+                key={skill.name} 
+                className='px-6 py-2.5 bg-slate-50 text-slate-400 text-[9px] font-black uppercase tracking-widest rounded-full border border-slate-100 hover:border-emerald-500/20 hover:text-emerald-600 transition-all cursor-default'
             >
-              <Icon className="text-6xl text-white/50 hover:scale-105 cursor-pointer" />
-              <span className='opacity-20'>{skill.name}</span>
-            </div>
-          )
-        })}
-
+                {skill.name}
+            </span>
+            ))}
+        </div>
       </div>
-      <div className='w-full max-w-3xl mx-auto mt-12 flex flex-wrap items-center justify-center gap-4'>
-        {
-        skills.map((skill)=>(
-          <p key={skill.name} className='px-4 p-1 bg-white/10 rounded-full hover:scale-105'>{skill.name}</p>
-        ))
-      }
-      </div>
-    </div>
+    </section>
   )
 }
+
 
 export default SkillSlider
