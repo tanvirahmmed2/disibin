@@ -55,7 +55,7 @@ const SkillSlider = () => {
       </div>
 
       <div className="flex gap-16 whitespace-nowrap animate-slide select-none">
-        {/* First set of icons */}
+        {}
         {[...skills, ...skills].map((skill, index) => {
           const Icon = skill.icon
           return (

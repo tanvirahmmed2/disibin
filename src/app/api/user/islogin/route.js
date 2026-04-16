@@ -12,7 +12,7 @@ export async function GET() {
             return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
         }
 
-        // isLogin payload already contains the user object (minus password)
+        
         return NextResponse.json({
             success: true,
             message: 'User is authenticated',

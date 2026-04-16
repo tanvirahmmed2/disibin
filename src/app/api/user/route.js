@@ -52,7 +52,7 @@ export async function PATCH(req) {
             return NextResponse.json({ success: false, message: "User ID is required" }, { status: 400 });
         }
 
-        // Only Admin/Manager can update sensitive info like role or status
+        
         const isManagement = auth.payload.role === 'admin' || auth.payload.role === 'manager';
         
         const targetUser = await User.findById(id);
@@ -60,7 +60,7 @@ export async function PATCH(req) {
             return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
         }
 
-        // Safety Block: Last Admin protection
+        
         if (targetUser.role === 'admin' && role && role !== 'admin') {
             if (!isManagement || auth.payload.role !== 'admin') {
                 return NextResponse.json({ success: false, message: 'Unauthorized role change' }, { status: 403 });
@@ -74,7 +74,7 @@ export async function PATCH(req) {
             }
         }
 
-        // Construct Update Data
+        
         const updateData = {
             name: name || targetUser.name,
             phone: phone || targetUser.phone,

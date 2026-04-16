@@ -16,13 +16,13 @@ export async function GET(req) {
 
         let query = {};
 
-        // Role-based filtering
+        
         if (user.role === 'client') {
             query.senderId = user._id;
         } else if (user.role === 'support' || user.role === 'admin' || user.role === 'manager') {
-            // Can see all or filtered
+            
         } else if (user.role === 'project_manager') {
-            query.category = 'project'; // PM sees project tickets by default
+            query.category = 'project'; 
         }
 
         if (category) query.category = category;
@@ -86,19 +86,19 @@ export async function PATCH(req) {
         const ticket = await Ticket.findById(id);
         if (!ticket) return NextResponse.json({ success: false, message: 'Ticket not found' }, { status: 404 });
 
-        // Update fields if provided (Management roles)
+        
         if (['admin', 'manager', 'support', 'project_manager'].includes(auth.payload.role)) {
             if (status) ticket.status = status;
             if (assignedId) ticket.assignedId = assignedId;
             if (priority) ticket.priority = priority;
         } else {
-            // Client can only update status to 'resolved' or 'closed' maybe?
+            
             if (status && (status === 'closed' || status === 'resolved')) {
                 ticket.status = status;
             }
         }
 
-        // Add message if provided (Chat System)
+        
         if (message) {
             ticket.messages.push({
                 senderId: auth.payload._id,

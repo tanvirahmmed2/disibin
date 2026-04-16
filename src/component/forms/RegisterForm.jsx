@@ -3,12 +3,13 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import React, { useState } from 'react'
 import axios from 'axios'
-import { RiUserLine, RiMailLine, RiLockPasswordLine, RiUserAddLine } from 'react-icons/ri'
+import { RiUserLine, RiMailLine, RiLockPasswordLine, RiUserAddLine, RiPhoneLine } from 'react-icons/ri'
 
 const RegisterForm = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
+        phone: '',
         password: ''
     })
     const [isLoading, setIsLoading] = useState(false)
@@ -41,7 +42,7 @@ const RegisterForm = () => {
             className='w-full flex-col flex gap-5'
         >
             <div className='w-full flex flex-col gap-2'>
-                <label htmlFor="name" className="text-sm font-bold text-slate-700">Full Name</label>
+                <label htmlFor="name" className="text-sm font-black text-slate-900 uppercase tracking-widest text-[10px]">Account Name</label>
                 <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-emerald-500 transition-colors">
                         <RiUserLine size={20} />
@@ -53,14 +54,13 @@ const RegisterForm = () => {
                         required 
                         onChange={handleChange} 
                         value={formData.name} 
-                        className='w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800 placeholder:text-slate-400' 
-                        placeholder="John Doe"
+                        className='w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800' 
                     />
                 </div>
             </div>
 
             <div className='w-full flex flex-col gap-2'>
-                <label htmlFor="email" className="text-sm font-bold text-slate-700">Email Address</label>
+                <label htmlFor="email" className="text-sm font-black text-slate-900 uppercase tracking-widest text-[10px]">Email Address</label>
                 <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-emerald-500 transition-colors">
                         <RiMailLine size={20} />
@@ -72,14 +72,31 @@ const RegisterForm = () => {
                         required 
                         onChange={handleChange} 
                         value={formData.email} 
-                        className='w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800 placeholder:text-slate-400' 
-                        placeholder="you@example.com"
+                        className='w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800' 
                     />
                 </div>
             </div>
 
             <div className='w-full flex flex-col gap-2'>
-                <label htmlFor="password" className="text-sm font-bold text-slate-700">Password</label>
+                <label htmlFor="phone" className="text-sm font-black text-slate-900 uppercase tracking-widest text-[10px]">Contact Number</label>
+                <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-emerald-500 transition-colors">
+                        <RiPhoneLine size={20} />
+                    </div>
+                    <input 
+                        type="text" 
+                        id='phone' 
+                        name='phone' 
+                        required 
+                        onChange={handleChange} 
+                        value={formData.phone} 
+                        className='w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800' 
+                    />
+                </div>
+            </div>
+
+            <div className='w-full flex flex-col gap-2'>
+                <label htmlFor="password" className="text-sm font-black text-slate-900 uppercase tracking-widest text-[10px]">Security Password</label>
                 <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-emerald-500 transition-colors">
                         <RiLockPasswordLine size={20} />
@@ -91,8 +108,7 @@ const RegisterForm = () => {
                         required 
                         onChange={handleChange} 
                         value={formData.password} 
-                        className='w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800 placeholder:text-slate-400' 
-                        placeholder="••••••••"
+                        className='w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800' 
                     />
                 </div>
             </div>

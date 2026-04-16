@@ -8,7 +8,7 @@ import { CgProfile } from 'react-icons/cg';
 import { RiLogoutBoxRLine, RiDashboardLine, RiUserLine, RiHeartLine } from 'react-icons/ri';
 
 const Navbar = () => {
-  const { sidebar, setSidebar, isLoggedin, userData } = useContext(Context)
+  const { sidebar, setSidebar, isLoggedin, userData, handleLogout } = useContext(Context)
   const pathname = usePathname()
 
   const navLinks = [
@@ -21,6 +21,8 @@ const Navbar = () => {
   ]
 
   const isActive = (href) => pathname === href
+
+ 
 
   return (
     <nav className='w-full fixed top-0 left-0 h-20 bg-white/80 backdrop-blur-xl border-b border-slate-50 z-50 flex items-center'>
@@ -72,7 +74,7 @@ const Navbar = () => {
                 </div>
                 <div className='my-2 border-t border-slate-50'></div>
                 <button 
-                  onClick={() => window.location.replace('/api/user/logout')}
+                  onClick={() => handleLogout()}
                   className='w-full flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-rose-500 hover:bg-rose-50 rounded-xl transition-colors'
                 >
                   <RiLogoutBoxRLine className='text-lg' /> Terminate Session

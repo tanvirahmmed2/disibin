@@ -25,14 +25,14 @@ async function getAuthenticatedUser() {
     }
 }
 
-// 1. Base Authentication Middleware
+
 export async function isLogin() {
     const user = await getAuthenticatedUser();
     if (!user) return { success: false, message: 'Please login' };
     return { success: true, payload: user };
 }
 
-// 2. Strict Role Check Middlewares (Exact matching)
+
 export async function isAdmin() {
     const user = await getAuthenticatedUser();
     if (!user || user.role !== 'admin') {
@@ -89,7 +89,7 @@ export async function isClient() {
     return { success: true, payload: user };
 }
 
-// Helper for custom combinations
+
 export async function hasRole(allowedRoles) {
     const user = await getAuthenticatedUser();
     if (!user) return { success: false, message: 'Please login' };

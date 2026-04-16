@@ -24,7 +24,7 @@ const TicketChatPage = () => {
 
     const fetchTicket = async () => {
         try {
-            // Reusing the general GET route but filtering for this ID (or I could add a specific route)
+            
             const res = await axios.get(`/api/ticket`)
             const found = res.data.payload.find(t => t._id === id)
             if (found) {
@@ -55,7 +55,7 @@ const TicketChatPage = () => {
                 id,
                 message: inputText
             })
-            // Optimistic update
+            
             setMessages([...messages, {
                 senderId: userData._id,
                 message: inputText,
@@ -77,7 +77,7 @@ const TicketChatPage = () => {
 
     return (
         <div className="flex flex-col h-[calc(100vh-140px)] bg-slate-50/30 rounded-[2.5rem] overflow-hidden border border-slate-50">
-            {/* Header */}
+            {}
             <div className="bg-white p-6 border-b border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <button 
@@ -107,7 +107,7 @@ const TicketChatPage = () => {
                 </div>
             </div>
 
-            {/* Chat Body */}
+            {}
             <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
                 {messages.map((msg, index) => {
                     const isMe = msg.senderId === userData?._id
@@ -128,7 +128,7 @@ const TicketChatPage = () => {
                 <div ref={scrollRef} />
             </div>
 
-            {/* Input Area */}
+            {}
             <div className="p-6 bg-white border-t border-slate-100">
                 <form onSubmit={handleSend} className="max-w-4xl mx-auto flex gap-3">
                     <div className="flex-1 relative">
@@ -136,7 +136,6 @@ const TicketChatPage = () => {
                             value={inputText}
                             onChange={e => setInputText(e.target.value)}
                             className="w-full pl-4 pr-12 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-slate-700"
-                            placeholder="Type your response..."
                         />
                     </div>
                     <button 

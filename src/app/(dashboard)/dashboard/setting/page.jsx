@@ -11,7 +11,7 @@ const SettingsPage = () => {
     
     const [saving, setSaving] = useState(false);
     
-    // Form state
+    
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
@@ -27,7 +27,7 @@ const SettingsPage = () => {
                 phone: userData.phone || '',
                 city: userData.city || '',
                 country: userData.country || '',
-                password: '', // We don't populate password
+                password: '', 
             });
         }
     }, [userData]);
@@ -43,14 +43,14 @@ const SettingsPage = () => {
         try {
             const dataToSubmit = { ...formData };
             if (!dataToSubmit.password) {
-                delete dataToSubmit.password; // Don't send empty password if not changing
+                delete dataToSubmit.password; 
             }
             
             const res = await axios.patch('/api/user/update', dataToSubmit, { withCredentials: true });
             
             if (res.data.success) {
                 alert('Settings updated successfully!');
-                // We could trigger a context refresh here if we had one
+                
                 window.location.reload(); 
             } else {
                 alert(res.data.message || 'Failed to update settings');
@@ -124,7 +124,7 @@ const SettingsPage = () => {
                                 </div>
                                 <input 
                                     type="tel" name="phone" value={formData.phone} onChange={handleChange}
-                                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800" placeholder="+1 (555) 000-0000"
+                                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800"
                                 />
                             </div>
                         </div>
@@ -137,7 +137,7 @@ const SettingsPage = () => {
                                 </div>
                                 <input 
                                     type="password" name="password" value={formData.password} onChange={handleChange}
-                                    className="w-full pl-12 pr-4 py-3 bg-rose-50/30 border-2 border-rose-100 rounded-xl outline-none focus:bg-white focus:border-rose-500 transition-all font-medium text-slate-800" placeholder="Leave blank to keep unchanged"
+                                    className="w-full pl-12 pr-4 py-3 bg-rose-50/30 border-2 border-rose-100 rounded-xl outline-none focus:bg-white focus:border-rose-500 transition-all font-medium text-slate-800"
                                 />
                             </div>
                         </div>
@@ -150,7 +150,7 @@ const SettingsPage = () => {
                                 </div>
                                 <input 
                                     type="text" name="city" value={formData.city} onChange={handleChange}
-                                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800" placeholder="New York"
+                                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800"
                                 />
                             </div>
                         </div>
@@ -163,7 +163,7 @@ const SettingsPage = () => {
                                 </div>
                                 <input 
                                     type="text" name="country" value={formData.country} onChange={handleChange}
-                                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800" placeholder="United States"
+                                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800"
                                 />
                             </div>
                         </div>

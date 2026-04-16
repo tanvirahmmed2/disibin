@@ -221,8 +221,19 @@ const ContextProvider = ({ children }) => {
         if (typeof window !== 'undefined') localStorage.removeItem('wishlist');
     }
 
+     const handleLogout=async()=>{
+        try {
+          const res= await axios.get('/api/user/logout',{withCredentials:true})
+          alert(res.data.message)
+          window.location.replace('/login')
+        } catch (error) {
+          console.log(error)
+          alert('Failed to logout')
+        }
+      }
+
     const contextValues = {
-        sidebar, setSidebar, isLoggedin, userData, removeFromwishlist, addToWishList, wishlist, clearWishlist, customServices
+        sidebar, setSidebar, isLoggedin, userData, removeFromwishlist, addToWishList, wishlist, clearWishlist, customServices, handleLogout
     }
 
     return (
@@ -232,4 +243,4 @@ const ContextProvider = ({ children }) => {
     )
 }
 
-export default ContextProvider
+export default ContextProvider

@@ -14,7 +14,7 @@ export async function PUT(req) {
         }
 
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+        const expires = new Date(Date.now() + 10 * 60 * 1000); 
 
         user.resetToken = otp;
         user.tokenExpiresAt = expires;

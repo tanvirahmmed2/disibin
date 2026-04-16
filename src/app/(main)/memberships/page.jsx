@@ -22,7 +22,7 @@ const Memberships = () => {
            setMemberships(res.data.payload)
         }
       } catch (error) {
-        // Silent error for production
+        
       } finally {
         setLoading(false)
       }
@@ -175,7 +175,6 @@ const Memberships = () => {
                                 type="text"
                                 value={purchaseForm.transactionId}
                                 onChange={(e) => setPurchaseForm({ ...purchaseForm, transactionId: e.target.value })}
-                                placeholder="Enter TXID from receipt"
                                 className="input-standard"
                               />
                           </div>

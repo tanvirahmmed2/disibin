@@ -1,10 +1,7 @@
 import * as brevo from "@getbrevo/brevo";
 import { BREVO_API_KEY, BREVO_SENDER_EMAIL, BREVO_SENDER_NAME } from "./secret";
 
-/**
- * Utility to send transactional emails via Brevo
- * @param {Object} options - { toEmail, toName, subject, htmlContent }
- */
+
 export const sendEmail = async ({ toEmail, toName, subject, htmlContent }) => {
     try {
         const apiInstance = new brevo.TransactionalEmailsApi();

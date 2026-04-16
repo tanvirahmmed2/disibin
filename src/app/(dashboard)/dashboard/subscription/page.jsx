@@ -24,7 +24,7 @@ const SubscriptionPage = () => {
         fetchSubscriptions()
     }, [])
 
-    const activeSub = subscriptions[0] // Get the most recent one
+    const activeSub = subscriptions[0] 
 
     if (loading) {
         return (
@@ -66,7 +66,7 @@ const SubscriptionPage = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Active Plan Card */}
+                {}
                 <div className="lg:col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 p-8 rounded-[2.5rem] text-white shadow-xl shadow-slate-200 relative overflow-hidden">
                     <RiShieldFlashLine className="absolute -top-10 -right-10 text-white/5" size={300} />
                     
@@ -105,7 +105,7 @@ const SubscriptionPage = () => {
                     </div>
                 </div>
 
-                {/* Quick Actions */}
+                {}
                 <div className="flex flex-col gap-4">
                     <Link href="/memberships" className="flex-1 bg-white p-6 rounded-3xl border border-slate-50 shadow-sm flex flex-col items-center justify-center gap-2 group hover:bg-emerald-600 hover:text-white transition-all text-center">
                         <RiExchangeLine size={24} className="text-emerald-600 group-hover:text-white" />
@@ -118,7 +118,7 @@ const SubscriptionPage = () => {
                 </div>
             </div>
 
-            {/* Plan Benefits */}
+            {}
             <div className="bg-white p-10 rounded-[2.5rem] border border-slate-50 shadow-sm">
                 <h3 className="text-xl font-bold text-slate-800 mb-8">What's included in your plan:</h3>
                 {activeSub.membershipId?.features?.length > 0 ? (

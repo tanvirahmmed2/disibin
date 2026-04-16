@@ -4,6 +4,7 @@ import User from "@/lib/models/user";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { sendVerificationEmail } from "@/lib/database/brevo";
+import { BASE_URL } from "@/lib/database/secret";
 
 export async function POST(req) {
     try {
@@ -21,7 +22,7 @@ export async function POST(req) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const verificationToken = crypto.randomBytes(32).toString('hex');
-        const tokenExpiresAt = new Date(Date.now() + 3600000); // 1 hour
+        const tokenExpiresAt = new Date(Date.now() + 3600000); 
 
         const user = await User.create({
             name,
@@ -33,7 +34,7 @@ export async function POST(req) {
             tokenExpiresAt
         });
 
-        const verificationUrl = `${process.env.BASE_URL}/verify-email?token=${verificationToken}&email=${email}`;
+        const verificationUrl = `${BASE_URL}/verify-email?token=${verificationToken}&email=${email}`;
         await sendVerificationEmail(email, name, verificationUrl);
 
         return NextResponse.json({

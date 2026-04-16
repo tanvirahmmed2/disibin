@@ -9,7 +9,7 @@ export async function GET() {
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
-        // Since contact form uses email, we filter support messages by the user's email
+        
         const contacts = await Contact.find({ email: auth.payload.email }).sort({ createdAt: -1 });
 
         return NextResponse.json({ success: true, message: 'Support messages found', payload: contacts });

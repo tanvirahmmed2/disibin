@@ -18,7 +18,7 @@ export async function GET(req) {
         const stats = {};
 
         if (user.role === 'admin' || user.role === 'manager') {
-            // High-level Business Overview
+            
             const [totalUsers, activePackages, totalBlogs, totalProjects, pendingTasks, openTickets] = await Promise.all([
                 User.countDocuments(),
                 Package.countDocuments({ isActive: true }),
@@ -58,11 +58,11 @@ export async function GET(req) {
                 { title: 'Open Tickets', value: myTickets, type: 'tickets' }
             ];
         } else {
-            // Client View
+            
             const [myTickets, myPackages] = await Promise.all([
                 Ticket.countDocuments({ senderId: user._id }),
-                // Assuming purchases link to packages, this would need specific logic
-                // For now, simplified count
+                
+                
                 0 
             ]);
             stats.overview = [

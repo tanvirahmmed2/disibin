@@ -10,13 +10,13 @@ const DashboardLayout = ({ children }) => {
     const { isLoggedin, userData } = useContext(Context)
     const router = useRouter()
 
-    // Client-side protection (Server-side should also be implemented via middleware/layout)
-    // For now, we rely on the Context which fetches from /api/user/islogin
+    
+    
     useEffect(() => {
-        // We wait a bit for the hydration/fetch to complete
+        
         const timeout = setTimeout(() => {
             if (!isLoggedin && !userData?.role) {
-                // router.push('/login') // Disabling aggressive redirect for now to allow dev
+                
             }
         }, 2000)
         return () => clearTimeout(timeout)

@@ -3,13 +3,13 @@ import axios from 'axios';
 import React, { useState } from 'react'
 
 const UpdateProjectForm = ({ project }) => {
-    // Initialize state with existing project data
+    
     const [formData, setFormData] = useState({
         title: project?.title || '',
         category: project?.category || '',
         description: project?.description || '',
         preview: project?.preview || '',
-        // Converting arrays to strings for easy editing in inputs
+        
         tags: project?.tags?.join(', ') || '',
         skills: project?.skills?.join(', ') || '',
         is_featured: project?.is_featured || false,
@@ -72,12 +72,12 @@ const UpdateProjectForm = ({ project }) => {
 
             <div className='flex flex-col w-full'>
                 <label className='font-semibold'>Tags (comma separated)</label>
-                <input name="tags" value={formData.tags} onChange={handleChange} className='w-full px-3 p-1 border border-emerald-600/30 outline-none ' placeholder='e.g. POS, Ecommerce' />
+                <input name="tags" value={formData.tags} onChange={handleChange} className='w-full px-3 p-1 border border-emerald-600/30 outline-none ' />
             </div>
 
             <div className='flex flex-col w-full'>
                 <label className='font-semibold'>Skills (comma separated)</label>
-                <input name="skills" value={formData.skills} onChange={handleChange} className='w-full px-3 p-1 border border-emerald-600/30 outline-none ' placeholder='e.g. Next.js, Tailwind' />
+                <input name="skills" value={formData.skills} onChange={handleChange} className='w-full px-3 p-1 border border-emerald-600/30 outline-none ' />
             </div>
 
             <div className='flex items-center gap-2'>

@@ -21,7 +21,7 @@ const ServiceDetails = ({ params }) => {
                     setMemberships(res.data.payload)
                 }
             } catch (error) {
-                // Handle silently
+                
             } finally {
                 setLoading(false)
             }

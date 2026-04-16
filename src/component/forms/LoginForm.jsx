@@ -55,8 +55,7 @@ const LoginForm = () => {
                         required 
                         onChange={handleChange} 
                         value={formData.email} 
-                        className='w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800 placeholder:text-slate-400' 
-                        placeholder="you@example.com"
+                        className='w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800 placeholder:text-slate-400'
                     />
                 </div>
             </div>
@@ -74,8 +73,7 @@ const LoginForm = () => {
                         required 
                         onChange={handleChange} 
                         value={formData.password} 
-                        className='w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800 placeholder:text-slate-400' 
-                        placeholder="••••••••"
+                        className='w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500 transition-all font-medium text-slate-800 placeholder:text-slate-400'
                     />
                 </div>
             </div>

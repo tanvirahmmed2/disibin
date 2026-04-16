@@ -3,8 +3,8 @@ import mongoose, { Schema } from "mongoose";
 const ticketSchema = new Schema({
     senderId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     subject: { type: String, trim: true, required: true },
-    message: { type: String, trim: true }, // Initial message
-    attachment: { type: String, trim: true }, // Initial attachment
+    message: { type: String, trim: true }, 
+    attachment: { type: String, trim: true }, 
     
     category: { 
         type: String, 

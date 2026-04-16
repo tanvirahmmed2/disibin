@@ -36,7 +36,7 @@ const SidebarItem = ({ item, collapsed }) => {
 }
 
 const Sidebar = ({ collapsed }) => {
-    const { userData } = useContext(Context)
+    const { userData ,handleLogout} = useContext(Context)
     const role = userData?.role || 'client'
 
     const menuConfigs = {
@@ -112,7 +112,7 @@ const Sidebar = ({ collapsed }) => {
                     collapsed={collapsed} 
                 />
                 <button 
-                  onClick={() => window.location.replace('/api/user/logout')}
+                  onClick={() => handleLogout()}
                   className={`flex items-center gap-3 px-3 py-3 rounded-xl text-rose-500 hover:bg-rose-50 transition-all duration-300 group
                     ${collapsed ? 'justify-center' : ''}`}>
                     <RiLogoutBoxRLine className="text-xl text-rose-400 group-hover:text-rose-500 transition-colors" />

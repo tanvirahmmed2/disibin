@@ -31,10 +31,10 @@ const ManagerTasks = () => {
         try {
             const [taskRes, userRes] = await Promise.all([
                 axios.get('/api/task'),
-                axios.get('/api/user') // Managers can see all users
+                axios.get('/api/user') 
             ])
             setTasks(taskRes.data.payload)
-            // Filter only staff/support for assignment
+            
             setUsers(userRes.data.payload.filter(u => ['staff', 'support', 'project_manager'].includes(u.role)))
         } catch (error) {
             console.error('Failed to fetch data', error)
@@ -114,7 +114,7 @@ const ManagerTasks = () => {
                 <DataTable columns={columns} data={tasks} loading={loading} />
             </div>
 
-            {/* Create Task Modal */}
+            {}
             {showModal && (
                 <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="bg-white w-full max-w-xl rounded-[2.5rem] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
@@ -124,7 +124,6 @@ const ManagerTasks = () => {
                                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Task Title</label>
                                 <input 
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
-                                    placeholder="Enter task title"
                                     required
                                     value={newTask.title}
                                     onChange={e => setNewTask({...newTask, title: e.target.value})}
@@ -134,7 +133,6 @@ const ManagerTasks = () => {
                                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Description</label>
                                 <textarea 
                                     className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all h-24"
-                                    placeholder="Task details..."
                                     value={newTask.description}
                                     onChange={e => setNewTask({...newTask, description: e.target.value})}
                                 />

@@ -84,20 +84,20 @@ const Support = () => {
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                     <div className='space-y-2'>
                         <label className='text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4'>Full Name</label>
-                        <input name='name' required onChange={handleChange} value={formData.name} className='input-standard' placeholder='John Doe' />
+                        <input name='name' required onChange={handleChange} value={formData.name} className='input-standard' />
                     </div>
                     <div className='space-y-2'>
                         <label className='text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4'>Email Address</label>
-                        <input type="email" name='email' required onChange={handleChange} value={formData.email} className='input-standard' placeholder='john@example.com' />
+                        <input type="email" name='email' required onChange={handleChange} value={formData.email} className='input-standard' />
                     </div>
                 </div>
                 <div className='space-y-2'>
                     <label className='text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4'>Subject</label>
-                    <input name='subject' required onChange={handleChange} value={formData.subject} className='input-standard' placeholder='Project Inquiry' />
+                    <input name='subject' required onChange={handleChange} value={formData.subject} className='input-standard' />
                 </div>
                 <div className='space-y-2'>
                     <label className='text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4'>Message</label>
-                    <textarea name="message" required onChange={handleChange} value={formData.message} className='input-standard min-h-[150px] resize-none' placeholder='Tell us about your project...' />
+                    <textarea name="message" required onChange={handleChange} value={formData.message} className='input-standard min-h-[150px] resize-none' />
                 </div>
                 
                 <button 

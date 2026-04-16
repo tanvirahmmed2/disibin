@@ -13,7 +13,7 @@ export async function GET() {
         const user = auth.payload;
         let query = {};
 
-        // Clients only see their own subscriptions
+        
         if (user.role === 'client') {
             query.userId = user._id;
         }
@@ -63,7 +63,7 @@ export async function POST(req) {
             subTotal: price,
             discount,
             total,
-            paidAt: new Date() // Set to now as transaction is submitted
+            paidAt: new Date() 
         });
 
         return NextResponse.json({

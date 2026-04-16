@@ -29,7 +29,7 @@ const DashboardHome = () => {
                 const res = await axios.get('/api/dashboard/stats')
                 setStats(res.data.payload)
             } catch (error) {
-                // Silently handle error for clean production experience
+                
             } finally {
                 setLoading(false)
             }

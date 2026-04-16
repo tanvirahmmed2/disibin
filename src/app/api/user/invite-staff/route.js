@@ -26,7 +26,7 @@ export async function POST(req) {
         }
 
         const activationToken = crypto.randomBytes(32).toString('hex');
-        const tokenExpiresAt = new Date(Date.now() + 86400000 * 7); // 7 days
+        const tokenExpiresAt = new Date(Date.now() + 86400000 * 7); 
         const tempPassword = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
 
         await User.create({

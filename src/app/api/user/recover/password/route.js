@@ -8,7 +8,7 @@ export async function PATCH(req) {
         await connectDB();
         const { email, otp, new_password } = await req.json();
 
-        // Finding user with matching email, token, and checking expiration
+        
         const user = await User.findOne({
             email,
             resetToken: otp,

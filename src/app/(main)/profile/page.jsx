@@ -18,7 +18,7 @@ const UserProfile = () => {
         const res = await axios.get('/api/user/islogin', { withCredentials: true });
         setUserData(res.data.payload);
       } catch (error) {
-        // Handle silently
+        
       } finally {
         setLoading(false);
       }

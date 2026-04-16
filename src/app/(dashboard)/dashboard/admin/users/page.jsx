@@ -98,7 +98,7 @@ const UserManager = () => {
                 <DataTable columns={columns} data={users} loading={loading} actions={actions} />
             </div>
 
-            {/* Role Promotion Modal */}
+            {}
             {promotingUser && (
                 <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl p-8">

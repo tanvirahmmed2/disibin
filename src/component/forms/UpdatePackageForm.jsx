@@ -76,7 +76,7 @@ const UpdatePackageForm = ({ pack }) => {
 
             <div className='flex flex-col gap-1 w-full'>
                 <label className='font-bold text-gray-700'>Features (comma separated)</label>
-                <input name="features" value={formData.features} onChange={handleChange} className='w-full px-3 p-1 border border-emerald-600/30 outline-none' placeholder='e.g. SEO, Hosting, Support' />
+                <input name="features" value={formData.features} onChange={handleChange} className='w-full px-3 p-1 border border-emerald-600/30 outline-none' />
             </div>
 
             <div className='flex items-center gap-2 py-2'>

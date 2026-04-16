@@ -56,7 +56,7 @@ const AccountRecoverForm = () => {
         </div>
         <div className='w-full flex flex-col gap-1'>
           <label htmlFor="new_password">New Password*</label>
-          <input type="text" name='new_password' id='new_password' placeholder='password must be atleast 6 charachter' onChange={handleChange} value={formData.new_password} className='w-full px-3 p-1 border border-emerald-600/40 outline-none'/>
+          <input type="text" name='new_password' id='new_password' onChange={handleChange} value={formData.new_password} className='w-full px-3 p-1 border border-emerald-600/40 outline-none'/>
         </div>
         <div className='w-full flex flex-col gap-1'>
           <label htmlFor="confirm_password">Re-type Password*</label>

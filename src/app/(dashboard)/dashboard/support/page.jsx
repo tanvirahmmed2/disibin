@@ -5,7 +5,7 @@ import DataTable from '@/component/dashboard/DataTable'
 import { RiMessage2Line, RiShareForwardLine, RiCheckboxCircleLine } from 'react-icons/ri'
 
 const SupportDashboard = () => {
-    const [view, setView] = useState('tickets') // 'tickets' or 'messages'
+    const [view, setView] = useState('tickets') 
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
 

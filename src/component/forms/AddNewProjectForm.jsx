@@ -56,7 +56,7 @@ const AddNewProjectForm = () => {
       <div className='w-full flex flex-col items-center justify-center sm:flex-row gap-4'>
         <div className='w-full flex flex-col gap-1'>
           <label htmlFor="preview">Preview</label>
-          <input type="text" name='preview' id='preview' onChange={handleChange} required value={formData.preview} placeholder='set preview link' className='w-full px-3 p-1 outline-none border border-emerald-600' />
+          <input type="text" name='preview' id='preview' onChange={handleChange} required value={formData.preview} className='w-full px-3 p-1 outline-none border border-emerald-600' />
         </div>
         <div className='w-full flex flex-col gap-1'>
           <label htmlFor="category">Category</label>
@@ -65,15 +65,15 @@ const AddNewProjectForm = () => {
       </div>
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="description">Description</label>
-        <textarea name="description" id="description" required onChange={handleChange} value={formData.description} placeholder='write here' className='w-full px-3 p-1 outline-none border border-emerald-600'></textarea>
+        <textarea name="description" id="description" required onChange={handleChange} value={formData.description} className='w-full px-3 p-1 outline-none border border-emerald-600'></textarea>
       </div>
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="tags">Tags</label>
-        <input type="text" name='tags' id='tags' required onChange={handleChange} value={formData.tags} placeholder="use (',')" className='w-full px-3 p-1 outline-none border border-emerald-600' />
+        <input type="text" name='tags' id='tags' required onChange={handleChange} value={formData.tags} className='w-full px-3 p-1 outline-none border border-emerald-600' />
       </div>
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="skills">skills</label>
-        <input type="text" name='skills' id='skills' required onChange={handleChange} value={formData.skills} placeholder="use (',')" className='w-full px-3 p-1 outline-none border border-emerald-600' />
+        <input type="text" name='skills' id='skills' required onChange={handleChange} value={formData.skills} className='w-full px-3 p-1 outline-none border border-emerald-600' />
       </div>
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="image">Image *</label>

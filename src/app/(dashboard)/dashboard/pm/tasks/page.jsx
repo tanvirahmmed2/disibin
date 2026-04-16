@@ -91,14 +91,12 @@ const PMTasks = () => {
                         <form onSubmit={handleCreate} className="space-y-4">
                             <input 
                                 className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl outline-none"
-                                placeholder="Task title"
                                 required
                                 value={newTask.title}
                                 onChange={e => setNewTask({...newTask, title: e.target.value})}
                             />
                             <textarea 
                                 className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl outline-none h-24"
-                                placeholder="Description"
                                 value={newTask.description}
                                 onChange={e => setNewTask({...newTask, description: e.target.value})}
                             />

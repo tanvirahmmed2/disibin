@@ -10,7 +10,7 @@ const PMTickets = () => {
 
     const fetchTickets = async () => {
         try {
-            // Fetch project category tickets
+            
             const res = await axios.get('/api/ticket?category=project')
             setTickets(res.data.payload)
         } catch (error) {

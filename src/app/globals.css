@@ -1,41 +1,41 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: var(--color-emerald-600);
-  --color-primary-dark: var(--color-emerald-700);
+  --color-primary: rgb(89, 71, 253);
+  --color-primary-dark: rgb(70, 56, 220);
   --color-slate-50: #f8fafc;
   --color-slate-100: #f1f5f9;
   
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.02);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.04), 0 2px 4px -2px rgb(0 0 0 / 0.04);
-  --shadow-premium: 0 10px 15px -3px rgba(0, 0, 0, 0.02), 0 4px 6px -4px rgba(0, 0, 0, 0.02);
+  --shadow-premium: 0 10px 40px -10px rgba(89, 71, 253, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.02);
 }
 
 @layer base {
   body {
-    @apply bg-white text-slate-900 overflow-x-hidden selection:bg-emerald-100 selection:text-emerald-900 font-sans;
+    @apply bg-white text-slate-900 overflow-x-hidden selection:bg-primary/10 selection:text-primary font-sans;
   }
 }
 
 @layer components {
   .container-custom {
-    @apply max-w-6xl mx-auto px-6 w-full;
+    @apply max-w-7xl mx-auto px-6 w-full;
   }
   
   .card-premium {
-    @apply bg-white border border-slate-100 rounded-[2rem] shadow-sm transition-all duration-500 hover:border-emerald-500/20 hover:shadow-md;
+    @apply bg-white border border-slate-100 rounded-[2.5rem] shadow-sm transition-all duration-500 hover:border-primary/20 hover:shadow-premium hover:-translate-y-1;
   }
   
   .btn-primary {
-    @apply px-10 py-5 bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-emerald-600 active:scale-95 transition-all;
+    @apply px-10 py-5 bg-primary text-white font-black uppercase tracking-widest text-[11px] rounded-2xl hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20 active:scale-95 transition-all cursor-pointer;
   }
   
   .btn-secondary {
-    @apply px-10 py-5 bg-white text-slate-900 border-2 border-slate-100 font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-slate-50 active:scale-95 transition-all;
+    @apply px-10 py-5 bg-white text-slate-900 border-2 border-slate-100 font-black uppercase tracking-widest text-[11px] rounded-2xl hover:bg-slate-50 active:scale-95 transition-all cursor-pointer;
   }
 
   .input-standard {
-    @apply w-full px-6 py-5 rounded-2xl bg-slate-50 border-2 border-slate-50 focus:border-emerald-500/50 focus:bg-white outline-none transition-all font-bold text-slate-800 placeholder:text-slate-400 text-sm;
+    @apply w-full px-8 py-6 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-primary/20 focus:bg-white outline-none transition-all font-bold text-slate-800 placeholder:text-slate-400 text-sm shadow-inner;
   }
 }
 

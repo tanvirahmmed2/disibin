@@ -20,7 +20,7 @@ export async function GET(req) {
         const user = auth.payload;
         let query = {};
 
-        // Client isolation: clients only see their own projects
+        
         if (user.role === 'client') {
             query.clientId = user._id;
         }

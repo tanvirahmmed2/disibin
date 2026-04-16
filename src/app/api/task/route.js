@@ -9,14 +9,14 @@ export async function GET(req) {
         const { searchParams } = new URL(req.url);
         const type = searchParams.get('type');
         const status = searchParams.get('status');
-        const mode = searchParams.get('mode'); // 'tasks' or 'conversations'
+        const mode = searchParams.get('mode'); 
 
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
         const user = auth.payload;
 
         if (mode === 'conversations') {
-            // Fetch direct tasks (chats) where user is a participant
+            
             const chats = await Task.find({
                 type: 'direct',
                 participants: user._id
@@ -29,7 +29,7 @@ export async function GET(req) {
 
         const isMgmt = ['admin', 'manager', 'project_manager'].includes(user.role);
 
-        // Management can see all tasks (or filtered)
+        
         const query = {};
         if (type) query.type = type;
         if (status) query.status = status;
@@ -82,7 +82,7 @@ export async function POST(req) {
 export async function PATCH(req) {
     try {
         await connectDB();
-        const auth = await isStaff(); // Everyone staff or above can update status/messages
+        const auth = await isStaff(); 
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
         const { id, status, message, attachments } = await req.json();
@@ -90,12 +90,12 @@ export async function PATCH(req) {
         const task = await Task.findById(id);
         if (!task) return NextResponse.json({ success: false, message: 'Task not found' }, { status: 404 });
 
-        // Update status if provided
+        
         if (status) {
             task.status = status;
         }
 
-        // Add message if provided (Chat System)
+        
         if (message) {
             task.messages.push({
                 senderId: auth.payload._id,

@@ -14,7 +14,7 @@ export async function POST(req) {
 
         const { purchase_id, status } = await req.json();
 
-        // 1. Get current purchase and payment status
+        
         const purchase = await Purchase.findById(purchase_id).populate('paymentId');
         if (!purchase) {
             return NextResponse.json({ success: false, message: 'Purchase record not found' }, { status: 404 });
@@ -23,7 +23,7 @@ export async function POST(req) {
         const payment = purchase.paymentId;
 
         if (status === 'completed') {
-            // Logic: Only work when payment status is completed
+            
             if (payment.status !== 'completed') {
                 return NextResponse.json({ 
                     success: false, 

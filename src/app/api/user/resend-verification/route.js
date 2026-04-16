@@ -19,7 +19,7 @@ export async function POST(req) {
         }
 
         const verificationToken = crypto.randomBytes(32).toString('hex');
-        const tokenExpiresAt = new Date(Date.now() + 3600000); // 1 hour
+        const tokenExpiresAt = new Date(Date.now() + 3600000); 
 
         user.resetToken = verificationToken;
         user.tokenExpiresAt = tokenExpiresAt;

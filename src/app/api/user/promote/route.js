@@ -18,12 +18,12 @@ export async function PATCH(req) {
             return NextResponse.json({ success: false, message: 'User ID and Role are required' }, { status: 400 });
         }
 
-        // Restriction: Only Admin can promote someone to Admin
+        
         if (role === 'admin' && operatorRole !== 'admin') {
             return NextResponse.json({ success: false, message: 'Only Admin can promote users to Admin role' }, { status: 403 });
         }
 
-        // Restriction: Only Admin can modify an existing Admin's role
+        
         const targetUser = await User.findById(user_id);
         if (!targetUser) {
             return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });

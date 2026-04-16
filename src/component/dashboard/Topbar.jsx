@@ -20,7 +20,6 @@ const Topbar = ({ collapsed, setCollapsed }) => {
                     <RiSearchLine size={20} className="text-slate-400" />
                     <input 
                         type="text" 
-                        placeholder="Search anything..." 
                         className="bg-transparent border-none outline-none text-sm text-slate-700 font-medium w-full placeholder:text-slate-400"
                     />
                 </div>

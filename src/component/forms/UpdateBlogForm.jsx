@@ -61,7 +61,7 @@ const UpdateBlogForm = ({ blog }) => {
 
             <div className='flex flex-col w-full gap-1'>
                 <label className='font-bold text-gray-700'>Tags</label>
-                <input name="tags" value={formData.tags} onChange={handleChange} className='w-full px-3 p-1 outline-none border border-emerald-600/30' placeholder='e.g. React, Tutorial' />
+                <input name="tags" value={formData.tags} onChange={handleChange} className='w-full px-3 p-1 outline-none border border-emerald-600/30' />
             </div>
 
             <div className='flex items-center gap-2 py-2'>

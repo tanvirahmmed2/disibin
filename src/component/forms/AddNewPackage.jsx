@@ -71,12 +71,12 @@ const AddNewPackage = () => {
       </div>
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="description">Description</label>
-        <textarea name="description" id="description" required onChange={handleChange} value={formData.description} placeholder='write here' className='w-full px-3 p-1 outline-none border border-emerald-600'></textarea>
+        <textarea name="description" id="description" required onChange={handleChange} value={formData.description} className='w-full px-3 p-1 outline-none border border-emerald-600'></textarea>
       </div>
 
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="features">Features</label>
-        <input type="text" name='features' id='features' required onChange={handleChange} value={formData.features} placeholder="use (,')" className='w-full px-3 p-1 outline-none border border-emerald-600' />
+        <input type="text" name='features' id='features' required onChange={handleChange} value={formData.features} className='w-full px-3 p-1 outline-none border border-emerald-600' />
       </div>
 
 

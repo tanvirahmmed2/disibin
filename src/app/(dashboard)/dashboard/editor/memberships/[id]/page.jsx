@@ -116,7 +116,7 @@ const EditMembership = ({ params }) => {
 
             <form onSubmit={handleSubmit} className="bg-white p-10 rounded-[2.5rem] border border-slate-50 shadow-sm space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* Basic Info */}
+                    {}
                     <div className="space-y-4">
                         <label className="block">
                             <span className="text-sm font-bold text-slate-700 ml-1">Plan Title</span>
@@ -144,7 +144,7 @@ const EditMembership = ({ params }) => {
                         </label>
                     </div>
 
-                    {/* Image Upload */}
+                    {}
                     <div className="flex flex-col items-center justify-center p-8 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 relative group transition-all hover:border-emerald-300">
                         {preview ? (
                             <img src={preview} alt="Preview" className="w-full h-full object-cover rounded-xl" />

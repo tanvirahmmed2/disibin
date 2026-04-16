@@ -6,7 +6,7 @@ export async function GET() {
     try {
         await connectDB();
         
-        // Since isFeatured is not in the Mongoose model, we return latest 3 projects as "featured"
+        
         const projects = await Project.find().sort({ createdAt: -1 }).limit(3);
 
         return NextResponse.json({
@@ -35,7 +35,7 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: 'Project not found' }, { status: 404 });
         }
 
-        // Toggle logic simulation since field doesn't exist
+        
         project.isFeatured = !project.isFeatured;
         await project.save();
 
