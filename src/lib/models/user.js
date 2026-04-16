@@ -10,9 +10,19 @@ const userSchema = mongoose.Schema({
         default: "client"
     },
     password:{type:String, trim:true, required:true},
-    isActive:{
-        type:Boolean, default:true
-    },
+    isActive: { type: Boolean, default: true },
+    isVerified: { type: Boolean, default: false },
+    
+    // Profile Fields
+    city: { type: String, trim: true },
+    country: { type: String, trim: true },
+    address_line1: { type: String, trim: true },
+    address_line2: { type: String, trim: true },
+    state: { type: String, trim: true },
+    postal_code: { type: String, trim: true },
+    
+    resetToken: { type: String, default: null },
+    tokenExpiresAt: { type: Date }
 
 }, { timestamps: true })
 

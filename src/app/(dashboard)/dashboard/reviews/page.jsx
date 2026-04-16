@@ -1,79 +1,82 @@
 'use client'
+import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
-import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
+import DataTable from '@/component/dashboard/DataTable'
+import { Context } from '@/component/helper/Context'
+import { RiStarFill, RiEdit2Line, RiDeleteBin6Line } from 'react-icons/ri'
 
-const ReviewsPage = () => {
-  const [reviews, setReviews] = useState([])
-  const fetchReviews = async () => {
-    try {
-      const response = await axios.get('/api/review', { withCredentials: true })
-      setReviews(response.data.payload)
-    } catch (error) {
-      setReviews([])
+const ClientReviews = () => {
+    const { isLoggedin } = useContext(Context)
+    const [reviews, setReviews] = useState([])
+    const [loading, setLoading] = useState(true)
 
-    }
-  }
-
-  useEffect(() => {
-    fetchReviews()
-  }, [])
-  console.log(reviews)
-
-  const handleDelete=async(id)=>{
-    try {
-      const response= await axios.delete('/api/review', {data: {id},withCredentials:true})
-      alert(response.data.message)
-      fetchReviews()
-    } catch (error) {
-      alert(error?.response?.data?.message || 'Failed to delete review')
-      
-    }
-  }
-
-  const handleChangestatus=async(id)=>{
-    try {
-      const response= await axios.patch('/api/review',  {id},{withCredentials:true})
-      alert(response.data.message)
-      fetchReviews()
-    } catch (error) {
-      alert(error?.response?.data?.message || 'Failed to change status')
-      
-    }
-  }
-
-  if (reviews.length == 0) return <p className=' font-semibold w-full text-center p-4'>No data found</p>
-
-  return (
-    <div className='w-full flex flex-col items-center p-1 sm:p-4 gap-6'>
-      <h1 className='w-full text-center text-xl font-semibold'>Hear From Customers</h1>
-      
-      <div className='w-full flex flex-col items-center justify-center gap-2'>
-        {
-          reviews.map((review) => (
-            <div key={review.review_id} className='w-full grid grid-cols-4 sm:grid-cols-7 gap-4 shadow rounded-2xl p-2 border border-black/30'>
-              <div className='col-span-1 sm:col-span-2 flex flex-col gap-1'>
-                <Image src={review.user_image} alt='user image' height={30} width={30} className='rounded-full' />
-                <p>{review.user_name}</p>
-                <p>{review.user_email}</p>
-              </div>
-              <div className='col-span-2 sm:col-span-4 flex flex-col gap-1'>
-                <strong>Rating: {review.rating}</strong>
-                <p>{review.comment}</p>
-              </div>
-              <div className='col-span-1 flex flex-col gap-1'>
-                <button onClick={()=> handleDelete(review.review_id)} className='w-full bg-red-500 text-white p-1 hover:scale-95 cursor-pointer'>Delete</button>
-                {
-                  review.is_approved ? <button onClick={()=> handleChangestatus(review.review_id)} className='w-full bg-red-500 text-white p-1 hover:scale-95 cursor-pointer'>Make Pending</button> : <button onClick={()=> handleChangestatus(review.review_id)} className='w-full bg-green-500 text-white p-1 hover:scale-95 cursor-pointer'>Approve</button>
-                }
-              </div>
-            </div>
-          ))
+    const fetchReviews = async () => {
+        try {
+            const res = await axios.get('/api/user/review', { withCredentials: true })
+            setReviews(res.data.payload)
+        } catch (error) {
+            console.error('Failed to fetch reviews', error)
+        } finally {
+            setLoading(false)
         }
-      </div>
+    }
 
-    </div>
-  )
+    useEffect(() => {
+        if (isLoggedin) fetchReviews()
+    }, [isLoggedin])
+
+    const columns = [
+        { label: 'Rating', key: 'rate', render: (row) => (
+            <div className="flex gap-0.5">
+                {[...Array(5)].map((_, i) => (
+                    <RiStarFill key={i} className={i < row.rate ? 'text-amber-400' : 'text-slate-200'} size={14} />
+                ))}
+            </div>
+        )},
+        { label: 'Comment', key: 'comment', render: (row) => (
+            <p className="text-slate-600 max-w-xs truncate">{row.comment}</p>
+        )},
+        { label: 'Status', key: 'isApproved', render: (row) => (
+            <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider
+                ${row.isApproved ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                {row.isApproved ? 'Approved' : 'Pending'}
+            </span>
+        )},
+    ]
+
+    const actions = (row) => (
+        <div className="flex gap-2">
+            <button className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 transition-all">
+                <RiEdit2Line size={18} />
+            </button>
+            <button className="p-2 hover:bg-slate-100 rounded-lg text-red-500 transition-all">
+                <RiDeleteBin6Line size={18} />
+            </button>
+        </div>
+    )
+
+    return (
+        <div className="space-y-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex flex-col gap-1">
+                    <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Your Reviews</h1>
+                    <p className="text-slate-500">Manage your reviews and feedback for the services you used.</p>
+                </div>
+                <button className="bg-slate-900 text-white px-8 py-3 rounded-2xl font-bold hover:bg-slate-800 transition-all">
+                    Write a Review
+                </button>
+            </div>
+
+            <div className="bg-white p-2 rounded-[2.5rem] border border-slate-50 shadow-sm overflow-hidden">
+                <DataTable 
+                    columns={columns} 
+                    data={reviews} 
+                    loading={loading} 
+                    actions={actions} 
+                />
+            </div>
+        </div>
+    )
 }
 
-export default ReviewsPage
+export default ClientReviews

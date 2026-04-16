@@ -30,3 +30,17 @@ export const sendEmail = async ({ toEmail, toName, subject, htmlContent }) => {
         return { success: false, error };
     }
 };
+
+export const sendVerificationEmail = async (email, name, verificationUrl) => {
+    const subject = "Verify your Disibin Account";
+    const htmlContent = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2>Welcome to Disibin!</h2>
+            <p>Hi ${name},</p>
+            <p>Please click the button below to verify your email address:</p>
+            <a href="${verificationUrl}" style="display: inline-block; padding: 10px 20px; background-color: #059669; color: #ffffff; text-decoration: none; border-radius: 5px;">Verify Email</a>
+            <p>If you didn't request this, you can ignore this email.</p>
+        </div>
+    `;
+    return await sendEmail({ toEmail: email, toName: name, subject, htmlContent });
+};

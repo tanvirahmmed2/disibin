@@ -1,39 +1,49 @@
-import cloudinary from "@/lib/database/cloudinary";
-import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
-import slugify from "slugify";
+import connectDB from "@/lib/database/db";
+import { Blog } from "@/lib/models/blog";
+import cloudinary from "@/lib/database/cloudinary";
+import { isManager } from "@/lib/middleware";
+
+const generateSlug = (title) => {
+    return title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+};
 
 export async function GET() {
     try {
-        const query = "SELECT * FROM public.blogs ORDER BY created_at DESC";
-        const result = await pool.query(query);
-        return NextResponse.json({ success: true, payload: result.rows || [] });
+        await connectDB();
+        const blogs = await Blog.find().sort({ createdAt: -1 });
+        return NextResponse.json({
+            success: true,
+            message: 'Blog data found successfully',
+            payload: blogs
+        }, { status: 200 });
     } catch (error) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
 export async function POST(req) {
     try {
+        await connectDB();
+        const auth = await isManager();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+
         const formData = await req.formData();
-        
-        const title = formData.get("title");
-        const description = formData.get("description");
-        const preview = formData.get("preview");
-        const tags = formData.get("tags");
-        const isFeatured = formData.get("isFeatured") === "true";
-        const imageFile = formData.get("image");
+        const title = formData.get('title');
+        const content = formData.get('content');
+        const category = formData.get('category');
+        const imageFile = formData.get('image');
 
-        if (!title || !description || !imageFile) {
-            return NextResponse.json({ success: false, message: "Required fields missing" }, { status: 400 });
+        if (!title || !content || !category || !imageFile) {
+            return NextResponse.json({ success: false, message: 'Missing required fields' }, { status: 400 });
         }
 
-        const slug = slugify(title, { strict: true, lower: true });
-        
-        const checkResult = await pool.query("SELECT slug FROM public.blogs WHERE slug = $1", [slug]);
-        if (checkResult.rowCount > 0) {
-            return NextResponse.json({ success: false, message: "Slug already exists" }, { status: 400 });
-        }
+        const slug = generateSlug(title);
+        const existing = await Blog.findOne({ slug });
+        if (existing) return NextResponse.json({ success: false, message: 'Blog with this title already exists' }, { status: 400 });
 
         const buffer = Buffer.from(await imageFile.arrayBuffer());
         const cloudImage = await new Promise((resolve, reject) => {
@@ -44,62 +54,53 @@ export async function POST(req) {
             stream.end(buffer);
         });
 
-        const query = `
-            INSERT INTO public.blogs (title, slug, description, image, image_id, preview, tags, is_featured)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-            RETURNING *;
-        `;
-
-        const values = [
+        const blog = await Blog.create({
             title,
             slug,
-            description,
-            cloudImage.secure_url,
-            cloudImage.public_id,
-            preview,
-            tags ? tags.split(',').map(t => t.trim()) : [],
-            isFeatured
-        ];
+            content,
+            category,
+            image: cloudImage.secure_url,
+            imageId: cloudImage.public_id,
+            author: auth.payload.name
+        });
 
-        const result = await pool.query(query, values);
-        return NextResponse.json({ success: true, message: "Blog created", payload: result.rows[0] });
+        return NextResponse.json({
+            success: true,
+            message: 'Blog created successfully',
+            payload: blog
+        }, { status: 201 });
+
     } catch (error) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
 export async function PATCH(req) {
     try {
+        await connectDB();
+        const auth = await isManager();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+
         const formData = await req.formData();
-        const id = formData.get("id");
+        const id = formData.get('id');
+        const title = formData.get('title');
+        const content = formData.get('content');
+        const category = formData.get('category');
+        const imageFile = formData.get('image');
 
-        if (!id) return NextResponse.json({ success: false, message: "ID required" }, { status: 400 });
+        const blog = await Blog.findById(id);
+        if (!blog) return NextResponse.json({ success: false, message: 'Blog not found' }, { status: 404 });
 
-        const findResult = await pool.query("SELECT * FROM public.blogs WHERE id = $1", [id]);
-        if (findResult.rowCount === 0) return NextResponse.json({ success: false, message: "Blog not found" }, { status: 404 });
-
-        const blog = findResult.rows[0];
-
-        const title = formData.get("title");
-        const description = formData.get("description");
-        const preview = formData.get("preview");
-        const tags = formData.get("tags");
-        const isFeatured = formData.get("isFeatured");
-        const imageFile = formData.get("image");
-
-        let updateData = { ...blog };
-        
+        const updateData = {};
         if (title) {
             updateData.title = title;
-            updateData.slug = slugify(title, { strict: true, lower: true });
+            updateData.slug = generateSlug(title);
         }
-        if (description) updateData.description = description;
-        if (preview) updateData.preview = preview;
-        if (isFeatured !== null) updateData.is_featured = isFeatured === "true";
-        if (tags) updateData.tags = tags.split(',').map(t => t.trim());
+        if (content) updateData.content = content;
+        if (category) updateData.category = category;
 
-        if (imageFile && typeof imageFile !== "string") {
-            await cloudinary.uploader.destroy(blog.image_id);
+        if (imageFile && typeof imageFile !== 'string') {
+            await cloudinary.uploader.destroy(blog.imageId);
             const buffer = Buffer.from(await imageFile.arrayBuffer());
             const cloudImage = await new Promise((resolve, reject) => {
                 const stream = cloudinary.uploader.upload_stream(
@@ -109,41 +110,44 @@ export async function PATCH(req) {
                 stream.end(buffer);
             });
             updateData.image = cloudImage.secure_url;
-            updateData.image_id = cloudImage.public_id;
+            updateData.imageId = cloudImage.public_id;
         }
 
-        const query = `
-            UPDATE public.blogs 
-            SET title = $1, slug = $2, description = $3, image = $4, image_id = $5, 
-                preview = $6, tags = $7, is_featured = $8 
-            WHERE id = $9
-            RETURNING *;
-        `;
+        const updatedBlog = await Blog.findByIdAndUpdate(id, updateData, { new: true });
 
-        const values = [
-            updateData.title, updateData.slug, updateData.description, updateData.image,
-            updateData.image_id, updateData.preview, updateData.tags, updateData.is_featured, id
-        ];
+        return NextResponse.json({
+            success: true,
+            message: 'Blog updated successfully',
+            payload: updatedBlog
+        }, { status: 200 });
 
-        const result = await pool.query(query, values);
-        return NextResponse.json({ success: true, message: "Blog updated", payload: result.rows[0] });
     } catch (error) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
 export async function DELETE(req) {
     try {
+        await connectDB();
+        const auth = await isManager();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+
         const { id } = await req.json();
+        const blog = await Blog.findById(id);
+        if (!blog) return NextResponse.json({ success: false, message: 'Blog not found' }, { status: 404 });
 
-        const findResult = await pool.query("SELECT * FROM public.blogs WHERE blog_id = $1", [id]);
-        if (findResult.rowCount === 0) return NextResponse.json({ success: false, message: "Not found" }, { status: 404 });
+        if (blog.imageId) {
+            await cloudinary.uploader.destroy(blog.imageId);
+        }
 
-        await cloudinary.uploader.destroy(findResult.rows[0].image_id);
-        await pool.query("DELETE FROM public.blogs WHERE blog_id = $1", [id]);
+        await Blog.findByIdAndDelete(id);
 
-        return NextResponse.json({ success: true, message: "Deleted successfully" });
+        return NextResponse.json({
+            success: true,
+            message: 'Blog deleted successfully'
+        }, { status: 200 });
+
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
-}
+}

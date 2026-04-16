@@ -1,53 +1,33 @@
-import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
+import connectDB from "@/lib/database/db";
+import { Project } from "@/lib/models/project";
 
 export async function GET(req) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const query = searchParams.get("q");
+    try {
+        await connectDB();
+        const { searchParams } = new URL(req.url);
+        const query = searchParams.get('q');
 
-    if (!query || query.trim() === "") {
-      return NextResponse.json({
-        success: false,
-        message: "Search query is required",
-      }, { status: 400 });
+        if (!query) {
+            return NextResponse.json({ success: false, message: 'Search query is required' }, { status: 400 });
+        }
+
+        const regex = new RegExp(query, 'i');
+        const projects = await Project.find({
+            $or: [
+                { title: regex },
+                { category: regex },
+                { description: regex }
+            ]
+        }).sort({ createdAt: -1 });
+
+        return NextResponse.json({
+            success: true,
+            message: 'Search results found',
+            payload: projects
+        }, { status: 200 });
+
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
-
-    // ILIKE is case-insensitive. % is the wildcard for "any characters"
-    const searchTerm = `%${query.trim()}%`;
-    
-    const sqlQuery = `
-      SELECT 
-        project_id, title, slug, description, category, price, 
-        preview, image, tags, skills, created_at 
-      FROM public.projects 
-      WHERE 
-        title ILIKE $1 OR 
-        category ILIKE $1 OR 
-        description ILIKE $1
-      LIMIT 20;
-    `;
-
-    const result = await pool.query(sqlQuery, [searchTerm]);
-
-    if (result.rowCount === 0) {
-      return NextResponse.json({
-        success: true,
-        message: 'No project Found',
-        payload: []
-      }, { status: 200 });
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: 'Successfully fetched data',
-      payload: result.rows,
-    }, { status: 200 });
-
-  } catch (error) {
-    return NextResponse.json({
-      success: false,
-      message: error.message,
-    }, { status: 500 });
-  }
 }

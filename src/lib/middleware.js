@@ -1,32 +1,23 @@
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+import connectDB from "./database/db";
+import User from "./models/user";
 import { JWT_SECRET } from "./database/secret";
-import { pool } from "./database/pg";
 
 async function getAuthenticatedUser() {
     try {
-        const token =(await cookies()).get('user_token')?.value
+        const cookieStore = await cookies();
+        const token = cookieStore.get('token')?.value;
 
         if (!token) return null;
 
         const decoded = jwt.verify(token, JWT_SECRET);
-        
-        const query = `
-            SELECT 
-                user_id, name, email, phone, role, 
-                address_line1, city, country, is_active, 
-                email_verified, created_at 
-            FROM public.users 
-            WHERE user_id = $1 LIMIT 1
-        `;
-        
-        const result = await pool.query(query, [decoded.id]);
+        if (!decoded || !decoded._id) return null;
 
-        if (result.rowCount === 0) return null;
-
-        const user = result.rows[0];
+        await connectDB();
+        const user = await User.findById(decoded._id).select("-password").lean();
         
-        if (!user.is_active) return null;
+        if (!user || !user.isActive) return null;
 
         return user;
     } catch (error) {
@@ -34,40 +25,76 @@ async function getAuthenticatedUser() {
     }
 }
 
+// 1. Base Authentication Middleware
 export async function isLogin() {
     const user = await getAuthenticatedUser();
     if (!user) return { success: false, message: 'Please login' };
     return { success: true, payload: user };
 }
 
-
-
-export async function isManager() {
+// 2. Strict Role Check Middlewares (Exact matching)
+export async function isAdmin() {
     const user = await getAuthenticatedUser();
-    if (!user) return { success: false, message: 'Please login' };
-    
-    if (user.role !== 'manager' && user.role !== 'admin') {
-        return { success: false, message: 'Access denied: Managers only' };
+    if (!user || user.role !== 'admin') {
+        return { success: false, message: 'Access denied: Admin only' };
     }
     return { success: true, payload: user };
 }
 
-export async function isSales() {
+export async function isManager() {
     const user = await getAuthenticatedUser();
-    if (!user) return { success: false, message: 'Please login' };
-    
-    if (user.role !== 'sales' && user.role !== 'admin') {
-        return { success: false, message: 'Access denied: Sales only' };
+    if (!user || user.role !== 'manager' && user.role !== 'admin') {
+        return { success: false, message: 'Access denied: Manager access required' };
+    }
+    return { success: true, payload: user };
+}
+
+export async function isProjectManager() {
+    const user = await getAuthenticatedUser();
+    if (!user || (user.role !== 'project_manager' && user.role !== 'manager' && user.role !== 'admin')) {
+        return { success: false, message: 'Access denied: Project Manager access required' };
+    }
+    return { success: true, payload: user };
+}
+
+export async function isEditor() {
+    const user = await getAuthenticatedUser();
+    if (!user || (user.role !== 'editor' && user.role !== 'manager' && user.role !== 'admin')) {
+        return { success: false, message: 'Access denied: Editor access required' };
     }
     return { success: true, payload: user };
 }
 
 export async function isSupport() {
     const user = await getAuthenticatedUser();
+    if (!user || (user.role !== 'support' && user.role !== 'manager' && user.role !== 'admin')) {
+        return { success: false, message: 'Access denied: Support access required' };
+    }
+    return { success: true, payload: user };
+}
+
+export async function isStaff() {
+    const user = await getAuthenticatedUser();
+    if (!user || (user.role !== 'staff' && user.role !== 'manager' && user.role !== 'admin')) {
+        return { success: false, message: 'Access denied: Staff access required' };
+    }
+    return { success: true, payload: user };
+}
+
+export async function isClient() {
+    const user = await getAuthenticatedUser();
+    if (!user || user.role !== 'client') {
+        return { success: false, message: 'Access denied: Client only' };
+    }
+    return { success: true, payload: user };
+}
+
+// Helper for custom combinations
+export async function hasRole(allowedRoles) {
+    const user = await getAuthenticatedUser();
     if (!user) return { success: false, message: 'Please login' };
-    
-    if (user.role !== 'support' && user.role !== 'admin') {
-        return { success: false, message: 'Access denied: Support only' };
+    if (!allowedRoles.includes(user.role)) {
+        return { success: false, message: 'Access denied' };
     }
     return { success: true, payload: user };
 }

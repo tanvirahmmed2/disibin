@@ -1,101 +1,72 @@
-import { pool } from "@/lib/database/pg";
-import { isLogin } from "@/lib/middleware";
 import { NextResponse } from "next/server";
+import connectDB from "@/lib/database/db";
+import User from "@/lib/models/user";
+import { isLogin, isManager } from "@/lib/middleware";
 
-export async function GET() {
+export async function GET(req) {
     try {
-        const auth = await isLogin();
-        if (!auth.success) return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+        await connectDB();
+        const auth = await isManager();
+        if (!auth.success) {
+            return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+        }
 
-        const query = `
-            SELECT user_id, name, email, phone, role, address_line1, city, country, is_active, created_at 
-            FROM public.users 
-            WHERE user_id = $1
-        `;
-        const result = await pool.query(query, [auth.payload.user_id]);
+        const { searchParams } = new URL(req.url);
+        const role = searchParams.get('role');
+        const isActive = searchParams.get('isActive');
+
+        const query = {};
+        if (role) query.role = role;
+        if (isActive !== null && isActive !== undefined) query.isActive = isActive === 'true';
+
+        const users = await User.find(query).select("-password").sort({ createdAt: -1 });
 
         return NextResponse.json({
             success: true,
-            payload: result.rows[0]
-        }, { status: 200 });
-    } catch (error) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
-    }
-}
-
-
-export async function DELETE(req) {
-    try {
-        const { id } = await req.json();
-
-        if (!id) {
-            return NextResponse.json({ success: false, message: "User id required" }, { status: 400 });
-        }
-
-        const userResult = await pool.query("SELECT role FROM public.users WHERE user_id = $1", [id]);
-        if (userResult.rowCount === 0) {
-            return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
-        }
-
-        const user = userResult.rows[0];
-
-        if (user.role === 'admin') {
-            const adminCountResult = await pool.query("SELECT COUNT(*) FROM public.users WHERE role = 'admin'");
-            if (parseInt(adminCountResult.rows[0].count) <= 1) {
-                return NextResponse.json({
-                    success: false,
-                    message: "Safety Block: Cannot delete the only remaining admin account."
-                }, { status: 400 });
-            }
-        }
-
-        await pool.query("DELETE FROM public.users WHERE user_id = $1", [id]);
-
-        return NextResponse.json({
-            success: true,
-            message: 'User account has been permanently deleted'
+            message: 'User data found successfully',
+            payload: users
         }, { status: 200 });
 
     } catch (error) {
-        return NextResponse.json({ 
-            success: false, 
-            message: 'Failed to delete user', 
-            error: error.message 
-        }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
 export async function PATCH(req) {
     try {
+        await connectDB();
+        const auth = await isLogin();
+        if (!auth.success) {
+            return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+        }
+
         const body = await req.json();
         const { 
             id, name, phone, city, country, 
             address_line1, address_line2, state, 
             postal_code, 
-            role, is_active 
+            role, isActive 
         } = body;
 
         if (!id) {
             return NextResponse.json({ success: false, message: "User ID is required" }, { status: 400 });
         }
 
-        const userCheck = await pool.query("SELECT role FROM public.users WHERE user_id = $1", [id]);
-        if (userCheck.rowCount === 0) {
+        // Only Admin/Manager can update sensitive info like role or status
+        const isManagement = auth.payload.role === 'admin' || auth.payload.role === 'manager';
+        
+        const targetUser = await User.findById(id);
+        if (!targetUser) {
             return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
         }
 
-        const existingUser = userCheck.rows[0];
-
-        /**
-         * ROLE PROTECTION LOGIC
-         * In a full app, you'd check 'req.user.role' from your auth middleware.
-         * For now, we prevent accidental role/status changes unless explicitly intended.
-         */
-        
-        // 2. Safety Block: Last Admin protection
-        if (existingUser.role === 'admin' && role && role !== 'admin') {
-            const adminCount = await pool.query("SELECT COUNT(*) FROM public.users WHERE role = 'admin'");
-            if (parseInt(adminCount.rows[0].count) <= 1) {
+        // Safety Block: Last Admin protection
+        if (targetUser.role === 'admin' && role && role !== 'admin') {
+            if (!isManagement || auth.payload.role !== 'admin') {
+                return NextResponse.json({ success: false, message: 'Unauthorized role change' }, { status: 403 });
+            }
+            const adminCount = await User.countDocuments({ role: 'admin' });
+            if (adminCount <= 1) {
                 return NextResponse.json({
                     success: false,
                     message: "Safety Block: Cannot demote the only remaining admin."
@@ -103,42 +74,33 @@ export async function PATCH(req) {
             }
         }
 
-        // 3. Construct Update Query
-        // Note: If you want to strictly prevent users from touching 'role', 
-        // you would remove role from this query unless the requester is an Admin.
-        const query = `
-            UPDATE public.users 
-            SET 
-                name = COALESCE($1, name), 
-                phone = COALESCE($2, phone), 
-                city = COALESCE($3, city), 
-                country = COALESCE($4, country),
-                address_line1 = COALESCE($5, address_line1),
-                address_line2 = COALESCE($6, address_line2),
-                state = COALESCE($7, state),
-                postal_code = COALESCE($8, postal_code),
-                role = COALESCE($9, role),
-                is_active = COALESCE($10, is_active),
-                updated_at = CURRENT_TIMESTAMP
-            WHERE user_id = $11
-            RETURNING user_id, name, email, role, is_active;
-        `;
+        // Construct Update Data
+        const updateData = {
+            name: name || targetUser.name,
+            phone: phone || targetUser.phone,
+            city: city !== undefined ? city : targetUser.city,
+            country: country !== undefined ? country : targetUser.country,
+            address_line1: address_line1 !== undefined ? address_line1 : targetUser.address_line1,
+            address_line2: address_line2 !== undefined ? address_line2 : targetUser.address_line2,
+            state: state !== undefined ? state : targetUser.state,
+            postal_code: postal_code !== undefined ? postal_code : targetUser.postal_code,
+        };
 
-        const values = [
-            name, phone, city, country, 
-            address_line1, address_line2, state, 
-            postal_code, 
-            role,      // This should ideally be controlled by an Admin-only check
-            is_active, 
-            id
-        ];
+        if (isManagement) {
+            if (role && (auth.payload.role === 'admin' || (auth.payload.role === 'manager' && role !== 'admin'))) {
+                updateData.role = role;
+            }
+            if (isActive !== undefined) {
+                updateData.isActive = isActive;
+            }
+        }
 
-        const result = await pool.query(query, values);
+        const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true }).select("-password");
 
         return NextResponse.json({
             success: true,
             message: 'Profile updated successfully',
-            payload: result.rows[0]
+            payload: updatedUser
         }, { status: 200 });
 
     } catch (error) {
@@ -148,4 +110,4 @@ export async function PATCH(req) {
             error: error.message 
         }, { status: 500 });
     }
-}
+}

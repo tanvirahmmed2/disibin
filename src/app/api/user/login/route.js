@@ -1,73 +1,49 @@
-import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { JWT_SECRET, NODE_ENV } from "@/lib/database/secret";
+import connectDB from "@/lib/database/db";
+import User from "@/lib/models/user";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 export async function POST(req) {
     try {
+        await connectDB();
         const { email, password } = await req.json();
 
         if (!email || !password) {
-            return NextResponse.json({
-                success: false,
-                message: 'Please provide email and password'
-            }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Email and password are required" }, { status: 400 });
         }
 
-        const query = "SELECT * FROM public.users WHERE email = $1 LIMIT 1";
-        const result = await pool.query(query, [email]);
+        const user = await User.findOne({ email });
 
-        if (result.rowCount === 0) {
-            return NextResponse.json({
-                success: false,
-                message: 'No account found with this email'
-            }, { status: 400 });
+        if (!user) {
+            return NextResponse.json({ success: false, message: "Invalid credentials" }, { status: 401 });
         }
 
-        const user = result.rows[0];
-
-        if (user.is_active === false) {
-            return NextResponse.json({
-                success: false,
-                message: 'User is banned'
-            }, { status: 400 });
+        if (!user.isActive) {
+            return NextResponse.json({ success: false, message: "Account is disabled. Contact support." }, { status: 403 });
         }
 
-        const isMatchPassword = await bcrypt.compare(password, user.password);
-
-        if (!isMatchPassword) {
-            return NextResponse.json({
-                success: false,
-                message: 'Incorrect password'
-            }, { status: 400 });
+        if (!user.isVerified) {
+            return NextResponse.json({ success: false, message: "Email not verified. Please check your inbox.", isUnverified: true }, { status: 403 });
         }
 
-        const token = jwt.sign(
-            { id: user.user_id, email: user.email, role: user.role },
-            JWT_SECRET,
-            { expiresIn: "7d" }
-        );
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return NextResponse.json({ success: false, message: "Invalid credentials" }, { status: 401 });
+        }
 
-        delete user.password;
+        const tokenData = {
+            _id: user._id,
+            email: user.email,
+            role: user.role
+        };
 
-        const response = NextResponse.json(
-            {
-                success: true,
-                message: "Successfully logged in",
-                payload: user,
-            },
-            { status: 200 }
-        );
-
-        response.cookies.set("user_token", token, {
+        const token = jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn: '1d' });
+        
+        const cookieStore = await cookies();
+        cookieStore.set('token', token, {
             httpOnly: true,
-            secure: NODE_ENV === "production",
-            path: "/",
-            maxAge: 60 * 60 * 24 * 7,
-            sameSite: "strict"
-        });
-
         return response;
 
     } catch (error) {

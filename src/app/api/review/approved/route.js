@@ -1,22 +1,16 @@
-import { pool } from "@/lib/database/pg";
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import connectDB from '@/lib/database/db';
+import { Review } from '@/lib/models/review';
 
 export async function GET() {
     try {
-        const query = "SELECT * FROM public.reviews WHERE is_approved = true ORDER BY created_at DESC";
-        const result = await pool.query(query);
+        await connectDB();
+        const reviews = await Review.find({ isApproved: true })
+            .populate('userId', 'name image')
+            .sort({ createdAt: -1 });
 
-        return NextResponse.json({
-            success: true,
-            message: 'Successfully fetched approved reviews',
-            payload: result.rows || []
-        }, { status: 200 });
-        
+        return NextResponse.json({ success: true, message: 'Approved reviews fetched', payload: reviews });
     } catch (error) {
-        return NextResponse.json({ 
-            success: false, 
-            message: 'Failed to fetch reviews',
-            error: error.message 
-        }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }

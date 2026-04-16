@@ -1,9 +1,11 @@
-import { pool } from '@/lib/database/pg';
-import { isLogin } from '@/lib/middleware';
 import { NextResponse } from 'next/server';
+import connectDB from '@/lib/database/db';
+import { Purchase } from '@/lib/models/purchase';
+import { isLogin } from '@/lib/middleware';
 
 export async function GET() {
     try {
+        await connectDB();
         const auth = await isLogin();
         
         if (!auth.success) {
@@ -13,48 +15,20 @@ export async function GET() {
             }, { status: 401 });
         }
 
-        const query = `
-            SELECT 
-                pp.purchase_id,
-                pp.package_title,
-                pur.payable_amount AS total_price,
-                pur.created_at AS order_date,
-                pp.status AS access_status,
-                pp.start_date,
-                pp.expiry_date,
-                pp.is_auto_renew,
-                json_build_object(
-                    'package_id', p.package_id,
-                    'slug', p.slug,
-                    'thumbnail', p.image,
-                    'category', p.category,
-                    'feature_list', p.features,
-                    'brief', p.description
-                ) AS package_info,
-                CASE WHEN pay.payment_id IS NOT NULL THEN
-                    json_build_object(
-                        'txn_id', pay.transaction_id,
-                        'method', pay.payment_method,
-                        'gateway', pay.payment_gateway,
-                        'payment_status', pay.status,
-                        'paid_at', pay.paid_at,
-                        'currency', pay.currency
-                    )
-                ELSE null END AS billing_info
-            FROM public.purchased_packages pp
-            LEFT JOIN public.packages p ON pp.package_id = p.package_id
-            LEFT JOIN public.purchases pur ON pp.purchase_id = pur.purchase_id
-            LEFT JOIN public.payments pay ON pp.purchase_id = pay.purchase_id
-            WHERE pp.user_id = $1
-            ORDER BY pur.created_at DESC
-        `;
+        const user_id = auth.payload._id;
 
-        const result = await pool.query(query, [auth.payload.user_id]);
+        const purchases = await Purchase.find({ userId: user_id })
+            .populate({
+                path: 'items.packageId',
+                select: 'title slug image category features description'
+            })
+            .populate('paymentId')
+            .sort({ createdAt: -1 });
 
         return NextResponse.json({
             success: true,
-            message: 'Subscription and purchase history retrieved',
-            payload: result.rows
+            message: 'Purchase history retrieved',
+            payload: purchases
         }, { status: 200 });
 
     } catch (error) {

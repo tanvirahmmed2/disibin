@@ -6,30 +6,61 @@ import { Context } from '../helper/Context'
 const Sidebar = () => {
     const { sidebar, setSidebar, isLoggedin } = useContext(Context)
     const closeSidebar = () => {
-        setSidebar(!sidebar)
+        setSidebar(false)
     }
+
+    const navLinks = [
+        { name: 'Home', href: '/' },
+        { name: 'Services', href: '/services' },
+        { name: 'Plans', href: '/packages' },
+        { name: 'Premium', href: '/memberships' },
+        { name: 'Projects', href: '/projects' },
+        { name: 'Blogs', href: '/blogs' },
+        { name: 'About', href: '/about' },
+    ]
+
     return (
-        <div className={`w-40 transition ease-in-out duration-500 ${sidebar ? 'translate-x-0' : '-translate-x-full'} sm:-translate-x-full fixed top-16 left-0 h-[calc(100vh-4rem)] p-4 border-r bg-white z-40 flex flex-col gap-2`}>
-            <Link href={'/'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Home</Link>
-            <Link href={'/packages'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Pricing</Link>
-            <Link href={'/projects'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Projects</Link>
-            <Link href={'/blogs'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Blogs</Link>
-            <Link href={'/about'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>About</Link>
-            {
-                isLoggedin ?
-                    <div className='flex flex-col gap-2'>
-                        <Link href={'/profile'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Profile</Link>
-                        <Link href={'/wishlist'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Wishlist</Link>
+        <>
+            {/* Backdrop */}
+            {sidebar && (
+                <div 
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"
+                    onClick={closeSidebar}
+                ></div>
+            )}
 
-                    </div>
-                    :
-                    <div className='flex flex-col gap-2'>
-                        <Link href={'/login'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Login</Link>
-                        <Link href={'/register'} className='w-auto hover:px-4 ease-in-out duration-500' onClick={closeSidebar}>Register</Link>
-                    </div>
-            }
+            {/* Sidebar */}
+            <div className={`fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-white border-r border-slate-100 z-40 flex flex-col p-6 shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] lg:hidden ${sidebar ? 'translate-x-0' : '-translate-x-full'}`}>
+                <div className="flex flex-col gap-2 flex-1 overflow-y-auto">
+                    {navLinks.map((link) => (
+                        <Link 
+                            key={link.href}
+                            href={link.href} 
+                            className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-50 hover:text-emerald-600 hover:pl-6 transition-all duration-300 w-full' 
+                            onClick={closeSidebar}
+                        >
+                            {link.name}
+                        </Link>
+                    ))}
+                    
+                    <div className="my-4 h-px w-full bg-slate-100"></div>
 
-        </div>
+                    {isLoggedin ? (
+                        <div className='flex flex-col gap-2'>
+                            <Link href='/dashboard' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-50 hover:text-emerald-600 hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Dashboard</Link>
+                            <Link href='/profile' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-50 hover:text-emerald-600 hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Profile</Link>
+                            <Link href='/wishlist' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-50 hover:text-emerald-600 hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Wishlist</Link>
+                            <button className='px-4 py-3 rounded-xl text-red-500 font-medium hover:bg-red-50 text-left hover:pl-6 transition-all duration-300 w-full' onClick={() => { closeSidebar(); window.location.replace('/api/user/logout') }}>Logout</button>
+                        </div>
+                    ) : (
+                        <div className='flex flex-col gap-3 mt-auto pt-4'>
+                            <Link href='/login' className='w-full py-3 rounded-xl bg-emerald-50 text-emerald-600 text-center font-bold hover:bg-emerald-100 transition-colors' onClick={closeSidebar}>Login</Link>
+                            <Link href='/register' className='w-full py-3 rounded-xl bg-emerald-600 text-white text-center font-bold hover:bg-emerald-700 shadow-lg shadow-emerald-500/30 transition-all' onClick={closeSidebar}>Register</Link>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </>
     )
 }
 

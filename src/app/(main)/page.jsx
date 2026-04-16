@@ -1,24 +1,52 @@
-
+'use client'
+import React, { useContext } from 'react'
 import Bio from '@/component/pages/Bio'
+import Details from '@/component/pages/Details'
 import Intro from '@/component/pages/Intro'
 import Review from '@/component/pages/Review'
-import Service from '@/component/pages/Service'
 import SkillSlider from '@/component/pages/SkillSlider'
 import Support from '@/component/pages/Support'
-import React from 'react'
+import { Context } from '@/component/helper/Context'
+import { FaFigma, FaCode, FaAndroid } from 'react-icons/fa'
+
+const servicesData = [
+  {
+    id: 1,
+    title: "Website Design",
+    description: "Clean, modern, and user-friendly UI/UX designs focused on usability, branding, and seamless experience across all devices.",
+    icon: <FaFigma />,
+  },
+  {
+    id: 2,
+    title: "Website Development",
+    description: "High-performance, scalable websites built with clean code, best practices, and modern technologies for speed and reliability.",
+    icon: <FaCode />,
+  },
+  {
+    id: 3,
+    title: "Android App Development",
+    description: "Custom Android applications designed for performance, smooth user experience, and long-term maintainability.",
+    icon: <FaAndroid />,
+  },
+];
 
 const MainPage = () => {
+  const { customServices } = useContext(Context)
+
   return (
-    <div className='w-full'>
+    <main className='w-full'>
       <Intro/>
       <Bio/>
-      <Service/>
+      <Details 
+        services={servicesData} 
+        customSections={customServices}
+      />
       <Review/>
       <SkillSlider/>
       <Support/>
-      
-    </div>
+    </main>
   )
 }
 
 export default MainPage
+

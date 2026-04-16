@@ -1,41 +1,49 @@
-import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
+import connectDB from "@/lib/database/db";
+import User from "@/lib/models/user";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import { sendVerificationEmail } from "@/lib/database/brevo";
 
 export async function POST(req) {
     try {
-        const { name, email, password } = await req.json();
+        await connectDB();
+        const { name, email, phone, password } = await req.json();
 
-        if (!name || !email || !password) {
-            return NextResponse.json({ success: false, message: "All fields are required" }, { status: 400 });
+        if (!name || !email || !phone || !password) {
+            return NextResponse.json({ success: false, message: 'Missing required fields' }, { status: 400 });
         }
 
-        // 1. Check if user already exists
-        const userExist = await pool.query("SELECT email FROM public.users WHERE email = $1", [email]);
-        if (userExist.rowCount > 0) {
-            return NextResponse.json({ success: false, message: "Email already registered" }, { status: 400 });
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return NextResponse.json({ success: false, message: 'Email already exists' }, { status: 400 });
         }
 
-        // 2. Hash the password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        const tokenExpiresAt = new Date(Date.now() + 3600000); // 1 hour
 
-        // 3. Insert into Database
-        const query = `
-            INSERT INTO public.users (name, email, password) 
-            VALUES ($1, $2, $3) 
-            RETURNING user_id, name, email;
-        `;
-        const values = [name, email, hashedPassword];
-        const result = await pool.query(query, values);
+        const user = await User.create({
+            name,
+            email,
+            phone,
+            password: hashedPassword,
+            isVerified: false,
+            resetToken: verificationToken,
+            tokenExpiresAt
+        });
+
+        const verificationUrl = `${process.env.BASE_URL}/verify-email?token=${verificationToken}&email=${email}`;
+        await sendVerificationEmail(email, name, verificationUrl);
 
         return NextResponse.json({
             success: true,
-            message: "User registered successfully",
-            payload: result.rows[0]
+            message: 'Registration successful! Please check your email to verify your account.',
+            payload: { id: user._id, name: user.name, email: user.email }
         }, { status: 201 });
 
     } catch (error) {
+        console.error('Registration Error:', error);
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }

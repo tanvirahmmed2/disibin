@@ -1,0 +1,119 @@
+import { NextResponse } from 'next/server';
+import connectDB from '@/lib/database/db';
+import { Ticket } from '@/lib/models/ticket';
+import { isLogin, isSupport, isProjectManager } from '@/lib/middleware';
+
+export async function GET(req) {
+    try {
+        await connectDB();
+        const auth = await isLogin();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+
+        const user = auth.payload;
+        const { searchParams } = new URL(req.url);
+        const category = searchParams.get('category');
+        const status = searchParams.get('status');
+
+        let query = {};
+
+        // Role-based filtering
+        if (user.role === 'client') {
+            query.senderId = user._id;
+        } else if (user.role === 'support' || user.role === 'admin' || user.role === 'manager') {
+            // Can see all or filtered
+        } else if (user.role === 'project_manager') {
+            query.category = 'project'; // PM sees project tickets by default
+        }
+
+        if (category) query.category = category;
+        if (status) query.status = status;
+
+        const tickets = await Ticket.find(query)
+            .populate('senderId', 'name email image')
+            .populate('assignedId', 'name email role')
+            .populate('projectId', 'title slug')
+            .sort({ lastMessageAt: -1 });
+
+        return NextResponse.json({ success: true, payload: tickets });
+
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}
+
+export async function POST(req) {
+    try {
+        await connectDB();
+        const auth = await isLogin();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+
+        const { subject, message, category, projectId, priority } = await req.json();
+
+        if (!subject || !message) {
+            return NextResponse.json({ success: false, message: 'Subject and message are required' }, { status: 400 });
+        }
+
+        const ticket = await Ticket.create({
+            senderId: auth.payload._id,
+            subject,
+            message,
+            category: category || 'general',
+            projectId,
+            priority: priority || 'medium',
+            status: 'open',
+            messages: [{
+                senderId: auth.payload._id,
+                message,
+                type: 'text'
+            }]
+        });
+
+        return NextResponse.json({ success: true, message: 'Ticket created', payload: ticket });
+
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}
+
+export async function PATCH(req) {
+    try {
+        await connectDB();
+        const auth = await isLogin();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+
+        const { id, status, assignedId, priority, message, attachment } = await req.json();
+
+        const ticket = await Ticket.findById(id);
+        if (!ticket) return NextResponse.json({ success: false, message: 'Ticket not found' }, { status: 404 });
+
+        // Update fields if provided (Management roles)
+        if (['admin', 'manager', 'support', 'project_manager'].includes(auth.payload.role)) {
+            if (status) ticket.status = status;
+            if (assignedId) ticket.assignedId = assignedId;
+            if (priority) ticket.priority = priority;
+        } else {
+            // Client can only update status to 'resolved' or 'closed' maybe?
+            if (status && (status === 'closed' || status === 'resolved')) {
+                ticket.status = status;
+            }
+        }
+
+        // Add message if provided (Chat System)
+        if (message) {
+            ticket.messages.push({
+                senderId: auth.payload._id,
+                message,
+                attachments: attachment ? [attachment] : [],
+                type: 'text'
+            });
+            ticket.lastMessageAt = new Date();
+        }
+
+        await ticket.save();
+
+        return NextResponse.json({ success: true, message: 'Ticket updated', payload: ticket });
+
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}
