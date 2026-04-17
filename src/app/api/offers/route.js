@@ -26,12 +26,12 @@ export async function GET(req) {
 export async function POST(req) {
     try {
         await connectDB();
-        // Permission check should be handled by middleware or here
-        // For now, I'll assume userId is passed or retrieved from session
+        
+        
         const body = await req.json();
         const { title, slug, description, price, discount, features, createdBy } = body;
 
-        // Simple role check (assuming user is fetched or passed)
+        
         const user = await User.findById(createdBy);
         if (!user || (user.role !== 'editor' && user.role !== 'admin')) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
@@ -41,7 +41,7 @@ export async function POST(req) {
             title, slug, description, price, discount, features, createdBy, status: 'active'
         });
 
-        // Activity Logging
+        
         await createLog({
             userId: createdBy,
             action: 'create',

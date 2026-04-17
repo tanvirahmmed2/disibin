@@ -71,7 +71,7 @@ const AdminRoles = () => {
 
                         {message && (
                             <div className={`p-4 rounded-xl text-xs font-bold flex items-center gap-2 border ${
-                                message.type === 'success' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-600 border-rose-100'
+                                message.type === 'success' ? 'bg-primary/5 text-primary border-primary/10' : 'bg-primary text-primary border-primary'
                             }`}>
                                 <RiErrorWarningLine size={16} /> {message.text}
                             </div>
@@ -88,7 +88,7 @@ const AdminRoles = () => {
                 </div>
 
                 <div className="space-y-6">
-                   <div className="card-premium p-10 bg-amber-50 border-amber-100 text-amber-900">
+                   <div className="card-premium p-10 bg-white border-white text-white">
                         <div className="flex gap-4">
                             <RiErrorWarningLine size={24} className="shrink-0" />
                             <div className="space-y-2">

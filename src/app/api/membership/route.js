@@ -72,7 +72,7 @@ export async function POST(req) {
             imageId: cloudImage.public_id
         });
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'create',

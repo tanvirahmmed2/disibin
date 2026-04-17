@@ -8,7 +8,7 @@ const ChatItem = ({ item, active, onClick }) => (
     <div 
         onClick={onClick}
         className={`p-4 rounded-2xl cursor-pointer transition-all flex items-center gap-3
-        ${active ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' : 'hover:bg-slate-50 text-slate-600'}`}
+        ${active ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'hover:bg-slate-50 text-slate-600'}`}
     >
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold ${active ? 'bg-white/20' : 'bg-slate-100 text-slate-400'}`}>
             {item.name.charAt(0)}
@@ -32,9 +32,9 @@ const InternalMail = () => {
     const fetchChats = async () => {
         try {
             const res = await axios.get('/api/task?mode=conversations')
-            setChats(res.data.payload)
-            if (res.data.payload.length > 0 && !activeChatId) {
-                setActiveChatId(res.data.payload[0]._id)
+            setChats(res.data.data)
+            if (res.data.data.length > 0 && !activeChatId) {
+                setActiveChatId(res.data.data[0]._id)
             }
         } catch (error) {
             console.error('Failed to fetch chats', error)
@@ -81,7 +81,7 @@ const InternalMail = () => {
 
     return (
         <div className="h-[calc(100vh-160px)] flex gap-6">
-            {}
+            
             <div className="w-80 bg-white rounded-[2.5rem] border border-slate-50 shadow-sm flex flex-col p-4">
                 <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-xl border border-slate-100 text-slate-400 mb-6">
                     <RiSearchLine size={18} />
@@ -111,7 +111,7 @@ const InternalMail = () => {
                 </div>
             </div>
 
-            {}
+            
             {activeChatId ? (
                 <div className="flex-1 bg-white rounded-[2.5rem] border border-slate-50 shadow-sm flex flex-col overflow-hidden">
                     <div className="p-6 border-b border-slate-50 flex items-center justify-between">
@@ -121,7 +121,7 @@ const InternalMail = () => {
                             </div>
                             <div>
                                 <h2 className="text-xl font-bold text-slate-800 tracking-tight">{otherParticipant?.name}</h2>
-                                <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 uppercase tracking-widest">
+                                <div className="flex items-center gap-1 text-[10px] font-bold text-primary uppercase tracking-widest">
                                     <RiAtLine /> {otherParticipant?.role}
                                 </div>
                             </div>
@@ -132,7 +132,7 @@ const InternalMail = () => {
                         {messages.map((msg, index) => (
                             <div key={index} className={`flex flex-col ${msg.senderId === userData?._id ? 'items-end' : 'items-start'}`}>
                                 <div className={`max-w-md p-4 rounded-2xl shadow-sm border
-                                    ${msg.senderId === userData?._id ? 'bg-emerald-600 text-white border-emerald-500 rounded-tr-none' : 'bg-slate-50 text-slate-700 border-slate-100 rounded-tl-none'}`}>
+                                    ${msg.senderId === userData?._id ? 'bg-primary text-white border-primary/50 rounded-tr-none' : 'bg-slate-50 text-slate-700 border-slate-100 rounded-tl-none'}`}>
                                     <p className="text-sm font-medium leading-relaxed">{msg.message}</p>
                                 </div>
                                 <span className="text-[10px] text-slate-400 mt-1 font-bold">
@@ -143,7 +143,7 @@ const InternalMail = () => {
                     </div>
 
                     <div className="p-6 border-t border-slate-50 bg-slate-50/30">
-                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-2 flex items-center gap-2 focus-within:ring-2 focus-within:ring-emerald-500 transition-all">
+                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-2 flex items-center gap-2 focus-within:ring-2 focus-within:ring-primary/50 transition-all">
                             <input 
                                 value={inputText}
                                 onChange={(e) => setInputText(e.target.value)}
@@ -153,7 +153,7 @@ const InternalMail = () => {
                             />
                             <button 
                                 onClick={sendMessage}
-                                className="p-3 bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-100 hover:scale-105 active:scale-95 transition-all"
+                                className="p-3 bg-primary text-white rounded-xl shadow-lg shadow-primary/10 hover:scale-105 active:scale-95 transition-all"
                             >
                                 <RiSendPlane2Line size={20} />
                             </button>

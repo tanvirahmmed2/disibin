@@ -4,7 +4,7 @@ import React from 'react'
 const DataTable = ({ columns, data, loading, actions }) => {
     if (loading) return (
         <div className="w-full bg-white rounded-3xl border border-slate-50 p-8 flex flex-col items-center justify-center gap-4">
-            <div className="w-10 h-10 border-4 border-slate-100 border-t-emerald-600 rounded-full animate-spin"></div>
+            <div className="w-10 h-10 border-4 border-slate-100 border-t-primary rounded-full animate-spin"></div>
             <p className="text-slate-400 font-medium">Loading data...</p>
         </div>
     )

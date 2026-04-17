@@ -3,12 +3,12 @@ import React from 'react'
 
 const StatCard = ({ title, value, icon: Icon, color = 'emerald' }) => {
     const colorMap = {
-        emerald: 'bg-emerald-50 text-emerald-600',
-        blue: 'bg-blue-50 text-blue-600',
-        purple: 'bg-purple-50 text-purple-600',
-        amber: 'bg-amber-50 text-amber-600',
-        rose: 'bg-rose-50 text-rose-600',
-        indigo: 'bg-indigo-50 text-indigo-600',
+        emerald: 'bg-primary/5 text-primary',
+        blue: 'bg-primary text-primary',
+        purple: 'bg-primary text-primary',
+        amber: 'bg-white text-white',
+        rose: 'bg-primary text-primary',
+        indigo: 'bg-primary text-primary',
     }
 
     const currentColor = colorMap[color] || colorMap.emerald

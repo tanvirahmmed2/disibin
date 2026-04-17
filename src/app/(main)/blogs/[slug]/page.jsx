@@ -30,7 +30,7 @@ const blog = async ({ params }) => {
                     ))
                 }
             </div>
-            <Link href={`${blog.preview}`} className='w-full bg-emerald-600 text-white p-2 text-center rounded-lg'>Preview</Link>
+            <Link href={`${blog.preview}`} className='w-full bg-primary text-white p-2 text-center rounded-lg'>Preview</Link>
             
         </div>
     )

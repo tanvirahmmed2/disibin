@@ -9,12 +9,12 @@ export async function POST(req) {
         const body = await req.json();
         const { userId, purchaseId, amount, paymentMethod, transactionId } = body;
 
-        // Create payment record
+        
         const payment = await Payment.create({
             userId, purchaseId, amount, paymentMethod, transactionId, status: 'completed', paidAt: new Date()
         });
 
-        // Update purchase record
+        
         await Purchase.findByIdAndUpdate(purchaseId, {
             status: 'completed',
             paymentId: payment._id,

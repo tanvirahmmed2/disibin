@@ -15,7 +15,7 @@ const EditBlogPage = () => {
         const fetchBlog = async () => {
             try {
                 const res = await axios.get(`/api/blog/${id}`)
-                setBlog(res.data.payload)
+                setBlog(res.data.data)
             } catch (error) {
                 console.error('Failed to fetch blog', error)
             } finally {

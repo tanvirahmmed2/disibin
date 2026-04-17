@@ -12,7 +12,7 @@ const Details = ({
     <section className='w-full py-24 bg-white'>
       <div className='max-w-7xl mx-auto px-6'>
         
-        {/* Simple Header */}
+        
         <div className="mb-20">
           <span className='text-primary font-bold tracking-widest uppercase text-[11px] mb-3 block'>
             What We Do
@@ -25,7 +25,7 @@ const Details = ({
           </p>
         </div>
 
-        {/* Minimal Services Grid */}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-32">
           {services.map((service, index) => (
             <div
@@ -45,7 +45,7 @@ const Details = ({
           ))}
         </div>
 
-        {/* Custom Sections - Simplified */}
+        
         {showSections && customSections.length > 0 && (
           <div className="space-y-32">
             {customSections.map((section, idx) => (

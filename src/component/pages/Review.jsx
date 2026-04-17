@@ -10,7 +10,7 @@ const Review = () => {
         const fetchReview=async()=>{
             try {
                 const res= await axios.get('/api/review/approved',{withCredentials:true})
-                setReviews(res.data.payload|| [])
+                setReviews(res.data.data|| [])
             } catch (error) {
                 setReviews([])
                 
@@ -32,12 +32,12 @@ const Review = () => {
     <section className='w-full py-32 bg-slate-50/50'>
         <div className='container-custom flex flex-col items-center justify-center space-y-16'>
             <div className='text-center space-y-4'>
-                <span className='text-emerald-600 font-black tracking-[0.4em] uppercase text-[10px]'>Proof of Impact</span>
+                <span className='text-primary font-black tracking-[0.4em] uppercase text-[10px]'>Proof of Impact</span>
                 <h2 className='text-4xl md:text-6xl font-black text-slate-900 tracking-tighter'>Client Reflections.</h2>
             </div>
 
             <div className='w-full max-w-2xl bg-white border border-slate-100 p-12 md:p-16 rounded-[3rem] shadow-sm flex flex-col items-center text-center space-y-8 relative overflow-hidden'>
-                <div className='absolute top-0 left-0 w-2 h-full bg-emerald-500/10' />
+                <div className='absolute top-0 left-0 w-2 h-full bg-primary/10' />
                 
                 <div className='relative w-24 h-24 rounded-[2rem] overflow-hidden bg-slate-100 shadow-xl border-4 border-white'>
                     <Image src={reviews[index].user_image} alt='user image' fill className='object-cover grayscale hover:grayscale-0 transition-all duration-500'/>
@@ -47,7 +47,7 @@ const Review = () => {
                     <p className='text-xl md:text-2xl font-black text-slate-900 leading-tight italic'>"{reviews[index].comment}"</p>
                     <div>
                         <h4 className='font-black text-slate-900 uppercase tracking-widest text-[10px]'>{reviews[index].user_name}</h4>
-                        <p className='text-emerald-600 font-black text-[9px] uppercase tracking-[0.2em] mt-1'>{reviews[index].user_email}</p>
+                        <p className='text-primary font-black text-[9px] uppercase tracking-[0.2em] mt-1'>{reviews[index].user_email}</p>
                     </div>
                 </div>
             </div>
@@ -57,7 +57,7 @@ const Review = () => {
                     <button 
                         key={i} 
                         onClick={() => setIndex(i)}
-                        className={`h-1.5 rounded-full transition-all duration-500 bg-slate-200 ${i === index ? 'w-8 bg-emerald-600' : 'w-2 hover:bg-slate-300'}`}
+                        className={`h-1.5 rounded-full transition-all duration-500 bg-slate-200 ${i === index ? 'w-8 bg-primary' : 'w-2 hover:bg-slate-300'}`}
                     />
                 ))}
             </div>

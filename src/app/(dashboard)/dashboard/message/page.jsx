@@ -26,7 +26,7 @@ const ChatPage = () => {
     
     const messagesEndRef = useRef(null)
 
-    // Protection
+    
     useEffect(() => {
         if (isLoggedin && userData?.role === 'client') {
             router.replace('/dashboard')
@@ -66,7 +66,7 @@ const ChatPage = () => {
         if (selectedUser) {
             fetchMessages(selectedUser._id)
             
-            // Polling for new messages
+            
             const interval = setInterval(() => {
                 fetchMessages(selectedUser._id)
             }, 5000)
@@ -117,7 +117,7 @@ const ChatPage = () => {
         <div className="flex flex-col h-[calc(100vh-140px)] bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
             <div className="flex flex-1 overflow-hidden">
                 
-                {/* User List Sidebar */}
+                
                 <div className={`w-full md:w-80 flex-shrink-0 border-r border-slate-100 flex flex-col ${selectedUser ? 'hidden md:flex' : 'flex'}`}>
                     <div className="p-6 border-b border-slate-100">
                         <h2 className="text-xl font-bold text-slate-800 mb-4">Messages</h2>
@@ -160,11 +160,11 @@ const ChatPage = () => {
                     </div>
                 </div>
 
-                {/* Chat Window */}
+                
                 <div className={`flex-1 flex flex-col bg-[#FDFDFF] ${!selectedUser ? 'hidden md:flex' : 'flex'}`}>
                     {selectedUser ? (
                         <>
-                            {/* Chat Header */}
+                            
                             <div className="p-4 md:p-6 bg-white border-b border-slate-100 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <button onClick={() => setSelectedUser(null)} className="md:hidden p-2 hover:bg-slate-100 rounded-lg">
@@ -182,7 +182,7 @@ const ChatPage = () => {
                                 </div>
                             </div>
 
-                            {/* Messages Area */}
+                            
                             <div className="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar">
                                 {chatLoading && messages.length === 0 ? (
                                     <div className="h-full flex items-center justify-center text-slate-400">Loading chat...</div>
@@ -213,7 +213,7 @@ const ChatPage = () => {
                                 <div ref={messagesEndRef} />
                             </div>
 
-                            {/* Input Area */}
+                            
                             <div className="p-4 md:p-6 bg-white border-t border-slate-100">
                                 <form onSubmit={handleSendMessage} className="flex items-center gap-3">
                                     <button type="button" className="p-2 text-slate-400 hover:text-primary transition-colors">

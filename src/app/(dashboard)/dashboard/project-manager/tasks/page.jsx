@@ -23,8 +23,8 @@ const PMTasks = () => {
                 axios.get('/api/task'),
                 axios.get('/api/user?role=staff')
             ])
-            setTasks(tRes.data.payload)
-            setUsers(uRes.data.payload)
+            setTasks(tres.data.data)
+            setUsers(ures.data.data)
         } catch (error) {
             console.error('Failed to fetch tasks', error)
         } finally {
@@ -59,7 +59,7 @@ const PMTasks = () => {
         )},
         { label: 'Status', key: 'status', render: (row) => (
             <span className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest
-                ${row.status === 'in_progress' ? 'bg-blue-50 text-blue-600' : 'bg-primary/5 text-primary'}`}>
+                ${row.status === 'in_progress' ? 'bg-primary text-primary' : 'bg-primary/5 text-primary'}`}>
                 {row.status}
             </span>
         )},

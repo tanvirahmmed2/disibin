@@ -73,7 +73,7 @@ const ManagerTasks = () => {
         )},
         { label: 'Assigned To', key: 'assignedTo', render: (row) => (
             <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[10px] font-bold">
+                <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold">
                     {row.assignedTo?.name?.charAt(0) || '?'}
                 </div>
                 <span className="text-xs font-medium text-slate-600">{row.assignedTo?.name || 'Unassigned'}</span>
@@ -83,13 +83,13 @@ const ManagerTasks = () => {
             <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider
                 ${row.priority === 'urgent' ? 'bg-red-100 text-red-700' : 
                   row.priority === 'high' ? 'bg-orange-100 text-orange-700' : 
-                  'bg-emerald-100 text-emerald-700'}`}>
+                  'bg-primary/10 text-primary-dark'}`}>
                 {row.priority}
             </span>
         )},
         { label: 'Status', key: 'status', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider
-                ${row.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-700'}`}>
+                ${row.status === 'in_progress' ? 'bg-primary text-primary' : 'bg-slate-100 text-slate-700'}`}>
                 {row.status.replace('_', ' ')}
             </span>
         )},

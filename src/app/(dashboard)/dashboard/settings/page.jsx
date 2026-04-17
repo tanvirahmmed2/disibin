@@ -130,14 +130,14 @@ const SettingsPage = () => {
                         </div>
 
                         <div className="flex flex-col gap-2 relative">
-                            <label className="text-sm font-bold text-rose-500 ml-1">New Password</label>
+                            <label className="text-sm font-bold text-primary ml-1">New Password</label>
                             <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center text-rose-400 group-focus-within:text-rose-500 transition-colors">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center text-primary group-focus-within:text-primary transition-colors">
                                     <RiLockPasswordLine size={20} />
                                 </div>
                                 <input 
                                     type="password" name="password" value={formData.password} onChange={handleChange}
-                                    className="w-full pl-12 pr-4 py-3 bg-rose-50/50 border-2 border-rose-100 rounded-xl outline-none focus:bg-white focus:border-rose-500 transition-all font-bold text-slate-800"
+                                    className="w-full pl-12 pr-4 py-3 bg-primary/50 border-2 border-primary rounded-xl outline-none focus:bg-white focus:border-primary transition-all font-bold text-slate-800"
                                 />
                             </div>
                         </div>

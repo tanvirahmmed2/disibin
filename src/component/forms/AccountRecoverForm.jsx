@@ -45,24 +45,24 @@ const AccountRecoverForm = () => {
       <form onSubmit={sendOtp} className={`w-full ${passwordBox?'hidden':'flex'} flex-col gap-2 `}>
         <div className='w-full flex flex-col gap-1'>
           <label htmlFor="email">Email</label>
-          <input type="email" name='email' id='email' required onChange={handleChange} value={formData.email} className='w-full px-3 p-1 border border-emerald-600/40 outline-none'/>
+          <input type="email" name='email' id='email' required onChange={handleChange} value={formData.email} className='w-full px-3 p-1 border border-primary/40 outline-none'/>
         </div>
-        <button type='submit' className='w-full text-center text-white bg-emerald-700 rounded-xl p-1 cursor-pointer hover:bg-emerald-500'>Send OTP</button>
+        <button type='submit' className='w-full text-center text-white bg-primary-dark rounded-xl p-1 cursor-pointer hover:bg-primary/50'>Send OTP</button>
       </form>
       <form onSubmit={changePassword} className={`w-full ${passwordBox?'flex':'hidden'} flex-col gap-2 `}>
         <div className='w-full flex flex-col gap-1'>
           <label htmlFor="otp">OTP</label>
-          <input type="text" name='otp' id='otp' onChange={handleChange} value={formData.otp} className='w-full px-3 p-1 border border-emerald-600/40 outline-none'/>
+          <input type="text" name='otp' id='otp' onChange={handleChange} value={formData.otp} className='w-full px-3 p-1 border border-primary/40 outline-none'/>
         </div>
         <div className='w-full flex flex-col gap-1'>
           <label htmlFor="new_password">New Password*</label>
-          <input type="text" name='new_password' id='new_password' onChange={handleChange} value={formData.new_password} className='w-full px-3 p-1 border border-emerald-600/40 outline-none'/>
+          <input type="text" name='new_password' id='new_password' onChange={handleChange} value={formData.new_password} className='w-full px-3 p-1 border border-primary/40 outline-none'/>
         </div>
         <div className='w-full flex flex-col gap-1'>
           <label htmlFor="confirm_password">Re-type Password*</label>
-          <input type="text" name='confirm_password' id='confirm_password' onChange={handleChange} required value={formData.confirm_password} className='w-full px-3 p-1 border border-emerald-600/40 outline-none'/>
+          <input type="text" name='confirm_password' id='confirm_password' onChange={handleChange} required value={formData.confirm_password} className='w-full px-3 p-1 border border-primary/40 outline-none'/>
         </div>
-        {formData.new_password.length>5 && formData.new_password===formData.confirm_password &&  <button type='submit' className='w-full text-center text-white bg-emerald-700 rounded-xl p-1 cursor-pointer hover:bg-emerald-500'>Submit</button>}
+        {formData.new_password.length>5 && formData.new_password===formData.confirm_password &&  <button type='submit' className='w-full text-center text-white bg-primary-dark rounded-xl p-1 cursor-pointer hover:bg-primary/50'>Submit</button>}
        
       </form>
     </div>

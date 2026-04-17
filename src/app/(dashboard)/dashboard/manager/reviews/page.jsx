@@ -11,7 +11,7 @@ const ManagerReviews = () => {
     const fetchData = async () => {
         try {
             const res = await axios.get('/api/review')
-            setData(res.data.payload)
+            setData(res.data.data)
         } catch (error) {
             console.error('Failed to fetch reviews', error)
         } finally {
@@ -41,7 +41,7 @@ const ManagerReviews = () => {
             </div>
         )},
         { label: 'Rating', key: 'rating', render: (row) => (
-            <div className="flex items-center gap-1 text-amber-500">
+            <div className="flex items-center gap-1 text-white">
                 {[...Array(row.rating)].map((_, i) => <RiStarFill key={i} size={14} />)}
             </div>
         )},
@@ -56,7 +56,7 @@ const ManagerReviews = () => {
     const actions = (row) => (
         <button 
             onClick={() => handleDelete(row._id)}
-            className="p-2 hover:bg-rose-50 text-rose-500 rounded-lg transition-all"
+            className="p-2 hover:bg-primary text-primary rounded-lg transition-all"
             title="Delete Review"
         >
             <RiDeleteBinLine size={18} />

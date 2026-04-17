@@ -79,7 +79,7 @@ export async function POST(req) {
             status: 'pending'
         });
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'create',
@@ -138,7 +138,7 @@ export async function PATCH(req) {
 
         const updated = await Project.findByIdAndUpdate(id, updateData, { new: true });
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'update',
@@ -171,7 +171,7 @@ export async function DELETE(req) {
 
         await Project.findByIdAndDelete(id);
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'delete',

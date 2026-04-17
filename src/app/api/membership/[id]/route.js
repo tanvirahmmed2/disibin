@@ -81,7 +81,7 @@ export async function PATCH(req, { params }) {
 
         const updated = await Membership.findByIdAndUpdate(id, updateData, { new: true });
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'update',
@@ -118,7 +118,7 @@ export async function DELETE(req, { params }) {
 
         await Membership.findByIdAndDelete(id);
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'delete',

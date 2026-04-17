@@ -9,7 +9,7 @@ const messageSchema = new mongoose.Schema({
     receiverId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: false // Optional for group chats
+        required: false 
     },
     participants: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -31,7 +31,7 @@ const messageSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-// Index for faster queries
+
 messageSchema.index({ senderId: 1, receiverId: 1 });
 messageSchema.index({ participants: 1 });
 

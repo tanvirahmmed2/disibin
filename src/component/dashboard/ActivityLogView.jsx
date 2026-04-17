@@ -43,9 +43,9 @@ const ActivityLogView = ({ title = "System Activity Log" }) => {
     const columns = [
         { label: 'Action', key: 'action', render: (row) => (
             <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest border
-                ${row.action === 'create' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
-                  row.action === 'delete' ? 'bg-rose-50 text-rose-600 border-rose-100' : 
-                  'bg-blue-50 text-blue-600 border-blue-100'}`}>
+                ${row.action === 'create' ? 'bg-primary/5 text-primary border-primary/10' : 
+                  row.action === 'delete' ? 'bg-primary text-primary border-primary' : 
+                  'bg-primary text-primary border-primary'}`}>
                 {row.action}
             </span>
         )},

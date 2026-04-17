@@ -25,7 +25,7 @@ const Package = async ({ params }) => {
             </div>
             <h1 className='text-2xl font-semibold'>{pack.title}</h1>
             <div className='w-full flex flex-col md:flex-row items-center justify-between gap-2 sm:gap-6'>
-                <p className='w-full bg-emerald-500 cursor-pointer text-white p-1 font-mono text-center rounded-lg flex gap-2 items-center justify-center'>BDT {pack.discount > 0 ?
+                <p className='w-full bg-primary cursor-pointer text-white p-1 font-mono text-center rounded-lg flex gap-2 items-center justify-center'>BDT {pack.discount > 0 ?
                     <span>
                         <strong>{pack.price - pack.discount}<span className='line-through text-red-300 px-4'>{pack.price}</span></strong>
                     </span> :
@@ -45,7 +45,7 @@ const Package = async ({ params }) => {
                 }
             </div>
             
-            <Link className='w-full bg-emerald-500 cursor-pointer text-white p-1 font-mono text-center rounded-lg flex gap-2 items-center justify-center' href="https://api.whatsapp.com/send/?phone=8801805003886&text&type=phone_number&app_absent=0">Ask for demo</Link>
+            <Link className='w-full bg-primary cursor-pointer text-white p-1 font-mono text-center rounded-lg flex gap-2 items-center justify-center' href="https://api.whatsapp.com/send/?phone=8801805003886&text&type=phone_number&app_absent=0">Ask for demo</Link>
         </div>
     )
 }

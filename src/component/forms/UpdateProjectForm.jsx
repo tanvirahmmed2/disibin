@@ -51,33 +51,33 @@ const UpdateProjectForm = ({ project }) => {
         <form onSubmit={handleSubmit} className='w-full flex flex-col gap-3 items-center'>
             <div className='flex flex-col w-full'>
                 <label className='font-semibold'>Project Title</label>
-                <input name="title" value={formData.title} onChange={handleChange} className='w-full px-3 p-1 border border-emerald-600/30 outline-none ' required />
+                <input name="title" value={formData.title} onChange={handleChange} className='w-full px-3 p-1 border border-primary/30 outline-none ' required />
             </div>
 
             <div className='flex flex-col w-full'>
                 <label className='font-semibold'>Description</label>
-                <textarea name="description" value={formData.description} onChange={handleChange} className='w-full px-3 p-1 border border-emerald-600/30 outline-none ' required />
+                <textarea name="description" value={formData.description} onChange={handleChange} className='w-full px-3 p-1 border border-primary/30 outline-none ' required />
             </div>
 
             <div className='w-full flex flex-col md:flex-row items-center justify-between gap-2'>
                 <div className='flex flex-col w-full'>
                     <label className='font-semibold'>Category</label>
-                    <input name="category" value={formData.category} onChange={handleChange} className='w-full px-3 p-1 border border-emerald-600/30 outline-none ' />
+                    <input name="category" value={formData.category} onChange={handleChange} className='w-full px-3 p-1 border border-primary/30 outline-none ' />
                 </div>
                 <div className='flex flex-col w-full'>
                     <label className='font-semibold'>Preview Link</label>
-                    <input name="preview" value={formData.preview} onChange={handleChange} className='w-full px-3 p-1 border border-emerald-600/30 outline-none ' />
+                    <input name="preview" value={formData.preview} onChange={handleChange} className='w-full px-3 p-1 border border-primary/30 outline-none ' />
                 </div>
             </div>
 
             <div className='flex flex-col w-full'>
                 <label className='font-semibold'>Tags (comma separated)</label>
-                <input name="tags" value={formData.tags} onChange={handleChange} className='w-full px-3 p-1 border border-emerald-600/30 outline-none ' />
+                <input name="tags" value={formData.tags} onChange={handleChange} className='w-full px-3 p-1 border border-primary/30 outline-none ' />
             </div>
 
             <div className='flex flex-col w-full'>
                 <label className='font-semibold'>Skills (comma separated)</label>
-                <input name="skills" value={formData.skills} onChange={handleChange} className='w-full px-3 p-1 border border-emerald-600/30 outline-none ' />
+                <input name="skills" value={formData.skills} onChange={handleChange} className='w-full px-3 p-1 border border-primary/30 outline-none ' />
             </div>
 
             <div className='flex items-center gap-2'>
@@ -87,10 +87,10 @@ const UpdateProjectForm = ({ project }) => {
 
             <div className='flex flex-col w-full'>
                 <label className='font-semibold'>Update Image (Leave blank to keep current)</label>
-                <input type="file" onChange={(e) => setImage(e.target.files[0])} className='w-full px-3 p-1 border border-emerald-600/30 outline-none ' />
+                <input type="file" onChange={(e) => setImage(e.target.files[0])} className='w-full px-3 p-1 border border-primary/30 outline-none ' />
             </div>
 
-            <button type="submit" className='bg-emerald-600 text-white p-2 rounded hover:bg-emerald-700 font-bold'>
+            <button type="submit" className='bg-primary text-white p-2 rounded hover:bg-primary-dark font-bold'>
                 Update Project
             </button>
         </form>

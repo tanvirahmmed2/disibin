@@ -30,7 +30,7 @@ export async function POST(req) {
             name, email, phone, subject, message, status: 'open'
         });
 
-        // Activity Logging (Optional if logged in)
+        
         const auth = await isLogin();
         if (auth.success) {
             await createLog({
@@ -64,7 +64,7 @@ export async function PATCH(req) {
 
         if (!contact) return NextResponse.json({ success: false, message: 'Message not found' }, { status: 404 });
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'update',
@@ -90,7 +90,7 @@ export async function DELETE(req) {
         if (contact) {
             await Contact.findByIdAndDelete(id);
 
-            // Activity Logging
+            
             await createLog({
                 userId: auth.data._id,
                 action: 'delete',

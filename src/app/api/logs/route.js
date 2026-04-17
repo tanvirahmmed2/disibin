@@ -7,7 +7,7 @@ export async function GET(req) {
     try {
         await connectDB();
         
-        // Authorization check (only Admin, Manager, or PM can view logs)
+        
         const managerAuth = await isManager();
         const pmAuth = await isProjectManager();
         const adminAuth = await isAdmin();

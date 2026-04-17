@@ -19,7 +19,7 @@ const AdminOverview = () => {
         const fetchStats = async () => {
             try {
                 const res = await axios.get('/api/dashboard/stats')
-                setStats(res.data.payload)
+                setStats(res.data.data)
             } catch (error) {
                 console.error('Failed to fetch stats', error)
             } finally {

@@ -11,7 +11,7 @@ const PMProjects = () => {
     const fetchData = async () => {
         try {
             const res = await axios.get('/api/project')
-            setData(res.data.payload)
+            setData(res.data.data)
         } catch (error) {
             console.error('Failed to fetch projects', error)
         } finally {

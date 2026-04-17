@@ -52,39 +52,39 @@ const AddNewPackage = () => {
     <form onSubmit={handleSubmit} className='w-full flex flex-col items-center justify-center gap-4'>
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="title">Title</label>
-        <input type="text" name='title' id='title' required value={formData.title} onChange={handleChange} className='w-full px-3 p-1 outline-none border border-emerald-600' />
+        <input type="text" name='title' id='title' required value={formData.title} onChange={handleChange} className='w-full px-3 p-1 outline-none border border-primary' />
       </div>
       <div className='w-full flex flex-col items-center justify-center sm:flex-row gap-4'>
         <div className='w-full flex flex-col gap-1'>
           <label htmlFor="price">Price</label>
-          <input type="number" min={0} name='price' id='price' required onChange={handleChange} value={formData.price} className='w-full px-3 p-1 outline-none border border-emerald-600' />
+          <input type="number" min={0} name='price' id='price' required onChange={handleChange} value={formData.price} className='w-full px-3 p-1 outline-none border border-primary' />
         </div>
         <div className='w-full flex flex-col gap-1'>
           <label htmlFor="discount">Discount</label>
-          <input type="number" min={0} name='discount' id='discount' onChange={handleChange} value={formData.discount} className='w-full px-3 p-1 outline-none border border-emerald-600' />
+          <input type="number" min={0} name='discount' id='discount' onChange={handleChange} value={formData.discount} className='w-full px-3 p-1 outline-none border border-primary' />
         </div>
 
       </div>
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="category">Category</label>
-        <input type="text" name='category' id='category' value={formData.category} onChange={handleChange} className='w-full px-3 p-1 outline-none border border-emerald-600' />
+        <input type="text" name='category' id='category' value={formData.category} onChange={handleChange} className='w-full px-3 p-1 outline-none border border-primary' />
       </div>
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="description">Description</label>
-        <textarea name="description" id="description" required onChange={handleChange} value={formData.description} className='w-full px-3 p-1 outline-none border border-emerald-600'></textarea>
+        <textarea name="description" id="description" required onChange={handleChange} value={formData.description} className='w-full px-3 p-1 outline-none border border-primary'></textarea>
       </div>
 
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="features">Features</label>
-        <input type="text" name='features' id='features' required onChange={handleChange} value={formData.features} className='w-full px-3 p-1 outline-none border border-emerald-600' />
+        <input type="text" name='features' id='features' required onChange={handleChange} value={formData.features} className='w-full px-3 p-1 outline-none border border-primary' />
       </div>
 
 
       <div className='w-full flex flex-col gap-1'>
         <label htmlFor="image">Image *</label>
-        <input type="file" accept='image/*' required id='image' name='image' onChange={handleChange} className='w-full px-3 p-1 outline-none border border-emerald-600' />
+        <input type="file" accept='image/*' required id='image' name='image' onChange={handleChange} className='w-full px-3 p-1 outline-none border border-primary' />
       </div>
-      <button className='p-1 w-full text-center bg-emerald-500 text-white hover:bg-emerald-600 cursor-pointer' type='submit'>Submit</button>
+      <button className='p-1 w-full text-center bg-primary/50 text-white hover:bg-primary cursor-pointer' type='submit'>Submit</button>
     </form>
   )
 }

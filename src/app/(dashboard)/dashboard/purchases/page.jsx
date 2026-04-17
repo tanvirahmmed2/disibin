@@ -33,9 +33,9 @@ const ClientPurchases = () => {
             <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                     <span className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border
-                        ${row.items?.[0]?.type === 'package' ? 'bg-blue-50 text-blue-600 border-blue-100' : 
-                          row.items?.[0]?.type === 'membership' ? 'bg-purple-50 text-purple-600 border-purple-100' : 
-                          'bg-amber-50 text-amber-600 border-amber-100'}`}>
+                        ${row.items?.[0]?.type === 'package' ? 'bg-primary text-primary border-primary' : 
+                          row.items?.[0]?.type === 'membership' ? 'bg-primary text-primary border-primary' : 
+                          'bg-white text-white border-white'}`}>
                         {row.items?.[0]?.type || 'Standard'}
                     </span>
                     <span className="font-bold text-slate-700">{row.items?.[0]?.title || 'Mixed Bundle'}</span>
@@ -48,9 +48,9 @@ const ClientPurchases = () => {
         )},
         { label: 'Status', key: 'status', render: (row) => (
             <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider
-                ${row.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 
-                  row.status === 'pending' ? 'bg-amber-100 text-amber-700' : 
-                  'bg-rose-100 text-rose-700'}`}>
+                ${row.status === 'completed' ? 'bg-primary/10 text-primary-dark' : 
+                  row.status === 'pending' ? 'bg-white text-white' : 
+                  'bg-primary text-primary'}`}>
                 {row.status}
             </span>
         )},

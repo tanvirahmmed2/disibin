@@ -24,8 +24,8 @@ const packagesPage = async () => {
       <section className='py-24 border-b border-slate-50'>
         <div className="container-custom">
             <div className="max-w-3xl">
-                <span className='px-4 py-1.5 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-[0.3em] rounded-full inline-block mb-6'>Solutions</span>
-                <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none mb-8">Service Plans<span className='text-emerald-500'>.</span></h1>
+                <span className='px-4 py-1.5 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.3em] rounded-full inline-block mb-6'>Solutions</span>
+                <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none mb-8">Service Plans<span className='text-primary/50'>.</span></h1>
                 <p className="text-xl text-slate-500 font-medium leading-relaxed">Strategic pricing models designed for scalability and long-term technical excellence.</p>
             </div>
         </div>

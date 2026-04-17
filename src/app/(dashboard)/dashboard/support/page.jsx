@@ -48,7 +48,7 @@ const SupportDashboard = () => {
         { label: 'Subject', key: 'subject', render: (row) => (
             <div className="flex flex-col">
                 <span className="font-medium text-slate-600 truncate max-w-[200px]">{row.subject}</span>
-                <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">{row.category}</span>
+                <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{row.category}</span>
             </div>
         )},
         { label: 'Priority', key: 'priority', render: (row) => (
@@ -59,9 +59,9 @@ const SupportDashboard = () => {
         )},
         { label: 'Status', key: 'status', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider
-                ${row.status === 'open' ? 'bg-amber-100 text-amber-700' : 
-                  row.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 
-                  'bg-emerald-100 text-emerald-700'}`}>
+                ${row.status === 'open' ? 'bg-white text-white' : 
+                  row.status === 'in_progress' ? 'bg-primary text-primary' : 
+                  'bg-primary/10 text-primary-dark'}`}>
                 {row.status}
             </span>
         )},
@@ -77,7 +77,7 @@ const SupportDashboard = () => {
         )},
         { label: 'Status', key: 'status', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider
-                ${row.status === 'open' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                ${row.status === 'open' ? 'bg-white text-white' : 'bg-primary/10 text-primary-dark'}`}>
                 {row.status}
             </span>
         )},
@@ -95,12 +95,12 @@ const SupportDashboard = () => {
                 <RiMessage2Line size={18} /> {view === 'tickets' ? 'Chat' : 'Reply'}
             </button>
             {view === 'tickets' && (
-                <button className="p-2 hover:bg-blue-50 rounded-lg text-blue-600 transition-all" title="Forward to PM">
+                <button className="p-2 hover:bg-primary rounded-lg text-primary transition-all" title="Forward to PM">
                     <RiShareForwardLine size={18} />
                 </button>
             )}
             {row.status !== 'closed' && (
-                <button onClick={() => updateStatus(row._id, 'closed')} className="p-2 hover:bg-emerald-50 rounded-lg text-emerald-600 transition-all" title="Close">
+                <button onClick={() => updateStatus(row._id, 'closed')} className="p-2 hover:bg-primary/5 rounded-lg text-primary transition-all" title="Close">
                     <RiCheckboxCircleLine size={18} />
                 </button>
             )}
@@ -118,14 +118,14 @@ const SupportDashboard = () => {
                     <button 
                         onClick={() => setView('tickets')}
                         className={`px-6 py-2 rounded-xl text-xs font-bold transition-all
-                        ${view === 'tickets' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        ${view === 'tickets' ? 'bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                     >
                         Client Tickets
                     </button>
                     <button 
                         onClick={() => setView('messages')}
                         className={`px-6 py-2 rounded-xl text-xs font-bold transition-all
-                        ${view === 'messages' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        ${view === 'messages' ? 'bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                     >
                         Guest Messages
                     </button>

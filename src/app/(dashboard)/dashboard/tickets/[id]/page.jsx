@@ -26,7 +26,7 @@ const TicketChatPage = () => {
         try {
             
             const res = await axios.get(`/api/ticket`)
-            const found = res.data.payload.find(t => t._id === id)
+            const found = res.data.data.find(t => t._id === id)
             if (found) {
                 setTicket(found)
                 setMessages(found.messages || [])
@@ -69,7 +69,7 @@ const TicketChatPage = () => {
 
     if (loading) return (
         <div className="flex items-center justify-center min-h-[400px]">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-emerald-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary"></div>
         </div>
     )
 
@@ -89,9 +89,9 @@ const TicketChatPage = () => {
                     <div>
                         <h1 className="text-xl font-bold text-slate-800 tracking-tight">{ticket.subject}</h1>
                         <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">{ticket.category}</span>
+                            <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{ticket.category}</span>
                             <span className="text-slate-300">•</span>
-                            <span className={`text-[10px] font-bold uppercase tracking-widest ${ticket.status === 'open' ? 'text-amber-500' : 'text-slate-400'}`}>
+                            <span className={`text-[10px] font-bold uppercase tracking-widest ${ticket.status === 'open' ? 'text-white' : 'text-slate-400'}`}>
                                 {ticket.status}
                             </span>
                         </div>
@@ -114,7 +114,7 @@ const TicketChatPage = () => {
                     return (
                         <div key={index} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
                             <div className={`max-w-[85%] md:max-w-[70%] p-4 rounded-3xl shadow-sm border
-                                ${isMe ? 'bg-emerald-600 text-white border-emerald-500 rounded-tr-none' : 'bg-white text-slate-700 border-slate-100 rounded-tl-none'}`}>
+                                ${isMe ? 'bg-primary text-white border-primary rounded-tr-none' : 'bg-white text-slate-700 border-slate-100 rounded-tl-none'}`}>
                                 <p className="text-sm font-medium leading-relaxed whitespace-pre-wrap">{msg.message}</p>
                             </div>
                             <div className="flex items-center gap-1 mt-1.5 px-1">
@@ -135,13 +135,13 @@ const TicketChatPage = () => {
                         <input 
                             value={inputText}
                             onChange={e => setInputText(e.target.value)}
-                            className="w-full pl-4 pr-12 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-slate-700"
+                            className="w-full pl-4 pr-12 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-slate-700"
                         />
                     </div>
                     <button 
                         type="submit"
                         disabled={!inputText.trim()}
-                        className="p-4 bg-emerald-600 text-white rounded-2xl shadow-lg shadow-emerald-100 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all flex items-center justify-center"
+                        className="p-4 bg-primary text-white rounded-2xl shadow-lg shadow-primary hover:scale-105 active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all flex items-center justify-center"
                     >
                         <RiSendPlane2Line size={24} />
                     </button>

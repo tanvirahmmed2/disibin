@@ -38,7 +38,7 @@ const Support = () => {
         
         <div className='space-y-12'>
             <div className='space-y-6'>
-                <span className='text-emerald-600 font-black tracking-[0.4em] uppercase text-[10px]'>Contact</span>
+                <span className='text-primary font-black tracking-[0.4em] uppercase text-[10px]'>Contact</span>
                 <h2 className='text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-tight'>
                     Let’s Connect<br/><span className='text-slate-400'>Your Vision.</span>
                 </h2>
@@ -49,7 +49,7 @@ const Support = () => {
 
             <div className='space-y-6 pt-4'>
                 <div className='flex items-center gap-4 group'>
-                    <div className='w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-emerald-600 group-hover:text-white transition-all'>
+                    <div className='w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all'>
                         <RiMapPinLine size={24} />
                     </div>
                     <div>
@@ -58,7 +58,7 @@ const Support = () => {
                     </div>
                 </div>
                 <div className='flex items-center gap-4 group'>
-                    <div className='w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-emerald-600 group-hover:text-white transition-all'>
+                    <div className='w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all'>
                         <RiMailSendLine size={24} />
                     </div>
                     <div>
@@ -76,7 +76,7 @@ const Support = () => {
             className='p-12 bg-slate-50/50 border border-slate-100 rounded-[3rem] space-y-8'
         >
             <div className='flex items-center gap-3'>
-                <RiMessage2Line size={24} className='text-emerald-600' />
+                <RiMessage2Line size={24} className='text-primary' />
                 <h3 className='text-xl font-black text-slate-900 tracking-tight'>Direct Inquiry</h3>
             </div>
 

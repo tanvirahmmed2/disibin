@@ -73,7 +73,7 @@ export async function POST(req) {
             status: 'in_progress'
         });
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'create',
@@ -123,7 +123,7 @@ export async function PATCH(req) {
 
         await task.save();
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'update',
@@ -151,7 +151,7 @@ export async function DELETE(req) {
 
         await Task.findByIdAndDelete(id);
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'delete',

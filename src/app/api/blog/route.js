@@ -65,7 +65,7 @@ export async function POST(req) {
             author: auth.data.name
         });
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'create',
@@ -126,7 +126,7 @@ export async function PATCH(req) {
 
         const updatedBlog = await Blog.findByIdAndUpdate(id, updateData, { new: true });
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'update',
@@ -163,7 +163,7 @@ export async function DELETE(req) {
 
         await Blog.findByIdAndDelete(id);
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'delete',

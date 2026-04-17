@@ -13,7 +13,7 @@ const ClientReviews = () => {
     const fetchReviews = async () => {
         try {
             const res = await axios.get('/api/user/review', { withCredentials: true })
-            setReviews(res.data.payload)
+            setReviews(res.data.data)
         } catch (error) {
             console.error('Failed to fetch reviews', error)
         } finally {
@@ -29,7 +29,7 @@ const ClientReviews = () => {
         { label: 'Rating', key: 'rate', render: (row) => (
             <div className="flex gap-0.5">
                 {[...Array(5)].map((_, i) => (
-                    <RiStarFill key={i} className={i < row.rate ? 'text-amber-400' : 'text-slate-200'} size={14} />
+                    <RiStarFill key={i} className={i < row.rate ? 'text-white' : 'text-slate-200'} size={14} />
                 ))}
             </div>
         )},
@@ -38,7 +38,7 @@ const ClientReviews = () => {
         )},
         { label: 'Status', key: 'isApproved', render: (row) => (
             <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider
-                ${row.isApproved ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                ${row.isApproved ? 'bg-primary/10 text-primary-dark' : 'bg-white text-white'}`}>
                 {row.isApproved ? 'Approved' : 'Pending'}
             </span>
         )},

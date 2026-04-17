@@ -11,7 +11,7 @@ const AdminPurchases = () => {
     const fetchData = async () => {
         try {
             const res = await axios.get('/api/purchase')
-            setData(res.data.payload)
+            setData(res.data.data)
         } catch (error) {
             console.error('Failed to fetch purchases', error)
         } finally {
@@ -38,7 +38,7 @@ const AdminPurchases = () => {
         )},
         { label: 'Revenue', key: 'price', render: (row) => (
             <div className="flex items-center gap-1 font-black text-slate-700 text-lg">
-                <span className="text-emerald-500">$</span>{row.price}
+                <span className="text-primary/50">$</span>{row.price}
             </div>
         )},
         { label: 'Date', key: 'createdAt', render: (row) => (

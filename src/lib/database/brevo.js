@@ -55,4 +55,4 @@ export const sendStaffInvitationEmail = async (email, name, activationUrl) => {
     `;
     return await sendEmail({ toEmail: email, toName: name, subject, htmlContent });
 };
-
+

@@ -11,7 +11,7 @@ import { motion } from 'framer-motion';
 function VerifyEmailContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const [status, setStatus] = useState('loading'); // loading, success, error
+    const [status, setStatus] = useState('loading'); 
     const [message, setMessage] = useState('Verifying your email...');
 
     const token = searchParams.get('token');
@@ -44,7 +44,7 @@ function VerifyEmailContent() {
     }, [token, email]);
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
+        <div className="min-h-screen w-full flex items-center justify-center p-6 bg-slate-50">
             <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -64,8 +64,8 @@ function VerifyEmailContent() {
                 {status === 'success' && (
                     <div className="flex flex-col items-center gap-6">
                         <div className="relative">
-                            <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-2xl font-black"></div>
-                            <HiCheckCircle className="w-16 h-16 text-emerald-500 relative z-10" />
+                            <div className="absolute inset-0 bg-primary/10 rounded-full blur-2xl font-black"></div>
+                            <HiCheckCircle className="w-16 h-16 text-primary/50 relative z-10" />
                         </div>
                         <h1 className="text-3xl font-black text-slate-900 tracking-tight">Success!</h1>
                         <p className="text-slate-500 font-medium">{message}</p>

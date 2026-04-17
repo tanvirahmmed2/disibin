@@ -77,7 +77,7 @@ const UpdateUserForm = ({ user }) => {
                 <input name="country" value={formData.country} onChange={handleChange} className='border p-2 rounded' />
             </div>
 
-            <button type="submit" className='col-span-full mt-4 bg-emerald-600 text-white p-3 rounded font-bold hover:bg-emerald-700 transition-colors'>
+            <button type="submit" className='col-span-full mt-4 bg-primary text-white p-3 rounded font-bold hover:bg-primary-dark transition-colors'>
                 Update Profile
             </button>
         </form>

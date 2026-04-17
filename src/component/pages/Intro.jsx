@@ -7,7 +7,7 @@ import { Typewriter } from 'react-simple-typewriter'
 const Intro = () => {
   return (
     <section className='relative w-full min-h-screen flex items-center justify-center pt-20 bg-primary overflow-hidden'>
-      {/* Dynamic Background Elements */}
+      
       <div className='absolute top-0 left-0 w-full h-full opacity-10'>
         <div className='absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-white rounded-full blur-[150px]' />
         <div className='absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-white rounded-full blur-[150px]' />
@@ -36,7 +36,7 @@ const Intro = () => {
         >
           <h2 className='text-xl md:text-3xl font-bold text-white mb-8 leading-tight'>
             We 
-            <span className='text-amber-300 px-3 relative italic'>
+            <span className='text-white px-3 relative italic'>
               <Typewriter
                 words={['Architect', 'Implement', 'Scale', 'Innovate']}
                 loop={0}
@@ -46,7 +46,7 @@ const Intro = () => {
                 deleteSpeed={50}
                 delaySpeed={2000}
               />
-              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-amber-300/30"></span>
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white/30"></span>
             </span>
             Future-Proof Software.
           </h2>
@@ -70,7 +70,7 @@ const Intro = () => {
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
+      
       <motion.div 
         animate={{ y: [0, 10, 0] }}
         transition={{ repeat: Infinity, duration: 2 }}

@@ -8,7 +8,7 @@ export async function GET(req) {
         const { searchParams } = new URL(req.url);
         const currentUserId = searchParams.get('currentUserId');
 
-        // Fetch all users with management roles
+        
         const users = await User.find({
             role: { $in: ["admin", "manager", "support", "project_manager", "editor", "staff"] },
             _id: { $ne: currentUserId }

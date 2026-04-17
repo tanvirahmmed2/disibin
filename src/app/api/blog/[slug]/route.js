@@ -12,7 +12,7 @@ export async function GET(req, { params }) {
             return NextResponse.json({ success: false, message: 'identifier not found' }, { status: 400 });
         }
 
-        // Try to find by ID if it's a valid ObjectId, otherwise find by slug
+        
         let blog;
         if (mongoose.Types.ObjectId.isValid(slug)) {
             blog = await Blog.findById(slug);
@@ -35,4 +35,4 @@ export async function GET(req, { params }) {
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
-}
+}

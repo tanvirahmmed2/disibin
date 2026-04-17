@@ -72,9 +72,9 @@ const WishlistPage = () => {
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-2">
                                         <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest border
-                                            ${item.type === 'package' ? 'bg-blue-50 text-blue-600 border-blue-100' : 
-                                              item.type === 'membership' ? 'bg-purple-50 text-purple-600 border-purple-100' : 
-                                              'bg-amber-50 text-amber-600 border-amber-100'}`}>
+                                            ${item.type === 'package' ? 'bg-primary text-primary border-primary' : 
+                                              item.type === 'membership' ? 'bg-primary text-primary border-primary' : 
+                                              'bg-white text-white border-white'}`}>
                                             {item.type}
                                         </span>
                                     </div>
@@ -85,7 +85,7 @@ const WishlistPage = () => {
                                 </div>
                                 <button 
                                     onClick={() => removeFromwishlist(item._id)}
-                                    className='p-4 bg-rose-50 text-rose-500 rounded-2xl hover:bg-rose-500 hover:text-white transition-all transform active:scale-95'
+                                    className='p-4 bg-primary text-primary rounded-2xl hover:bg-primary hover:text-white transition-all transform active:scale-95'
                                 >
                                     <MdDeleteOutline size={20} />
                                 </button>
@@ -141,12 +141,12 @@ const WishlistPage = () => {
                                 <p className="text-slate-500 font-medium">Review your order before confirming</p>
                             </div>
 
-                            <div className="space-y-4 bg-emerald-50/50 p-8 rounded-3xl border border-emerald-100">
+                            <div className="space-y-4 bg-primary/10 p-8 rounded-3xl border border-primary/10">
                                 <div className="flex justify-between text-slate-600 font-medium">
                                     <span>Sub Total</span>
                                     <span>BDT {subTotal}</span>
                                 </div>
-                                <div className="flex justify-between font-black text-3xl text-slate-900 border-t border-emerald-100/50 pt-4">
+                                <div className="flex justify-between font-black text-3xl text-slate-900 border-t border-primary/10 pt-4">
                                     <span>Total</span>
                                     <span>BDT {totalAmount}</span>
                                 </div>
@@ -156,7 +156,7 @@ const WishlistPage = () => {
                                 <div className="space-y-3">
                                     <label className="text-sm font-bold text-slate-700 ml-1">Payment Method</label>
                                     <select
-                                        className="w-full h-16 px-6 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-emerald-500 transition-all font-bold text-slate-700 appearance-none cursor-pointer"
+                                        className="w-full h-16 px-6 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-slate-700 appearance-none cursor-pointer"
                                         value={payment_method}
                                         onChange={(e) => setPayment_method(e.target.value)}
                                     >
@@ -176,7 +176,7 @@ const WishlistPage = () => {
                                     </button>
                                     <button
                                         type="submit"
-                                        className="flex-3 py-5 bg-emerald-600 text-white font-black rounded-2xl shadow-xl shadow-emerald-500/20 hover:bg-emerald-700 transition-all"
+                                        className="flex-3 py-5 bg-primary text-white font-black rounded-2xl shadow-xl shadow-primary/10 hover:bg-primary-dark transition-all"
                                     >
                                         CONFIRM ORDER
                                     </button>

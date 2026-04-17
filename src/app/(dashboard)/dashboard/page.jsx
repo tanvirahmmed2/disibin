@@ -30,7 +30,7 @@ const DashboardHome = () => {
         const fetchStats = async () => {
             try {
                 const res = await axios.get('/api/dashboard/stats')
-                setStats(res.data.payload)
+                setStats(res.data.data)
             } catch (error) {
                 
             } finally {
@@ -118,25 +118,7 @@ const DashboardHome = () => {
                         </div>
                     )}
 
-                    <div className="card-premium p-10">
-                        <div className="flex items-center justify-between mb-8">
-                            <h3 className="text-2xl font-black text-slate-800 tracking-tight">System Logs</h3>
-                        </div>
-                        <div className="space-y-6">
-                            {[1, 2, 3].map((_, i) => (
-                                <div key={i} className="flex items-center gap-6 p-4 rounded-2xl hover:bg-slate-50 transition-colors cursor-default">
-                                    <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400">
-                                        <RiTimeLine size={24} />
-                                    </div>
-                                    <div className="flex-1">
-                                        <h4 className="font-bold text-slate-800">Platform Sync {i + 1}</h4>
-                                        <p className="text-sm text-slate-500">Automated background optimization completed successfully.</p>
-                                    </div>
-                                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-tighter">Verified</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    
                 </div>
 
                 <div className="space-y-8">

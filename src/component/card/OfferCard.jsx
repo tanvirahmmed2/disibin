@@ -15,7 +15,7 @@ const OfferCard = ({ offer }) => {
             slug: offer.slug,
             price: offer.price,
             discount: offer.discount,
-            image: offer.image // Add if you have it
+            image: offer.image 
         })
     }
 

@@ -28,7 +28,7 @@ const Navbar = () => {
   return (
     <nav className='w-full fixed top-0 left-0 h-20 bg-white backdrop-blur-xl border-b border-slate-50 z-50 flex items-center'>
       <div className='container-custom flex flex-row items-center justify-between'>
-        <Link href={'/'} className='text-3xl font-black text-slate-900 tracking-tighter hover:text-emerald-600 transition-colors'>
+        <Link href={'/'} className='text-3xl font-black text-slate-900 tracking-tighter hover:text-primary transition-colors'>
           Disibin
         </Link>
 
@@ -39,7 +39,7 @@ const Navbar = () => {
               href={link.href} 
               className={`px-5 py-2 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-300 ${
                 isActive(link.href) 
-                ? 'text-emerald-600 bg-emerald-50/50' 
+                ? 'text-primary bg-primary/10' 
                 : 'text-slate-400 hover:text-slate-900'
               }`}
             >
@@ -63,20 +63,20 @@ const Navbar = () => {
                     <p className='text-sm font-black text-slate-900 truncate'>{userData?.name}</p>
                 </div>
                 <div className='space-y-1'>
-                    <Link href='/dashboard' className='flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-emerald-600 rounded-xl transition-all'>
+                    <Link href='/dashboard' className='flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-primary rounded-xl transition-all'>
                     <RiDashboardLine className='text-lg' /> Dashboard
                     </Link>
-                    <Link href='/profile' className='flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-emerald-600 rounded-xl transition-all'>
+                    <Link href='/profile' className='flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-primary rounded-xl transition-all'>
                     <RiUserLine className='text-lg' /> Profile
                     </Link>
-                    <Link href='/wishlist' className='flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-emerald-600 rounded-xl transition-all'>
+                    <Link href='/wishlist' className='flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-primary rounded-xl transition-all'>
                     <RiHeartLine className='text-lg' /> Wishlist
                     </Link>
                 </div>
                 <div className='my-2 border-t border-slate-50'></div>
                 <button 
                   onClick={() => handleLogout()}
-                  className='w-full flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-rose-500 hover:bg-rose-50 rounded-xl transition-colors'
+                  className='w-full flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-primary hover:bg-primary rounded-xl transition-colors'
                 >
                   <RiLogoutBoxRLine className='text-lg' /> Terminate Session
                 </button>

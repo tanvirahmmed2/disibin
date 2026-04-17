@@ -31,11 +31,11 @@ const Project = async ({ params }) => {
                     ))
                 }
             </div>
-            <Link href={`${project.preview}`} className='w-full bg-emerald-600 text-white p-2 text-center rounded-lg'>Preview</Link>
+            <Link href={`${project.preview}`} className='w-full bg-primary text-white p-2 text-center rounded-lg'>Preview</Link>
             <div className='w-full flex flex-wrap gap-1'>
                 {
                     project.skills.map((e) => (
-                        <p key={e} className='w-auto px-3 bg-emerald-50 rounded-2xl'>{e}</p>
+                        <p key={e} className='w-auto px-3 bg-primary rounded-2xl'>{e}</p>
                     ))
                 }
             </div>

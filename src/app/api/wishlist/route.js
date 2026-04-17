@@ -23,7 +23,7 @@ export async function POST(req) {
         const body = await req.json();
         const { userId, itemId, type, title, price, image, slug, metadata } = body;
 
-        // Check for duplicates
+        
         const existing = await Wishlist.findOne({ userId, itemId, type });
         if (existing) {
             return NextResponse.json({ success: false, message: "Item already in wishlist" }, { status: 400 });

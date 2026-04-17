@@ -29,7 +29,7 @@ export async function POST(req) {
             userId, items, totalAmount, paymentMethod, status: 'pending'
         });
 
-        // Activity Logging
+        
         await createLog({
             userId,
             action: 'create',
@@ -39,7 +39,7 @@ export async function POST(req) {
             metadata: { totalAmount, itemsCount: items.length }
         });
 
-        // Optionally clear wishlist after purchase creation
+        
         await Wishlist.deleteMany({ userId });
 
         return NextResponse.json({ success: true, message: 'Purchase created successfully', data: newPurchase });

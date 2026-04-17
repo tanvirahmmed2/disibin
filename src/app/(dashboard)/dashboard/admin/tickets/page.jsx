@@ -11,7 +11,7 @@ const AdminTickets = () => {
     const fetchData = async () => {
         try {
             const res = await axios.get('/api/ticket')
-            setData(res.data.payload)
+            setData(res.data.data)
         } catch (error) {
             console.error('Failed to fetch tickets', error)
         } finally {
@@ -38,9 +38,9 @@ const AdminTickets = () => {
         )},
         { label: 'Status', key: 'status', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider
-                ${row.status === 'open' ? 'bg-amber-100 text-amber-700' : 
-                  row.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 
-                  'bg-emerald-100 text-emerald-700'}`}>
+                ${row.status === 'open' ? 'bg-white text-white' : 
+                  row.status === 'in_progress' ? 'bg-primary text-primary' : 
+                  'bg-primary/10 text-primary-dark'}`}>
                 {row.status.replace('_', ' ')}
             </span>
         )},

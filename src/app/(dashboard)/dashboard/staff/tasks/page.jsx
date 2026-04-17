@@ -20,13 +20,13 @@ const StaffDashboard = () => {
         )},
         { label: 'Deadline', key: 'deadline', render: (row) => (
             <div className="flex items-center gap-1.5 text-slate-500">
-                <RiTimeLine className="text-amber-500" />
+                <RiTimeLine className="text-white" />
                 <span className="text-sm font-medium">{new Date(row.deadline).toLocaleDateString()}</span>
             </div>
         )},
         { label: 'Status', key: 'status', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider
-                ${row.status.includes('Priority') || row.status === 'Urgent' ? 'bg-rose-100 text-rose-700' : 'bg-blue-100 text-blue-700'}`}>
+                ${row.status.includes('Priority') || row.status === 'Urgent' ? 'bg-primary text-primary' : 'bg-primary text-primary'}`}>
                 {row.status}
             </span>
         )},
@@ -34,7 +34,7 @@ const StaffDashboard = () => {
 
     const actions = (row) => (
         <div className="flex gap-2">
-            <button className="p-2 hover:bg-emerald-50 rounded-lg text-emerald-600 transition-all font-bold text-xs flex items-center gap-1">
+            <button className="p-2 hover:bg-primary/5 rounded-lg text-primary transition-all font-bold text-xs flex items-center gap-1">
                 <RiCheckboxCircleFill size={18} /> Done
             </button>
             <button className="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-all">

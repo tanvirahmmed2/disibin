@@ -13,7 +13,7 @@ const SubscriptionPage = () => {
             try {
                 const res = await axios.get('/api/subscription')
                 if (res.data.success) {
-                    setSubscriptions(res.data.payload)
+                    setSubscriptions(res.data.data)
                 }
             } catch (error) {
                 console.error("Error fetching subscriptions", error)
@@ -76,7 +76,7 @@ const SubscriptionPage = () => {
                                 <h2 className="text-5xl font-black tracking-tighter">{activeSub.membershipId?.title || 'Custom Plan'}</h2>
                                 <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">ID: {activeSub._id}</span>
                             </div>
-                            <div className={`px-4 py-2 rounded-2xl backdrop-blur-md font-black text-[10px] tracking-widest uppercase ${activeSub.status === 'confirmed' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`}>
+                            <div className={`px-4 py-2 rounded-2xl backdrop-blur-md font-black text-[10px] tracking-widest uppercase ${activeSub.status === 'confirmed' ? 'bg-primary/10 text-primary/40' : 'bg-white/20 text-white'}`}>
                                 {activeSub.status || 'PENDING'}
                             </div>
                         </div>
@@ -84,7 +84,7 @@ const SubscriptionPage = () => {
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                             <div>
                                 <p className="text-white/40 font-black uppercase tracking-widest text-[9px] mb-1">Payment</p>
-                                <p className={`font-black uppercase text-xs tracking-wider ${activeSub.payStatus === 'completed' ? 'text-emerald-400' : 'text-amber-400'}`}>
+                                <p className={`font-black uppercase text-xs tracking-wider ${activeSub.payStatus === 'completed' ? 'text-primary/40' : 'text-white'}`}>
                                     {activeSub.payStatus}
                                 </p>
                             </div>

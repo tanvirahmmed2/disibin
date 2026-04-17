@@ -73,7 +73,7 @@ export async function POST(req) {
             imageId: cloudImage.public_id
         });
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'create',
@@ -142,7 +142,7 @@ export async function PATCH(req) {
 
         const updatedPkg = await Package.findByIdAndUpdate(id, updateData, { new: true });
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'update',
@@ -179,7 +179,7 @@ export async function DELETE(req) {
 
         await Package.findByIdAndDelete(id);
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'delete',

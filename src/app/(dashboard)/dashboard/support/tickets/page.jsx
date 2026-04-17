@@ -14,7 +14,7 @@ const SupportTickets = () => {
         setLoading(true)
         try {
             const res = await axios.get('/api/ticket')
-            setData(res.data.payload)
+            setData(res.data.data)
         } catch (error) {
             console.error('Failed to fetch data', error)
         } finally {
@@ -56,8 +56,8 @@ const SupportTickets = () => {
         )},
         { label: 'Status', key: 'status', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider
-                ${row.status === 'open' ? 'bg-amber-100 text-amber-700' : 
-                  row.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 
+                ${row.status === 'open' ? 'bg-white text-white' : 
+                  row.status === 'in_progress' ? 'bg-primary text-primary' : 
                   'bg-primary/10 text-primary'}`}>
                 {row.status}
             </span>
@@ -72,7 +72,7 @@ const SupportTickets = () => {
             >
                 <RiMessage2Line size={18} /> Chat
             </button>
-            <button className="p-2 hover:bg-blue-50 rounded-lg text-blue-600 transition-all" title="Forward to PM">
+            <button className="p-2 hover:bg-primary rounded-lg text-primary transition-all" title="Forward to PM">
                 <RiShareForwardLine size={18} />
             </button>
             {row.status !== 'closed' && (

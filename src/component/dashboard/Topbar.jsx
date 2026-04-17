@@ -28,7 +28,7 @@ const Topbar = ({ collapsed, setCollapsed }) => {
             <div className="flex items-center gap-4">
                 <button className="p-3 text-slate-500 hover:bg-primary/5 hover:text-primary rounded-2xl relative transition-all">
                     <RiNotification3Line size={22} />
-                    <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full"></span>
+                    <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-primary border-2 border-white rounded-full"></span>
                 </button>
 
                 <div className="w-px h-8 bg-slate-100 mx-1"></div>

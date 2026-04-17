@@ -15,7 +15,7 @@ export async function PATCH(req, { params }) {
         const updatedOffer = await Offer.findByIdAndUpdate(id, body, { new: true });
         if (!updatedOffer) return NextResponse.json({ success: false, message: "Offer not found" }, { status: 404 });
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'update',
@@ -41,7 +41,7 @@ export async function DELETE(req, { params }) {
         const deletedOffer = await Offer.findByIdAndDelete(id);
         if (!deletedOffer) return NextResponse.json({ success: false, message: "Offer not found" }, { status: 404 });
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'delete',

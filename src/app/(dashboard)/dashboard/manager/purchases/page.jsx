@@ -11,7 +11,7 @@ const ManagerPurchases = () => {
     const fetchData = async () => {
         try {
             const res = await axios.get('/api/purchase')
-            setData(res.data.payload)
+            setData(res.data.data)
         } catch (error) {
             console.error('Failed to fetch purchases', error)
         } finally {
@@ -38,12 +38,12 @@ const ManagerPurchases = () => {
         )},
         { label: 'Amount', key: 'price', render: (row) => (
             <div className="flex items-center gap-1 font-black text-slate-700">
-                <RiMoneyDollarCircleLine className="text-emerald-500" />
+                <RiMoneyDollarCircleLine className="text-primary/50" />
                 ${row.price}
             </div>
         )},
         { label: 'Status', key: 'status', render: (row) => (
-            <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-700`}>
+            <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary-dark`}>
                 Completed
             </span>
         )},

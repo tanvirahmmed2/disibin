@@ -16,7 +16,7 @@ const OfferDetails = ({ params }) => {
             try {
                 const res = await axios.get(`/api/offers?slug=${slug}`)
                 if (res.data.success) {
-                    setOffer(res.data.payload)
+                    setOffer(res.data.data)
                 }
             } catch (error) {
                 console.error("Failed to fetch offer", error)
@@ -49,7 +49,7 @@ const OfferDetails = ({ params }) => {
             <div className="container-custom">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
                     
-                    {/* Left: Content */}
+                    {}
                     <div className="space-y-12">
                         <Link href="/offers" className="inline-flex items-center gap-2 text-slate-400 font-bold hover:text-primary transition-colors text-sm uppercase tracking-widest">
                             <RiArrowLeftLine /> Back to all offers
@@ -77,7 +77,7 @@ const OfferDetails = ({ params }) => {
                         </div>
                     </div>
 
-                    {/* Right: Pricing Card */}
+                    {}
                     <div className="sticky top-32">
                         <div className="p-12 bg-white rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200/50 space-y-10 relative overflow-hidden">
                             <div className="absolute top-0 right-0 p-12 text-primary/5 pointer-events-none">
@@ -100,7 +100,7 @@ const OfferDetails = ({ params }) => {
                                         </div>
                                     </div>
                                     
-                                    <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl w-fit">
+                                    <div className="flex items-center gap-2 px-4 py-2 bg-primary text-primary rounded-xl w-fit">
                                         <span className="text-[10px] font-black uppercase tracking-widest">Saving BDT {offer.discount} Today</span>
                                     </div>
                                 </div>

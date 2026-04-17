@@ -69,7 +69,7 @@ export async function POST(req) {
             }]
         });
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'create',
@@ -122,7 +122,7 @@ export async function PATCH(req) {
 
         await ticket.save();
 
-        // Activity Logging
+        
         await createLog({
             userId: auth.data._id,
             action: 'update',

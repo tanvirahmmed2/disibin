@@ -14,7 +14,7 @@ const GuestMessages = () => {
         setLoading(true)
         try {
             const res = await axios.get('/api/support')
-            setData(res.data.payload)
+            setData(res.data.data)
         } catch (error) {
             console.error('Failed to fetch data', error)
         } finally {
@@ -47,7 +47,7 @@ const GuestMessages = () => {
         )},
         { label: 'Status', key: 'status', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider
-                ${row.status === 'open' ? 'bg-amber-100 text-amber-700' : 'bg-primary/10 text-primary'}`}>
+                ${row.status === 'open' ? 'bg-white text-white' : 'bg-primary/10 text-primary'}`}>
                 {row.status}
             </span>
         )},

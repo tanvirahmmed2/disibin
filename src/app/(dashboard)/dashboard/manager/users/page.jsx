@@ -11,7 +11,7 @@ const ManagerUsers = () => {
     const fetchUsers = async () => {
         try {
             const res = await axios.get('/api/user')
-            setUsers(res.data.payload)
+            setUsers(res.data.data)
         } catch (error) {
             console.error('Failed to fetch users', error)
         } finally {
@@ -57,7 +57,7 @@ const ManagerUsers = () => {
         )},
         { label: 'Status', key: 'isActive', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider
-                ${row.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+                ${row.isActive ? 'bg-primary/10 text-primary-dark' : 'bg-primary text-primary'}`}>
                 {row.isActive ? 'Active' : 'Inactive'}
             </span>
         )},
@@ -67,7 +67,7 @@ const ManagerUsers = () => {
         <div className="flex gap-2">
             <button 
                 onClick={() => toggleStatus(row._id, row.isActive)}
-                className={`p-2 rounded-lg transition-all ${row.isActive ? 'hover:bg-amber-50 text-amber-500' : 'hover:bg-emerald-50 text-emerald-600'}`}
+                className={`p-2 rounded-lg transition-all ${row.isActive ? 'hover:bg-white text-white' : 'hover:bg-primary/5 text-primary'}`}
                 title={row.isActive ? 'Suspend Access' : 'Restore Access'}
             >
                 <RiToggleLine size={18} />
@@ -75,7 +75,7 @@ const ManagerUsers = () => {
             <button 
                 disabled={row.role === 'admin'}
                 onClick={() => handleDelete(row._id)}
-                className="p-2 hover:bg-rose-50 rounded-lg text-rose-500 transition-all disabled:opacity-20"
+                className="p-2 hover:bg-primary rounded-lg text-primary transition-all disabled:opacity-20"
                 title="Delete User"
             >
                 <RiDeleteBinLine size={18} />

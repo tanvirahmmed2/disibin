@@ -21,7 +21,7 @@ const Sidebar = () => {
 
     return (
         <>
-            {}
+            
             {sidebar && (
                 <div 
                     className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"
@@ -29,14 +29,14 @@ const Sidebar = () => {
                 ></div>
             )}
 
-            {}
+            
             <div className={`fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-white border-r border-slate-100 z-40 flex flex-col p-6 shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] lg:hidden ${sidebar ? 'translate-x-0' : '-translate-x-full'}`}>
                 <div className="flex flex-col gap-2 flex-1 overflow-y-auto">
                     {navLinks.map((link) => (
                         <Link 
                             key={link.href}
                             href={link.href} 
-                            className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-50 hover:text-emerald-600 hover:pl-6 transition-all duration-300 w-full' 
+                            className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-primary/5 hover:text-primary hover:pl-6 transition-all duration-300 w-full' 
                             onClick={closeSidebar}
                         >
                             {link.name}
@@ -47,15 +47,15 @@ const Sidebar = () => {
 
                     {isLoggedin ? (
                         <div className='flex flex-col gap-2'>
-                            <Link href='/dashboard' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-50 hover:text-emerald-600 hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Dashboard</Link>
-                            <Link href='/profile' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-50 hover:text-emerald-600 hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Profile</Link>
-                            <Link href='/wishlist' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-50 hover:text-emerald-600 hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Wishlist</Link>
+                            <Link href='/dashboard' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-primary/5 hover:text-primary hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Dashboard</Link>
+                            <Link href='/profile' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-primary/5 hover:text-primary hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Profile</Link>
+                            <Link href='/wishlist' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-primary/5 hover:text-primary hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Wishlist</Link>
                             <button className='px-4 py-3 rounded-xl text-red-500 font-medium hover:bg-red-50 text-left hover:pl-6 transition-all duration-300 w-full' onClick={() => { closeSidebar(); handleLogout() }}>Logout</button>
                         </div>
                     ) : (
                         <div className='flex flex-col gap-3 mt-auto pt-4'>
-                            <Link href='/login' className='w-full py-3 rounded-xl bg-emerald-50 text-emerald-600 text-center font-bold hover:bg-emerald-100 transition-colors' onClick={closeSidebar}>Login</Link>
-                            <Link href='/register' className='w-full py-3 rounded-xl bg-emerald-600 text-white text-center font-bold hover:bg-emerald-700 shadow-lg shadow-emerald-500/30 transition-all' onClick={closeSidebar}>Register</Link>
+                            <Link href='/login' className='w-full py-3 rounded-xl bg-primary/5 text-primary text-center font-bold hover:bg-primary/10 transition-colors' onClick={closeSidebar}>Login</Link>
+                            <Link href='/register' className='w-full py-3 rounded-xl bg-primary text-white text-center font-bold hover:bg-primary-dark shadow-lg shadow-primary/10 transition-all' onClick={closeSidebar}>Register</Link>
                         </div>
                     )}
                 </div>

@@ -21,7 +21,7 @@ const Memberships = () => {
       try {
         const res = await axios.get('/api/membership')
         if (res.data.success) {
-           setMemberships(res.data.payload)
+           setMemberships(res.data.data)
         }
       } catch (error) {
         
@@ -50,10 +50,10 @@ const Memberships = () => {
           }
           const res = await axios.post('/api/purchase', purchaseData, { withCredentials: true })
           if (res.data.success) {
-              // Now process payment
+              
               await axios.post('/api/payment', {
                   userId: userData._id,
-                  purchaseId: res.data.payload._id,
+                  purchaseId: res.data.data._id,
                   amount: purchaseData.totalAmount,
                   paymentMethod: purchaseForm.payMethod,
                   transactionId: purchaseForm.transactionId
@@ -138,7 +138,7 @@ const Memberships = () => {
                         type: 'membership',
                         title: plan.title,
                         price: plan.price,
-                        slug: plan.title.toLowerCase().replace(/ /g, '-'), // membership might not have slug
+                        slug: plan.title.toLowerCase().replace(/ /g, '-'), 
                         image: null
                       })}
                       className="w-full py-4 rounded-2xl text-center font-black text-[10px] tracking-widest uppercase transition-all bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -214,7 +214,7 @@ const Memberships = () => {
                           </div>
                       </div>
 
-                      <div className="flex gap-4 p-5 bg-amber-50 rounded-2xl text-amber-800 border border-amber-100">
+                      <div className="flex gap-4 p-5 bg-white rounded-2xl text-white border border-white">
                           <RiInformationLine size={20} className="mt-0.5 shrink-0" />
                           <p className="text-[10px] font-bold leading-relaxed uppercase tracking-wide">
                             Manual verification required. Please complete the payment and provide your TXID above.

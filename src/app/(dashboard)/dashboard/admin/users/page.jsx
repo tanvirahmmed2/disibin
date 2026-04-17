@@ -12,7 +12,7 @@ const UserManager = () => {
     const fetchUsers = async () => {
         try {
             const res = await axios.get('/api/user')
-            setUsers(res.data.payload)
+            setUsers(res.data.data)
         } catch (error) {
             console.error('Failed to fetch users', error)
         } finally {
@@ -52,15 +52,15 @@ const UserManager = () => {
         )},
         { label: 'Role', key: 'role', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider
-                ${row.role === 'admin' ? 'bg-purple-100 text-purple-700' : 
-                  row.role === 'manager' ? 'bg-blue-100 text-blue-700' : 
+                ${row.role === 'admin' ? 'bg-primary text-primary' : 
+                  row.role === 'manager' ? 'bg-primary text-primary' : 
                   'bg-slate-100 text-slate-500'}`}>
                 {row.role}
             </span>
         )},
         { label: 'Status', key: 'isActive', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider
-                ${row.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+                ${row.isActive ? 'bg-primary/10 text-primary-dark' : 'bg-primary text-primary'}`}>
                 {row.isActive ? 'Active' : 'Inactive'}
             </span>
         )},
@@ -70,14 +70,14 @@ const UserManager = () => {
         <div className="flex gap-2">
             <button 
                 onClick={() => setPromotingUser(row)}
-                className="p-2 hover:bg-emerald-50 rounded-lg text-emerald-600 transition-all font-bold text-xs flex items-center gap-1"
+                className="p-2 hover:bg-primary/5 rounded-lg text-primary transition-all font-bold text-xs flex items-center gap-1"
                 title="Change Role"
             >
                 <RiUserSharedLine size={18} /> Role
             </button>
             <button 
                 onClick={() => toggleStatus(row._id, row.isActive)}
-                className={`p-2 rounded-lg transition-all ${row.isActive ? 'hover:bg-rose-50 text-rose-500' : 'hover:bg-emerald-50 text-emerald-600'}`}
+                className={`p-2 rounded-lg transition-all ${row.isActive ? 'hover:bg-primary text-primary' : 'hover:bg-primary/5 text-primary'}`}
                 title={row.isActive ? 'Deactivate' : 'Activate'}
             >
                 <RiToggleLine size={18} />
@@ -98,7 +98,7 @@ const UserManager = () => {
                 <DataTable columns={columns} data={users} loading={loading} actions={actions} />
             </div>
 
-            {}
+            
             {promotingUser && (
                 <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl p-8">
@@ -111,7 +111,7 @@ const UserManager = () => {
                                     key={role}
                                     onClick={() => handlePromote(promotingUser._id, role)}
                                     className={`w-full py-3 rounded-xl text-sm font-bold capitalize transition-all
-                                    ${promotingUser.role === role ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
+                                    ${promotingUser.role === role ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
                                 >
                                     {role.replace('_', ' ')}
                                 </button>

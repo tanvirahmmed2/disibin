@@ -13,7 +13,7 @@ const EditorOffers = () => {
         try {
             const res = await axios.get('/api/offers', { withCredentials: true })
             if (res.data.success) {
-                setOffers(res.data.payload)
+                setOffers(res.data.data)
             }
         } catch (error) {
             console.error('Failed to fetch offers', error)
@@ -44,7 +44,7 @@ const EditorOffers = () => {
             </div>
         )},
         { label: 'Status', key: 'status', render: (row) => (
-            <span className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest ${row.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400'}`}>
+            <span className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest ${row.status === 'active' ? 'bg-primary/5 text-primary' : 'bg-slate-50 text-slate-400'}`}>
                 {row.status}
             </span>
         )},
@@ -61,7 +61,7 @@ const EditorOffers = () => {
             <Link href={`/dashboard/editor/offers/${row._id}`} className="p-2 hover:bg-primary/5 rounded-lg text-primary transition-all">
                 <RiEdit2Line size={18} />
             </Link>
-            <button onClick={() => handleDelete(row._id)} className="p-2 hover:bg-rose-50 rounded-lg text-rose-500 transition-all">
+            <button onClick={() => handleDelete(row._id)} className="p-2 hover:bg-primary rounded-lg text-primary transition-all">
                 <RiDeleteBin6Line size={18} />
             </button>
         </div>

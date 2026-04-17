@@ -48,7 +48,7 @@ const Sidebar = ({ collapsed }) => {
         { label: 'Reviews', href: '/dashboard/reviews', icon: RiPriceTag3Line },
     ]
 
-    // Internal Chat (Management Only)
+    
     if (role !== 'client') {
         commonMenu.push({ label: 'Internal Chat', href: '/dashboard/message', icon: RiMailSendLine })
     }
@@ -129,9 +129,9 @@ const Sidebar = ({ collapsed }) => {
                 />
                 <button 
                   onClick={() => handleLogout()}
-                  className={`flex items-center gap-3 px-3 py-3 rounded-xl text-rose-500 hover:bg-rose-50 transition-all duration-300 group
+                  className={`flex items-center gap-3 px-3 py-3 rounded-xl text-primary hover:bg-primary transition-all duration-300 group
                     ${collapsed ? 'justify-center' : ''}`}>
-                    <RiLogoutBoxRLine className="text-xl text-rose-400 group-hover:text-rose-500 transition-colors" />
+                    <RiLogoutBoxRLine className="text-xl text-primary group-hover:text-primary transition-colors" />
                     {!collapsed && <span className="font-bold">Logout</span>}
                 </button>
             </div>

@@ -12,7 +12,7 @@ const EditorBlogs = () => {
     const fetchBlogs = async () => {
         try {
             const res = await axios.get('/api/blog', { withCredentials: true })
-            setBlogs(res.data.payload)
+            setBlogs(res.data.data)
         } catch (error) {
             console.error('Failed to fetch blogs', error)
         } finally {
@@ -60,7 +60,7 @@ const EditorBlogs = () => {
             <Link href={`/dashboard/editor/blogs/${row._id}`} className="p-2 hover:bg-primary/5 rounded-lg text-primary transition-all">
                 <RiEdit2Line size={18} />
             </Link>
-            <button onClick={() => handleDelete(row._id)} className="p-2 hover:bg-rose-50 rounded-lg text-rose-500 transition-all">
+            <button onClick={() => handleDelete(row._id)} className="p-2 hover:bg-primary rounded-lg text-primary transition-all">
                 <RiDeleteBin6Line size={18} />
             </button>
         </div>

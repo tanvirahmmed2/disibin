@@ -12,7 +12,7 @@ const PMTickets = () => {
         try {
             
             const res = await axios.get('/api/ticket?category=project')
-            setTickets(res.data.payload)
+            setTickets(res.data.data)
         } catch (error) {
             console.error('Failed to fetch tickets', error)
         } finally {
@@ -41,7 +41,7 @@ const PMTickets = () => {
             </div>
         )},
         { label: 'Project', key: 'projectId', render: (row) => (
-            <span className="font-medium text-blue-600">{row.projectId?.title || 'General Project'}</span>
+            <span className="font-medium text-primary">{row.projectId?.title || 'General Project'}</span>
         )},
         { label: 'Subject', key: 'subject', render: (row) => (
             <p className="font-medium text-slate-600 truncate max-w-[200px]">{row.subject}</p>
@@ -54,8 +54,8 @@ const PMTickets = () => {
         )},
         { label: 'Status', key: 'status', render: (row) => (
             <span className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest
-                ${row.status === 'open' ? 'bg-amber-50 text-amber-600' : 
-                  row.status === 'in_progress' ? 'bg-blue-50 text-blue-600' : 
+                ${row.status === 'open' ? 'bg-white text-white' : 
+                  row.status === 'in_progress' ? 'bg-primary text-primary' : 
                   'bg-primary/5 text-primary'}`}>
                 {row.status}
             </span>
@@ -68,7 +68,7 @@ const PMTickets = () => {
                 <RiMessage2Line size={18} /> <span className="uppercase tracking-widest text-[9px]">Chat</span>
             </button>
             {row.status === 'open' && (
-                <button onClick={() => updateStatus(row._id, 'in_progress')} className="p-2 hover:bg-blue-50 rounded-lg text-blue-600 transition-all" title="Start Working">
+                <button onClick={() => updateStatus(row._id, 'in_progress')} className="p-2 hover:bg-primary rounded-lg text-primary transition-all" title="Start Working">
                     <RiFlag2Line size={18} />
                 </button>
             )}

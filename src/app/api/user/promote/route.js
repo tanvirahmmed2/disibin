@@ -1,3 +1,6 @@
+import { NextResponse } from "next/server";
+import connectDB from "@/lib/database/db";
+import User from "@/lib/models/user";
 import { isAdmin } from "@/lib/middleware";
 
 export async function PATCH(req) {
@@ -43,13 +46,8 @@ export async function PATCH(req) {
             data: targetUser
         }, { status: 200 });
 
-        return NextResponse.json({
-            success: true,
-            message: `User role updated to ${role} successfully`,
-            data: user
-        }, { status: 200 });
-
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
+
