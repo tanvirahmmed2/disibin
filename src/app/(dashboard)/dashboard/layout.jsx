@@ -3,7 +3,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import { Context } from '@/component/helper/Context'
 import Sidebar from '@/component/dashboard/Sidebar'
 import Topbar from '@/component/dashboard/Topbar'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 const DashboardLayout = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false)
@@ -12,15 +12,30 @@ const DashboardLayout = ({ children }) => {
 
     
     
+    const pathname = usePathname()
+
     useEffect(() => {
+        if (!isLoggedin && !userData?._id) return
+
         
-        const timeout = setTimeout(() => {
-            if (!isLoggedin && !userData?.role) {
+        const managementRoutes = ['/dashboard/admin', '/dashboard/manager', '/dashboard/support', '/dashboard/project-manager', '/dashboard/editor', '/dashboard/staff'];
+        const isManagementRoute = managementRoutes.some(route => pathname.startsWith(route));
+
+        if (userData?.role === 'client' && isManagementRoute) {
+            router.replace('/dashboard')
+        }
+
+        
+        if (userData?.role && isManagementRoute) {
+            const currentRoutePrefix = `/dashboard/${userData.role.replace('_', '-')}`;
+            if (userData.role !== 'admin' && !pathname.startsWith(currentRoutePrefix) && !pathname.startsWith('/dashboard/support') && !pathname.startsWith('/dashboard/mail')) {
                 
+                if (isManagementRoute) {
+                    router.replace('/dashboard')
+                }
             }
-        }, 2000)
-        return () => clearTimeout(timeout)
-    }, [isLoggedin, userData, router])
+        }
+    }, [isLoggedin, userData, pathname, router])
 
     return (
         <div className="flex min-h-screen bg-[#FDFDFF]">

@@ -3,6 +3,7 @@ import connectDB from "@/lib/database/db";
 import { Membership } from "@/lib/models/membership";
 import cloudinary from "@/lib/database/cloudinary";
 import { isEditor } from "@/lib/middleware";
+import { createLog } from "@/lib/utils/logger";
 
 const generateSlug = (title) => {
     return title
@@ -69,6 +70,16 @@ export async function POST(req) {
             features: features ? JSON.parse(features) : [],
             image: cloudImage.secure_url,
             imageId: cloudImage.public_id
+        });
+
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'create',
+            targetType: 'membership',
+            targetId: membership._id,
+            description: `Created new membership plan: ${membership.title}`,
+            metadata: { price: membership.price, duration: membership.duration }
         });
 
         return NextResponse.json({

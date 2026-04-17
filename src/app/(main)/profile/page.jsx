@@ -37,7 +37,7 @@ const UserProfile = () => {
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="w-12 h-12 border-4 border-slate-100 border-t-emerald-600 rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-slate-50 border-t-primary rounded-full animate-spin"></div>
     </div>
   );
 
@@ -47,76 +47,50 @@ const UserProfile = () => {
         <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-400">
            <RiUserLine size={40} />
         </div>
-        <h2 className="text-2xl font-bold text-slate-800 mb-2">Not logged in</h2>
-        <p className="text-slate-500 mb-8">Please login to view and manage your profile.</p>
-        <Link href="/login" className="btn-primary inline-block">Go to Login</Link>
+        <h2 className="text-2xl font-black text-slate-800 mb-2">Authentication Required</h2>
+        <p className="text-slate-500 mb-8 font-medium">Please login to view and manage your professional profile.</p>
+        <Link href="/login" className="btn-primary inline-block">Secure Login</Link>
       </div>
     </div>
   );
 
   return (
-    <div className="w-full min-h-screen bg-slate-50/50 py-16 px-6">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="w-full min-h-screen bg-white py-20 px-6">
+      <div className="max-w-4xl mx-auto space-y-10">
         
-        <div className="card-premium p-12 flex flex-col md:flex-row items-center gap-10">
-          <div className="w-32 h-32 rounded-[2.5rem] bg-emerald-600 flex items-center justify-center text-white text-4xl font-black shadow-xl shadow-emerald-500/20 shrink-0">
+        <div className="card-premium p-12 flex flex-col md:flex-row items-center gap-10 border-none bg-slate-50/50">
+          <div className="w-40 h-40 rounded-[3rem] bg-primary flex items-center justify-center text-white text-5xl font-black shadow-2xl shadow-primary/20 shrink-0 select-none">
             {userData.name?.charAt(0)}
           </div>
           
-          <div className="flex-1 text-center md:text-left">
-            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
-              <h1 className="text-4xl font-black text-slate-900 tracking-tight">{userData.name}</h1>
-              <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest rounded-full w-fit mx-auto md:mx-0">
-                {userData.role}
-              </span>
+          <div className="flex-1 text-center md:text-left space-y-6">
+            <div>
+              <div className="flex flex-col md:flex-row md:items-center gap-4 mb-3">
+                <h1 className="text-5xl font-black text-slate-900 tracking-tighter">{userData.name}</h1>
+                <span className="px-4 py-1.5 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full w-fit mx-auto md:mx-0">
+                  {userData.role?.replace('_', ' ')}
+                </span>
+              </div>
+              <p className="text-slate-400 font-bold uppercase text-[11px] tracking-[0.2em]">Verified Member Profile</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-8 text-slate-500 text-sm font-bold">
-              <span className="flex items-center justify-center md:justify-start gap-3">
-                <FaEnvelope className="text-slate-300" /> {userData.email}
-              </span>
-              <span className="flex items-center justify-center md:justify-start gap-3">
-                <FaPhone className="text-slate-300" /> {userData.phone || 'N/A'}
-              </span>
-              <span className="flex items-center justify-center md:justify-start gap-3">
-                <FaMapMarkerAlt className="text-slate-300" /> {userData.city ? `${userData.city}, ${userData.country}` : 'Global'}
-              </span>
-              <span className="flex items-center justify-center md:justify-start gap-3">
-                <FaCalendarAlt className="text-slate-300" /> Member since {new Date(userData.created_at).getFullYear()}
+            <div className="flex flex-col gap-3 text-slate-600 font-bold">
+               <span className="flex items-center justify-center md:justify-start gap-4">
+                <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center shadow-sm text-primary"><FaEnvelope size={14} /></div> {userData.email}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="card-premium p-10 bg-white">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="text-center md:text-left space-y-1">
-              <h3 className="text-xl font-black text-slate-800">Operational Dashboard</h3>
-              <p className="text-slate-500 font-medium">Manage your subscription, tickets and security.</p>
-            </div>
-             <Link 
-              href={'/dashboard'}
-              className="px-8 py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-black transition-all flex items-center gap-3 active:scale-95 whitespace-nowrap"
+        <div className="flex justify-center md:justify-start">
+            <Link 
+                href={'/dashboard'}
+                className="px-12 py-5 bg-slate-900 text-white font-black uppercase tracking-widest text-[11px] rounded-[2rem] hover:bg-primary transition-all flex items-center gap-3 active:scale-95 shadow-xl shadow-slate-900/10"
             >
-              <RiSettings3Line size={20} /> Open Dashboard
+                Enter Dashboard <span className="text-xl">→</span>
             </Link>
-          </div>
         </div>
 
-        <div className="card-premium p-10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="text-center md:text-left space-y-1">
-              <h3 className="text-xl font-black text-slate-800">Account Security</h3>
-              <p className="text-slate-500 font-medium">Terminate your current session safely.</p>
-            </div>
-            <button 
-              onClick={handleLogout}
-              className="px-8 py-4 bg-rose-50 text-rose-600 font-bold rounded-2xl hover:bg-rose-600 hover:text-white transition-all flex items-center gap-2 active:scale-95"
-            >
-              <RiLogoutBoxRLine size={20} /> Logout
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );

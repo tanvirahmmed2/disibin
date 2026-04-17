@@ -56,14 +56,14 @@ const ClientReviews = () => {
     )
 
     return (
-        <div className="space-y-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-10">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex flex-col gap-1">
-                    <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Your Reviews</h1>
-                    <p className="text-slate-500">Manage your reviews and feedback for the services you used.</p>
+                    <h1 className="text-3xl font-black text-slate-800 tracking-tight">System Feedback</h1>
+                    <p className="text-slate-500 font-medium">Manage your reviews and personal feedback for services used.</p>
                 </div>
-                <button className="bg-slate-900 text-white px-8 py-3 rounded-2xl font-bold hover:bg-slate-800 transition-all">
-                    Write a Review
+                <button className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-slate-900/10 hover:bg-primary transition-all active:scale-95">
+                    Compose Review
                 </button>
             </div>
 

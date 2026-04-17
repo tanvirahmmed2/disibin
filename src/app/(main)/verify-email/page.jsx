@@ -4,7 +4,8 @@ import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import Link from 'next/link';
-import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
+import { BiLoaderAlt } from 'react-icons/bi';
 import { motion } from 'framer-motion';
 
 function VerifyEmailContent() {
@@ -53,7 +54,7 @@ function VerifyEmailContent() {
                     <div className="flex flex-col items-center gap-6">
                         <div className="relative">
                             <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl animate-pulse"></div>
-                            <Loader2 className="w-16 h-16 text-primary animate-spin relative z-10" />
+                            <BiLoaderAlt className="w-16 h-16 text-primary animate-spin relative z-10" />
                         </div>
                         <h1 className="text-2xl font-black text-slate-900 tracking-tight">{message}</h1>
                         <p className="text-slate-500 font-medium whitespace-pre-wrap">Please wait while we secure your account.</p>
@@ -64,7 +65,7 @@ function VerifyEmailContent() {
                     <div className="flex flex-col items-center gap-6">
                         <div className="relative">
                             <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-2xl font-black"></div>
-                            <CheckCircle className="w-16 h-16 text-emerald-500 relative z-10" />
+                            <HiCheckCircle className="w-16 h-16 text-emerald-500 relative z-10" />
                         </div>
                         <h1 className="text-3xl font-black text-slate-900 tracking-tight">Success!</h1>
                         <p className="text-slate-500 font-medium">{message}</p>
@@ -78,7 +79,7 @@ function VerifyEmailContent() {
                     <div className="flex flex-col items-center gap-6">
                         <div className="relative">
                             <div className="absolute inset-0 bg-red-500/20 rounded-full blur-2xl"></div>
-                            <XCircle className="w-16 h-16 text-red-500 relative z-10" />
+                            <HiXCircle className="w-16 h-16 text-red-500 relative z-10" />
                         </div>
                         <h1 className="text-3xl font-black text-slate-900 tracking-tight">Oops!</h1>
                         <p className="text-slate-500 font-medium">{message}</p>
@@ -101,7 +102,7 @@ export default function VerifyEmailPage() {
     return (
         <Suspense fallback={
             <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <Loader2 className="w-10 h-10 text-primary animate-spin" />
+                <BiLoaderAlt className="w-10 h-10 text-primary animate-spin" />
             </div>
         }>
             <VerifyEmailContent />

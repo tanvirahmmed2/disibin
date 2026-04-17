@@ -1,10 +1,12 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import { useRouter } from 'next/navigation'
 import DataTable from '@/component/dashboard/DataTable'
 import { RiMessage2Line, RiShareForwardLine, RiCheckboxCircleLine } from 'react-icons/ri'
 
 const SupportDashboard = () => {
+    const router = useRouter()
     const [view, setView] = useState('tickets') 
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
@@ -86,7 +88,7 @@ const SupportDashboard = () => {
             <button 
                 onClick={() => {
                     const baseUrl = view === 'tickets' ? '/dashboard/tickets' : '/dashboard/support/messages'
-                    window.location.href = `${baseUrl}/${row._id}`
+                    router.push(`${baseUrl}/${row._id}`)
                 }}
                 className="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-all font-bold text-xs flex items-center gap-1"
             >

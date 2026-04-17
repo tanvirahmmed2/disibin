@@ -7,21 +7,31 @@ import { MdDeleteOutline } from 'react-icons/md'
 import axios from 'axios'
 
 const WishlistPage = () => {
-    const { removeFromwishlist, wishlist, clearWishlist } = useContext(Context)
+    const { removeFromwishlist, wishlist, clearWishlist, userData, isLoggedin } = useContext(Context)
     const [isPopUp, setIsPopUp] = useState(false)
     const [payment_method, setPayment_method] = useState('bkash')
 
     const subTotal = wishlist?.items?.reduce((acc, item) => acc + (Number(item.price) || 0), 0) || 0;
-    const totalDiscount = wishlist?.items?.reduce((acc, item) => acc + (Number(item.discount) || 0), 0) || 0;
-    const totalAmount = subTotal - totalDiscount;
+    const totalAmount = subTotal; 
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const data = { totalAmount, items: wishlist.items, payment_method }
+        if (!userData?._id) return alert("Please login first")
+        const data = { 
+            userId: userData._id,
+            totalAmount, 
+            items: wishlist.items.map(item => ({
+                itemId: item.itemId,
+                type: item.type,
+                title: item.title,
+                price: item.price
+            })), 
+            paymentMethod: payment_method 
+        }
         try {
             const res = await axios.post('/api/purchase', data, { withCredentials: true })
             if (res.data.success) {
-                alert(res.data.message)
+                alert("Order placed successfully!")
                 clearWishlist()
                 setIsPopUp(false)
             }
@@ -35,36 +45,47 @@ const WishlistPage = () => {
     }
 
     return (
-        <div className="w-full p-4 relative">
-            <h1 className="text-2xl font-black mb-8 text-slate-800">
-                My Wishlist ({wishlist?.items?.length || 0})
+        <div className="w-full p-4 relative pt-24 pb-20">
+            <h1 className="text-3xl font-black mb-12 text-slate-900 tracking-tighter">
+                My Wishlist <span className="text-primary ml-2">({wishlist?.items?.length || 0})</span>
             </h1>
 
             {wishlist?.items?.length > 0 ? (
-                <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className='lg:col-span-2 space-y-4'>
-                        {wishlist.items.map((product) => (
-                            <div key={product.packageId} className="w-full flex items-center gap-6 p-6 bg-white border border-slate-100 rounded-3xl transition-all hover:shadow-xl hover:shadow-slate-200/50">
-                                <div className="w-24 h-24 relative rounded-2xl overflow-hidden flex-shrink-0">
-                                    <Image
-                                        src={product.image || '/placeholder.jpg'}
-                                        alt={product.title}
-                                        fill
-                                        className='object-cover'
-                                    />
+                <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    <div className='lg:col-span-2 space-y-6'>
+                        {wishlist.items.map((item) => (
+                            <div key={item._id} className="w-full flex items-center gap-8 p-8 bg-white border border-slate-100 rounded-[2.5rem] transition-all hover:shadow-2xl hover:shadow-slate-200/50 group">
+                                <div className="w-24 h-24 relative rounded-[1.5rem] overflow-hidden bg-slate-50 flex-shrink-0 border border-slate-50">
+                                    {item.image ? (
+                                        <Image
+                                            src={item.image}
+                                            alt={item.title}
+                                            fill
+                                            className='object-cover'
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-slate-200 uppercase font-black text-xs">
+                                            {item.type}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="flex-1">
-                                    <Link href={`/packages/${product.slug}`} className='font-bold text-slate-800 hover:text-emerald-600 transition-colors'>{product.title}</Link>
-                                    <div className="mt-2 flex items-center gap-3">
-                                        <span className='font-black text-emerald-600'>BDT {product.price - product.discount}</span>
-                                        {product.discount > 0 && (
-                                            <span className='text-xs text-slate-400 line-through'>BDT {product.price}</span>
-                                        )}
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest border
+                                            ${item.type === 'package' ? 'bg-blue-50 text-blue-600 border-blue-100' : 
+                                              item.type === 'membership' ? 'bg-purple-50 text-purple-600 border-purple-100' : 
+                                              'bg-amber-50 text-amber-600 border-amber-100'}`}>
+                                            {item.type}
+                                        </span>
+                                    </div>
+                                    <Link href={`/${item.type}s/${item.slug}`} className='text-xl font-bold text-slate-800 hover:text-primary transition-colors block leading-tight'>{item.title}</Link>
+                                    <div className="mt-4 flex items-center gap-3">
+                                        <span className='font-black text-slate-900'>BDT {item.price}</span>
                                     </div>
                                 </div>
                                 <button 
-                                    onClick={() => removeFromwishlist(product.packageId)}
-                                    className='p-3 bg-rose-50 text-rose-500 rounded-2xl hover:bg-rose-500 hover:text-white transition-all'
+                                    onClick={() => removeFromwishlist(item._id)}
+                                    className='p-4 bg-rose-50 text-rose-500 rounded-2xl hover:bg-rose-500 hover:text-white transition-all transform active:scale-95'
                                 >
                                     <MdDeleteOutline size={20} />
                                 </button>
@@ -72,45 +93,44 @@ const WishlistPage = () => {
                         ))}
                     </div>
                     
-                    <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/40 h-fit space-y-6">
-                        <h3 className="text-xl font-bold text-slate-800">Order Summary</h3>
-                        <div className="space-y-4 border-t border-slate-50 pt-6">
-                            <div className="flex justify-between text-slate-500 font-medium">
-                                <span>Sub Total</span>
-                                <span>BDT {subTotal}</span>
+                    <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200/40 h-fit space-y-8">
+                        <h3 className="text-2xl font-black text-slate-900 tracking-tight">Order Summary</h3>
+                        <div className="space-y-6 border-t border-slate-50 pt-8">
+                            <div className="flex justify-between text-slate-500 font-bold text-sm">
+                                <span className="uppercase tracking-widest text-[10px]">Total Items</span>
+                                <span>{wishlist.items.length}</span>
                             </div>
-                            <div className="flex justify-between text-rose-500 font-medium">
-                                <span>Total Discount</span>
-                                <span>- BDT {totalDiscount}</span>
-                            </div>
-                            <div className="flex justify-between text-xl font-black text-slate-900 border-t border-slate-50 pt-4">
-                                <span>Total Payable</span>
+                            <div className="flex justify-between text-3xl font-black text-slate-900 border-t border-slate-50 pt-6">
+                                <span className="text-lg">Total</span>
                                 <span>BDT {totalAmount}</span>
                             </div>
                         </div>
 
                         <button
                             onClick={handlePopUp}
-                            className="w-full py-5 bg-emerald-600 text-white font-black rounded-2xl shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 active:scale-[0.98] transition-all mt-4"
+                            className="w-full py-6 bg-primary text-white font-black rounded-2xl shadow-xl shadow-primary/20 hover:bg-slate-900 active:scale-[0.98] transition-all mt-4 uppercase tracking-widest text-[11px]"
                         >
                             Checkout Now
                         </button>
                     </div>
                 </div>
             ) : (
-                <div className="text-center py-20 bg-white rounded-[3rem] border border-slate-100 shadow-sm flex flex-col items-center gap-6">
-                    <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">
-                         <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="text-center py-32 bg-white rounded-[3rem] border border-slate-100 shadow-sm flex flex-col items-center gap-8">
+                    <div className="w-24 h-24 bg-primary/5 text-primary rounded-full flex items-center justify-center">
+                         <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                         </svg>
                     </div>
-                    <div className="max-w-xs uppercase tracking-widest text-[10px] font-black text-slate-400">Empty Wishlist</div>
-                    <h3 className="text-2xl font-bold text-slate-800">Your wishlist feels lonely</h3>
-                    <Link href="/packages" className="px-8 py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-black transition-all">
+                    <div className="space-y-3">
+                        <div className="uppercase tracking-[0.3em] text-[10px] font-black text-slate-400">Empty Wishlist</div>
+                        <h3 className="text-3xl font-black text-slate-800 tracking-tighter">Your wishlist feels lonely</h3>
+                    </div>
+                    <Link href="/packages" className="px-10 py-5 bg-slate-900 text-white font-black uppercase tracking-widest text-[11px] rounded-2xl hover:bg-primary transition-all shadow-xl shadow-slate-900/10">
                         Explore Packages
                     </Link>
                 </div>
-            )}
+            )
+        }
 
             {isPopUp && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
@@ -125,10 +145,6 @@ const WishlistPage = () => {
                                 <div className="flex justify-between text-slate-600 font-medium">
                                     <span>Sub Total</span>
                                     <span>BDT {subTotal}</span>
-                                </div>
-                                <div className="flex justify-between text-rose-500 font-medium">
-                                    <span>Discount</span>
-                                    <span>- BDT {totalDiscount}</span>
                                 </div>
                                 <div className="flex justify-between font-black text-3xl text-slate-900 border-t border-emerald-100/50 pt-4">
                                     <span>Total</span>

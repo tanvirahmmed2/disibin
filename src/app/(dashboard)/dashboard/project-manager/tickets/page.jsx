@@ -53,10 +53,10 @@ const PMTickets = () => {
             </span>
         )},
         { label: 'Status', key: 'status', render: (row) => (
-            <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider
-                ${row.status === 'open' ? 'bg-amber-100 text-amber-700' : 
-                  row.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 
-                  'bg-emerald-100 text-emerald-700'}`}>
+            <span className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest
+                ${row.status === 'open' ? 'bg-amber-50 text-amber-600' : 
+                  row.status === 'in_progress' ? 'bg-blue-50 text-blue-600' : 
+                  'bg-primary/5 text-primary'}`}>
                 {row.status}
             </span>
         )},
@@ -64,16 +64,16 @@ const PMTickets = () => {
 
     const actions = (row) => (
         <div className="flex gap-2">
-            <button className="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-all font-bold text-xs flex items-center gap-1">
-                <RiMessage2Line size={18} /> Chat
+            <button className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-all font-bold text-xs flex items-center gap-1">
+                <RiMessage2Line size={18} /> <span className="uppercase tracking-widest text-[9px]">Chat</span>
             </button>
             {row.status === 'open' && (
                 <button onClick={() => updateStatus(row._id, 'in_progress')} className="p-2 hover:bg-blue-50 rounded-lg text-blue-600 transition-all" title="Start Working">
                     <RiFlag2Line size={18} />
                 </button>
             )}
-            {row.status !== 'closed' && (
-                <button onClick={() => updateStatus(row._id, 'resolved')} className="p-2 hover:bg-emerald-50 rounded-lg text-emerald-600 transition-all" title="Mark Resolved">
+            {row.status !== 'resolved' && row.status !== 'closed' && (
+                <button onClick={() => updateStatus(row._id, 'resolved')} className="p-2 hover:bg-primary/5 rounded-lg text-primary transition-all" title="Mark Resolved">
                     <RiCheckLine size={18} />
                 </button>
             )}
@@ -83,8 +83,8 @@ const PMTickets = () => {
     return (
         <div className="space-y-8">
             <div className="flex flex-col gap-1">
-                <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Project Tickets</h1>
-                <p className="text-slate-500">Respond to project-specific inquiries and technical issues.</p>
+                <h1 className="text-3xl font-black text-slate-900 tracking-tight">Project Interaction</h1>
+                <p className="text-slate-500 font-medium">Respond to project-specific inquiries and technical issues.</p>
             </div>
 
             <div className="bg-white p-2 rounded-[2.5rem] border border-slate-50 shadow-sm overflow-hidden">

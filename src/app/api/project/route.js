@@ -3,6 +3,7 @@ import connectDB from "@/lib/database/db";
 import { Project } from "@/lib/models/project";
 import cloudinary from "@/lib/database/cloudinary";
 import { isLogin, isManager, isProjectManager } from "@/lib/middleware";
+import { createLog } from "@/lib/utils/logger";
 
 const generateSlug = (title) => {
     return title
@@ -78,6 +79,16 @@ export async function POST(req) {
             status: 'pending'
         });
 
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'create',
+            targetType: 'project',
+            targetId: project._id,
+            description: `Created new project: ${project.title}`,
+            metadata: { category: project.category, clientId: project.clientId }
+        });
+
         return NextResponse.json({ success: true, message: 'Project created', payload: project });
 
     } catch (error) {
@@ -126,6 +137,17 @@ export async function PATCH(req) {
         }
 
         const updated = await Project.findByIdAndUpdate(id, updateData, { new: true });
+
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'update',
+            targetType: 'project',
+            targetId: updated._id,
+            description: `Updated project: ${updated.title} (Status: ${updated.status})`,
+            metadata: { updatedFields: Object.keys(updateData) }
+        });
+
         return NextResponse.json({ success: true, message: 'Project updated', payload: updated });
 
     } catch (error) {
@@ -148,6 +170,16 @@ export async function DELETE(req) {
         }
 
         await Project.findByIdAndDelete(id);
+
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'delete',
+            targetType: 'project',
+            targetId: id,
+            description: `Deleted project: ${project.title}`
+        });
+
         return NextResponse.json({ success: true, message: 'Project deleted' });
 
     } catch (error) {

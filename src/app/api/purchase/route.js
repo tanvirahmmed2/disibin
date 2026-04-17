@@ -1,170 +1,49 @@
-import { NextResponse } from 'next/server';
-import mongoose from 'mongoose';
-import connectDB from '@/lib/database/db';
-import { Purchase } from '@/lib/models/purchase';
-import { Payment } from '@/lib/models/payment';
-import { isLogin, isManager } from '@/lib/middleware';
+import { NextResponse } from "next/server";
+import connectDB from "@/lib/database/db";
+import Purchase from "@/lib/models/purchase";
+import Wishlist from "@/lib/models/wishlist";
+import { createLog } from "@/lib/utils/logger";
 
-export async function POST(req) {
-    let session;
+export async function GET(req) {
     try {
         await connectDB();
-        const auth = await isLogin();
-        if (!auth.success) {
-            return NextResponse.json({ success: false, message: 'Please login' }, { status: 401 });
-        }
+        const { searchParams } = new URL(req.url);
+        const userId = searchParams.get('userId');
 
-        const body = await req.json();
-        const { items, payment_method } = body;
+        if (!userId) return NextResponse.json({ success: false, message: "User ID required" }, { status: 400 });
 
-        if (!items || items.length === 0) {
-            return NextResponse.json({ success: false, message: 'Wishlist is empty' }, { status: 400 });
-        }
-
-        let subTotal = 0;
-        let totalDiscount = 0;
-        const purchaseItems = items.map(item => {
-            const price = Number(item.price) || 0;
-            const discount = Number(item.discount) || 0;
-            const total = price - discount;
-            subTotal += price;
-            totalDiscount += discount;
-            return {
-                packageId: item.packageId,
-                price,
-                discount,
-                total
-            };
-        });
-
-        const payableAmount = subTotal - totalDiscount;
-
-        session = await mongoose.startSession();
-        session.startTransaction();
-
-        const payment = await Payment.create([{
-            total: payableAmount,
-            subTotal,
-            discount: totalDiscount,
-            method: payment_method,
-            transactionId: "PENDING_" + Date.now(),
-            status: 'pending',
-            paidAt: new Date(),
-            purchaseId: new mongoose.Types.ObjectId()
-        }], { session });
-
-        const purchase = await Purchase.create([{
-            userId: auth.payload._id,
-            items: purchaseItems,
-            total: payableAmount,
-            subTotal,
-            discount: totalDiscount,
-            paymentId: payment[0]._id,
-            status: 'pending'
-        }], { session });
-
-        await Payment.findByIdAndUpdate(payment[0]._id, { purchaseId: purchase[0]._id }, { session });
-
-        await session.commitTransaction();
-        session.endSession();
-
-        return NextResponse.json({
-            success: true,
-            message: 'Order placed successfully!',
-            payload: purchase[0]
-        }, { status: 201 });
-
-    } catch (error) {
-        if (session) {
-            await session.abortTransaction();
-            session.endSession();
-        }
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
-    }
-}
-
-export async function GET() {
-    try {
-        await connectDB();
-        const auth = await isManager();
-        if (!auth.success) return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
-
-        const purchases = await Purchase.find()
-            .populate('userId', 'name email shadow')
-            .populate('paymentId')
-            .populate('items.packageId', 'title')
-            .sort({ createdAt: -1 });
-
+        const purchases = await Purchase.find({ userId }).sort({ createdAt: -1 });
         return NextResponse.json({ success: true, payload: purchases });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
-export async function PATCH(req) {
-    let session;
+export async function POST(req) {
     try {
         await connectDB();
-        const auth = await isManager();
-        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+        const body = await req.json();
+        const { userId, items, totalAmount, paymentMethod } = body;
 
-        const { id, status, transactionId } = await req.json();
+        const newPurchase = await Purchase.create({
+            userId, items, totalAmount, paymentMethod, status: 'pending'
+        });
 
-        session = await mongoose.startSession();
-        session.startTransaction();
+        // Activity Logging
+        await createLog({
+            userId,
+            action: 'create',
+            targetType: 'purchase',
+            targetId: newPurchase._id,
+            description: `New purchase placed: Order ID ${newPurchase._id.toString().slice(-6)}`,
+            metadata: { totalAmount, itemsCount: items.length }
+        });
 
-        const purchase = await Purchase.findById(id);
-        if (!purchase) throw new Error('Purchase not found');
+        // Optionally clear wishlist after purchase creation
+        await Wishlist.deleteMany({ userId });
 
-        purchase.status = status || 'completed';
-        await purchase.save({ session });
-
-        await Payment.findByIdAndUpdate(purchase.paymentId, {
-            status: status === 'completed' ? 'completed' : 'pending',
-            transactionId: transactionId || undefined,
-            paidAt: new Date()
-        }, { session });
-
-        await session.commitTransaction();
-        session.endSession();
-
-        return NextResponse.json({ success: true, message: 'Status updated' });
+        return NextResponse.json({ success: true, payload: newPurchase });
     } catch (error) {
-        if (session) {
-            await session.abortTransaction();
-            session.endSession();
-        }
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
-    }
-}
-
-export async function DELETE(req) {
-    let session;
-    try {
-        await connectDB();
-        const auth = await isManager();
-        if (!auth.success) return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
-
-        const { id } = await req.json();
-
-        session = await mongoose.startSession();
-        session.startTransaction();
-
-        const purchase = await Purchase.findById(id);
-        if (purchase) {
-            await Payment.findByIdAndDelete(purchase.paymentId, { session });
-            await Purchase.findByIdAndDelete(id, { session });
-        }
-
-        await session.commitTransaction();
-        session.endSession();
-
-        return NextResponse.json({ success: true, message: 'Purchase deleted' });
-    } catch (error) {
-        if (session) {
-            await session.abortTransaction();
-            session.endSession();
-        }
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }

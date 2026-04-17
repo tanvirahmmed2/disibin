@@ -3,6 +3,7 @@ import connectDB from "@/lib/database/db";
 import { Blog } from "@/lib/models/blog";
 import cloudinary from "@/lib/database/cloudinary";
 import { isManager } from "@/lib/middleware";
+import { createLog } from "@/lib/utils/logger";
 
 const generateSlug = (title) => {
     return title
@@ -64,6 +65,16 @@ export async function POST(req) {
             author: auth.payload.name
         });
 
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'create',
+            targetType: 'blog',
+            targetId: blog._id,
+            description: `Published new blog post: ${blog.title}`,
+            metadata: { category: blog.category }
+        });
+
         return NextResponse.json({
             success: true,
             message: 'Blog created successfully',
@@ -115,6 +126,16 @@ export async function PATCH(req) {
 
         const updatedBlog = await Blog.findByIdAndUpdate(id, updateData, { new: true });
 
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'update',
+            targetType: 'blog',
+            targetId: updatedBlog._id,
+            description: `Updated blog post: ${updatedBlog.title}`,
+            metadata: { updatedFields: Object.keys(updateData) }
+        });
+
         return NextResponse.json({
             success: true,
             message: 'Blog updated successfully',
@@ -141,6 +162,15 @@ export async function DELETE(req) {
         }
 
         await Blog.findByIdAndDelete(id);
+
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'delete',
+            targetType: 'blog',
+            targetId: id,
+            description: `Deleted blog post: ${blog.title}`
+        });
 
         return NextResponse.json({
             success: true,

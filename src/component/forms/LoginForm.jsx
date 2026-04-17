@@ -23,7 +23,7 @@ const LoginForm = () => {
         try {
             const res = await axios.post('/api/user/login', formData, { withCredentials: true })
             if (res.data.success) {
-                window.location.replace('/dashboard')
+                window.location.replace('/profile')
             } else {
                 alert(res.data.message)
             }

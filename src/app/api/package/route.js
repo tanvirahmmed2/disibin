@@ -4,6 +4,8 @@ import { Package } from "@/lib/models/package";
 import cloudinary from "@/lib/database/cloudinary";
 import { isManager } from "@/lib/middleware";
 
+import { createLog } from "@/lib/utils/logger";
+
 const generateSlug = (title) => {
     return title
         .toLowerCase()
@@ -71,6 +73,16 @@ export async function POST(req) {
             imageId: cloudImage.public_id
         });
 
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'create',
+            targetType: 'package',
+            targetId: pkg._id,
+            description: `Created new package: ${pkg.title} (${pkg.code})`,
+            metadata: { price: pkg.price, category: pkg.category }
+        });
+
         return NextResponse.json({
             success: true,
             message: 'Package created successfully',
@@ -130,6 +142,16 @@ export async function PATCH(req) {
 
         const updatedPkg = await Package.findByIdAndUpdate(id, updateData, { new: true });
 
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'update',
+            targetType: 'package',
+            targetId: updatedPkg._id,
+            description: `Updated package details: ${updatedPkg.title}`,
+            metadata: { updatedFields: Object.keys(updateData) }
+        });
+
         return NextResponse.json({
             success: true,
             message: 'Package updated successfully',
@@ -156,6 +178,15 @@ export async function DELETE(req) {
         }
 
         await Package.findByIdAndDelete(id);
+
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'delete',
+            targetType: 'package',
+            targetId: id,
+            description: `Deleted package: ${pkg.title} (${pkg.code})`
+        });
 
         return NextResponse.json({
             success: true,

@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/database/db';
 import { Contact } from '@/lib/models/contact';
-import { isManager } from '@/lib/middleware';
+import { isManager, isLogin } from '@/lib/middleware';
+import { createLog } from '@/lib/utils/logger';
 
 export async function GET() {
     try {
@@ -29,6 +30,18 @@ export async function POST(req) {
             name, email, phone, subject, message, status: 'open'
         });
 
+        // Activity Logging (Optional if logged in)
+        const auth = await isLogin();
+        if (auth.success) {
+            await createLog({
+                userId: auth.payload._id,
+                action: 'create',
+                targetType: 'support',
+                targetId: contact._id,
+                description: `Sent a support message: ${subject}`
+            });
+        }
+
         return NextResponse.json({
             success: true,
             message: 'Message sent successfully! We will get back to you soon.',
@@ -51,6 +64,15 @@ export async function PATCH(req) {
 
         if (!contact) return NextResponse.json({ success: false, message: 'Message not found' }, { status: 404 });
 
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'update',
+            targetType: 'support',
+            targetId: contact._id,
+            description: `Updated support message status to ${status}: ${contact.subject}`
+        });
+
         return NextResponse.json({ success: true, message: 'Status updated', payload: contact });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -64,7 +86,19 @@ export async function DELETE(req) {
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
         const { id } = await req.json();
-        await Contact.findByIdAndDelete(id);
+        const contact = await Contact.findById(id);
+        if (contact) {
+            await Contact.findByIdAndDelete(id);
+
+            // Activity Logging
+            await createLog({
+                userId: auth.payload._id,
+                action: 'delete',
+                targetType: 'support',
+                targetId: id,
+                description: `Deleted support message: ${contact.subject}`
+            });
+        }
 
         return NextResponse.json({ success: true, message: 'Message deleted successfully' });
     } catch (error) {

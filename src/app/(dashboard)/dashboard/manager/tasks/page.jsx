@@ -99,12 +99,12 @@ const ManagerTasks = () => {
         <div className="space-y-8">
             <div className="flex items-center justify-between">
                 <div className="flex flex-col gap-1">
-                    <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Task Management</h1>
-                    <p className="text-slate-500">Assign and track operational tasks across teams.</p>
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Task Management</h1>
+                    <p className="text-slate-500 font-medium">Assign and track operational tasks across teams.</p>
                 </div>
                 <button 
                     onClick={() => setShowModal(true)}
-                    className="flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl font-bold transition-all hover:shadow-lg hover:shadow-emerald-100 active:scale-95"
+                    className="flex items-center gap-2 px-8 py-4 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] transition-all hover:bg-primary shadow-xl shadow-slate-900/10 active:scale-95"
                 >
                     <RiAddLine size={20} /> Create Task
                 </button>
@@ -114,33 +114,32 @@ const ManagerTasks = () => {
                 <DataTable columns={columns} data={tasks} loading={loading} />
             </div>
 
-            {}
             {showModal && (
                 <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
                     <div className="bg-white w-full max-w-xl rounded-[2.5rem] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
-                        <h2 className="text-2xl font-bold text-slate-800 mb-6">Create New Task</h2>
-                        <form onSubmit={handleCreateTask} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <h2 className="text-2xl font-black text-slate-900 mb-6">Create New Task</h2>
+                        <form onSubmit={handleCreateTask} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="md:col-span-2 space-y-1">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Task Title</label>
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-widest px-1">Task Title</label>
                                 <input 
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+                                    className="input-standard"
                                     required
                                     value={newTask.title}
                                     onChange={e => setNewTask({...newTask, title: e.target.value})}
                                 />
                             </div>
                             <div className="md:col-span-2 space-y-1">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Description</label>
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-widest px-1">Description</label>
                                 <textarea 
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all h-24"
+                                    className="input-standard h-24 pt-3"
                                     value={newTask.description}
                                     onChange={e => setNewTask({...newTask, description: e.target.value})}
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Assign To</label>
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-widest px-1">Assign To</label>
                                 <select 
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl outline-none"
+                                    className="input-standard cursor-pointer"
                                     required
                                     value={newTask.assignedTo}
                                     onChange={e => setNewTask({...newTask, assignedTo: e.target.value})}
@@ -152,9 +151,9 @@ const ManagerTasks = () => {
                                 </select>
                             </div>
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Priority</label>
+                                <label className="text-xs font-bold text-slate-700 uppercase tracking-widest px-1">Priority Level</label>
                                 <select 
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl outline-none"
+                                    className="input-standard cursor-pointer"
                                     value={newTask.priority}
                                     onChange={e => setNewTask({...newTask, priority: e.target.value})}
                                 >
@@ -165,15 +164,15 @@ const ManagerTasks = () => {
                                 </select>
                             </div>
                             <div className="md:col-span-2 flex items-center gap-4 mt-4">
-                                <button type="submit" className="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-emerald-100">
-                                    Create Task
+                                <button type="submit" className="flex-1 py-5 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-slate-900/10 hover:bg-primary transition-all">
+                                    Publish Task
                                 </button>
                                 <button 
                                     type="button" 
                                     onClick={() => setShowModal(false)}
-                                    className="flex-1 py-4 bg-slate-50 text-slate-400 rounded-2xl font-bold"
+                                    className="flex-1 py-5 bg-slate-50 text-slate-400 rounded-2xl font-black uppercase tracking-widest text-[11px]"
                                 >
-                                    Cancel
+                                    Discard
                                 </button>
                             </div>
                         </form>

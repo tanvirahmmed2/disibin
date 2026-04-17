@@ -3,6 +3,7 @@ import connectDB from "@/lib/database/db";
 import { Membership } from "@/lib/models/membership";
 import cloudinary from "@/lib/database/cloudinary";
 import { isEditor } from "@/lib/middleware";
+import { createLog } from "@/lib/utils/logger";
 
 const generateSlug = (title) => {
     return title
@@ -79,6 +80,16 @@ export async function PATCH(req, { params }) {
 
         const updated = await Membership.findByIdAndUpdate(id, updateData, { new: true });
 
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'update',
+            targetType: 'membership',
+            targetId: updated._id,
+            description: `Updated membership plan: ${updated.title}`,
+            metadata: { updatedFields: Object.keys(updateData) }
+        });
+
         return NextResponse.json({
             success: true,
             message: 'Membership updated successfully',
@@ -105,6 +116,15 @@ export async function DELETE(req, { params }) {
         }
 
         await Membership.findByIdAndDelete(id);
+
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'delete',
+            targetType: 'membership',
+            targetId: id,
+            description: `Deleted membership plan: ${membership.title}`
+        });
 
         return NextResponse.json({
             success: true,

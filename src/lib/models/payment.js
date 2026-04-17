@@ -1,24 +1,22 @@
-import mongoose, { Types } from "mongoose";
+import mongoose from "mongoose";
 
-const paymentSchema=mongoose.Schema({
-    purchaseId:{type: Types.ObjectId, ref:'Purchase', required:true},
-    total:{type:Number, required:true},
-    subTotal:{type:Number, required:true},
-    discount:{type:Number, default:0},
-    status: {
-      type: String,
-      enum: ["pending", "completed", "failed", "refunded"],
-      default: "pending",
+const paymentSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    purchaseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Purchase', required: true },
+    amount: { type: Number, required: true },
+    paymentMethod: { 
+        type: String, 
+        enum: ["bkash", "nagad", "card", "bank", "cash"],
+        required: true 
     },
-    method: {
-      type: String,
-      enum: ["bkash", "nagad", "card", "bank", "cash"],
-      required: true,
+    status: { 
+        type: String, 
+        enum: ["pending", "completed", "failed", "refunded"], 
+        default: "pending" 
     },
-    transactionId:{type:String, trim:true, required:true},
-    createdAt:{type:Date, default:Date.now},
-    paidAt:{type:Date, required:true}
-})
+    transactionId: { type: String, trim: true, required: true },
+    paidAt: { type: Date }
+}, { timestamps: true });
 
-export const Payment = mongoose.models.Payment || mongoose.model('Payment', paymentSchema)
+export const Payment = mongoose.models.Payment || mongoose.model("Payment", paymentSchema);
 export default Payment;

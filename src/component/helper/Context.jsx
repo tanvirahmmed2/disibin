@@ -1,6 +1,7 @@
 'use client'
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export const Context = createContext()
 
@@ -119,10 +120,10 @@ const customServices = [
 ];
 
 const ContextProvider = ({ children }) => {
+    const router = useRouter()
     const [sidebar, setSidebar] = useState(false)
     const [isLoggedin, setIsLogggedin] = useState(false)
     const [userData, setUserData] = useState([])
-    const [hydrated, setHydrated] = useState(false)
     const [wishlist, setWishList] = useState({ items: [] })
 
     useEffect(() => {
@@ -135,90 +136,101 @@ const ContextProvider = ({ children }) => {
                 } else {
                     setIsLogggedin(false)
                     setUserData([])
+                    setWishList({ items: [] })
                 }
             } catch (error) {
                 setIsLogggedin(false)
                 setUserData([])
+                setWishList({ items: [] })
             }
         }
         fetchLogin()
     }, [])
 
-    const fetchWishList = () => {
-        if (typeof window === 'undefined') return
-        const storedwishlist = localStorage.getItem('wishlist')
-
-        if (!storedwishlist || storedwishlist === 'undefined') {
-            setWishList({ items: [] })
-            setHydrated(true)
-            return
-        }
-
-        try {
-            const parsed = JSON.parse(storedwishlist)
-            if (parsed && Array.isArray(parsed.items)) {
-                setWishList(parsed)
-            } else {
-                setWishList({ items: [] })
+    const fetchUserWishlist = async () => {
+        if (userData?._id) {
+            try {
+                const res = await axios.get(`/api/wishlist?userId=${userData._id}`);
+                if (res.data.success) {
+                    setWishList({ items: res.data.payload });
+                }
+            } catch (error) {
+                console.error("Failed to fetch wishlist", error);
             }
-        } catch (err) {
-            localStorage.removeItem('wishlist')
-            setWishList({ items: [] })
-        }
-        setHydrated(true)
-    }
-
-    useEffect(() => {
-        fetchWishList()
-    }, [])
-
-    useEffect(() => {
-        if (typeof window !== 'undefined' && hydrated) {
-            localStorage.setItem('wishlist', JSON.stringify(wishlist))
-        }
-    }, [wishlist, hydrated])
-
-    const addToWishList = (pack) => {
-        if (!pack?.packageId) return;
-
-        const existingInwishlist = wishlist.items.find(item => item.packageId === pack.packageId);
-
-        if (existingInwishlist) {
-            alert('Item already in wishlist')
-        } else {
-            const salePrice = parseFloat(pack?.price) || 0;
-            const discountPrice = parseFloat(pack?.discount) || 0;
-
-            setWishList((prev) => ({
-                ...prev,
-                items: [
-                    ...prev.items,
-                    {
-                        packageId: pack.packageId,
-                        image: pack.image,
-                        title: pack.title,
-                        slug: pack.slug,
-                        price: salePrice,
-                        discount: discountPrice,
-                    }
-                ]
-            }));
-            alert("Added to wishlist");
         }
     };
 
-    const removeFromwishlist = (id) => {
+    useEffect(() => {
+        if (userData?._id) fetchUserWishlist();
+    }, [userData]);
+
+    const addToWishList = async (item) => {
+        if (!isLoggedin) {
+            alert('Please login to add items to your wishlist');
+            router.push('/login');
+            return;
+        }
+
+        try {
+            const data = {
+                userId: userData._id,
+                itemId: item.itemId,
+                type: item.type,
+                title: item.title,
+                price: item.price,
+                slug: item.slug,
+                image: item.image,
+                metadata: item.metadata
+            };
+
+            const res = await axios.post('/api/wishlist', data, { withCredentials: true });
+            if (res.data.success) {
+                setWishList(prev => ({
+                    ...prev,
+                    items: [res.data.payload, ...prev.items]
+                }));
+                alert("Added to wishlist");
+            }
+        } catch (error) {
+            alert(error?.response?.data?.message || "Failed to add to wishlist");
+        }
+    };
+
+    const fetchUserWishlist = async () => {
+        if (userData?._id) {
+            try {
+                const res = await axios.get(`/api/wishlist?userId=${userData._id}`);
+                if (res.data.success) {
+                    setWishList({ items: res.data.payload });
+                }
+            } catch (error) {
+                console.error("Failed to fetch wishlist", error);
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (userData?._id) fetchUserWishlist();
+    }, [userData]);
+
+    const removeFromwishlist = async (id) => {
         const confirm = window.confirm('Are you sure?')
         if (!confirm) return
-        setWishList(prev => ({
-            ...prev,
-            items: prev.items.filter(item => item.packageId !== id)
-        }))
+        try {
+            const res = await axios.delete(`/api/wishlist/${id}`, { withCredentials: true });
+            if (res.data.success) {
+                setWishList(prev => ({
+                    ...prev,
+                    items: prev.items.filter(item => item._id !== id)
+                }))
+            }
+        } catch (error) {
+            alert("Failed to remove item");
+        }
     }
 
     const clearWishlist = () => {
         setWishList({ items: [] });
-        if (typeof window !== 'undefined') localStorage.removeItem('wishlist');
     }
 
      const handleLogout=async()=>{

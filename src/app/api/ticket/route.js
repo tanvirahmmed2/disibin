@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/database/db';
 import { Ticket } from '@/lib/models/ticket';
 import { isLogin, isSupport, isProjectManager } from '@/lib/middleware';
+import { createLog } from '@/lib/utils/logger';
 
 export async function GET(req) {
     try {
@@ -68,6 +69,16 @@ export async function POST(req) {
             }]
         });
 
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'create',
+            targetType: 'ticket',
+            targetId: ticket._id,
+            description: `Opened a new ticket: ${ticket.subject}`,
+            metadata: { category: ticket.category, priority: ticket.priority }
+        });
+
         return NextResponse.json({ success: true, message: 'Ticket created', payload: ticket });
 
     } catch (error) {
@@ -110,6 +121,15 @@ export async function PATCH(req) {
         }
 
         await ticket.save();
+
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'update',
+            targetType: 'ticket',
+            targetId: ticket._id,
+            description: status ? `Updated ticket status to ${status}: ${ticket.subject}` : `Replied to ticket: ${ticket.subject}`
+        });
 
         return NextResponse.json({ success: true, message: 'Ticket updated', payload: ticket });
 

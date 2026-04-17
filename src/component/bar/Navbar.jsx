@@ -13,6 +13,7 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Services', href: '/services' },
+    { name: 'Offers', href: '/offers' },
     { name: 'Plans', href: '/packages' },
     { name: 'Premium', href: '/memberships' },
     { name: 'Projects', href: '/projects' },
@@ -25,10 +26,10 @@ const Navbar = () => {
  
 
   return (
-    <nav className='w-full fixed top-0 left-0 h-20 bg-white/80 backdrop-blur-xl border-b border-slate-50 z-50 flex items-center'>
+    <nav className='w-full fixed top-0 left-0 h-20 bg-white backdrop-blur-xl border-b border-slate-50 z-50 flex items-center'>
       <div className='container-custom flex flex-row items-center justify-between'>
         <Link href={'/'} className='text-3xl font-black text-slate-900 tracking-tighter hover:text-emerald-600 transition-colors'>
-          Disibin<span className='text-emerald-500'>.</span>
+          Disibin
         </Link>
 
         <div className='hidden lg:flex items-center gap-2'>

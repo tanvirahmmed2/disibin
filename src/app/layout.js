@@ -1,8 +1,12 @@
-import { Outfit } from "next/font/google";
+import { Poppins } from "next/font/google";
 import ContextProvider from "@/component/helper/Context";
 import "./globals.css";
 
-const outfit = Outfit({ subsets: ["latin"] });
+const poppins = Poppins({ 
+  subsets: ["latin"],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-poppins',
+});
 
 export const metadata = {
   title: {
@@ -15,7 +19,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${outfit.className} w-full overflow-x-hidden relative bg-white md:text-base text-sm`}>
+      <body className={`${poppins.className} w-full overflow-x-hidden relative bg-white md:text-base text-sm`}>
         <ContextProvider>
           <main>{children}</main>
         </ContextProvider>

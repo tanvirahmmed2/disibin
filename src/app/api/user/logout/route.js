@@ -7,7 +7,7 @@ export async function GET() {
             message: "Logout successful",
         });
 
-        res.cookies.set("user_token", "", {
+        res.cookies.set("disibin", "", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             expires: new Date(0),

@@ -6,7 +6,7 @@ import { isLogin, isManager } from "@/lib/middleware";
 export async function GET(req) {
     try {
         await connectDB();
-        const auth = await isManager();
+        const auth = await isProjectManager();
         if (!auth.success) {
             return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
         }

@@ -1,11 +1,13 @@
 'use client'
 import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
+import { useRouter } from 'next/navigation'
 import DataTable from '@/component/dashboard/DataTable'
 import { Context } from '@/component/helper/Context'
 import { RiAddLine, RiChat3Line, RiInformationLine } from 'react-icons/ri'
 
 const ClientTickets = () => {
+    const router = useRouter()
     const { userData } = useContext(Context)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
@@ -63,15 +65,18 @@ const ClientTickets = () => {
     )
 
     return (
-        <div className="space-y-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-10">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex flex-col gap-1">
-                    <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Support Tickets</h1>
-                    <p className="text-slate-500">View and manage your conversations with our support team.</p>
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Support Tickets</h1>
+                    <p className="text-slate-500 font-medium whitespace-nowrap overflow-hidden">Manage and track your active support conversations.</p>
                 </div>
-                <button className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-2.5 rounded-2xl font-bold shadow-lg shadow-emerald-200 hover:scale-[1.02] active:scale-95 transition-all">
+                <button 
+                    onClick={() => router.push('/dashboard/tickets/new')}
+                    className="flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-slate-900/10 hover:bg-primary transition-all active:scale-95"
+                >
                     <RiAddLine size={20} />
-                    <span>Create Ticket</span>
+                    <span>Open Ticket</span>
                 </button>
             </div>
 

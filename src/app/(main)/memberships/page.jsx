@@ -1,10 +1,12 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
+import { Context } from '@/component/helper/Context'
 import { RiCheckLine, RiStarFill, RiCloseLine, RiInformationLine, RiShieldFlashLine } from 'react-icons/ri'
 
 const Memberships = () => {
+  const { userData, addToWishList } = useContext(Context)
   const [memberships, setMemberships] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedPlan, setSelectedPlan] = useState(null)
@@ -32,19 +34,36 @@ const Memberships = () => {
 
   const handlePurchase = async (e) => {
       e.preventDefault()
+      if (!userData?._id) return alert('Please login first');
       setPurchaseLoading(true)
       try {
-          const res = await axios.post('/api/subscription', {
-              membershipId: selectedPlan._id,
-              payMethod: purchaseForm.payMethod,
-              transactionId: purchaseForm.transactionId
-          })
+          const purchaseData = {
+              userId: userData._id,
+              totalAmount: selectedPlan.price - (selectedPlan.discount || 0),
+              items: [{
+                  itemId: selectedPlan._id,
+                  type: 'membership',
+                  title: selectedPlan.title,
+                  price: selectedPlan.price
+              }],
+              paymentMethod: purchaseForm.payMethod
+          }
+          const res = await axios.post('/api/purchase', purchaseData, { withCredentials: true })
           if (res.data.success) {
-              alert('Subscription request submitted! Please check your dashboard for confirmation.')
+              // Now process payment
+              await axios.post('/api/payment', {
+                  userId: userData._id,
+                  purchaseId: res.data.payload._id,
+                  amount: purchaseData.totalAmount,
+                  paymentMethod: purchaseForm.payMethod,
+                  transactionId: purchaseForm.transactionId
+              }, { withCredentials: true })
+
+              alert('Membership activated! Please check your dashboard.')
               setSelectedPlan(null)
           }
       } catch (error) {
-          alert(error.response?.data?.message || 'Failed to submit purchase request. Please login first.')
+          alert(error.response?.data?.message || 'Failed to complete purchase.')
       } finally {
           setPurchaseLoading(false)
       }
@@ -52,22 +71,22 @@ const Memberships = () => {
 
   if (loading) return (
       <div className="flex items-center justify-center min-h-screen bg-white">
-          <div className="w-12 h-12 border-4 border-slate-100 border-t-emerald-600 rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-slate-50 border-t-primary rounded-full animate-spin"></div>
       </div>
   )
 
   return (
-    <div className='w-full min-h-screen bg-slate-50/50 py-24'>
+    <div className='w-full min-h-screen bg-white py-24'>
       <div className="container-custom">
         <div className="text-center mb-20 space-y-4">
-          <span className="text-emerald-600 font-black tracking-[0.2em] uppercase text-[10px] block">Exclusive Access</span>
+          <span className="text-primary font-black tracking-[0.2em] uppercase text-[10px] block">Exclusive Access</span>
           <h1 className="text-5xl font-black text-slate-900 tracking-tight">Premium Memberships</h1>
           <p className="text-slate-500 max-w-xl mx-auto font-medium">Elevate your digital presence with our top-tier tailored solutions for professionals.</p>
         </div>
 
         {memberships.length === 0 ? (
-          <div className="card-premium p-20 text-center max-w-2xl mx-auto flex flex-col items-center gap-8">
-            <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">
+          <div className="card-premium p-20 text-center max-w-2xl mx-auto flex flex-col items-center gap-8 border-none bg-slate-50/50">
+            <div className="w-20 h-20 bg-primary/10 text-primary rounded-full flex items-center justify-center">
                <RiStarFill size={32} />
             </div>
             <div className="space-y-2">
@@ -83,10 +102,10 @@ const Memberships = () => {
             {memberships.map((plan, idx) => (
               <div 
                 key={plan._id} 
-                className={`card-premium relative flex flex-col ${idx === 1 ? 'border-2 border-emerald-500 shadow-2xl scale-105 z-10' : ''}`}
+                className={`card-premium relative flex flex-col ${idx === 1 ? 'border-primary/20 shadow-2xl scale-105 z-10' : 'border-slate-50'}`}
               >
                 {idx === 1 && (
-                  <div className="bg-emerald-500 text-white text-[10px] font-black text-center py-2 uppercase tracking-widest">
+                  <div className="bg-primary text-white text-[10px] font-black text-center py-2 uppercase tracking-widest rounded-t-[2.5rem]">
                     Most Popular
                   </div>
                 )}
@@ -102,23 +121,38 @@ const Memberships = () => {
                     <span className="text-slate-400 font-bold text-xs">/{plan.duration}</span>
                   </div>
 
-                  <button 
-                    onClick={() => setSelectedPlan(plan)}
-                    className={`block w-full py-4 rounded-2xl text-center font-black text-sm tracking-wider uppercase transition-all ${
-                      idx === 1 
-                      ? 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-500/20' 
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                    }`}
-                  >
-                    Subscribe
-                  </button>
+                  <div className="flex flex-col gap-3">
+                    <button 
+                      onClick={() => setSelectedPlan(plan)}
+                      className={`w-full py-4 rounded-2xl text-center font-black text-[10px] tracking-widest uppercase transition-all ${
+                        idx === 1 
+                        ? 'bg-primary text-white hover:bg-slate-900 shadow-lg shadow-primary/20' 
+                        : 'bg-slate-900 text-white hover:bg-primary'
+                      }`}
+                    >
+                      Instant Purchase
+                    </button>
+                    <button 
+                      onClick={() => addToWishList({
+                        itemId: plan._id,
+                        type: 'membership',
+                        title: plan.title,
+                        price: plan.price,
+                        slug: plan.title.toLowerCase().replace(/ /g, '-'), // membership might not have slug
+                        image: null
+                      })}
+                      className="w-full py-4 rounded-2xl text-center font-black text-[10px] tracking-widest uppercase transition-all bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    >
+                      Add to Wishlist
+                    </button>
+                  </div>
                 </div>
                 
                 <div className="p-10 pt-0 flex-1 space-y-4 border-t border-slate-50 mt-auto">
                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-8 mb-4">Core Features</div>
                    {plan.features?.map((feature, i) => (
                       <div key={i} className="flex items-center gap-3">
-                        <div className="w-5 h-5 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0 text-emerald-600">
+                        <div className="w-5 h-5 rounded-full bg-primary/5 flex items-center justify-center flex-shrink-0 text-primary">
                           <RiCheckLine size={12} />
                         </div>
                         <span className="text-slate-600 text-xs font-bold">{feature}</span>
@@ -132,7 +166,7 @@ const Memberships = () => {
       </div>
 
       {selectedPlan && (
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] flex items-center justify-center p-6">
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-6">
               <div className="bg-white rounded-[3rem] w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
                   <div className="p-10 flex justify-between items-center border-b border-slate-50">
                     <div>
@@ -150,7 +184,7 @@ const Memberships = () => {
                               <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Payable Amount</span>
                               <span className="text-4xl font-black text-slate-900">${selectedPlan.price - (selectedPlan.discount || 0)}</span>
                           </div>
-                          <div className="w-14 h-14 bg-emerald-600 text-white rounded-[1.25rem] flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                          <div className="w-14 h-14 bg-primary text-white rounded-[1.25rem] flex items-center justify-center shadow-lg shadow-primary/20">
                               <RiShieldFlashLine size={28} />
                           </div>
                       </div>

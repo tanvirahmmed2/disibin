@@ -40,24 +40,24 @@ const EditorBlogs = () => {
         )},
         { label: 'Title', key: 'title', render: (row) => (
             <div className="flex flex-col max-w-xs">
-                <span className="font-bold text-slate-700 truncate">{row.title}</span>
-                <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">{row.category}</span>
+                <span className="font-black text-slate-800 tracking-tight truncate">{row.title}</span>
+                <span className="text-[10px] font-black text-primary uppercase tracking-widest">{row.category}</span>
             </div>
         )},
         { label: 'Author', key: 'author', render: (row) => (
-            <span className="text-slate-500 font-medium italic">@{row.author || 'system'}</span>
+            <span className="text-slate-500 font-bold text-xs italic">@{row.author || 'system'}</span>
         )},
         { label: 'Created At', key: 'createdAt', render: (row) => (
-            <span className="text-slate-400">{new Date(row.createdAt).toLocaleDateString()}</span>
+            <span className="text-xs text-slate-400 font-bold">{new Date(row.createdAt).toLocaleDateString()}</span>
         )},
     ]
 
     const actions = (row) => (
         <div className="flex gap-2">
-            <Link href={`/blogs/${row.slug}`} target="_blank" className="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-all">
+            <Link href={`/blogs/${row.slug}`} target="_blank" className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-all">
                 <RiEyeLine size={18} />
             </Link>
-            <Link href={`/dashboard/blogs/${row.slug}`} className="p-2 hover:bg-emerald-50 rounded-lg text-emerald-600 transition-all">
+            <Link href={`/dashboard/editor/blogs/${row._id}`} className="p-2 hover:bg-primary/5 rounded-lg text-primary transition-all">
                 <RiEdit2Line size={18} />
             </Link>
             <button onClick={() => handleDelete(row._id)} className="p-2 hover:bg-rose-50 rounded-lg text-rose-500 transition-all">
@@ -68,12 +68,12 @@ const EditorBlogs = () => {
 
     return (
         <div className="space-y-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex flex-col gap-1">
-                    <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Blog Repository</h1>
-                    <p className="text-slate-500">Create, manage, and publish your blog articles.</p>
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Blog Repository</h1>
+                    <p className="text-slate-500 font-medium">Create, manage, and publish high-quality platform articles.</p>
                 </div>
-                <Link href="/dashboard/new-blog" className="flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold hover:bg-slate-800 transition-all">
+                <Link href="/dashboard/editor/blogs/new" className="flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-slate-900/10 hover:bg-primary transition-all active:scale-95">
                     <RiAddLine size={24} />
                     <span>New Article</span>
                 </Link>

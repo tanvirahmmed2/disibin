@@ -42,7 +42,7 @@ export async function POST(req) {
         const token = jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn: '1d' });
         
         const cookieStore = await cookies();
-        cookieStore.set('token', token, {
+        cookieStore.set('disibin', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',

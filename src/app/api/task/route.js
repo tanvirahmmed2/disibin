@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/database/db';
 import Task from '@/lib/models/task';
-import { isManager, isProjectManager, isStaff } from '@/lib/middleware';
+import { isLogin, isManager, isProjectManager, isStaff } from '@/lib/middleware';
+import { createLog } from '@/lib/utils/logger';
 
 export async function GET(req) {
     try {
@@ -72,6 +73,16 @@ export async function POST(req) {
             status: 'in_progress'
         });
 
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'create',
+            targetType: 'task',
+            targetId: task._id,
+            description: `Created task: ${task.title}`,
+            metadata: { type: task.type, priority: task.priority }
+        });
+
         return NextResponse.json({ success: true, message: 'Task created successfully', payload: task });
 
     } catch (error) {
@@ -112,7 +123,44 @@ export async function PATCH(req) {
 
         await task.save();
 
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'update',
+            targetType: 'task',
+            targetId: task._id,
+            description: status ? `Updated task status to ${status}: ${task.title}` : `Added comment to task: ${task.title}`
+        });
+
         return NextResponse.json({ success: true, message: 'Task updated', payload: task });
+
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}
+
+export async function DELETE(req) {
+    try {
+        await connectDB();
+        const auth = await isManager();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
+
+        const { id } = await req.json();
+        const task = await Task.findById(id);
+        if (!task) return NextResponse.json({ success: false, message: 'Task not found' }, { status: 404 });
+
+        await Task.findByIdAndDelete(id);
+
+        // Activity Logging
+        await createLog({
+            userId: auth.payload._id,
+            action: 'delete',
+            targetType: 'task',
+            targetId: id,
+            description: `Deleted task: ${task.title}`
+        });
+
+        return NextResponse.json({ success: true, message: 'Task deleted successfully' });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
