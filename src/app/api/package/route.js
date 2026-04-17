@@ -20,7 +20,7 @@ export async function GET() {
         return NextResponse.json({
             success: true,
             message: 'Packages fetched successfully',
-            payload: packages
+            data: packages
         }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -75,7 +75,7 @@ export async function POST(req) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'create',
             targetType: 'package',
             targetId: pkg._id,
@@ -86,7 +86,7 @@ export async function POST(req) {
         return NextResponse.json({
             success: true,
             message: 'Package created successfully',
-            payload: pkg
+            data: pkg
         }, { status: 201 });
 
     } catch (error) {
@@ -144,7 +144,7 @@ export async function PATCH(req) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'update',
             targetType: 'package',
             targetId: updatedPkg._id,
@@ -155,7 +155,7 @@ export async function PATCH(req) {
         return NextResponse.json({
             success: true,
             message: 'Package updated successfully',
-            payload: updatedPkg
+            data: updatedPkg
         }, { status: 200 });
 
     } catch (error) {
@@ -181,7 +181,7 @@ export async function DELETE(req) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'delete',
             targetType: 'package',
             targetId: id,
@@ -196,4 +196,4 @@ export async function DELETE(req) {
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
-}
+}

@@ -13,7 +13,7 @@ export async function GET(req) {
         if (!userId) return NextResponse.json({ success: false, message: "User ID required" }, { status: 400 });
 
         const purchases = await Purchase.find({ userId }).sort({ createdAt: -1 });
-        return NextResponse.json({ success: true, payload: purchases });
+        return NextResponse.json({ success: true, message: 'Purchases fetched', data: purchases });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -42,7 +42,7 @@ export async function POST(req) {
         // Optionally clear wishlist after purchase creation
         await Wishlist.deleteMany({ userId });
 
-        return NextResponse.json({ success: true, payload: newPurchase });
+        return NextResponse.json({ success: true, message: 'Purchase created successfully', data: newPurchase });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

@@ -6,7 +6,7 @@ import { Context } from '@/component/helper/Context'
 import { RiDownloadCloud2Line, RiExternalLinkLine } from 'react-icons/ri'
 
 const ClientPurchases = () => {
-    const { isLoggedin } = useContext(Context)
+    const { isLoggedin, userData } = useContext(Context)
     const [purchases, setPurchases] = useState([])
     const [loading, setLoading] = useState(true)
 
@@ -15,7 +15,7 @@ const ClientPurchases = () => {
         try {
             const res = await axios.get(`/api/purchase?userId=${userData._id}`, { withCredentials: true })
             if (res.data.success) {
-                setPurchases(res.data.payload)
+                setPurchases(res.data.data)
             }
         } catch (error) {
             console.error('Failed to fetch purchases', error)

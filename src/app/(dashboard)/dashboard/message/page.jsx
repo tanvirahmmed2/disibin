@@ -36,7 +36,7 @@ const ChatPage = () => {
     const fetchUsers = async () => {
         try {
             const res = await axios.get(`/api/messages/conversations?currentUserId=${userData?._id}`)
-            setUsers(res.data.payload)
+            setUsers(res.data.data)
         } catch (error) {
             console.error('Failed to fetch users', error)
         } finally {
@@ -48,7 +48,7 @@ const ChatPage = () => {
         setChatLoading(true)
         try {
             const res = await axios.get(`/api/messages?senderId=${userData?._id}&receiverId=${receiverId}`)
-            setMessages(res.data.payload)
+            setMessages(res.data.data)
         } catch (error) {
             console.error('Failed to fetch messages', error)
         } finally {
@@ -95,7 +95,7 @@ const ChatPage = () => {
 
         try {
             const res = await axios.post('/api/messages', msgData)
-            setMessages([...messages, res.data.payload])
+            setMessages([...messages, res.data.data])
             setNewMessage('')
         } catch (error) {
             console.error('Failed to send message', error)

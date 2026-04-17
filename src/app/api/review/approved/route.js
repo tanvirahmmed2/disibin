@@ -9,7 +9,7 @@ export async function GET() {
             .populate('userId', 'name image')
             .sort({ createdAt: -1 });
 
-        return NextResponse.json({ success: true, message: 'Approved reviews fetched', payload: reviews });
+        return NextResponse.json({ success: true, message: 'Approved reviews fetched', data: reviews });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

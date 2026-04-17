@@ -10,9 +10,9 @@ export async function GET() {
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
         
-        const contacts = await Contact.find({ email: auth.payload.email }).sort({ createdAt: -1 });
+        const contacts = await Contact.find({ email: auth.data.email }).sort({ createdAt: -1 });
 
-        return NextResponse.json({ success: true, message: 'Support messages found', payload: contacts });
+        return NextResponse.json({ success: true, message: 'Support messages found', data: contacts });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

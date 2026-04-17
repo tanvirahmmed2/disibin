@@ -33,9 +33,9 @@ const ManagerTasks = () => {
                 axios.get('/api/task'),
                 axios.get('/api/user') 
             ])
-            setTasks(taskRes.data.payload)
+            setTasks(taskRes.data.data)
             
-            setUsers(userRes.data.payload.filter(u => ['staff', 'support', 'project_manager'].includes(u.role)))
+            setUsers(userRes.data.data.filter(u => ['staff', 'support', 'project_manager'].includes(u.role)))
         } catch (error) {
             console.error('Failed to fetch data', error)
         } finally {

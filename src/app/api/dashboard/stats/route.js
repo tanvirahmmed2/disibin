@@ -14,7 +14,7 @@ export async function GET(req) {
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
-        const user = auth.payload;
+        const user = auth.data;
         const stats = {};
 
         if (user.role === 'admin' || user.role === 'manager') {
@@ -71,7 +71,7 @@ export async function GET(req) {
             ];
         }
 
-        return NextResponse.json({ success: true, payload: stats });
+        return NextResponse.json({ success: true, data: stats });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

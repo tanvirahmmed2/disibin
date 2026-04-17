@@ -19,7 +19,7 @@ export async function GET() {
         return NextResponse.json({
             success: true,
             message: 'Memberships fetched successfully',
-            payload: memberships
+            data: memberships
         }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -74,7 +74,7 @@ export async function POST(req) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'create',
             targetType: 'membership',
             targetId: membership._id,
@@ -85,7 +85,7 @@ export async function POST(req) {
         return NextResponse.json({
             success: true,
             message: 'Membership plan created successfully',
-            payload: membership
+            data: membership
         }, { status: 201 });
 
     } catch (error) {

@@ -18,7 +18,7 @@ export async function GET(req) {
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
-        const user = auth.payload;
+        const user = auth.data;
         let query = {};
 
         
@@ -30,7 +30,7 @@ export async function GET(req) {
         return NextResponse.json({
             success: true,
             message: 'Projects fetched successfully',
-            payload: projects
+            data: projects
         }, { status: 200 });
 
     } catch (error) {
@@ -81,7 +81,7 @@ export async function POST(req) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'create',
             targetType: 'project',
             targetId: project._id,
@@ -89,7 +89,7 @@ export async function POST(req) {
             metadata: { category: project.category, clientId: project.clientId }
         });
 
-        return NextResponse.json({ success: true, message: 'Project created', payload: project });
+        return NextResponse.json({ success: true, message: 'Project created', data: project });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -140,7 +140,7 @@ export async function PATCH(req) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'update',
             targetType: 'project',
             targetId: updated._id,
@@ -148,7 +148,7 @@ export async function PATCH(req) {
             metadata: { updatedFields: Object.keys(updateData) }
         });
 
-        return NextResponse.json({ success: true, message: 'Project updated', payload: updated });
+        return NextResponse.json({ success: true, message: 'Project updated', data: updated });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -173,7 +173,7 @@ export async function DELETE(req) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'delete',
             targetType: 'project',
             targetId: id,

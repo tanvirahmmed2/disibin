@@ -24,7 +24,7 @@ export async function GET(req) {
         return NextResponse.json({
             success: true,
             message: 'Search results found',
-            payload: projects
+            data: projects
         }, { status: 200 });
 
     } catch (error) {

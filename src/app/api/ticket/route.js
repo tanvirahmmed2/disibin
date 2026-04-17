@@ -10,7 +10,7 @@ export async function GET(req) {
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
-        const user = auth.payload;
+        const user = auth.data;
         const { searchParams } = new URL(req.url);
         const category = searchParams.get('category');
         const status = searchParams.get('status');
@@ -35,7 +35,7 @@ export async function GET(req) {
             .populate('projectId', 'title slug')
             .sort({ lastMessageAt: -1 });
 
-        return NextResponse.json({ success: true, payload: tickets });
+        return NextResponse.json({ success: true, message: 'Tickets fetched', data: tickets });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -55,7 +55,7 @@ export async function POST(req) {
         }
 
         const ticket = await Ticket.create({
-            senderId: auth.payload._id,
+            senderId: auth.data._id,
             subject,
             message,
             category: category || 'general',
@@ -63,7 +63,7 @@ export async function POST(req) {
             priority: priority || 'medium',
             status: 'open',
             messages: [{
-                senderId: auth.payload._id,
+                senderId: auth.data._id,
                 message,
                 type: 'text'
             }]
@@ -71,7 +71,7 @@ export async function POST(req) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'create',
             targetType: 'ticket',
             targetId: ticket._id,
@@ -79,7 +79,7 @@ export async function POST(req) {
             metadata: { category: ticket.category, priority: ticket.priority }
         });
 
-        return NextResponse.json({ success: true, message: 'Ticket created', payload: ticket });
+        return NextResponse.json({ success: true, message: 'Ticket created', data: ticket });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -98,7 +98,7 @@ export async function PATCH(req) {
         if (!ticket) return NextResponse.json({ success: false, message: 'Ticket not found' }, { status: 404 });
 
         
-        if (['admin', 'manager', 'support', 'project_manager'].includes(auth.payload.role)) {
+        if (['admin', 'manager', 'support', 'project_manager'].includes(auth.data.role)) {
             if (status) ticket.status = status;
             if (assignedId) ticket.assignedId = assignedId;
             if (priority) ticket.priority = priority;
@@ -112,7 +112,7 @@ export async function PATCH(req) {
         
         if (message) {
             ticket.messages.push({
-                senderId: auth.payload._id,
+                senderId: auth.data._id,
                 message,
                 attachments: attachment ? [attachment] : [],
                 type: 'text'
@@ -124,14 +124,14 @@ export async function PATCH(req) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'update',
             targetType: 'ticket',
             targetId: ticket._id,
             description: status ? `Updated ticket status to ${status}: ${ticket.subject}` : `Replied to ticket: ${ticket.subject}`
         });
 
-        return NextResponse.json({ success: true, message: 'Ticket updated', payload: ticket });
+        return NextResponse.json({ success: true, message: 'Ticket updated', data: ticket });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

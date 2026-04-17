@@ -132,7 +132,7 @@ const ContextProvider = ({ children }) => {
                 const res = await axios.get('/api/user/islogin', { withCredentials: true })
                 if (res.data.success) {
                     setIsLogggedin(true)
-                    setUserData(res.data.payload)
+                    setUserData(res.data.data)
                 } else {
                     setIsLogggedin(false)
                     setUserData([])
@@ -152,7 +152,7 @@ const ContextProvider = ({ children }) => {
             try {
                 const res = await axios.get(`/api/wishlist?userId=${userData._id}`);
                 if (res.data.success) {
-                    setWishList({ items: res.data.payload });
+                    setWishList({ items: res.data.data });
                 }
             } catch (error) {
                 console.error("Failed to fetch wishlist", error);
@@ -187,7 +187,7 @@ const ContextProvider = ({ children }) => {
             if (res.data.success) {
                 setWishList(prev => ({
                     ...prev,
-                    items: [res.data.payload, ...prev.items]
+                    items: [res.data.data, ...prev.items]
                 }));
                 alert("Added to wishlist");
             }
@@ -195,23 +195,6 @@ const ContextProvider = ({ children }) => {
             alert(error?.response?.data?.message || "Failed to add to wishlist");
         }
     };
-
-    const fetchUserWishlist = async () => {
-        if (userData?._id) {
-            try {
-                const res = await axios.get(`/api/wishlist?userId=${userData._id}`);
-                if (res.data.success) {
-                    setWishList({ items: res.data.payload });
-                }
-            } catch (error) {
-                console.error("Failed to fetch wishlist", error);
-            }
-        }
-    };
-
-    useEffect(() => {
-        if (userData?._id) fetchUserWishlist();
-    }, [userData]);
 
     const removeFromwishlist = async (id) => {
         const confirm = window.confirm('Are you sure?')

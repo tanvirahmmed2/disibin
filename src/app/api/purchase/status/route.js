@@ -12,10 +12,10 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
         }
 
-        const { purchase_id, status } = await req.json();
+        const { purchaseId, status } = await req.json();
 
         
-        const purchase = await Purchase.findById(purchase_id).populate('paymentId');
+        const purchase = await Purchase.findById(purchaseId).populate('paymentId');
         if (!purchase) {
             return NextResponse.json({ success: false, message: 'Purchase record not found' }, { status: 404 });
         }
@@ -24,7 +24,7 @@ export async function POST(req) {
 
         if (status === 'completed') {
             
-            if (payment.status !== 'completed') {
+            if (payment && payment.status !== 'completed') {
                 return NextResponse.json({ 
                     success: false, 
                     message: 'Cannot set to completed. Payment must be verified first.' 
@@ -42,7 +42,7 @@ export async function POST(req) {
         }
 
         await purchase.save();
-        return NextResponse.json({ success: true, message: `Status successfully changed to ${status}` });
+        return NextResponse.json({ success: true, message: `Status successfully changed to ${status}`, data: purchase });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

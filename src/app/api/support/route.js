@@ -11,7 +11,7 @@ export async function GET() {
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
         const contacts = await Contact.find().sort({ createdAt: -1 });
-        return NextResponse.json({ success: true, message: 'Messages fetched', payload: contacts });
+        return NextResponse.json({ success: true, message: 'Messages fetched', data: contacts });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -34,7 +34,7 @@ export async function POST(req) {
         const auth = await isLogin();
         if (auth.success) {
             await createLog({
-                userId: auth.payload._id,
+                userId: auth.data._id,
                 action: 'create',
                 targetType: 'support',
                 targetId: contact._id,
@@ -45,7 +45,7 @@ export async function POST(req) {
         return NextResponse.json({
             success: true,
             message: 'Message sent successfully! We will get back to you soon.',
-            payload: contact
+            data: contact
         }, { status: 201 });
 
     } catch (error) {
@@ -66,14 +66,14 @@ export async function PATCH(req) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'update',
             targetType: 'support',
             targetId: contact._id,
             description: `Updated support message status to ${status}: ${contact.subject}`
         });
 
-        return NextResponse.json({ success: true, message: 'Status updated', payload: contact });
+        return NextResponse.json({ success: true, message: 'Status updated', data: contact });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -92,7 +92,7 @@ export async function DELETE(req) {
 
             // Activity Logging
             await createLog({
-                userId: auth.payload._id,
+                userId: auth.data._id,
                 action: 'delete',
                 targetType: 'support',
                 targetId: id,

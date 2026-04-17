@@ -39,7 +39,8 @@ export async function GET(req) {
 
         return NextResponse.json({
             success: true,
-            payload: logs,
+            message: 'Logs fetched successfully',
+            data: logs,
             pagination: {
                 total,
                 page,

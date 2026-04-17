@@ -40,13 +40,13 @@ export async function PATCH(req) {
         return NextResponse.json({
             success: true,
             message: `User ${targetUser.email} role updated to ${role} successfully`,
-            payload: targetUser
+            data: targetUser
         }, { status: 200 });
 
         return NextResponse.json({
             success: true,
             message: `User role updated to ${role} successfully`,
-            payload: user
+            data: user
         }, { status: 200 });
 
     } catch (error) {

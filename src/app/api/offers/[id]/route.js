@@ -17,7 +17,7 @@ export async function PATCH(req, { params }) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'update',
             targetType: 'offer',
             targetId: updatedOffer._id,
@@ -25,7 +25,7 @@ export async function PATCH(req, { params }) {
             metadata: { updatedFields: Object.keys(body) }
         });
 
-        return NextResponse.json({ success: true, payload: updatedOffer });
+        return NextResponse.json({ success: true, message: 'Offer updated successfully', data: updatedOffer });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -43,7 +43,7 @@ export async function DELETE(req, { params }) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'delete',
             targetType: 'offer',
             targetId: id,

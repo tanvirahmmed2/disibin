@@ -13,11 +13,11 @@ export async function GET(req) {
         if (slug) {
             const offer = await Offer.findOne({ slug, status: 'active' });
             if (!offer) return NextResponse.json({ success: false, message: "Offer not found" }, { status: 404 });
-            return NextResponse.json({ success: true, payload: offer });
+            return NextResponse.json({ success: true, message: 'Offer fetched', data: offer });
         }
 
         const offers = await Offer.find({ status: 'active' }).sort({ createdAt: -1 });
-        return NextResponse.json({ success: true, payload: offers });
+        return NextResponse.json({ success: true, message: 'Offers fetched', data: offers });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -51,7 +51,7 @@ export async function POST(req) {
             metadata: { price: newOffer.price, discount: newOffer.discount }
         });
 
-        return NextResponse.json({ success: true, payload: newOffer });
+        return NextResponse.json({ success: true, message: 'Offer created successfully', data: newOffer });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

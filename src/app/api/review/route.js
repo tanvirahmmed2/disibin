@@ -13,7 +13,7 @@ export async function GET() {
             .populate('userId', 'name email')
             .sort({ createdAt: -1 });
 
-        return NextResponse.json({ success: true, message: 'Reviews fetched', payload: reviews });
+        return NextResponse.json({ success: true, message: 'Reviews fetched', data: reviews });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -29,7 +29,7 @@ export async function POST(req) {
         if (!rate || !comment) return NextResponse.json({ success: false, message: 'Rate and comment are required' }, { status: 400 });
 
         const review = await Review.create({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             rate: Number(rate),
             comment,
             isApproved: false
@@ -38,7 +38,7 @@ export async function POST(req) {
         return NextResponse.json({
             success: true,
             message: 'Review submitted successfully! It will appear after approval.',
-            payload: review
+            data: review
         }, { status: 201 });
 
     } catch (error) {
@@ -57,7 +57,7 @@ export async function PATCH(req) {
 
         if (!review) return NextResponse.json({ success: false, message: 'Review not found' }, { status: 404 });
 
-        return NextResponse.json({ success: true, message: 'Review status updated', payload: review });
+        return NextResponse.json({ success: true, message: 'Review status updated', data: review });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

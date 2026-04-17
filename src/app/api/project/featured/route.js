@@ -12,7 +12,7 @@ export async function GET() {
         return NextResponse.json({
             success: true,
             message: 'Projects fetched successfully',
-            payload: projects
+            data: projects
         }, { status: 200 });
         
     } catch (error) {
@@ -42,7 +42,7 @@ export async function POST(req) {
         return NextResponse.json({
             success: true,
             message: project.isFeatured ? 'Added to featured' : 'Removed from featured',
-            payload: project.isFeatured
+            data: project.isFeatured
         }, { status: 200 });
 
     } catch (error) {

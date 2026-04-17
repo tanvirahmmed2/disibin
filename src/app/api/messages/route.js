@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/database/db";
 import Message from "@/lib/models/Message";
-import { User } from "@/lib/models/User";
+import { User } from "@/lib/models/user";
 
 export async function GET(req) {
     try {
@@ -21,7 +21,7 @@ export async function GET(req) {
             ]
         }).sort({ createdAt: 1 });
 
-        return NextResponse.json({ success: true, payload: messages });
+        return NextResponse.json({ success: true, message: 'Messages fetched', data: messages });
     } catch (error) {
         console.error("GET Messages Error:", error);
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -46,7 +46,7 @@ export async function POST(req) {
             attachments: attachments || []
         });
 
-        return NextResponse.json({ success: true, payload: newMessage });
+        return NextResponse.json({ success: true, message: 'Message sent', data: newMessage });
     } catch (error) {
         console.error("POST Message Error:", error);
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

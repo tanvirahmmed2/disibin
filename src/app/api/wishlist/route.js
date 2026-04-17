@@ -11,7 +11,7 @@ export async function GET(req) {
         if (!userId) return NextResponse.json({ success: false, message: "User ID required" }, { status: 400 });
 
         const items = await Wishlist.find({ userId }).sort({ createdAt: -1 });
-        return NextResponse.json({ success: true, payload: items });
+        return NextResponse.json({ success: true, message: 'Wishlist fetched', data: items });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -33,7 +33,7 @@ export async function POST(req) {
             userId, itemId, type, title, price, image, slug, metadata
         });
 
-        return NextResponse.json({ success: true, payload: newItem });
+        return NextResponse.json({ success: true, message: 'Item added to wishlist', data: newItem });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

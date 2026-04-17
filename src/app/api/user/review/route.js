@@ -9,9 +9,9 @@ export async function GET() {
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
-        const reviews = await Review.find({ userId: auth.payload._id }).sort({ createdAt: -1 });
+        const reviews = await Review.find({ userId: auth.data._id }).sort({ createdAt: -1 });
 
-        return NextResponse.json({ success: true, message: 'Review found', payload: reviews });
+        return NextResponse.json({ success: true, message: 'Review found', data: reviews });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

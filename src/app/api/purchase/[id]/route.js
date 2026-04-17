@@ -10,7 +10,7 @@ export async function GET(req, { params }) {
         const purchase = await Purchase.findById(id);
         if (!purchase) return NextResponse.json({ success: false, message: "Purchase not found" }, { status: 404 });
 
-        return NextResponse.json({ success: true, payload: purchase });
+        return NextResponse.json({ success: true, message: 'Purchase record found', data: purchase });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

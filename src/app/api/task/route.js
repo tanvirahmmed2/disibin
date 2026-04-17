@@ -14,7 +14,7 @@ export async function GET(req) {
 
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
-        const user = auth.payload;
+        const user = auth.data;
 
         if (mode === 'conversations') {
             
@@ -25,7 +25,7 @@ export async function GET(req) {
             .populate('participants', 'name email role image')
             .sort({ updatedAt: -1 });
             
-            return NextResponse.json({ success: true, payload: chats });
+            return NextResponse.json({ success: true, message: 'Conversations fetched', data: chats });
         }
 
         const isMgmt = ['admin', 'manager', 'project_manager'].includes(user.role);
@@ -41,7 +41,7 @@ export async function GET(req) {
             .populate('participants', 'name email role')
             .sort({ updatedAt: -1 });
 
-        return NextResponse.json({ success: true, payload: tasks });
+        return NextResponse.json({ success: true, message: 'Tasks fetched', data: tasks });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -65,7 +65,7 @@ export async function POST(req) {
             title,
             description,
             type,
-            createdBy: auth.payload._id,
+            createdBy: auth.data._id,
             assignedTo,
             participants: participants || [],
             priority: priority || 'medium',
@@ -75,7 +75,7 @@ export async function POST(req) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'create',
             targetType: 'task',
             targetId: task._id,
@@ -83,7 +83,7 @@ export async function POST(req) {
             metadata: { type: task.type, priority: task.priority }
         });
 
-        return NextResponse.json({ success: true, message: 'Task created successfully', payload: task });
+        return NextResponse.json({ success: true, message: 'Task created successfully', data: task });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -109,14 +109,14 @@ export async function PATCH(req) {
         
         if (message) {
             task.messages.push({
-                senderId: auth.payload._id,
+                senderId: auth.data._id,
                 message,
                 attachments: attachments || [],
                 type: 'text'
             });
             task.lastMessage = {
                 message,
-                senderId: auth.payload._id,
+                senderId: auth.data._id,
                 createdAt: new Date()
             };
         }
@@ -125,14 +125,14 @@ export async function PATCH(req) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'update',
             targetType: 'task',
             targetId: task._id,
             description: status ? `Updated task status to ${status}: ${task.title}` : `Added comment to task: ${task.title}`
         });
 
-        return NextResponse.json({ success: true, message: 'Task updated', payload: task });
+        return NextResponse.json({ success: true, message: 'Task updated', data: task });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -153,7 +153,7 @@ export async function DELETE(req) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'delete',
             targetType: 'task',
             targetId: id,

@@ -26,7 +26,7 @@ const ActivityLogView = ({ title = "System Activity Log" }) => {
             })
             const res = await axios.get(`/api/logs?${params.toString()}`, { withCredentials: true })
             if (res.data.success) {
-                setLogs(res.data.payload)
+                setLogs(res.data.data)
                 setPagination(res.data.pagination)
             }
         } catch (error) {

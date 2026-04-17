@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/database/db";
 import User from "@/lib/models/user";
-import { isLogin, isManager } from "@/lib/middleware";
+import { isLogin, isManager, isProjectManager } from "@/lib/middleware";
 
 export async function GET(req) {
     try {
@@ -24,7 +24,7 @@ export async function GET(req) {
         return NextResponse.json({
             success: true,
             message: 'User data found successfully',
-            payload: users
+            data: users
         }, { status: 200 });
 
     } catch (error) {
@@ -43,8 +43,8 @@ export async function PATCH(req) {
         const body = await req.json();
         const { 
             id, name, phone, city, country, 
-            address_line1, address_line2, state, 
-            postal_code, 
+            addressLine1, addressLine2, state, 
+            postalCode, 
             role, isActive 
         } = body;
 
@@ -53,7 +53,7 @@ export async function PATCH(req) {
         }
 
         
-        const isManagement = auth.payload.role === 'admin' || auth.payload.role === 'manager';
+        const isManagement = auth.data.role === 'admin' || auth.data.role === 'manager';
         
         const targetUser = await User.findById(id);
         if (!targetUser) {
@@ -62,7 +62,7 @@ export async function PATCH(req) {
 
         
         if (targetUser.role === 'admin' && role && role !== 'admin') {
-            if (!isManagement || auth.payload.role !== 'admin') {
+            if (!isManagement || auth.data.role !== 'admin') {
                 return NextResponse.json({ success: false, message: 'Unauthorized role change' }, { status: 403 });
             }
             const adminCount = await User.countDocuments({ role: 'admin' });
@@ -80,14 +80,14 @@ export async function PATCH(req) {
             phone: phone || targetUser.phone,
             city: city !== undefined ? city : targetUser.city,
             country: country !== undefined ? country : targetUser.country,
-            address_line1: address_line1 !== undefined ? address_line1 : targetUser.address_line1,
-            address_line2: address_line2 !== undefined ? address_line2 : targetUser.address_line2,
+            addressLine1: addressLine1 !== undefined ? addressLine1 : targetUser.addressLine1,
+            addressLine2: addressLine2 !== undefined ? addressLine2 : targetUser.addressLine2,
             state: state !== undefined ? state : targetUser.state,
-            postal_code: postal_code !== undefined ? postal_code : targetUser.postal_code,
+            postalCode: postalCode !== undefined ? postalCode : targetUser.postalCode,
         };
 
         if (isManagement) {
-            if (role && (auth.payload.role === 'admin' || (auth.payload.role === 'manager' && role !== 'admin'))) {
+            if (role && (auth.data.role === 'admin' || (auth.data.role === 'manager' && role !== 'admin'))) {
                 updateData.role = role;
             }
             if (isActive !== undefined) {
@@ -100,7 +100,7 @@ export async function PATCH(req) {
         return NextResponse.json({
             success: true,
             message: 'Profile updated successfully',
-            payload: updatedUser
+            data: updatedUser
         }, { status: 200 });
 
     } catch (error) {
@@ -110,4 +110,4 @@ export async function PATCH(req) {
             error: error.message 
         }, { status: 500 });
     }
-}
+}

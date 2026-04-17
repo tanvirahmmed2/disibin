@@ -22,7 +22,8 @@ export async function GET(req, { params }) {
 
         return NextResponse.json({
             success: true,
-            payload: membership
+            message: 'Membership fetched successfully',
+            data: membership
         }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -82,7 +83,7 @@ export async function PATCH(req, { params }) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'update',
             targetType: 'membership',
             targetId: updated._id,
@@ -93,7 +94,7 @@ export async function PATCH(req, { params }) {
         return NextResponse.json({
             success: true,
             message: 'Membership updated successfully',
-            payload: updated
+            data: updated
         });
 
     } catch (error) {
@@ -119,7 +120,7 @@ export async function DELETE(req, { params }) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'delete',
             targetType: 'membership',
             targetId: id,

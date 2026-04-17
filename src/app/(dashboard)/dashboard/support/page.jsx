@@ -16,7 +16,7 @@ const SupportDashboard = () => {
         try {
             const endpoint = view === 'tickets' ? '/api/ticket' : '/api/support'
             const res = await axios.get(endpoint)
-            setData(res.data.payload)
+            setData(res.data.data)
         } catch (error) {
             console.error('Failed to fetch data', error)
         } finally {

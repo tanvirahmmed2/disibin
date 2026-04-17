@@ -10,7 +10,7 @@ export async function GET() {
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
-        const user = auth.payload;
+        const user = auth.data;
         let query = {};
 
         
@@ -25,7 +25,8 @@ export async function GET() {
 
         return NextResponse.json({
             success: true,
-            payload: subscriptions
+            message: 'Subscriptions fetched successfully',
+            data: subscriptions
         }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -54,7 +55,7 @@ export async function POST(req) {
         const total = price - discount;
 
         const subscription = await Subscription.create({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             membershipId,
             status: 'pending',
             payStatus: 'pending',
@@ -69,7 +70,7 @@ export async function POST(req) {
         return NextResponse.json({
             success: true,
             message: 'Subscription request submitted successfully!',
-            payload: subscription
+            data: subscription
         }, { status: 201 });
 
     } catch (error) {
@@ -96,7 +97,7 @@ export async function PATCH(req) {
         return NextResponse.json({
             success: true,
             message: 'Subscription status updated successfully',
-            payload: subscription
+            data: subscription
         });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

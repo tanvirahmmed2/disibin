@@ -40,7 +40,7 @@ export async function POST(req) {
         return NextResponse.json({
             success: true,
             message: 'Registration successful! Please check your email to verify your account.',
-            payload: { id: user._id, name: user.name, email: user.email }
+            data: { id: user._id, name: user.name, email: user.email }
         }, { status: 201 });
 
     } catch (error) {

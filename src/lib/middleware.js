@@ -29,7 +29,7 @@ async function getAuthenticatedUser() {
 export async function isLogin() {
     const user = await getAuthenticatedUser();
     if (!user) return { success: false, message: 'Please login' };
-    return { success: true, payload: user };
+    return { success: true, data: user };
 }
 
 
@@ -38,7 +38,7 @@ export async function isAdmin() {
     if (!user || user.role !== 'admin') {
         return { success: false, message: 'Access denied: Admin only' };
     }
-    return { success: true, payload: user };
+    return { success: true, data: user };
 }
 
 export async function isManager() {
@@ -46,7 +46,7 @@ export async function isManager() {
     if (!user || user.role !== 'manager' && user.role !== 'admin') {
         return { success: false, message: 'Access denied: Manager access required' };
     }
-    return { success: true, payload: user };
+    return { success: true, data: user };
 }
 
 export async function isProjectManager() {
@@ -54,7 +54,7 @@ export async function isProjectManager() {
     if (!user || (user.role !== 'project_manager' && user.role !== 'manager' && user.role !== 'admin')) {
         return { success: false, message: 'Access denied: Project Manager access required' };
     }
-    return { success: true, payload: user };
+    return { success: true, data: user };
 }
 
 export async function isEditor() {
@@ -62,7 +62,7 @@ export async function isEditor() {
     if (!user || (user.role !== 'editor' && user.role !== 'manager' && user.role !== 'admin')) {
         return { success: false, message: 'Access denied: Editor access required' };
     }
-    return { success: true, payload: user };
+    return { success: true, data: user };
 }
 
 export async function isSupport() {
@@ -70,7 +70,7 @@ export async function isSupport() {
     if (!user || (user.role !== 'support' && user.role !== 'manager' && user.role !== 'admin')) {
         return { success: false, message: 'Access denied: Support access required' };
     }
-    return { success: true, payload: user };
+    return { success: true, data: user };
 }
 
 export async function isStaff() {
@@ -78,7 +78,7 @@ export async function isStaff() {
     if (!user || (user.role !== 'staff' && user.role !== 'manager' && user.role !== 'admin')) {
         return { success: false, message: 'Access denied: Staff access required' };
     }
-    return { success: true, payload: user };
+    return { success: true, data: user };
 }
 
 export async function isClient() {
@@ -86,7 +86,7 @@ export async function isClient() {
     if (!user || user.role !== 'client') {
         return { success: false, message: 'Access denied: Client only' };
     }
-    return { success: true, payload: user };
+    return { success: true, data: user };
 }
 
 
@@ -96,5 +96,5 @@ export async function hasRole(allowedRoles) {
     if (!allowedRoles.includes(user.role)) {
         return { success: false, message: 'Access denied' };
     }
-    return { success: true, payload: user };
+    return { success: true, data: user };
 }

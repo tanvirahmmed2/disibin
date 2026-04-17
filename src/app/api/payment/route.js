@@ -21,7 +21,7 @@ export async function POST(req) {
             paymentStatus: 'completed'
         });
 
-        return NextResponse.json({ success: true, payload: payment });
+        return NextResponse.json({ success: true, message: 'Payment processed successfully', data: payment });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

@@ -15,10 +15,10 @@ const userSchema = mongoose.Schema({
     
     city: { type: String, trim: true },
     country: { type: String, trim: true },
-    address_line1: { type: String, trim: true },
-    address_line2: { type: String, trim: true },
+    addressLine1: { type: String, trim: true },
+    addressLine2: { type: String, trim: true },
     state: { type: String, trim: true },
-    postal_code: { type: String, trim: true },
+    postalCode: { type: String, trim: true },
     
     resetToken: { type: String, default: null },
     tokenExpiresAt: { type: Date }

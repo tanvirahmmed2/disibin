@@ -19,7 +19,7 @@ export async function GET() {
         return NextResponse.json({
             success: true,
             message: 'Blog data found successfully',
-            payload: blogs
+            data: blogs
         }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -62,12 +62,12 @@ export async function POST(req) {
             category,
             image: cloudImage.secure_url,
             imageId: cloudImage.public_id,
-            author: auth.payload.name
+            author: auth.data.name
         });
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'create',
             targetType: 'blog',
             targetId: blog._id,
@@ -78,7 +78,7 @@ export async function POST(req) {
         return NextResponse.json({
             success: true,
             message: 'Blog created successfully',
-            payload: blog
+            data: blog
         }, { status: 201 });
 
     } catch (error) {
@@ -128,7 +128,7 @@ export async function PATCH(req) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'update',
             targetType: 'blog',
             targetId: updatedBlog._id,
@@ -139,7 +139,7 @@ export async function PATCH(req) {
         return NextResponse.json({
             success: true,
             message: 'Blog updated successfully',
-            payload: updatedBlog
+            data: updatedBlog
         }, { status: 200 });
 
     } catch (error) {
@@ -165,7 +165,7 @@ export async function DELETE(req) {
 
         // Activity Logging
         await createLog({
-            userId: auth.payload._id,
+            userId: auth.data._id,
             action: 'delete',
             targetType: 'blog',
             targetId: id,
@@ -180,4 +180,4 @@ export async function DELETE(req) {
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
-}
+}

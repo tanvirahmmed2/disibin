@@ -52,7 +52,7 @@ export async function POST(req) {
         const response = NextResponse.json({
             success: true,
             message: `Welcome back, ${user.name}!`,
-            payload: {
+            data: {
                 _id: user._id,
                 name: user.name,
                 email: user.email,

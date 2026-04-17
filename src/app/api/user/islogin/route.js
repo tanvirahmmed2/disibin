@@ -16,7 +16,7 @@ export async function GET() {
         return NextResponse.json({
             success: true,
             message: 'User is authenticated',
-            payload: auth.payload
+            data: auth.data
         }, { status: 200 });
 
     } catch (error) {
