@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/database/db";
 import { Blog } from "@/lib/models/blog";
 import cloudinary from "@/lib/database/cloudinary";
-import { isManager } from "@/lib/middleware";
+import { isEditor } from "@/lib/middleware";
 import { createLog } from "@/lib/utils/logger";
 
 const generateSlug = (title) => {
@@ -18,8 +18,8 @@ export async function GET() {
         const blogs = await Blog.find().sort({ createdAt: -1 });
         return NextResponse.json({
             success: true,
-            message: 'Blog data found successfully',
-            data: blogs
+            message: 'Blogs fetched successfully',
+            payload: blogs
         }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -29,22 +29,26 @@ export async function GET() {
 export async function POST(req) {
     try {
         await connectDB();
-        const auth = await isManager();
+        const auth = await isEditor();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
         const formData = await req.formData();
         const title = formData.get('title');
-        const content = formData.get('content');
-        const category = formData.get('category');
+        const description = formData.get('description');
+        const rawTags = formData.get('tags');           
         const imageFile = formData.get('image');
 
-        if (!title || !content || !category || !imageFile) {
+        if (!title || !description || !imageFile) {
             return NextResponse.json({ success: false, message: 'Missing required fields' }, { status: 400 });
         }
 
         const slug = generateSlug(title);
         const existing = await Blog.findOne({ slug });
-        if (existing) return NextResponse.json({ success: false, message: 'Blog with this title already exists' }, { status: 400 });
+        if (existing) return NextResponse.json({ success: false, message: 'Blog title already exists' }, { status: 400 });
+
+        const tags = rawTags 
+            ? rawTags.split(',').map(tag => tag.trim()).filter(tag => tag !== "") 
+            : [];
 
         const buffer = Buffer.from(await imageFile.arrayBuffer());
         const cloudImage = await new Promise((resolve, reject) => {
@@ -58,28 +62,23 @@ export async function POST(req) {
         const blog = await Blog.create({
             title,
             slug,
-            content,
-            category,
+            description,
+            tags,
             image: cloudImage.secure_url,
             imageId: cloudImage.public_id,
-            author: auth.data.name
+            isPublished: true
         });
 
-        
         await createLog({
             userId: auth.data._id,
             action: 'create',
             targetType: 'blog',
             targetId: blog._id,
-            description: `Published new blog post: ${blog.title}`,
-            metadata: { category: blog.category }
+            description: `Published new blog: ${blog.title}`,
+            metadata: { tags: blog.tags }
         });
 
-        return NextResponse.json({
-            success: true,
-            message: 'Blog created successfully',
-            data: blog
-        }, { status: 201 });
+        return NextResponse.json({ success: true, message: 'Blog created', data: blog }, { status: 201 });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -89,14 +88,14 @@ export async function POST(req) {
 export async function PATCH(req) {
     try {
         await connectDB();
-        const auth = await isManager();
+        const auth = await isEditor();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
         const formData = await req.formData();
         const id = formData.get('id');
         const title = formData.get('title');
-        const content = formData.get('content');
-        const category = formData.get('category');
+        const description = formData.get('description');
+        const rawTags = formData.get('tags');
         const imageFile = formData.get('image');
 
         const blog = await Blog.findById(id);
@@ -107,11 +106,15 @@ export async function PATCH(req) {
             updateData.title = title;
             updateData.slug = generateSlug(title);
         }
-        if (content) updateData.content = content;
-        if (category) updateData.category = category;
+        if (description) updateData.description = description;
+        
+        if (rawTags !== null) {
+            updateData.tags = rawTags.split(',').map(tag => tag.trim()).filter(tag => tag !== "");
+        }
 
         if (imageFile && typeof imageFile !== 'string') {
-            await cloudinary.uploader.destroy(blog.imageId);
+            if (blog.imageId) await cloudinary.uploader.destroy(blog.imageId);
+            
             const buffer = Buffer.from(await imageFile.arrayBuffer());
             const cloudImage = await new Promise((resolve, reject) => {
                 const stream = cloudinary.uploader.upload_stream(
@@ -126,21 +129,16 @@ export async function PATCH(req) {
 
         const updatedBlog = await Blog.findByIdAndUpdate(id, updateData, { new: true });
 
-        
         await createLog({
             userId: auth.data._id,
             action: 'update',
             targetType: 'blog',
             targetId: updatedBlog._id,
-            description: `Updated blog post: ${updatedBlog.title}`,
+            description: `Updated blog: ${updatedBlog.title}`,
             metadata: { updatedFields: Object.keys(updateData) }
         });
 
-        return NextResponse.json({
-            success: true,
-            message: 'Blog updated successfully',
-            data: updatedBlog
-        }, { status: 200 });
+        return NextResponse.json({ success: true, message: 'Blog updated', data: updatedBlog }, { status: 200 });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -150,32 +148,26 @@ export async function PATCH(req) {
 export async function DELETE(req) {
     try {
         await connectDB();
-        const auth = await isManager();
+        const auth = await isEditor();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
         const { id } = await req.json();
         const blog = await Blog.findById(id);
         if (!blog) return NextResponse.json({ success: false, message: 'Blog not found' }, { status: 404 });
 
-        if (blog.imageId) {
-            await cloudinary.uploader.destroy(blog.imageId);
-        }
+        if (blog.imageId) await cloudinary.uploader.destroy(blog.imageId);
 
         await Blog.findByIdAndDelete(id);
 
-        
         await createLog({
             userId: auth.data._id,
             action: 'delete',
             targetType: 'blog',
             targetId: id,
-            description: `Deleted blog post: ${blog.title}`
+            description: `Deleted blog: ${blog.title}`
         });
 
-        return NextResponse.json({
-            success: true,
-            message: 'Blog deleted successfully'
-        }, { status: 200 });
+        return NextResponse.json({ success: true, message: 'Blog deleted' }, { status: 200 });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

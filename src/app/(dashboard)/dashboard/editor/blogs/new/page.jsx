@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 const NewBlogPage = () => {
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 w-full">
             <div className="flex flex-col gap-4">
                 <Link 
                     href="/dashboard/editor/blogs" 
@@ -20,7 +20,7 @@ const NewBlogPage = () => {
                 </div>
             </div>
 
-            <div className="bg-white p-10 rounded-[3rem] border border-slate-50 shadow-sm">
+            <div className="bg-white p-10 rounded-[3rem] border border-slate-50 shadow-sm w-full">
                 <AddNewBlogForm />
             </div>
         </div>

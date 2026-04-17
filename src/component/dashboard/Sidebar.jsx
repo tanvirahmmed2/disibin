@@ -28,9 +28,9 @@ const SidebarItem = ({ item, collapsed }) => {
         <Link 
             href={item.href}
             className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-300 group
-                ${isActive ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'text-slate-500 hover:bg-primary/5 hover:text-primary'}`}
+                ${isActive ? 'bg-emerald-500 text-white shadow-lg shadow-primary/30' : 'text-slate-500 hover:bg-emerald-500/5 hover:text-emerald-600'}`}
         >
-            <item.icon className={`text-xl flex-shrink-0 transition-colors ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-primary'}`} />
+            <item.icon className={`text-xl shrink-0 transition-colors ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-emerald-600'}`} />
             {!collapsed && <span className="font-medium whitespace-nowrap">{item.label}</span>}
         </Link>
     )
@@ -96,7 +96,7 @@ const Sidebar = ({ collapsed }) => {
     return (
         <aside className={`${collapsed ? 'w-20' : 'w-64'} bg-white border-r border-slate-100 h-screen sticky top-0 transition-all duration-300 flex flex-col p-4 gap-8 z-30 shadow-sm font-sans`}>
             <div className={`flex items-center ${collapsed ? 'justify-center' : 'px-2'} gap-3 mt-2`}>
-                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-primary/20">
+                <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-primary/20">
                     D
                 </div>
                 {!collapsed && <Link href={'/'} className="text-2xl font-black text-slate-800 tracking-tight">Disibin</Link>}
@@ -129,9 +129,9 @@ const Sidebar = ({ collapsed }) => {
                 />
                 <button 
                   onClick={() => handleLogout()}
-                  className={`flex items-center gap-3 px-3 py-3 rounded-xl text-primary hover:bg-primary transition-all duration-300 group
+                  className={`flex items-center gap-3 px-3 py-3 rounded-xl text-emerald-600 hover:bg-emerald-500 transition-all duration-300 group
                     ${collapsed ? 'justify-center' : ''}`}>
-                    <RiLogoutBoxRLine className="text-xl text-primary group-hover:text-primary transition-colors" />
+                    <RiLogoutBoxRLine className="text-xl text-emerald-600 group-hover:text-emerald-600 transition-colors" />
                     {!collapsed && <span className="font-bold">Logout</span>}
                 </button>
             </div>

@@ -29,7 +29,7 @@ export async function GET(req, { params }) {
         return NextResponse.json({
             success: true,
             message: 'blog data found successfully',
-            data: blog
+            payload: blog
         }, { status: 200 });
 
     } catch (error) {

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/database/db";
 import { Project } from "@/lib/models/project";
 import cloudinary from "@/lib/database/cloudinary";
-import { isLogin, isManager, isProjectManager } from "@/lib/middleware";
+import { isEditor } from "@/lib/middleware";
 import { createLog } from "@/lib/utils/logger";
 
 const generateSlug = (title) => {
@@ -15,14 +15,12 @@ const generateSlug = (title) => {
 export async function GET(req) {
     try {
         await connectDB();
-        
         const projects = await Project.find({}).sort({ createdAt: -1 });
         return NextResponse.json({
             success: true,
             message: 'Projects fetched successfully',
             payload: projects
         }, { status: 200 });
-
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -31,23 +29,23 @@ export async function GET(req) {
 export async function POST(req) {
     try {
         await connectDB();
-        const auth = await isProjectManager();
+        const auth = await isEditor();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
 
         const formData = await req.formData();
         const title = formData.get('title');
         const description = formData.get('description');
         const category = formData.get('category');
-        const clientId = formData.get('clientId');
+        const preview = formData.get('preview'); 
         const imageFile = formData.get('image');
 
-        if (!title || !description || !category || !imageFile) {
+        if (!title || !description || !category || !preview || !imageFile) {
             return NextResponse.json({ success: false, message: 'Missing required fields' }, { status: 400 });
         }
 
         const slug = generateSlug(title);
         const existing = await Project.findOne({ slug });
-        if (existing) return NextResponse.json({ success: false, message: 'Slug already exists' }, { status: 400 });
+        if (existing) return NextResponse.json({ success: false, message: 'Project title/slug already exists' }, { status: 400 });
 
         const buffer = Buffer.from(await imageFile.arrayBuffer());
         const cloudImage = await new Promise((resolve, reject) => {
@@ -63,20 +61,18 @@ export async function POST(req) {
             slug,
             description,
             category,
-            clientId: clientId || null,
+            preview,
             image: cloudImage.secure_url,
-            imageId: cloudImage.public_id,
-            status: 'pending'
+            imageId: cloudImage.public_id
         });
 
-        
         await createLog({
             userId: auth.data._id,
             action: 'create',
             targetType: 'project',
             targetId: project._id,
             description: `Created new project: ${project.title}`,
-            metadata: { category: project.category, clientId: project.clientId }
+            metadata: { category: project.category }
         });
 
         return NextResponse.json({ success: true, message: 'Project created', data: project });
@@ -89,31 +85,36 @@ export async function POST(req) {
 export async function PATCH(req) {
     try {
         await connectDB();
-        const auth = await isProjectManager();
+        const auth = await isEditor();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
 
         const formData = await req.formData();
         const id = formData.get('id');
-        const title = formData.get('title');
-        const description = formData.get('description');
-        const status = formData.get('status');
-        const imageFile = formData.get('image');
+        
+        if (!id) return NextResponse.json({ success: false, message: 'Project ID is required' }, { status: 400 });
 
         const project = await Project.findById(id);
         if (!project) return NextResponse.json({ success: false, message: 'Project not found' }, { status: 404 });
 
         const updateData = {};
-        if (title) {
-            updateData.title = title;
-            updateData.slug = generateSlug(title);
-        }
-        if (description) updateData.description = description;
-        if (status) updateData.status = status;
+        const fields = ['title', 'description', 'category', 'preview'];
+        
+        fields.forEach(field => {
+            const value = formData.get(field);
+            if (value) updateData[field] = value;
+        });
 
+        if (updateData.title) {
+            updateData.slug = generateSlug(updateData.title);
+        }
+
+        const imageFile = formData.get('image');
         if (imageFile && typeof imageFile !== 'string') {
+            // Delete old image
             if (project.imageId) {
                 await cloudinary.uploader.destroy(project.imageId);
             }
+            // Upload new image
             const buffer = Buffer.from(await imageFile.arrayBuffer());
             const cloudImage = await new Promise((resolve, reject) => {
                 const stream = cloudinary.uploader.upload_stream(
@@ -128,13 +129,12 @@ export async function PATCH(req) {
 
         const updated = await Project.findByIdAndUpdate(id, updateData, { new: true });
 
-        
         await createLog({
             userId: auth.data._id,
             action: 'update',
             targetType: 'project',
             targetId: updated._id,
-            description: `Updated project: ${updated.title} (Status: ${updated.status})`,
+            description: `Updated project: ${updated.title}`,
             metadata: { updatedFields: Object.keys(updateData) }
         });
 
@@ -148,7 +148,7 @@ export async function PATCH(req) {
 export async function DELETE(req) {
     try {
         await connectDB();
-        const auth = await isManager();
+        const auth = await isEditor();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
 
         const { id } = await req.json();
@@ -161,7 +161,6 @@ export async function DELETE(req) {
 
         await Project.findByIdAndDelete(id);
 
-        
         await createLog({
             userId: auth.data._id,
             action: 'delete',

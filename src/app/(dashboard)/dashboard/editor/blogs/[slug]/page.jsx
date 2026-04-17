@@ -7,38 +7,38 @@ import axios from 'axios'
 import { useParams } from 'next/navigation'
 
 const EditBlogPage = () => {
-    const { id } = useParams()
+    const { slug } = useParams()
     const [blog, setBlog] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const fetchBlog = async () => {
             try {
-                const res = await axios.get(`/api/blog/${id}`)
-                setBlog(res.data.data)
+                const res = await axios.get(`/api/blog/${slug}`)
+                setBlog(res.data.payload)
             } catch (error) {
                 console.error('Failed to fetch blog', error)
             } finally {
                 setLoading(false)
             }
         }
-        if (id) fetchBlog()
-    }, [id])
+        if (slug) fetchBlog()
+    }, [slug])
 
     if (loading) return (
-        <div className="flex items-center justify-center min-h-[400px]">
-            <div className="w-12 h-12 border-4 border-slate-50 border-t-primary rounded-full animate-spin"></div>
+        <div className="flex items-center justify-center min-h-100">
+            <div className="w-12 h-12 border-4 border-slate-50 border-t-emerald-500 rounded-full animate-spin"></div>
         </div>
     )
 
-    if (!blog) return <div className="p-10 text-center font-bold text-slate-400 font-black uppercase tracking-widest">Article Not Found</div>
+    if (!blog) return <div className="p-10 text-center font-bold text-slate-400  uppercase tracking-widest">Article Not Found</div>
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 w-full">
             <div className="flex flex-col gap-4">
                 <Link 
                     href="/dashboard/editor/blogs" 
-                    className="flex items-center gap-2 text-slate-400 hover:text-primary transition-colors font-bold text-xs uppercase tracking-widest"
+                    className="flex items-center gap-2 text-slate-400 hover:text-emerald-500 transition-colors font-bold text-xs uppercase tracking-widest"
                 >
                     <RiArrowLeftLine size={16} /> Back to Repository
                 </Link>
@@ -48,7 +48,7 @@ const EditBlogPage = () => {
                 </div>
             </div>
 
-            <div className="bg-white p-10 rounded-[3rem] border border-slate-50 shadow-sm">
+            <div className="bg-white p-10 rounded-[3rem] border border-slate-50 shadow-sm w-full">
                 <UpdateBlogForm blog={blog} />
             </div>
         </div>

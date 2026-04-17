@@ -4,8 +4,8 @@ import React from 'react'
 
 const BlogCard = ({ blog }) => {
     return (
-        <Link href={`/blogs/${blog.slug}`} className='group flex flex-col bg-white overflow-hidden rounded-[2rem] border border-slate-100 hover:border-primary/10 transition-all duration-500'>
-            <div className='w-full aspect-[16/10] relative overflow-hidden bg-slate-50 border-b border-slate-50'>
+        <Link href={`/blogs/${blog.slug}`} className='group w-full flex flex-col shadow bg-white overflow-hidden rounded-xl border border-slate-100 hover:border-primary/10 transition-all duration-500'>
+            <div className='w-full aspect-16/10 relative overflow-hidden bg-slate-50 border-b border-slate-50'>
                 <Image 
                     src={blog.image} 
                     alt={blog.title} 
@@ -13,7 +13,7 @@ const BlogCard = ({ blog }) => {
                     className='object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000' 
                 />
             </div>
-            <div className='p-8 flex flex-col flex-1 space-y-6'>
+            <div className='p-4 w-full flex flex-col flex-1 space-y-6'>
                 <div className='space-y-3'>
                     <div className='flex items-center gap-2'>
                         <span className='w-1 h-1 rounded-full bg-primary/50' />
