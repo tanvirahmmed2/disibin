@@ -17,7 +17,7 @@ const OffersPage = async () => {
       </div>
     </div>
   )
-  const offers = data.payload
+  const offers = data.payload || []
 
     return (
     <main className='w-full min-h-screen bg-white pt-20'>

@@ -17,7 +17,7 @@ export async function GET(req) {
         }
 
         const offers = await Offer.find({ status: 'active' }).sort({ createdAt: -1 });
-        return NextResponse.json({ success: true, message: 'Offers fetched', data: offers });
+        return NextResponse.json({ success: true, message: 'Offers fetched',payload: offers });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

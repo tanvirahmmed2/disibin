@@ -20,7 +20,7 @@ export async function GET() {
         return NextResponse.json({
             success: true,
             message: 'Packages fetched successfully',
-            data: packages
+            payload: packages
         }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

@@ -4,6 +4,7 @@ import axios from 'axios'
 import Link from 'next/link'
 import { Context } from '@/component/helper/Context'
 import { RiCheckLine, RiArrowRightLine, RiStarFill } from 'react-icons/ri'
+import Image from 'next/image'
 
 const ServiceDetails = ({ params }) => {
     const { title } = use(params)
@@ -33,7 +34,7 @@ const ServiceDetails = ({ params }) => {
         <div className="min-h-screen flex items-center justify-center bg-white">
             <div className="text-center">
                 <h2 className="text-2xl font-black text-slate-800">Service Not Found</h2>
-                <Link href="/services" className="mt-4 inline-block text-primary font-bold hover:underline">Back to Services</Link>
+                <Link href="/services" className="mt-4 inline-block text-emerald-500 font-bold hover:underline">Back to Services</Link>
             </div>
         </div>
     )
@@ -46,11 +47,11 @@ const ServiceDetails = ({ params }) => {
                 <div className="container-custom grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
                     <div className="space-y-10">
                         <div className="space-y-4">
-                            <span className="px-4 py-1.5 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.3em] rounded-full w-fit inline-block">
+                            <span className="px-4 py-1.5 bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase tracking-[0.3em] rounded-full w-fit inline-block">
                                 Premium Solution
                             </span>
                             <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none">
-                                {service.title}<span className="text-primary">.</span>
+                                {service.title}<span className="text-emerald-500">.</span>
                             </h1>
                         </div>
                         <p className="text-slate-500 text-lg font-medium leading-relaxed max-w-xl">
@@ -66,8 +67,10 @@ const ServiceDetails = ({ params }) => {
                         </div>
                     </div>
                     
-                    <div className="relative aspect-square lg:aspect-[4/3] rounded-[3rem] overflow-hidden bg-slate-100 shadow-2xl">
-                         <img 
+                    <div className="relative aspect-square lg:aspect-4/3 rounded-[3rem] overflow-hidden bg-slate-100 shadow-2xl">
+                         <Image
+                         width={1000}
+                         height={1000}
                             src={service.image} 
                             alt={service.title} 
                             className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
@@ -88,10 +91,10 @@ const ServiceDetails = ({ params }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {service.sections?.map((section) => (
                             <div key={section.id} className="p-10 bg-white border border-slate-100 rounded-[2.5rem] group hover:border-primary/20 transition-all duration-500">
-                                <div className="w-12 h-12 bg-slate-50 text-slate-300 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all">
+                                <div className="w-12 h-12 bg-slate-50 text-slate-300 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-emerald-500 group-hover:text-white transition-all">
                                     <RiCheckLine size={20} />
                                 </div>
-                                <h3 className="text-xl font-black text-slate-900 mb-4 tracking-tight uppercase text-xs">{section.title}</h3>
+                                <h3 className="md:text-xl font-black text-slate-900 mb-4 tracking-tight uppercase text-xs">{section.title}</h3>
                                 <p className="text-slate-500 text-sm font-medium leading-relaxed">
                                     {section.description}
                                 </p>
@@ -120,16 +123,16 @@ const ServiceDetails = ({ params }) => {
                             {memberships.slice(0, 3).map((plan) => (
                                 <div key={plan._id} className="p-12 bg-white border border-slate-100 rounded-[3rem] flex flex-col space-y-10 group hover:border-slate-900 transition-all duration-500">
                                      <div className="space-y-4 text-center">
-                                         <div className="w-16 h-16 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto text-slate-300 group-hover:text-primary transition-colors">
+                                         <div className="w-16 h-16 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto text-slate-300 group-hover:text-emerald-500 transition-colors">
                                              <RiStarFill size={32} />
                                          </div>
                                          <h4 className="text-2xl font-black text-slate-900 tracking-tight">{plan.title}</h4>
                                      </div>
                                      <div className="text-center">
                                          <p className="text-[40px] font-black text-slate-900 tracking-tighter">${plan.price}</p>
-                                         <p className="text-[10px] font-black uppercase tracking-widest text-primary">{plan.duration}</p>
+                                         <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500">{plan.duration}</p>
                                      </div>
-                                     <Link href="/memberships" className="w-full py-5 bg-slate-900 text-white rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest text-center hover:bg-primary transition-all duration-300">
+                                     <Link href="/memberships" className="w-full py-5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest text-center hover:bg-emerald-500 transition-all duration-300">
                                          Commence Plan
                                      </Link>
                                 </div>

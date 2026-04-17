@@ -17,11 +17,11 @@ const packagesPage = async () => {
       </div>
     </div>
   )
-  const packages = data.payload
+  const packages = data.payload || []
 
     return (
     <main className='w-full min-h-screen bg-white pt-20'>
-      <section className='py-24 border-b border-slate-50'>
+      <section className='py-6 border-b border-slate-50'>
         <div className="container-custom">
             <div className="max-w-3xl">
                 <span className='px-4 py-1.5 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.3em] rounded-full inline-block mb-6'>Solutions</span>
@@ -31,7 +31,7 @@ const packagesPage = async () => {
         </div>
       </section>
 
-      <section className='py-24 bg-slate-50/30'>
+      <section className='py-6 bg-slate-50/30'>
         <div className='container-custom'>
             {packages.length === 0 ? (
             <div className="p-24 text-center border-2 border-dashed border-slate-200 rounded-[3rem]">
