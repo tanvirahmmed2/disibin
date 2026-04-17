@@ -27,7 +27,7 @@
   }
   
   .btn-primary {
-    @apply px-10 py-5 bg-primary text-white font-black uppercase tracking-widest text-[11px] rounded-2xl hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20 active:scale-95 transition-all cursor-pointer;
+    @apply px-10 py-5 bg-emerald-400 text-white font-black uppercase tracking-widest text-[11px] rounded-2xl hover:bg-emerald-600 hover:shadow-lg hover:shadow-primary/20 active:scale-95 transition-all cursor-pointer;
   }
   
   .btn-secondary {
@@ -35,7 +35,7 @@
   }
 
   .input-standard {
-    @apply w-full px-8 py-6 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-primary/20 focus:bg-white outline-none transition-all font-bold text-slate-800 placeholder:text-slate-400 text-sm shadow-inner;
+    @apply w-full px-4 p-2 rounded-xl outline-none border border-emerald-200;
   }
 }
 

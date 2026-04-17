@@ -6,7 +6,7 @@ import { Typewriter } from 'react-simple-typewriter'
 
 const Intro = () => {
   return (
-    <section className='relative w-full min-h-screen flex items-center justify-center pt-20 bg-primary overflow-hidden'>
+    <section className='relative w-full min-h-screen flex items-center justify-center pt-20 bg-emerald-500 overflow-hidden'>
       
       <div className='absolute top-0 left-0 w-full h-full opacity-10'>
         <div className='absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-white rounded-full blur-[150px]' />
@@ -61,7 +61,7 @@ const Intro = () => {
           transition={{ delay: 0.8, duration: 0.8 }}
           className='flex flex-wrap items-center justify-center gap-6 pt-6'
         >
-          <Link href='/packages' className='px-12 py-6 bg-white text-primary font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-slate-50 hover:shadow-2xl hover:shadow-white/20 transition-all active:scale-95'>
+          <Link href='/packages' className='px-12 py-6 bg-white text-emerald-500 font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-slate-50 hover:shadow-2xl hover:shadow-white/20 transition-all active:scale-95'>
             Get Started
           </Link>
           <Link href='/projects' className='px-12 py-6 bg-transparent text-white border-2 border-white/20 font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-white/10 transition-all active:scale-95'>

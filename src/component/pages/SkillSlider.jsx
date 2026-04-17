@@ -48,9 +48,9 @@ const skills = [
 
 const SkillSlider = () => {
   return (
-    <section className="w-full py-32 bg-white overflow-hidden border-y border-slate-50">
+    <section className="w-full py-32 bg-emerald-500  overflow-hidden border-y border-slate-50">
       <div className="container-custom mb-16 text-center">
-         <span className='text-primary font-black tracking-[0.4em] uppercase text-[10px] mb-4 inline-block'>Infrastructure</span>
+         <span className='text-emerald-500 font-black tracking-[0.4em] uppercase text-[10px] mb-4 inline-block'>Infrastructure</span>
          <h2 className='text-4xl md:text-5xl font-black text-slate-900 tracking-tighter'>The Stack We Master.</h2>
       </div>
 
@@ -61,7 +61,7 @@ const SkillSlider = () => {
           return (
             <div
               key={index}
-              className="flex items-center gap-4 text-slate-200 group hover:text-primary/50 transition-colors duration-500"
+              className="flex items-center gap-4 text-slate-200 group hover:text-emerald-500/50 transition-colors duration-500"
             >
               <Icon size={40} className="filter grayscale group-hover:grayscale-0 transition-all" />
               <span className='text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all'>{skill.name}</span>
@@ -75,7 +75,7 @@ const SkillSlider = () => {
             {skills.map((skill) => (
             <span 
                 key={skill.name} 
-                className='px-6 py-2.5 bg-slate-50 text-slate-400 text-[9px] font-black uppercase tracking-widest rounded-full border border-slate-100 hover:border-primary/10 hover:text-primary transition-all cursor-default'
+                className='px-6 py-2.5 bg-slate-50 text-slate-400 text-[9px] font-black uppercase tracking-widest rounded-full border border-slate-100 hover:border-emerald-500/10 hover:text-emerald-500 transition-all cursor-default'
             >
                 {skill.name}
             </span>
