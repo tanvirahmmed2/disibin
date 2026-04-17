@@ -10,16 +10,16 @@ const LoginPage = () => {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary rounded-full blur-3xl opacity-50"></div>
       </div>
 
-      <div className='w-full max-w-[1000px] bg-white rounded-[2.5rem] shadow-premium flex flex-col md:flex-row overflow-hidden relative z-10 m-4'>
+      <div className='w-full max-w-4xl bg-white rounded-[2.5rem] shadow-premium flex flex-col md:flex-row overflow-hidden relative z-10 m-4'>
         
-        <div className='flex-1 bg-primary p-12 text-white flex flex-col justify-center relative overflow-hidden hidden md:flex'>
+        <div className='flex-1 bg-emerald-500 p-12 text-white  flex-col justify-center relative overflow-hidden hidden md:flex'>
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-2xl -mr-20 -mt-20"></div>
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-2xl -ml-20 -mb-20"></div>
           
           <div className="relative z-10">
             <h1 className="text-5xl font-black tracking-tight mb-4">Disibin</h1>
             <p className="text-primary/5 text-xl font-medium mb-8">Your ultimate digital assistant.</p>
-            <div className="space-y-4 text-primary/10">
+            <div className="space-y-4 text-white">
               <p className="flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-white"></span> Manage your business seamlessly.</p>
               <p className="flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-white"></span> Track your orders and support tickets.</p>
               <p className="flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-white"></span> Scale your digital empire.</p>

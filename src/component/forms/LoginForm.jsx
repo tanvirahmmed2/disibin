@@ -79,14 +79,14 @@ const LoginForm = () => {
             </div>
 
             <div className='w-full flex flex-row items-center justify-between mt-2'>
-                <Link className='text-sm font-bold text-slate-500 hover:text-primary transition-colors' href={'/recover'}>Forgot password?</Link>
-                <Link className='text-sm font-bold text-primary hover:text-primary-dark transition-colors' href={'/register'}>Create account</Link>
+                <Link className='text-sm font-bold text-slate-500  transition-colors' href={'/recover'}>Forgot password?</Link>
+                <Link className='text-sm font-bold  transition-colors' href={'/register'}>Create account</Link>
             </div>
 
             <button 
                 type='submit' 
                 disabled={isLoading}
-                className='w-full mt-4 py-4 bg-primary text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/10 transition-all active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none'
+                className='w-full mt-4 py-4 bg-emerald-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-emerald-400 hover:shadow-lg hover:shadow-primary/10 transition-all active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none'
             >
                 {isLoading ? (
                     <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

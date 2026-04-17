@@ -4,6 +4,7 @@ import axios from 'axios'
 import DataTable from '@/component/dashboard/DataTable'
 import Link from 'next/link'
 import { RiAddLine, RiEdit2Line, RiDeleteBin6Line } from 'react-icons/ri'
+import Image from 'next/image'
 
 const EditorProjects = () => {
     const [projects, setProjects] = useState([])
@@ -37,7 +38,7 @@ const EditorProjects = () => {
     const columns = [
         { label: 'Project', key: 'title', render: (row) => (
             <div className="flex items-center gap-3">
-                <img src={row.image} alt="project" className="w-10 h-10 rounded-xl object-cover border border-slate-100" />
+                <Image src={row.image} alt="project" className="w-10 h-10 rounded-xl object-cover border border-slate-100" />
                 <div className="flex flex-col">
                     <span className="font-black text-slate-800 tracking-tight">{row.title}</span>
                     <span className="text-[10px] text-primary font-black uppercase tracking-widest">{row.category}</span>

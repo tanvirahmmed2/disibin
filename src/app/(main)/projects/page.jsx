@@ -19,6 +19,10 @@ const ProjectsPage = async () => {
   )
   const projects = data.payload
 
+  if(!projects || projects.length===0) return <div>
+    <p>No project found!</p>
+  </div>
+
     return (
     <main className='w-full min-h-screen bg-white pt-20'>
       <section className='py-24 border-b border-slate-50'>
@@ -41,7 +45,7 @@ const ProjectsPage = async () => {
             ) : (
             <div className='w-full grid grid-cols-1 md:grid-cols-2 gap-12'>
                 {projects.map((project) => (
-                <ProjectCard key={project.project_id} project={project}/>
+                <ProjectCard key={project._id} project={project}/>
                 ))}
             </div>
             )}

@@ -15,22 +15,12 @@ const generateSlug = (title) => {
 export async function GET(req) {
     try {
         await connectDB();
-        const auth = await isLogin();
-        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
-
-        const user = auth.data;
-        let query = {};
-
         
-        if (user.role === 'client') {
-            query.clientId = user._id;
-        }
-
-        const projects = await Project.find(query).populate('clientId', 'name email').sort({ createdAt: -1 });
+        const projects = await Project.find({}).sort({ createdAt: -1 });
         return NextResponse.json({
             success: true,
             message: 'Projects fetched successfully',
-            data: projects
+            payload: projects
         }, { status: 200 });
 
     } catch (error) {
