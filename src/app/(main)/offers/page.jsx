@@ -21,17 +21,17 @@ const OffersPage = async () => {
 
     return (
     <main className='w-full min-h-screen bg-white pt-20'>
-      <section className='py-24 border-b border-slate-50'>
+      <section className='py-6 border-b border-slate-50'>
         <div className="container-custom">
             <div className="max-w-3xl">
-                <span className='px-4 py-1.5 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.3em] rounded-full inline-block mb-6'>Flash Deals</span>
-                <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none mb-8">Exclusive Offers<span className='text-primary'>.</span></h1>
+                <span className='px-4 py-1.5 bg-emerald-600/5 text-emerald-600 text-[10px] font-black uppercase tracking-[0.3em] rounded-full inline-block mb-6'>Flash Deals</span>
+                <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none mb-8">Exclusive Offers<span className='text-emerald-600'>.</span></h1>
                 <p className="text-xl text-slate-500 font-medium leading-relaxed">Limited-time strategic opportunities designed to accelerate your digital growth.</p>
             </div>
         </div>
       </section>
 
-      <section className='py-24 bg-slate-50/30'>
+      <section className='py-6 bg-slate-50/30 w-full'>
         <div className='container-custom'>
             {offers.length === 0 ? (
             <div className="p-24 text-center border-2 border-dashed border-slate-200 rounded-[3rem]">
@@ -39,7 +39,7 @@ const OffersPage = async () => {
                 <p className="text-slate-500 font-medium">We are currently preparing new exclusive deals. Check back soon!</p>
             </div>
             ) : (
-            <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10'>
+            <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                 {offers.map((offer) => (
                 <OfferCard key={offer._id} offer={offer}/>
                 ))}

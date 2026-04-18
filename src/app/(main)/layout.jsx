@@ -4,7 +4,7 @@ import Sidebar from '@/component/bar/Sidebar'
 import React from 'react'
 
 export const metadata={
-    title:'Home | Disibin',
+    title:'Home ',
     description:'Home Page'
 }
 

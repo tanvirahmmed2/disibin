@@ -2,13 +2,37 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { FaAndroid, FaCode, FaFigma } from "react-icons/fa";
 
 export const Context = createContext()
+
+
+const services = [
+  {
+    id: 1,
+    title: "Website Design",
+    description: "Clean, modern, and user-friendly UI/UX designs focused on usability, branding, and seamless experience across all devices.",
+    icon: <FaFigma />,
+  },
+  {
+    id: 2,
+    title: "Website Development",
+    description: "High-performance, scalable websites built with clean code, best practices, and modern technologies for speed and reliability.",
+    icon: <FaCode />,
+  },
+  {
+    id: 3,
+    title: "Android App Development",
+    description: "Custom Android applications designed for performance, smooth user experience, and long-term maintainability.",
+    icon: <FaAndroid />,
+  },
+];
 
 const customServices = [
   {
     id: 1,
     title: 'Website Development',
+    description:"We build modern, high-performance websites tailored to your business goals, combining responsive design, SEO optimization, and scalable architecture to deliver seamless user experiences across all devices. From dynamic business websites to full-featured eCommerce platforms, our solutions focus on speed, security, and usability, ensuring your digital presence is both visually compelling and technically robust. With support for CMS integration, custom APIs, and secure infrastructure, we create websites that are easy to manage, future-ready, and designed to grow with your business.",
     image: 'https://res.cloudinary.com/dv30hn53t/image/upload/v1776327384/bg_t5alxh.jpg',
     sections: [
       {
@@ -46,6 +70,7 @@ const customServices = [
   {
     id: 2,
     title: 'Mobile App Development',
+    description:"Our mobile app development service focuses on creating powerful, user-centric applications that deliver smooth performance across both iOS and Android platforms. Using modern frameworks, we build scalable and feature-rich apps with intuitive UI/UX, secure authentication, and real-time capabilities such as push notifications and offline functionality. Whether it's a startup idea or an enterprise solution, we ensure your app is optimized for performance, engagement, and visibility in app stores, helping you connect effectively with your users anytime, anywhere.",
     image: 'https://res.cloudinary.com/dv30hn53t/image/upload/q_auto/f_auto/v1776327517/mobile_app_disibin_dvtpeb.png',
     sections: [
       {
@@ -83,6 +108,7 @@ const customServices = [
   {
     id: 3,
     title: 'Business Automation',
+    description:"We help businesses increase efficiency and reduce manual workload by automating core processes through smart, integrated solutions. From workflow orchestration and AI-powered chatbots to data synchronization across multiple platforms, our automation systems streamline operations and improve accuracy. By implementing automated reporting, marketing workflows, and system integrations, we enable businesses to save time, minimize errors, and make data-driven decisions, ultimately enhancing productivity and scalability in a rapidly evolving digital environment.",
     image: 'https://res.cloudinary.com/dv30hn53t/image/upload/q_auto/f_auto/v1776327518/automation-disibin_usyqyd.png',
     sections: [
       {
@@ -228,7 +254,7 @@ const ContextProvider = ({ children }) => {
       }
 
     const contextValues = {
-        sidebar, setSidebar, isLoggedin, userData, removeFromwishlist, addToWishList, wishlist, clearWishlist, customServices, handleLogout
+        sidebar, setSidebar, isLoggedin, userData, removeFromwishlist, addToWishList, wishlist, clearWishlist, customServices, handleLogout, services
     }
 
     return (

@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { RiArrowLeftLine, RiSaveLine, RiImageAddLine } from 'react-icons/ri'
 import Link from 'next/link'
+import Image from 'next/image'
 
 const NewMembership = () => {
     const router = useRouter()
@@ -109,9 +110,9 @@ const NewMembership = () => {
                     </div>
 
                     
-                    <div className="flex flex-col items-center justify-center p-8 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 relative group transition-all hover:border-primary/30">
+                    <div className="flex flex-col items-center justify-center p-8 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 relative group transition-all hover:border-primary/30">
                         {preview ? (
-                            <img src={preview} alt="Preview" className="w-full h-full object-cover rounded-xl" />
+                            <Image width={1000} height={1000} src={preview} alt="Preview" className="w-full h-full object-cover rounded-xl" />
                         ) : (
                             <div className="flex flex-col items-center gap-2 text-slate-400 group-hover:text-primary/50">
                                 <RiImageAddLine size={48} />
@@ -162,7 +163,7 @@ const NewMembership = () => {
                 <button 
                     disabled={loading}
                     type="submit" 
-                    className="w-full bg-primary text-white py-5 rounded-[1.5rem] font-black text-lg shadow-xl shadow-primary/10 hover:bg-primary-dark active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full bg-primary text-white py-5 rounded-xl font-black text-lg shadow-xl shadow-primary/10 hover:bg-primary-dark active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                     <RiSaveLine size={24} />
                     {loading ? 'Creating...' : 'Create Membership Plan'}

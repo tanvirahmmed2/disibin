@@ -8,7 +8,6 @@ const offerSchema = new mongoose.Schema({
     discount: { type: Number, default: 0 },
     features: [{ type: String }],
     status: { type: String, enum: ['active', 'inactive'], default: 'active' },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 }, { timestamps: true });
 
 export const Offer = mongoose.models.Offer || mongoose.model("Offer", offerSchema);
