@@ -26,7 +26,7 @@ const EditorOffers = () => {
     const handleDelete = async (id) => {
         if (!confirm('Are you sure?')) return
         try {
-            await axios.delete(`/api/offers/${id}`, { withCredentials: true })
+            await axios.delete(`/api/offers`, {data:{id}, withCredentials: true })
             fetchOffers()
         } catch (error) {
             alert('Failed to delete offer')
