@@ -102,7 +102,7 @@ export async function POST(req) {
     }
 }
 
-export async function PUT(req) {
+export async function PATCH(req) {
     try {
         await connectDB();
 

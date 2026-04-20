@@ -6,10 +6,13 @@ import { RiArrowLeftLine, RiSaveLine, RiImageAddLine } from 'react-icons/ri'
 import Link from 'next/link'
 
 const EditMembership = ({ params }) => {
-    const { id } = use(params)
+    const { slug } = use(params)
     const router = useRouter()
+    
     const [loading, setLoading] = useState(false)
     const [fetching, setFetching] = useState(true)
+    const [membershipId, setMembershipId] = useState(null) 
+
     const [formData, setFormData] = useState({
         title: '',
         code: '',
@@ -25,22 +28,23 @@ const EditMembership = ({ params }) => {
     useEffect(() => {
         const fetchMembership = async () => {
             try {
-                const res = await axios.get(`/api/membership/${id}`)
+                const res = await axios.get(`/api/membership/${slug}`)
                 if (res.data.success) {
-                    const data = res.data.data
+                    const data = res.data.payload
+                    setMembershipId(data._id) 
                     setFormData({
-                        title: data.title,
-                        code: data.code,
-                        description: data.description,
-                        price: data.price,
-                        discount: data.discount,
-                        duration: data.duration,
+                        title: data.title || '',
+                        code: data.code || '',
+                        description: data.description || '',
+                        price: data.price || '',
+                        discount: data.discount || '',
+                        duration: data.duration || '',
                         features: data.features?.join(', ') || ''
                     })
                     setPreview(data.image)
                 }
             } catch (error) {
-                console.error("Failed to fetch membership", error)
+                console.error("Fetch error:", error)
                 alert('Membership not found')
                 router.push('/dashboard/editor/memberships')
             } finally {
@@ -48,7 +52,7 @@ const EditMembership = ({ params }) => {
             }
         }
         fetchMembership()
-    }, [id, router])
+    }, [slug, router])
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -68,28 +72,38 @@ const EditMembership = ({ params }) => {
 
         try {
             const data = new FormData()
-            data.append('id', id)
-            if (formData.title) data.append('title', formData.title)
-            if (formData.code) data.append('code', formData.code)
-            if (formData.description) data.append('description', formData.description)
-            if (formData.price) data.append('price', formData.price)
-            if (formData.discount !== undefined) data.append('discount', formData.discount)
-            if (formData.duration) data.append('duration', formData.duration)
             
-            const featuresArray = formData.features.split(',').map(f => f.trim()).filter(f => f)
+            if (membershipId) {
+                data.append('id', membershipId)
+            }
+            
+            data.append('title', formData.title)
+            data.append('code', formData.code)
+            data.append('description', formData.description)
+            data.append('price', formData.price)
+            data.append('discount', formData.discount || 0)
+            data.append('duration', formData.duration)
+            
+            const featuresArray = formData.features
+                .split(',')
+                .map(f => f.trim())
+                .filter(f => f !== '')
+            
             data.append('features', JSON.stringify(featuresArray))
             
             if (image) data.append('image', image)
 
-            const res = await axios.patch(`/api/membership/${id}`, data, {
+            const res = await axios.patch(`/api/membership`, data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             })
 
             if (res.data.success) {
                 alert('Membership updated successfully!')
                 router.push('/dashboard/editor/memberships')
+                router.refresh() 
             }
         } catch (error) {
+            console.error("Update error:", error)
             alert(error.response?.data?.message || 'Failed to update membership')
         } finally {
             setLoading(false)
@@ -97,13 +111,13 @@ const EditMembership = ({ params }) => {
     }
 
     if (fetching) return (
-        <div className="flex items-center justify-center min-h-[400px]">
+        <div className="flex items-center justify-center min-h-100">
              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
         </div>
     )
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 pb-20">
+        <div className="w-full mx-auto space-y-8 pb-20">
             <Link href="/dashboard/editor/memberships" className="inline-flex items-center gap-2 text-slate-500 hover:text-primary font-bold transition-all">
                 <RiArrowLeftLine />
                 <span>Back to Plans</span>
@@ -111,12 +125,11 @@ const EditMembership = ({ params }) => {
 
             <div className="flex flex-col gap-1">
                 <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Edit Membership Plan</h1>
-                <p className="text-slate-500">Update the details for the "{formData.title}" tier.</p>
+                <p className="text-slate-500">Updating settings for: <span className="font-bold text-primary">{formData.title}</span></p>
             </div>
 
             <form onSubmit={handleSubmit} className="bg-white p-10 rounded-[2.5rem] border border-slate-50 shadow-sm space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {}
                     <div className="space-y-4">
                         <label className="block">
                             <span className="text-sm font-bold text-slate-700 ml-1">Plan Title</span>
@@ -144,17 +157,16 @@ const EditMembership = ({ params }) => {
                         </label>
                     </div>
 
-                    {}
-                    <div className="flex flex-col items-center justify-center p-8 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 relative group transition-all hover:border-primary">
+                    <div className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 relative group transition-all hover:border-primary overflow-hidden min-h-[250px]">
                         {preview ? (
-                            <img src={preview} alt="Preview" className="w-full h-full object-cover rounded-xl" />
+                            <img src={preview} alt="Preview" className="w-full h-full object-contain max-h-[200px]" />
                         ) : (
                             <div className="flex flex-col items-center gap-2 text-slate-400 group-hover:text-primary">
                                 <RiImageAddLine size={48} />
                                 <span className="font-bold">Change Plan Icon</span>
                             </div>
                         )}
-                        <input type="file" onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer" />
+                        <input type="file" accept="image/*" onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer" />
                     </div>
                 </div>
 
@@ -182,6 +194,7 @@ const EditMembership = ({ params }) => {
                     <textarea 
                         name="features" required rows="3"
                         value={formData.features} onChange={handleChange}
+                        placeholder="Feature 1, Feature 2, Feature 3"
                         className="w-full mt-2 px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary transition-all font-medium resize-none"
                     ></textarea>
                 </label>
@@ -198,7 +211,7 @@ const EditMembership = ({ params }) => {
                 <button 
                     disabled={loading}
                     type="submit" 
-                    className="w-full bg-primary text-white py-5 rounded-[1.5rem] font-black text-lg shadow-xl shadow-primary/20 hover:bg-primary active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full bg-primary text-white py-5 rounded-[1.5rem] font-black text-lg shadow-xl shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                     <RiSaveLine size={24} />
                     {loading ? 'Saving...' : 'Update Membership Plan'}

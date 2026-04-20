@@ -54,7 +54,7 @@ const Footer = () => {
         </div>
 
         <div className='pt-12 border-t border-slate-800 flex flex-col md:flex-row items-center justify-center gap-6'>
-            <p className=' text-[10px] font-black uppercase tracking-widest'>© {currentYear} DISIBIN INFRASTRUCTURE | ALL RIGHTS RESERVED</p>
+            <p className=' text-[10px] font-black uppercase tracking-widest'>© {currentYear} DISIBIN | ALL RIGHTS RESERVED</p>
             
         </div>
       </div>

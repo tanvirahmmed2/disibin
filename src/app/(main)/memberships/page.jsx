@@ -159,6 +159,7 @@ const Memberships = () => {
                       </div>
                    ))}
                 </div>
+                <Link href={`/memberships/${plan.slug}`}>View</Link>
               </div>
             ))}
           </div>
