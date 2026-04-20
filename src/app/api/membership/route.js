@@ -16,23 +16,31 @@ export async function GET() {
     try {
         await connectDB();
         const memberships = await Membership.find().sort({ createdAt: -1 });
+
         return NextResponse.json({
             success: true,
-            message: 'Memberships fetched successfully',
             data: memberships
         }, { status: 200 });
+
     } catch (error) {
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+        return NextResponse.json({
+            success: false,
+            message: error.message
+        }, { status: 500 });
     }
 }
 
 export async function POST(req) {
     try {
         await connectDB();
+
         const auth = await isEditor();
-        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+        if (!auth.success) {
+            return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+        }
 
         const formData = await req.formData();
+
         const title = formData.get('title');
         const code = formData.get('code');
         const description = formData.get('description');
@@ -47,14 +55,18 @@ export async function POST(req) {
         }
 
         const slug = generateSlug(title);
-        const existing = await Membership.findOne({ slug });
-        if (existing) return NextResponse.json({ success: false, message: 'Plan with this title already exists' }, { status: 400 });
+
+        const exists = await Membership.findOne({ slug });
+        if (exists) {
+            return NextResponse.json({ success: false, message: 'Membership already exists' }, { status: 400 });
+        }
 
         const buffer = Buffer.from(await imageFile.arrayBuffer());
-        const cloudImage = await new Promise((resolve, reject) => {
+
+        const uploaded = await new Promise((resolve, reject) => {
             const stream = cloudinary.uploader.upload_stream(
                 { folder: "memberships" },
-                (err, result) => { if (err) reject(err); else resolve(result); }
+                (err, result) => err ? reject(err) : resolve(result)
             );
             stream.end(buffer);
         });
@@ -68,25 +80,146 @@ export async function POST(req) {
             discount: Number(discount) || 0,
             duration,
             features: features ? JSON.parse(features) : [],
-            image: cloudImage.secure_url,
-            imageId: cloudImage.public_id
+            image: uploaded.secure_url,
+            imageId: uploaded.public_id
         });
 
-        
         await createLog({
             userId: auth.data._id,
             action: 'create',
             targetType: 'membership',
             targetId: membership._id,
-            description: `Created new membership plan: ${membership.title}`,
-            metadata: { price: membership.price, duration: membership.duration }
+            description: `Created membership: ${membership.title}`
         });
 
         return NextResponse.json({
             success: true,
-            message: 'Membership plan created successfully',
             data: membership
         }, { status: 201 });
+
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}
+
+export async function PUT(req) {
+    try {
+        await connectDB();
+
+        const auth = await isEditor();
+        if (!auth.success) {
+            return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+        }
+
+        const formData = await req.formData();
+        const id = formData.get('id');
+
+        if (!id) {
+            return NextResponse.json({ success: false, message: 'ID is required' }, { status: 400 });
+        }
+
+        const membership = await Membership.findById(id);
+        if (!membership) {
+            return NextResponse.json({ success: false, message: 'Membership not found' }, { status: 404 });
+        }
+
+        const title = formData.get('title');
+        const imageFile = formData.get('image');
+
+        if (title) {
+            membership.title = title;
+            membership.slug = generateSlug(title);
+        }
+
+        if (formData.get('code')) membership.code = formData.get('code');
+        if (formData.get('description')) membership.description = formData.get('description');
+        if (formData.get('price')) membership.price = Number(formData.get('price'));
+        if (formData.get('discount')) membership.discount = Number(formData.get('discount'));
+        if (formData.get('duration')) membership.duration = formData.get('duration');
+
+        if (formData.get('features')) {
+            try {
+                membership.features = JSON.parse(formData.get('features'));
+            } catch {
+                return NextResponse.json({ success: false, message: 'Invalid features format' }, { status: 400 });
+            }
+        }
+
+        if (imageFile && imageFile.size > 0) {
+
+            await cloudinary.uploader.destroy(membership.imageId);
+
+            const buffer = Buffer.from(await imageFile.arrayBuffer());
+
+            const uploaded = await new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream(
+                    { folder: "memberships" },
+                    (err, result) => err ? reject(err) : resolve(result)
+                );
+                stream.end(buffer);
+            });
+
+            membership.image = uploaded.secure_url;
+            membership.imageId = uploaded.public_id;
+        }
+
+        await membership.save();
+
+        await createLog({
+            userId: auth.data._id,
+            action: 'update',
+            targetType: 'membership',
+            targetId: membership._id,
+            description: `Updated membership: ${membership.title}`
+        });
+
+        return NextResponse.json({
+            success: true,
+            data: membership
+        }, { status: 200 });
+
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}
+
+export async function DELETE(req) {
+    try {
+        await connectDB();
+
+        const auth = await isEditor();
+        if (!auth.success) {
+            return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+        }
+
+        const { searchParams } = new URL(req.url);
+        const id = searchParams.get('id');
+
+        if (!id) {
+            return NextResponse.json({ success: false, message: 'ID is required' }, { status: 400 });
+        }
+
+        const membership = await Membership.findById(id);
+        if (!membership) {
+            return NextResponse.json({ success: false, message: 'Membership not found' }, { status: 404 });
+        }
+
+        await cloudinary.uploader.destroy(membership.imageId);
+
+        await Membership.findByIdAndDelete(id);
+
+        await createLog({
+            userId: auth.data._id,
+            action: 'delete',
+            targetType: 'membership',
+            targetId: id,
+            description: `Deleted membership: ${membership.title}`
+        });
+
+        return NextResponse.json({
+            success: true,
+            message: 'Membership deleted successfully'
+        }, { status: 200 });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

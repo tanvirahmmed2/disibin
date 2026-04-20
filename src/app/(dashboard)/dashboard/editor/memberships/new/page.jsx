@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { RiArrowLeftLine, RiSaveLine, RiImageAddLine } from 'react-icons/ri'
 import Link from 'next/link'
+import Image from 'next/image'
 
 const NewMembership = () => {
     const router = useRouter()
@@ -67,8 +68,8 @@ const NewMembership = () => {
     }
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 pb-20">
-            <Link href="/dashboard/editor/memberships" className="inline-flex items-center gap-2 text-slate-500 hover:text-primary font-bold transition-all">
+        <div className="w-full mx-auto space-y-8 pb-20">
+            <Link href="/dashboard/editor/memberships" className="inline-flex items-center gap-2 text-slate-500 hover:text-emerald-500 font-bold transition-all">
                 <RiArrowLeftLine />
                 <span>Back to Plans</span>
             </Link>
@@ -87,7 +88,7 @@ const NewMembership = () => {
                             <input 
                                 type="text" name="title" required
                                 value={formData.title} onChange={handleChange}
-                                className="w-full mt-2 px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/50 transition-all font-medium"
+                                className="input-standard"
                             />
                         </label>
                         <label className="block">
@@ -95,7 +96,7 @@ const NewMembership = () => {
                             <input 
                                 type="text" name="code" required
                                 value={formData.code} onChange={handleChange}
-                                className="w-full mt-2 px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/50 transition-all font-medium"
+                                className="input-standard"
                             />
                         </label>
                         <label className="block">
@@ -103,22 +104,22 @@ const NewMembership = () => {
                             <input 
                                 type="text" name="duration" required
                                 value={formData.duration} onChange={handleChange}
-                                className="w-full mt-2 px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/50 transition-all font-medium"
+                                className="input-standard"
                             />
                         </label>
                     </div>
 
                     
-                    <div className="flex flex-col items-center justify-center p-8 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 relative group transition-all hover:border-primary/30">
+                    <div className="flex flex-col items-center justify-center p-8 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 relative group transition-all hover:border-emerald-500/30">
                         {preview ? (
-                            <img src={preview} alt="Preview" className="w-full h-full object-cover rounded-xl" />
+                            <Image src={preview} alt="Preview" className="w-full h-full object-cover rounded-xl"  width={1000} height={1000}/>
                         ) : (
-                            <div className="flex flex-col items-center gap-2 text-slate-400 group-hover:text-primary/50">
+                            <div className="flex flex-col items-center gap-2 text-slate-400 group-hover:text-emerald-500">
                                 <RiImageAddLine size={48} />
                                 <span className="font-bold">Upload Plan Icon</span>
                             </div>
                         )}
-                        <input type="file" onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer" />
+                        <input type="file" onChange={handleImageChange} className="input-standard" />
                     </div>
                 </div>
 
@@ -128,7 +129,7 @@ const NewMembership = () => {
                         <input 
                             type="number" name="price" required
                             value={formData.price} onChange={handleChange}
-                            className="w-full mt-2 px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/50 transition-all font-medium"
+                            className="input-standard"
                         />
                     </label>
                     <label className="block">
@@ -136,7 +137,7 @@ const NewMembership = () => {
                         <input 
                             type="number" name="discount"
                             value={formData.discount} onChange={handleChange}
-                            className="w-full mt-2 px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/50 transition-all font-medium"
+                            className="input-standard"
                         />
                     </label>
                 </div>
@@ -146,7 +147,7 @@ const NewMembership = () => {
                     <textarea 
                         name="features" required rows="3"
                         value={formData.features} onChange={handleChange}
-                        className="w-full mt-2 px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/50 transition-all font-medium resize-none"
+                        className="input-standard resize-none"
                     ></textarea>
                 </label>
 
@@ -155,14 +156,14 @@ const NewMembership = () => {
                     <textarea 
                         name="description" required rows="4"
                         value={formData.description} onChange={handleChange}
-                        className="w-full mt-2 px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/50 transition-all font-medium resize-none"
+                        className="input-standard resize-none"
                     ></textarea>
                 </label>
 
                 <button 
                     disabled={loading}
                     type="submit" 
-                    className="w-full bg-primary text-white py-5 rounded-[1.5rem] font-black text-lg shadow-xl shadow-primary/10 hover:bg-primary-dark active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full bg-emerald-500 text-white py-5 rounded-xl font-black text-lg shadow-xl shadow-primary/10 hover:bg-emerald-600 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                     <RiSaveLine size={24} />
                     {loading ? 'Creating...' : 'Create Membership Plan'}

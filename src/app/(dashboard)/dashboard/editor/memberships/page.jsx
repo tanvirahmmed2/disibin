@@ -4,6 +4,7 @@ import axios from 'axios'
 import DataTable from '@/component/dashboard/DataTable'
 import { RiEdit2Line, RiDeleteBin6Line, RiAddLine, RiInformationLine } from 'react-icons/ri'
 import Link from 'next/link'
+import { MdDeleteOutline, MdEditDocument } from 'react-icons/md'
 
 const EditorMemberships = () => {
     const [memberships, setMemberships] = useState([])
@@ -25,7 +26,7 @@ const EditorMemberships = () => {
     const handleDelete = async (id) => {
         if (!confirm('Are you sure you want to delete this membership plan?')) return
         try {
-            const res = await axios.delete(`/api/membership/${id}`)
+            const res = await axios.delete(`/api/membership`,{data:{id}, withCredentials:true})
             if (res.data.success) {
                 alert('Membership deleted successfully')
                 fetchMemberships()
@@ -39,34 +40,7 @@ const EditorMemberships = () => {
         fetchMemberships()
     }, [])
 
-    const columns = [
-        { label: 'Plan Level', key: 'title', render: (row) => (
-            <div className="flex flex-col">
-                <span className="font-black text-slate-800 tracking-tight">{row.title}</span>
-                <span className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">{row.code}</span>
-            </div>
-        )},
-        { label: 'Investment', key: 'price', render: (row) => (
-            <div className="flex items-center gap-1 font-black text-slate-800">
-                <span className="text-lg">${row.price}</span>
-                <span className="text-[9px] text-slate-400 uppercase tracking-widest">/ {row.duration}</span>
-            </div>
-        )},
-        { label: 'Features', key: 'features', render: (row) => (
-            <p className="text-xs text-slate-500 font-medium max-w-xs truncate italic">{row.features?.join(', ') || 'Standard Features'}</p>
-        )},
-    ]
 
-    const actions = (row) => (
-        <div className="flex gap-2">
-            <Link href={`/dashboard/editor/memberships/${row._id}`} className="p-2 hover:bg-primary/5 rounded-lg text-primary transition-all">
-                <RiEdit2Line size={18} />
-            </Link>
-            <button onClick={() => handleDelete(row._id)} className="p-2 hover:bg-primary rounded-lg text-primary transition-all">
-                <RiDeleteBin6Line size={18} />
-            </button>
-        </div>
-    )
 
     return (
         <div className="space-y-8">
@@ -75,15 +49,33 @@ const EditorMemberships = () => {
                     <h1 className="text-3xl font-black text-slate-900 tracking-tight">Tier Structures</h1>
                     <p className="text-slate-500 font-medium">Define and refine the platform access levels and pricing.</p>
                 </div>
-                <Link href="/dashboard/editor/memberships/new" className="flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-slate-900/10 hover:bg-primary transition-all active:scale-95">
+                <Link href="/dashboard/editor/memberships/new" className="flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-slate-900/10 hover:bg-emerald-500 transition-all active:scale-95">
                     <RiAddLine size={24} />
                     <span>Create Plan</span>
                 </Link>
             </div>
+            {
+                memberships.length === 0 ? <div className='w-full h-full flex items-center justify-center p-20 font-semibold'>
+                    <p>No membership found</p>
+                </div> : <div className='w-full flex flex-col items-center gap-1 font-semibold'>
+                    <div className='w-full flex flex-row items-center justify-between bg-emerald-100 rounded-t-2xl p-4 '>
+                        <p>Title</p>
+                        <p>Actions</p>
+                    </div>
+                    {
+                        memberships.map((membership) => (
+                            <div key={membership._id} className='w-full flex flex-row items-center justify-between p-4 shadow even:bg-slate-100'>
+                                <p>{membership.title}</p>
+                                <div className='w-auto flex flex-row items-center justify-center gap-4 text-xl'>
+                                    <Link href={`/dashboard/editor/memberships/${membership.slug}`}><MdEditDocument /></Link>
+                                    <button onClick={() => handleDelete(membership._id)}><MdDeleteOutline /></button>
+                                </div>
+                            </div>
+                        ))
+                    }
+                </div>
+            }
 
-            <div className="bg-white p-2 rounded-[2.5rem] border border-slate-50 shadow-sm overflow-hidden">
-                <DataTable columns={columns} data={memberships} loading={loading} actions={actions} />
-            </div>
         </div>
     )
 }
