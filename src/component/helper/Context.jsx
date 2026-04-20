@@ -32,7 +32,7 @@ const customServices = [
   {
     id: 1,
     title: 'Website Development',
-    description:"We build modern, high-performance websites tailored to your business goals, combining responsive design, SEO optimization, and scalable architecture to deliver seamless user experiences across all devices. From dynamic business websites to full-featured eCommerce platforms, our solutions focus on speed, security, and usability, ensuring your digital presence is both visually compelling and technically robust. With support for CMS integration, custom APIs, and secure infrastructure, we create websites that are easy to manage, future-ready, and designed to grow with your business.",
+    description: "We build modern, high-performance websites tailored to your business goals, combining responsive design, SEO optimization, and scalable architecture to deliver seamless user experiences across all devices. From dynamic business websites to full-featured eCommerce platforms, our solutions focus on speed, security, and usability, ensuring your digital presence is both visually compelling and technically robust. With support for CMS integration, custom APIs, and secure infrastructure, we create websites that are easy to manage, future-ready, and designed to grow with your business.",
     image: 'https://res.cloudinary.com/dv30hn53t/image/upload/v1776327384/bg_t5alxh.jpg',
     sections: [
       {
@@ -70,7 +70,7 @@ const customServices = [
   {
     id: 2,
     title: 'Mobile App Development',
-    description:"Our mobile app development service focuses on creating powerful, user-centric applications that deliver smooth performance across both iOS and Android platforms. Using modern frameworks, we build scalable and feature-rich apps with intuitive UI/UX, secure authentication, and real-time capabilities such as push notifications and offline functionality. Whether it's a startup idea or an enterprise solution, we ensure your app is optimized for performance, engagement, and visibility in app stores, helping you connect effectively with your users anytime, anywhere.",
+    description: "Our mobile app development service focuses on creating powerful, user-centric applications that deliver smooth performance across both iOS and Android platforms. Using modern frameworks, we build scalable and feature-rich apps with intuitive UI/UX, secure authentication, and real-time capabilities such as push notifications and offline functionality. Whether it's a startup idea or an enterprise solution, we ensure your app is optimized for performance, engagement, and visibility in app stores, helping you connect effectively with your users anytime, anywhere.",
     image: 'https://res.cloudinary.com/dv30hn53t/image/upload/q_auto/f_auto/v1776327517/mobile_app_disibin_dvtpeb.png',
     sections: [
       {
@@ -108,7 +108,7 @@ const customServices = [
   {
     id: 3,
     title: 'Business Automation',
-    description:"We help businesses increase efficiency and reduce manual workload by automating core processes through smart, integrated solutions. From workflow orchestration and AI-powered chatbots to data synchronization across multiple platforms, our automation systems streamline operations and improve accuracy. By implementing automated reporting, marketing workflows, and system integrations, we enable businesses to save time, minimize errors, and make data-driven decisions, ultimately enhancing productivity and scalability in a rapidly evolving digital environment.",
+    description: "We help businesses increase efficiency and reduce manual workload by automating core processes through smart, integrated solutions. From workflow orchestration and AI-powered chatbots to data synchronization across multiple platforms, our automation systems streamline operations and improve accuracy. By implementing automated reporting, marketing workflows, and system integrations, we enable businesses to save time, minimize errors, and make data-driven decisions, ultimately enhancing productivity and scalability in a rapidly evolving digital environment.",
     image: 'https://res.cloudinary.com/dv30hn53t/image/upload/q_auto/f_auto/v1776327518/automation-disibin_usyqyd.png',
     sections: [
       {
@@ -146,122 +146,148 @@ const customServices = [
 ];
 
 const ContextProvider = ({ children }) => {
-    const router = useRouter()
-    const [sidebar, setSidebar] = useState(false)
-    const [isLoggedin, setIsLogggedin] = useState(false)
-    const [userData, setUserData] = useState([])
-    const [wishlist, setWishList] = useState({ items: [] })
+  const router = useRouter()
+  const [sidebar, setSidebar] = useState(false);
+  const [isLoggedin, setIsLogggedin] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [wishlist, setWishList] = useState([]);
 
-    useEffect(() => {
-        const fetchLogin = async () => {
-            try {
-                const res = await axios.get('/api/user/islogin', { withCredentials: true })
-                if (res.data.success) {
-                    setIsLogggedin(true)
-                    setUserData(res.data.data)
-                } else {
-                    setIsLogggedin(false)
-                    setUserData([])
-                    setWishList({ items: [] })
-                }
-            } catch (error) {
-                setIsLogggedin(false)
-                setUserData([])
-                setWishList({ items: [] })
-            }
+  useEffect(() => {
+    const fetchLogin = async () => {
+      try {
+        const res = await axios.get("/api/user/islogin", {
+          withCredentials: true,
+        });
+
+        if (res.data.success) {
+          setIsLogggedin(true);
+          setUserData(res.data.data);
+        } else {
+          setIsLogggedin(false);
+          setUserData(null);
+          setWishList([]);
         }
-        fetchLogin()
-    }, [])
-
-    const fetchUserWishlist = async () => {
-        if (userData?._id) {
-            try {
-                const res = await axios.get(`/api/wishlist?userId=${userData._id}`);
-                if (res.data.success) {
-                    setWishList({ items: res.data.data });
-                }
-            } catch (error) {
-                console.error("Failed to fetch wishlist", error);
-            }
-        }
-    };
-
-    useEffect(() => {
-        if (userData?._id) fetchUserWishlist();
-    }, [userData]);
-
-    const addToWishList = async (item) => {
-        if (!isLoggedin) {
-            alert('Please login to add items to your wishlist');
-            router.push('/login');
-            return;
-        }
-
-        try {
-            const data = {
-                userId: userData._id,
-                itemId: item.itemId,
-                type: item.type,
-                title: item.title,
-                price: item.price,
-                slug: item.slug,
-                image: item.image,
-                metadata: item.metadata
-            };
-
-            const res = await axios.post('/api/wishlist', data, { withCredentials: true });
-            if (res.data.success) {
-                setWishList(prev => ({
-                    ...prev,
-                    items: [res.data.data, ...prev.items]
-                }));
-                alert("Added to wishlist");
-            }
-        } catch (error) {
-            alert(error?.response?.data?.message || "Failed to add to wishlist");
-        }
-    };
-
-    const removeFromwishlist = async (id) => {
-        const confirm = window.confirm('Are you sure?')
-        if (!confirm) return
-        try {
-            const res = await axios.delete(`/api/wishlist/${id}`, { withCredentials: true });
-            if (res.data.success) {
-                setWishList(prev => ({
-                    ...prev,
-                    items: prev.items.filter(item => item._id !== id)
-                }))
-            }
-        } catch (error) {
-            alert("Failed to remove item");
-        }
-    }
-
-    const clearWishlist = () => {
-        setWishList({ items: [] });
-    }
-
-     const handleLogout=async()=>{
-        try {
-          const res= await axios.get('/api/user/logout',{withCredentials:true})
-          alert(res.data.message)
-          window.location.replace('/login')
-        } catch (error) {
-          console.log(error)
-          alert('Failed to logout')
-        }
+      } catch (error) {
+        setIsLogggedin(false);
+        setUserData(null);
+        setWishList([]);
       }
+    };
 
-    const contextValues = {
-        sidebar, setSidebar, isLoggedin, userData, removeFromwishlist, addToWishList, wishlist, clearWishlist, customServices, handleLogout, services
+    fetchLogin();
+  }, []);
+
+  const fetchUserWishlist = async () => {
+    try {
+      const res = await axios.get("/api/wishlist", {
+        withCredentials: true,
+      });
+
+      if (res.data.success) {
+        setWishList(res.data.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch wishlist", error);
+    }
+  };
+
+  useEffect(() => {
+    if (userData?._id) {
+      fetchUserWishlist();
+    }
+  }, [userData]);
+
+  const addToWishList = async (item) => {
+    if (!isLoggedin) {
+      alert("Please login to add items to your wishlist");
+      router.push("/login");
+      return;
     }
 
-    return (
-        <Context.Provider value={contextValues}>
-            {children}
-        </Context.Provider>
-    )
+    try {
+      const data = {
+        itemId: item.itemId,
+        type: item.type,
+        title: item.title,
+        price: item.price,
+        slug: item.slug,
+        image: item.image,
+        metadata: item.metadata,
+      };
+
+      const res = await axios.post("/api/wishlist", data, {
+        withCredentials: true,
+      });
+
+      if (res.data.success) {
+        setWishList((prev) => [res.data.data, ...prev]);
+        alert("Added to wishlist");
+      }
+    } catch (error) {
+      alert(error?.response?.data?.message || "Failed to add to wishlist");
+    }
+  };
+
+  const removeFromwishlist = async (id) => {
+    const confirm = window.confirm("Are you sure?");
+    if (!confirm) return;
+
+    try {
+      const res = await axios.patch(
+        "/api/wishlist",
+        { id },
+        { withCredentials: true }
+      );
+
+      if (res.data.success) {
+        setWishList((prev) => prev.filter((item) => item._id !== id));
+      }
+    } catch (error) {
+      alert("Failed to remove item");
+      console.log(error);
+    }
+  };
+
+  const clearWishlist = async () => {
+    try {
+      const res = await axios.delete("/api/wishlist", {
+        withCredentials: true,
+      });
+
+      alert(res.data.message);
+      setWishList([]);
+    } catch (error) {
+      console.log(error);
+      alert(
+        error?.response?.data?.message || "Failed to clear wishlist"
+      );
+    }
+  };
+
+  const isInWishlist = (itemId) => {
+    return wishlist.some((item) => item.itemId === itemId);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const res = await axios.get('/api/user/logout', { withCredentials: true })
+      alert(res.data.message)
+      window.location.replace('/login')
+    } catch (error) {
+      console.log(error)
+      alert('Failed to logout')
+    }
+  }
+
+  const contextValues = {
+    sidebar, setSidebar, isLoggedin, userData, removeFromwishlist, addToWishList, wishlist, clearWishlist, customServices, handleLogout, services
+  }
+
+  return (
+    <Context.Provider value={contextValues}>
+      {children}
+    </Context.Provider>
+  )
 }
 
 export default ContextProvider

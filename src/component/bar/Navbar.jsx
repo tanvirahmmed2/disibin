@@ -27,7 +27,7 @@ const Navbar = () => {
 
   return (
     <nav className='w-full fixed top-0 left-0 h-20 bg-white backdrop-blur-xl border-b border-slate-50 z-50 flex items-center'>
-      <div className='container-custom flex flex-row items-center justify-between'>
+      <div className='max-w-7xl mx-auto px-6 w-full flex flex-row items-center justify-between'>
         <Link href={'/'} className='text-3xl font-semibold text-slate-900 tracking-tighter hover:text-emerald-500 transition-colors'>
           Disibin
         </Link>
