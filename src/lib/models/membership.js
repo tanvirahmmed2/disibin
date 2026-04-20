@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 
-const memSchema=mongoose.Schema({
+const memSchema= new mongoose.Schema({
     title:{type:String, trim:true, required:true},
     slug:{type:String, trim:true, required:true},
     code:{type:String, trim:true, required:true},
@@ -11,7 +11,7 @@ const memSchema=mongoose.Schema({
     discount:{type:Number, default:0},
     image:{type:String, trim:true, required:true},
     imageId:{type:String, trim:true, required:true},
-    duration:{type:String, trim:true, required:true},
+    duration:{type:Number, required:true},
     createdAt:{type:Date, default:Date.now}
 })
 

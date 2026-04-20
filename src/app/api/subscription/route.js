@@ -15,14 +15,14 @@ export async function GET() {
 
         const user = auth.data;
 
-       
 
-        const data = await Subscription.find({userId:user._id})
+
+        const data = await Subscription.find({ userId: user._id })
 
         return NextResponse.json({
             success: true,
             message: "Subscriptions fetched",
-            payload:data
+            payload: data
         });
 
     } catch (error) {
@@ -98,6 +98,18 @@ export async function PATCH(req) {
 
         if (status) subscription.status = status;
         if (payStatus) subscription.payStatus = payStatus;
+
+        if (status === "confirmed" && !subscription.expiresAt) {
+            const membership = await Membership.findById(subscription.membershipId);
+
+            const paidAt = subscription.paidAt || new Date();
+            const durationDays = Number(membership?.duration) || 0;
+
+            const expiresAt = new Date(paidAt);
+            expiresAt.setDate(expiresAt.getDate() + durationDays);
+
+            subscription.expiresAt = expiresAt;
+        }
 
         await subscription.save();
 

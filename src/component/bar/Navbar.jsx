@@ -76,9 +76,9 @@ const Navbar = () => {
                 <div className='my-2 border-t border-slate-50'></div>
                 <button 
                   onClick={() => handleLogout()}
-                  className='w-full flex items-center gap-3 px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-emerald-500 hover:bg-emerald-500 rounded-xl transition-colors'
+                  className='w-full flex items-center gap-3 px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-emerald-500 hover:bg-emerald-500 hover:text-white rounded-xl transition-colors'
                 >
-                  <RiLogoutBoxRLine className='text-lg' /> Terminate Session
+                  <RiLogoutBoxRLine className='text-lg' /> Log out
                 </button>
               </div>
             </div>

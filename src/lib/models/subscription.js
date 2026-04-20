@@ -1,9 +1,9 @@
 import mongoose, { Types } from "mongoose";
 
-const subscriptionSchema=mongoose.Schema({
+const subscriptionSchema=new mongoose.Schema({
     userId:{type:Types.ObjectId, ref:'User', required:true},
     membershipId:{type:Types.ObjectId, ref:'Membership', required:true},
-    status:{type:String, enum:['pending', 'confirmed', 'paused', 'expired']},
+    status:{type:String, enum:['pending', 'confirmed', 'paused', 'expired'], default:'pending'},
     payStatus: {
       type: String,
       enum: ["pending", "completed", "failed", "refunded"],
@@ -18,6 +18,7 @@ const subscriptionSchema=mongoose.Schema({
     subTotal:{type:Number, required:true},
     discount:{type:Number, default:0},
     transactionId:{type:String, trim:true, required:true},
+    expiresAt:{type:Date},
     createdAt:{type:Date, default:Date.now},
     paidAt: { type: Date, required: true }
 })
