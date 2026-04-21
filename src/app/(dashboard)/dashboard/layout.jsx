@@ -10,12 +10,13 @@ const DashboardLayout = ({ children }) => {
     const { isLoggedin, userData } = useContext(Context)
     const router = useRouter()
 
+
     
     
     const pathname = usePathname()
 
     useEffect(() => {
-        if (!isLoggedin && !userData?._id) return
+        if (!isLoggedin && !userData?._id) return router.push('/login')
 
         
         const managementRoutes = ['/dashboard/admin', '/dashboard/manager', '/dashboard/support', '/dashboard/project-manager', '/dashboard/editor', '/dashboard/staff'];

@@ -15,7 +15,6 @@ const packSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-export const Package =
-    mongoose.models.Package || mongoose.model("Package", packSchema);
+export const Package = mongoose.models.Package || mongoose.model("Package", packSchema);
 
 export default Package;

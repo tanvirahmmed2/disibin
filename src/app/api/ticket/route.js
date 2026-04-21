@@ -32,7 +32,6 @@ export async function GET(req) {
         const tickets = await Ticket.find(query)
             .populate('senderId', 'name email image')
             .populate('assignedId', 'name email role')
-            .populate('projectId', 'title slug')
             .sort({ lastMessageAt: -1 });
 
         return NextResponse.json({ success: true, message: 'Tickets fetched', data: tickets });
@@ -48,7 +47,7 @@ export async function POST(req) {
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
-        const { subject, message, category, projectId, priority } = await req.json();
+        const { subject, message, category, priority } = await req.json();
 
         if (!subject || !message) {
             return NextResponse.json({ success: false, message: 'Subject and message are required' }, { status: 400 });
@@ -59,7 +58,6 @@ export async function POST(req) {
             subject,
             message,
             category: category || 'general',
-            projectId,
             priority: priority || 'medium',
             status: 'open',
             messages: [{

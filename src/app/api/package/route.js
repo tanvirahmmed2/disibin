@@ -55,7 +55,7 @@ export async function POST(req) {
         const features = formData.get("features");
         const imageFile = formData.get("image");
 
-        if (!title || !description || !price || !code || !category || !imageFile) {
+        if (!title || !description || !price || !category || !imageFile) {
             return NextResponse.json(
                 { success: false, message: "Missing required fields" },
                 { status: 400 }
@@ -107,7 +107,7 @@ export async function POST(req) {
             action: "create",
             targetType: "package",
             targetId: pkg._id,
-            description: `Created package: ${pkg.title} (${pkg.code})`,
+            description: `Created package: ${pkg.title} (${pkg.slug})`,
             metadata: { price: pkg.price, category: pkg.category }
         });
 
@@ -274,7 +274,7 @@ export async function DELETE(req) {
             action: "delete",
             targetType: "package",
             targetId: id,
-            description: `Deleted package: ${pkg.title} (${pkg.code})`
+            description: `Deleted package: ${pkg.title} (${pkg.slug})`
         });
 
         return NextResponse.json({

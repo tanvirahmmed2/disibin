@@ -62,7 +62,7 @@ const EditorPackages = () => {
                             <div key={pack._id} className='w-full flex flex-row items-center justify-between p-4 shadow even:bg-slate-100'>
                                 <p>{pack.title}</p>
                                 <div className='w-auto flex flex-row items-center justify-center gap-4 text-xl'>
-                                    <Link href={`/dashboard/editor/packages/${packages.slug}`}><MdEditDocument/></Link>
+                                    <Link href={`/dashboard/editor/packages/${pack.slug}`}><MdEditDocument/></Link>
                                     <button onClick={()=>handleDelete(pack._id)}><MdDeleteOutline/></button>
                                 </div>
                             </div>

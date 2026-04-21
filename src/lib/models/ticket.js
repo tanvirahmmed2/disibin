@@ -11,7 +11,6 @@ const ticketSchema = new Schema({
         enum: ['general', 'project', 'billing', 'technical'], 
         default: 'general' 
     },
-    projectId: { type: Schema.Types.ObjectId, ref: 'Project' },
     
     assignedId: { type: Schema.Types.ObjectId, ref: 'User' },
     status: { 
