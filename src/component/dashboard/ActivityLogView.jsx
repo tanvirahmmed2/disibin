@@ -43,9 +43,9 @@ const ActivityLogView = ({ title = "System Activity Log" }) => {
     const columns = [
         { label: 'Action', key: 'action', render: (row) => (
             <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest border
-                ${row.action === 'create' ? 'bg-primary/5 text-primary border-primary/10' : 
-                  row.action === 'delete' ? 'bg-primary text-primary border-primary' : 
-                  'bg-primary text-primary border-primary'}`}>
+                ${row.action === 'create' ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500/10' : 
+                  row.action === 'delete' ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500' : 
+                  'bg-emerald-500/5 text-emerald-500 border-emerald-500'}`}>
                 {row.action}
             </span>
         )},
@@ -79,7 +79,7 @@ const ActivityLogView = ({ title = "System Activity Log" }) => {
                         <select 
                             value={filters.action}
                             onChange={(e) => setFilters({ ...filters, action: e.target.value })}
-                            className="appearance-none bg-white border border-slate-100 px-6 py-3 pr-12 rounded-xl text-xs font-black uppercase tracking-widest focus:ring-2 focus:ring-primary transition-all cursor-pointer"
+                            className="appearance-none bg-white border border-slate-100 px-6 py-3 pr-12 rounded-xl text-xs font-black uppercase tracking-widest focus:ring-2 focus:ring-emerald-500 transition-all cursor-pointer"
                         >
                             <option value="">All Actions</option>
                             <option value="create">Create</option>

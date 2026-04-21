@@ -245,8 +245,7 @@ export async function DELETE(req) {
             );
         }
 
-        const { searchParams } = new URL(req.url);
-        const id = searchParams.get("id");
+        const {id} = await req.json()
 
         if (!id) {
             return NextResponse.json(

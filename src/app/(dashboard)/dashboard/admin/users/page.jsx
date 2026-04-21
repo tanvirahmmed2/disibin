@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import DataTable from '@/component/dashboard/DataTable'
-import { RiUserSharedLine, RiShieldUserLine, RiToggleLine } from 'react-icons/ri'
+import { RiUserSharedLine,  RiToggleLine } from 'react-icons/ri'
 
 const UserManager = () => {
     const [users, setUsers] = useState([])
@@ -52,15 +52,15 @@ const UserManager = () => {
         )},
         { label: 'Role', key: 'role', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider
-                ${row.role === 'admin' ? 'bg-primary text-primary' : 
-                  row.role === 'manager' ? 'bg-primary text-primary' : 
+                ${row.role === 'admin' ? 'bg-emerald-500 text-emerald-500' : 
+                  row.role === 'manager' ? 'bg-emerald-500 text-emerald-500' : 
                   'bg-slate-100 text-slate-500'}`}>
                 {row.role}
             </span>
         )},
         { label: 'Status', key: 'isActive', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider
-                ${row.isActive ? 'bg-primary/10 text-primary-dark' : 'bg-primary text-primary'}`}>
+                ${row.isActive ? 'bg-emerald-500/10 text-emerald-500-dark' : 'bg-emerald-500 text-emerald-500'}`}>
                 {row.isActive ? 'Active' : 'Inactive'}
             </span>
         )},
@@ -70,14 +70,14 @@ const UserManager = () => {
         <div className="flex gap-2">
             <button 
                 onClick={() => setPromotingUser(row)}
-                className="p-2 hover:bg-primary/5 rounded-lg text-primary transition-all font-bold text-xs flex items-center gap-1"
+                className="p-2 hover:bg-emerald-500/5 rounded-lg text-emerald-500 transition-all font-bold text-xs flex items-center gap-1"
                 title="Change Role"
             >
                 <RiUserSharedLine size={18} /> Role
             </button>
             <button 
                 onClick={() => toggleStatus(row._id, row.isActive)}
-                className={`p-2 rounded-lg transition-all ${row.isActive ? 'hover:bg-primary text-primary' : 'hover:bg-primary/5 text-primary'}`}
+                className={`p-2 rounded-lg transition-all ${row.isActive ? 'hover:bg-emerald-500 text-emerald-500' : 'hover:bg-emerald-500/5 text-emerald-500'}`}
                 title={row.isActive ? 'Deactivate' : 'Activate'}
             >
                 <RiToggleLine size={18} />
@@ -111,7 +111,7 @@ const UserManager = () => {
                                     key={role}
                                     onClick={() => handlePromote(promotingUser._id, role)}
                                     className={`w-full py-3 rounded-xl text-sm font-bold capitalize transition-all
-                                    ${promotingUser.role === role ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
+                                    ${promotingUser.role === role ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
                                 >
                                     {role.replace('_', ' ')}
                                 </button>

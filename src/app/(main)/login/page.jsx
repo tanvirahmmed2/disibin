@@ -6,7 +6,7 @@ const LoginPage = () => {
     <div className='w-full min-h-screen flex items-center justify-center bg-slate-50 relative overflow-hidden'>
       
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-3xl opacity-50"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/10 rounded-full blur-3xl opacity-50"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-500 rounded-full blur-3xl opacity-50"></div>
       </div>
 
@@ -18,7 +18,7 @@ const LoginPage = () => {
           
           <div className="relative z-10">
             <h1 className="text-5xl font-black tracking-tight mb-4">Disibin</h1>
-            <p className="text-primary/5 text-xl font-medium mb-8">Your ultimate digital assistant.</p>
+            <p className="text-emerald-500/5 text-xl font-medium mb-8">Your ultimate digital assistant.</p>
             <div className="space-y-4 text-white">
               <p className="flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-white"></span> Manage your business seamlessly.</p>
               <p className="flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-white"></span> Track your orders and support tickets.</p>

@@ -27,6 +27,7 @@ const EditorPackages = () => {
             fetchPackages()
         } catch (error) {
             alert('Failed to delete package')
+            console.log(error)
         }
     }
 

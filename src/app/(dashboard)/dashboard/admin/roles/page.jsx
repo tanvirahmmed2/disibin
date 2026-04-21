@@ -35,7 +35,7 @@ const AdminRoles = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="card-premium p-10 space-y-8 bg-white">
-                    <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
                         <RiShieldUserLine size={24} />
                     </div>
                     
@@ -71,7 +71,7 @@ const AdminRoles = () => {
 
                         {message && (
                             <div className={`p-4 rounded-xl text-xs font-bold flex items-center gap-2 border ${
-                                message.type === 'success' ? 'bg-primary/5 text-primary border-primary/10' : 'bg-primary text-primary border-primary'
+                                message.type === 'success' ? 'bg-emerald-500/5 text-emerald-500 border-emerald-500/10' : 'bg-emerald-500 text-emerald-500 border-emerald-500'
                             }`}>
                                 <RiErrorWarningLine size={16} /> {message.text}
                             </div>
@@ -80,7 +80,7 @@ const AdminRoles = () => {
                         <button 
                             disabled={loading}
                             type="submit"
-                            className="w-full py-4 bg-slate-900 text-white font-black uppercase tracking-widest text-[11px] rounded-2xl hover:bg-primary transition-all flex items-center justify-center gap-2 active:scale-95 shadow-xl shadow-slate-900/10"
+                            className="w-full py-4 bg-slate-900 text-white font-black uppercase tracking-widest text-[11px] rounded-2xl hover:bg-emerald-500 transition-all flex items-center justify-center gap-2 active:scale-95 shadow-xl shadow-slate-900/10"
                         >
                             {loading ? 'Processing...' : <><RiSendPlane2Line size={18} /> Update Access</>}
                         </button>
@@ -110,7 +110,7 @@ const AdminRoles = () => {
                                 { r: 'Staff', d: 'Task completion & delivery' }
                             ].map((item, i) => (
                                 <div key={i} className="flex justify-between items-center text-[11px] font-bold">
-                                    <span className="text-primary">{item.r}</span>
+                                    <span className="text-emerald-500">{item.r}</span>
                                     <span className="text-slate-400">{item.d}</span>
                                 </div>
                             ))}
