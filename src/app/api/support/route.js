@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/database/db';
 import { Contact } from '@/lib/models/contact';
-import { isManager, isLogin } from '@/lib/middleware';
+import { isLogin, isSupport } from '@/lib/middleware';
 import { createLog } from '@/lib/utils/logger';
 
 export async function GET() {
     try {
         await connectDB();
-        const auth = await isManager();
+        const auth = await isSupport();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
         const contacts = await Contact.find().sort({ createdAt: -1 });
@@ -20,14 +20,14 @@ export async function GET() {
 export async function POST(req) {
     try {
         await connectDB();
-        const { name, email, phone, subject, message } = await req.json();
+        const { name, email, subject, message } = await req.json();
 
         if (!name || !email || !subject || !message) {
             return NextResponse.json({ success: false, message: 'Missing required fields' }, { status: 400 });
         }
 
         const contact = await Contact.create({
-            name, email, phone, subject, message, status: 'open'
+            name, email, subject, message, status: 'open'
         });
 
         
@@ -56,7 +56,7 @@ export async function POST(req) {
 export async function PATCH(req) {
     try {
         await connectDB();
-        const auth = await isManager();
+        const auth = await isSupport();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
         const { id, status } = await req.json();
@@ -82,7 +82,7 @@ export async function PATCH(req) {
 export async function DELETE(req) {
     try {
         await connectDB();
-        const auth = await isManager();
+        const auth = await isSupport();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
         const { id } = await req.json();

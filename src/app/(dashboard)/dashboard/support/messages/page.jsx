@@ -4,6 +4,8 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import DataTable from '@/component/dashboard/DataTable'
 import { RiMessage2Line, RiCheckboxCircleLine } from 'react-icons/ri'
+import Link from 'next/link'
+import { MdDeleteOutline } from 'react-icons/md'
 
 const GuestMessages = () => {
     const router = useRouter()
@@ -14,7 +16,7 @@ const GuestMessages = () => {
         setLoading(true)
         try {
             const res = await axios.get('/api/support')
-            setData(res.data.data)
+            setData(res.data.data|| [])
         } catch (error) {
             console.error('Failed to fetch data', error)
         } finally {
@@ -26,48 +28,9 @@ const GuestMessages = () => {
         fetchData()
     }, [])
 
-    const updateStatus = async (id, status) => {
-        try {
-            await axios.patch('/api/support', { id, status })
-            fetchData()
-        } catch (error) {
-            alert('Failed to update status')
-        }
-    }
 
-    const columns = [
-        { label: 'Guest', key: 'name', render: (row) => (
-            <div className="flex flex-col">
-                <span className="font-bold text-slate-700">{row.name}</span>
-                <span className="text-xs text-slate-400">{row.email}</span>
-            </div>
-        )},
-        { label: 'Subject', key: 'subject', render: (row) => (
-            <p className="font-medium text-slate-600 truncate max-w-[200px]">{row.subject}</p>
-        )},
-        { label: 'Status', key: 'status', render: (row) => (
-            <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider
-                ${row.status === 'open' ? 'bg-white text-white' : 'bg-primary/10 text-primary'}`}>
-                {row.status}
-            </span>
-        )},
-    ]
 
-    const actions = (row) => (
-        <div className="flex gap-2">
-            <button 
-                onClick={() => router.push(`/dashboard/support/messages/${row._id}`)}
-                className="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-all font-bold text-xs flex items-center gap-1"
-            >
-                <RiMessage2Line size={18} /> Reply
-            </button>
-            {row.status !== 'closed' && (
-                <button onClick={() => updateStatus(row._id, 'closed')} className="p-2 hover:bg-primary/5 rounded-lg text-primary transition-all" title="Close">
-                    <RiCheckboxCircleLine size={18} />
-                </button>
-            )}
-        </div>
-    )
+    
 
     return (
         <div className="space-y-8">
@@ -75,10 +38,64 @@ const GuestMessages = () => {
                 <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Guest Messages</h1>
                 <p className="text-slate-500">Respond to general inquiries from potential clients via Brevo email.</p>
             </div>
-
-            <div className="bg-white p-2 rounded-[2.5rem] border border-slate-50 shadow-sm overflow-hidden">
-                <DataTable columns={columns} data={data} loading={loading} actions={actions} />
+            {
+    data.length === 0 ? (
+        <div className="w-full flex flex-col items-center justify-center py-20 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+            <p className="text-slate-500 font-medium italic">No messages found in your inbox</p>
+        </div>
+    ) : (
+        <div className="w-full overflow-hidden rounded-xl border border-slate-200 shadow-sm bg-white">
+            {/* Table Header */}
+            <div className="grid grid-cols-4 bg-slate-50 border-b border-slate-200 px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-600">
+                <span className="text-left">Sender</span>
+                <span className="text-center">Subject</span>
+                <span className="text-center">Status</span>
+                <span className="text-right">Action</span>
             </div>
+
+            <div className="flex flex-col">
+                {data.map((sup) => (
+                    <div 
+                        key={sup._id} 
+                        className="grid grid-cols-4 items-center px-6 py-4 border-b border-slate-100 last:border-none hover:bg-slate-50/80 transition-colors"
+                    >
+                        <div className="flex flex-col items-start gap-0.5">
+                            <span className="text-sm font-semibold text-slate-800">{sup.name}</span>
+                            <span className="text-xs text-slate-500">{sup.email}</span>
+                        </div>
+
+                        <div className="text-center">
+                            <p className="text-sm text-slate-600 truncate px-2">{sup.subject}</p>
+                        </div>
+
+                        <div className="flex justify-center">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${
+                                sup.status === 'pending' ? 'bg-amber-100 text-amber-700' : 
+                                sup.status === 'resolved' ? 'bg-emerald-100 text-emerald-700' : 
+                                'bg-slate-100 text-slate-600'
+                            }`}>
+                                {sup.status}
+                            </span>
+                        </div>
+
+                        <div className="flex flex-row gap-3 justify-end items-center">
+                            <Link 
+                                href={`/dashboard/support/messages/${sup._id}`}
+                                className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline transition-all"
+                            >
+                                Reply
+                            </Link>
+                            <button className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all active:scale-90">
+                                <MdDeleteOutline size={20} />
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    )
+}
+            
         </div>
     )
 }
