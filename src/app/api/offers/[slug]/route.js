@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/db";
-import { Offer } from "@/lib/models/offer";
+import { dbQuery } from "@/lib/database/pg";
+
+const mapOffer = (row) => ({
+    ...row,
+    id: row.package_id,
+    _id: row.package_id,
+    title: row.name,
+    features: row.features || []
+});
 
 export async function GET(req, { params }) {
     try {
-        await connectDB();
-
         const { slug } = await params;
 
         if (!slug) {
@@ -15,9 +20,9 @@ export async function GET(req, { params }) {
             );
         }
 
-        const offer = await Offer.findOne({ slug });
+        const res = await dbQuery("SELECT * FROM packages WHERE slug = $1 AND is_active = true", [slug]);
 
-        if (!offer) {
+        if (res.rows.length === 0) {
             return NextResponse.json(
                 { success: false, message: 'No offer found with this slug' }, 
                 { status: 404 }
@@ -27,7 +32,7 @@ export async function GET(req, { params }) {
         return NextResponse.json({
             success: true,
             message: 'Offer data found successfully',
-            payload: offer 
+            payload: mapOffer(res.rows[0])
         }, { status: 200 });
 
     } catch (error) {

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import React, { useState } from 'react'
 import axios from 'axios'
 import { RiUserLine, RiMailLine, RiLockPasswordLine, RiUserAddLine, RiPhoneLine } from 'react-icons/ri'
+import toast from 'react-hot-toast'
 
 const RegisterForm = () => {
     const [formData, setFormData] = useState({
@@ -24,10 +25,10 @@ const RegisterForm = () => {
         setIsLoading(true)
         try {
             const res = await axios.post('/api/user/register', formData)
-            alert(res.data.message)
+            toast.success(res.data.message)
             window.location.replace('/login')
         } catch (error) {
-            alert(error?.response?.data?.message || "Registration failed")
+            toast.error(error?.response?.data?.message || "Registration failed")
         } finally {
             setIsLoading(false)
         }

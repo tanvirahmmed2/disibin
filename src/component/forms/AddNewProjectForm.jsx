@@ -1,6 +1,7 @@
 'use client'
 import axios from 'axios'
 import React, { useState } from 'react'
+import toast from 'react-hot-toast'
 
 const AddNewProjectForm = () => {
   const [formData, setFormData] = useState({
@@ -31,7 +32,7 @@ const AddNewProjectForm = () => {
       })
 
       const response = await axios.post('/api/project', data, { withCredentials: true })
-      alert(response.data.message)
+      toast.success(response.data.message)
       setFormData({
         title: '',
         description: '',
@@ -43,7 +44,7 @@ const AddNewProjectForm = () => {
       })
     } catch (error) {
       console.log(error)
-      alert(error?.response?.data?.message || "Failed to post project")
+      toast.error(error?.response?.data?.message || "Failed to post project")
 
     }
   }

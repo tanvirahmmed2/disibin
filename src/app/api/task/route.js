@@ -1,47 +1,34 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/database/db';
-import Task from '@/lib/models/task';
-import { isLogin, isManager, isProjectManager, isStaff } from '@/lib/middleware';
-import { createLog } from '@/lib/utils/logger';
+import { dbQuery } from '@/lib/database/pg';
+import { isLogin, isManager, isDeveloper } from '@/lib/middleware';
 
 export async function GET(req) {
     try {
-        await connectDB();
-        const { searchParams } = new URL(req.url);
-        const type = searchParams.get('type');
-        const status = searchParams.get('status');
-        const mode = searchParams.get('mode'); 
-
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
-        const user = auth.data;
 
-        if (mode === 'conversations') {
-            
-            const chats = await Task.find({
-                type: 'direct',
-                participants: user._id
-            })
-            .populate('participants', 'name email role image')
-            .sort({ updatedAt: -1 });
-            
-            return NextResponse.json({ success: true, message: 'Conversations fetched', data: chats });
+        const user = auth.data;
+        const tenantId = user.tenantId;
+
+        let sql = `
+            SELECT t.*, u.name as assigned_to_name 
+            FROM tasks t
+            LEFT JOIN users u ON t.assigned_to = u.user_id
+            WHERE t.tenant_id = $1
+        `;
+        const params = [tenantId];
+
+        // Developers only see their own tasks
+        if (user.role === 'developer') {
+            params.push(user.id);
+            sql += ` AND t.assigned_to = $${params.length}`;
         }
 
-        const isMgmt = ['admin', 'manager', 'project_manager'].includes(user.role);
+        sql += " ORDER BY t.created_at DESC";
 
+        const res = await dbQuery(sql, params);
         
-        const query = {};
-        if (type) query.type = type;
-        if (status) query.status = status;
-        
-        const tasks = await Task.find(query)
-            .populate('createdBy', 'name email role')
-            .populate('assignedTo', 'name email role')
-            .populate('participants', 'name email role')
-            .sort({ updatedAt: -1 });
-
-        return NextResponse.json({ success: true, message: 'Tasks fetched', data: tasks });
+        return NextResponse.json({ success: true, data: res.rows });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -50,40 +37,21 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-        await connectDB();
-        const auth = await isProjectManager();
+        const auth = await isManager();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
 
-        const body = await req.json();
-        const { title, description, type, assignedTo, participants, priority, deadline } = body;
+        const { title, description, assignedTo, priority, dueDate } = await req.json();
+        if (!title) return NextResponse.json({ success: false, message: "Title is required" }, { status: 400 });
 
-        if (!title || !type) {
-            return NextResponse.json({ success: false, message: 'Title and type are required' }, { status: 400 });
-        }
+        const user = auth.data;
 
-        const task = await Task.create({
-            title,
-            description,
-            type,
-            createdBy: auth.data._id,
-            assignedTo,
-            participants: participants || [],
-            priority: priority || 'medium',
-            deadline,
-            status: 'in_progress'
-        });
+        const res = await dbQuery(`
+            INSERT INTO tasks (tenant_id, title, description, assigned_to, created_by, status, priority, due_date)
+            VALUES ($1, $2, $3, $4, $5, 'in_progress', $6, $7)
+            RETURNING *
+        `, [user.tenantId, title, description, assignedTo, user.id, priority || 'medium', dueDate]);
 
-        
-        await createLog({
-            userId: auth.data._id,
-            action: 'create',
-            targetType: 'task',
-            targetId: task._id,
-            description: `Created task: ${task.title}`,
-            metadata: { type: task.type, priority: task.priority }
-        });
-
-        return NextResponse.json({ success: true, message: 'Task created successfully', data: task });
+        return NextResponse.json({ success: true, message: 'Task created', data: res.rows[0] });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -92,75 +60,32 @@ export async function POST(req) {
 
 export async function PATCH(req) {
     try {
-        await connectDB();
-        const auth = await isStaff(); 
+        const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
-        const { id, status, message, attachments } = await req.json();
+        const { id, status, priority } = await req.json();
+        if (!id) return NextResponse.json({ success: false, message: "Task ID required" }, { status: 400 });
 
-        const task = await Task.findById(id);
-        if (!task) return NextResponse.json({ success: false, message: 'Task not found' }, { status: 404 });
+        const user = auth.data;
 
-        
-        if (status) {
-            task.status = status;
+        // Managers can update everything, Developers can only update status
+        let sql;
+        let params;
+
+        if (user.role === 'manager' || user.role === 'admin') {
+            sql = `UPDATE tasks SET status = COALESCE($1, status), priority = COALESCE($2, priority), updated_at = NOW() WHERE task_id = $3 AND tenant_id = $4 RETURNING *`;
+            params = [status, priority, id, user.tenantId];
+        } else if (user.role === 'developer') {
+            sql = `UPDATE tasks SET status = $1, updated_at = NOW() WHERE task_id = $2 AND assigned_to = $3 AND tenant_id = $4 RETURNING *`;
+            params = [status, id, user.id, user.tenantId];
+        } else {
+            return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
         }
 
-        
-        if (message) {
-            task.messages.push({
-                senderId: auth.data._id,
-                message,
-                attachments: attachments || [],
-                type: 'text'
-            });
-            task.lastMessage = {
-                message,
-                senderId: auth.data._id,
-                createdAt: new Date()
-            };
-        }
+        const res = await dbQuery(sql, params);
+        if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Task not found or access denied" }, { status: 404 });
 
-        await task.save();
-
-        
-        await createLog({
-            userId: auth.data._id,
-            action: 'update',
-            targetType: 'task',
-            targetId: task._id,
-            description: status ? `Updated task status to ${status}: ${task.title}` : `Added comment to task: ${task.title}`
-        });
-
-        return NextResponse.json({ success: true, message: 'Task updated', data: task });
-
-    } catch (error) {
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
-    }
-}
-
-export async function DELETE(req) {
-    try {
-        await connectDB();
-        const auth = await isManager();
-        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
-
-        const { id } = await req.json();
-        const task = await Task.findById(id);
-        if (!task) return NextResponse.json({ success: false, message: 'Task not found' }, { status: 404 });
-
-        await Task.findByIdAndDelete(id);
-
-        
-        await createLog({
-            userId: auth.data._id,
-            action: 'delete',
-            targetType: 'task',
-            targetId: id,
-            description: `Deleted task: ${task.title}`
-        });
-
-        return NextResponse.json({ success: true, message: 'Task deleted successfully' });
+        return NextResponse.json({ success: true, message: 'Task updated', data: res.rows[0] });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

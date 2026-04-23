@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import React, { useState } from 'react'
 import axios from 'axios'
 import { RiMailLine, RiLockPasswordLine, RiLoginCircleLine } from 'react-icons/ri'
+import toast from 'react-hot-toast'
 
 const LoginForm = () => {
     const [formData, setFormData] = useState({
@@ -25,10 +26,10 @@ const LoginForm = () => {
             if (res.data.success) {
                 window.location.replace('/profile')
             } else {
-                alert(res.data.message)
+                toast.error(res.data.message)
             }
         } catch (error) {
-            alert(error?.response?.data?.message || 'Failed to login')
+            toast.error(error?.response?.data?.message || 'Failed to login')
         } finally {
             setIsLoading(false)
         }
@@ -55,7 +56,7 @@ const LoginForm = () => {
                         required 
                         onChange={handleChange} 
                         value={formData.email} 
-                        className='w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500/50 transition-all font-medium text-slate-800 placeholder:text-slate-400'
+                        className='input-standard pl-12'
                     />
                 </div>
             </div>
@@ -73,7 +74,7 @@ const LoginForm = () => {
                         required 
                         onChange={handleChange} 
                         value={formData.password} 
-                        className='w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:bg-white focus:border-emerald-500/50 transition-all font-medium text-slate-800 placeholder:text-slate-400'
+                        className='input-standard pl-12'
                     />
                 </div>
             </div>

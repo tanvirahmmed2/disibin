@@ -4,7 +4,7 @@ import React, { useContext } from 'react'
 import { Context } from '../helper/Context'
 
 const Sidebar = () => {
-    const { sidebar, setSidebar, isLoggedin, handleLogout } = useContext(Context)
+    const { sidebar, setSidebar, isLoggedin, handleLogout, userData } = useContext(Context)
     const closeSidebar = () => {
         setSidebar(false)
     }
@@ -13,7 +13,6 @@ const Sidebar = () => {
         { name: 'Home', href: '/' },
         { name: 'Services', href: '/services' },
         { name: 'Plans', href: '/packages' },
-        { name: 'Premium', href: '/memberships' },
         { name: 'Projects', href: '/projects' },
         { name: 'Blogs', href: '/blogs' },
         { name: 'About', href: '/about' },
@@ -47,7 +46,7 @@ const Sidebar = () => {
 
                     {isLoggedin ? (
                         <div className='flex flex-col gap-2'>
-                            <Link href='/dashboard' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-500/5 hover:text-emerald-500 hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Dashboard</Link>
+                            <Link href={userData?.role === 'user' ? '/user' : '/dashboard'} className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-500/5 hover:text-emerald-500 hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Dashboard</Link>
                             <Link href='/profile' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-500/5 hover:text-emerald-500 hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Profile</Link>
                             <Link href='/wishlist' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-500/5 hover:text-emerald-500 hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Wishlist</Link>
                             <button className='px-4 py-3 rounded-xl text-red-500 font-medium hover:bg-red-50 text-left hover:pl-6 transition-all duration-300 w-full' onClick={() => { closeSidebar(); handleLogout() }}>Logout</button>

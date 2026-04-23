@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/db";
-import User from "@/lib/models/user";
+import { dbQuery } from "@/lib/database/pg";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { sendVerificationEmail } from "@/lib/database/brevo";
@@ -8,15 +7,14 @@ import { BASE_URL } from "@/lib/database/secret";
 
 export async function POST(req) {
     try {
-        await connectDB();
         const { name, email, phone, password } = await req.json();
 
-        if (!name || !email || !phone || !password) {
+        if (!name || !email || !password) {
             return NextResponse.json({ success: false, message: 'Missing required fields' }, { status: 400 });
         }
 
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
+        const existingRes = await dbQuery("SELECT user_id FROM users WHERE email = $1", [email]);
+        if (existingRes.rows.length > 0) {
             return NextResponse.json({ success: false, message: 'Email already exists' }, { status: 400 });
         }
 
@@ -24,23 +22,21 @@ export async function POST(req) {
         const verificationToken = crypto.randomBytes(32).toString('hex');
         const tokenExpiresAt = new Date(Date.now() + 3600000); 
 
-        const user = await User.create({
-            name,
-            email,
-            phone,
-            password: hashedPassword,
-            isVerified: false,
-            resetToken: verificationToken,
-            tokenExpiresAt
-        });
+        const res = await dbQuery(`
+            INSERT INTO users (name, email, phone, password, role, is_active, is_verified, reset_token, token_expires_at)
+            VALUES ($1, $2, $3, $4, 'user', true, false, $5, $6)
+            RETURNING user_id, name, email
+        `, [name, email, phone, hashedPassword, verificationToken, tokenExpiresAt]);
 
-        const verificationUrl = `${BASE_URL}/verify-email?token=${verificationToken}&email=${email}`;
+        const user = res.rows[0];
+
+        const verificationUrl = `${BASE_URL}/api/auth/verify-email?token=${verificationToken}&email=${email}`;
         await sendVerificationEmail(email, name, verificationUrl);
 
         return NextResponse.json({
             success: true,
             message: 'Registration successful! Please check your email to verify your account.',
-            data: { id: user._id, name: user.name, email: user.email }
+            data: { id: user.user_id, _id: user.user_id, name: user.name, email: user.email }
         }, { status: 201 });
 
     } catch (error) {

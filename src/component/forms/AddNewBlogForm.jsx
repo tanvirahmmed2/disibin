@@ -2,6 +2,7 @@
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
+import toast from 'react-hot-toast'
 
 const AddNewBlogForm = () => {
     const router = useRouter()
@@ -39,11 +40,11 @@ const AddNewBlogForm = () => {
             const response = await axios.post('/api/blog', data)
 
             if (response.data.success) {
-                alert('Blog published successfully!')
-                router.push('/dashboard/editor/blogs')
+                toast.success('Blog published successfully!')
+                router.push('/dashboard/manager/blogs')
             }
         } catch (error) {
-            alert(error?.response?.data?.message || "Failed to publish article")
+            toast.error(error?.response?.data?.message || "Failed to publish article")
         } finally {
             setLoading(false)
         }
@@ -57,7 +58,7 @@ const AddNewBlogForm = () => {
                 <input
                     type="text" name="title" required
                     value={formData.title} onChange={handleChange}
-                    className="w-full px-3 p-2 rounded-lg border outline-none border-emerald-400/50 "
+                    className="input-standard"
                 />
             </div>
 
@@ -67,7 +68,7 @@ const AddNewBlogForm = () => {
                     type="text" name="tags"
                     placeholder="e.g. Technology, Coding, JavaScript"
                     value={formData.tags} onChange={handleChange}
-                    className="w-full px-3 p-2 rounded-lg border outline-none border-emerald-400/50 "
+                    className="input-standard"
                 />
             </div>
 
@@ -76,7 +77,7 @@ const AddNewBlogForm = () => {
                 <textarea
                     name="description" required
                     value={formData.description} onChange={handleChange}
-                    className="w-full px-3 p-2 rounded-lg border outline-none border-emerald-400/50 "
+                    className="input-standard"
                 />
             </div>
 
@@ -84,7 +85,7 @@ const AddNewBlogForm = () => {
                 <label className="text-sm font-bold text-slate-700 ml-1">Featured Image</label>
                 <input
                     type="file" accept="image/*" required onChange={handleChange}
-                    className="w-full px-3 p-2 rounded-lg border outline-none border-emerald-400/50 " />
+                    className="input-standard" />
             </div>
 
             <div className="pt-6 border-t border-slate-100 flex justify-end">

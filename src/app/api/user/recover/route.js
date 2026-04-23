@@ -1,24 +1,24 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/database/db';
-import User from '@/lib/models/user';
+import { dbQuery } from '@/lib/database/pg';
 import { sendEmail } from '@/lib/database/brevo';
 
 export async function PUT(req) {
     try {
-        await connectDB();
         const { email } = await req.json();
 
-        const user = await User.findOne({ email });
-        if (!user) {
+        const res = await dbQuery("SELECT user_id, name, email FROM users WHERE email = $1", [email]);
+        if (res.rows.length === 0) {
             return NextResponse.json({ success: false, message: "No account found with this email" }, { status: 404 });
         }
+        const user = res.rows[0];
 
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const expires = new Date(Date.now() + 10 * 60 * 1000); 
 
-        user.resetToken = otp;
-        user.tokenExpiresAt = expires;
-        await user.save();
+        await dbQuery(`
+            UPDATE users SET reset_token = $1, token_expires_at = $2, updated_at = NOW() 
+            WHERE user_id = $3
+        `, [otp, expires, user.user_id]);
 
         const emailRes = await sendEmail({
             toEmail: email,

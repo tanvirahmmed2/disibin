@@ -1,19 +1,28 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/database/db';
-import { Review } from '@/lib/models/review';
+import { dbQuery } from '@/lib/database/pg';
 import { isLogin, isManager } from '@/lib/middleware';
 
 export async function GET() {
     try {
-        await connectDB();
         const auth = await isManager();
-        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
-
-        const reviews = await Review.find()
-            .populate('userId', 'name email')
-            .sort({ createdAt: -1 });
-
-        return NextResponse.json({ success: true, message: 'Reviews fetched', data: reviews });
+        
+        let sql = `
+            SELECT r.review_id, r.rating, r.comment, r.is_approved, r.created_at, u.name as user_name 
+            FROM reviews r
+            JOIN users u ON r.user_id = u.user_id
+        `;
+        
+        if (auth.success) {
+            // Manager gets all reviews
+            sql += " ORDER BY r.created_at DESC";
+            const res = await dbQuery(sql, []);
+            return NextResponse.json({ success: true, message: 'All reviews fetched', data: res.rows });
+        } else {
+            // Public/User gets only approved reviews
+            sql += " WHERE r.is_approved = true ORDER BY r.created_at DESC";
+            const res = await dbQuery(sql, []);
+            return NextResponse.json({ success: true, message: 'Approved reviews fetched', data: res.rows });
+        }
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -21,24 +30,22 @@ export async function GET() {
 
 export async function POST(req) {
     try {
-        await connectDB();
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
         const { rate, comment } = await req.json();
         if (!rate || !comment) return NextResponse.json({ success: false, message: 'Rate and comment are required' }, { status: 400 });
 
-        const review = await Review.create({
-            userId: auth.data._id,
-            rate: Number(rate),
-            comment,
-            isApproved: false
-        });
+        const res = await dbQuery(`
+            INSERT INTO reviews (user_id, rating, comment, is_approved)
+            VALUES ($1, $2, $3, false)
+            RETURNING *
+        `, [auth.data.id, Number(rate), comment]);
 
         return NextResponse.json({
             success: true,
             message: 'Review submitted successfully! It will appear after approval.',
-            data: review
+            data: res.rows[0]
         }, { status: 201 });
 
     } catch (error) {
@@ -48,16 +55,17 @@ export async function POST(req) {
 
 export async function PATCH(req) {
     try {
-        await connectDB();
         const auth = await isManager();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
         const { id, isApproved } = await req.json();
-        const review = await Review.findByIdAndUpdate(id, { isApproved }, { new: true });
+        const res = await dbQuery(`
+            UPDATE reviews SET is_approved = $1, updated_at = NOW() WHERE review_id = $2 RETURNING *
+        `, [isApproved, id]);
 
-        if (!review) return NextResponse.json({ success: false, message: 'Review not found' }, { status: 404 });
+        if (res.rows.length === 0) return NextResponse.json({ success: false, message: 'Review not found' }, { status: 404 });
 
-        return NextResponse.json({ success: true, message: 'Review status updated', data: review });
+        return NextResponse.json({ success: true, message: 'Review status updated', data: res.rows[0] });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -65,12 +73,13 @@ export async function PATCH(req) {
 
 export async function DELETE(req) {
     try {
-        await connectDB();
         const auth = await isManager();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
         const { id } = await req.json();
-        await Review.findByIdAndDelete(id);
+        const res = await dbQuery("DELETE FROM reviews WHERE review_id = $1 RETURNING *", [id]);
+
+        if (res.rows.length === 0) return NextResponse.json({ success: false, message: 'Review not found' }, { status: 404 });
 
         return NextResponse.json({ success: true, message: 'Review deleted successfully' });
     } catch (error) {

@@ -1,30 +1,30 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/db";
-import User from "@/lib/models/user";
+import { dbQuery } from "@/lib/database/pg";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+import { JWT_SECRET } from "@/lib/database/secret";
 
 export async function POST(req) {
     try {
-        await connectDB();
         const { email, password } = await req.json();
 
         if (!email || !password) {
             return NextResponse.json({ success: false, message: "Email and password are required" }, { status: 400 });
         }
 
-        const user = await User.findOne({ email });
+        const res = await dbQuery("SELECT * FROM users WHERE email = $1", [email]);
+        const user = res.rows[0];
 
         if (!user) {
             return NextResponse.json({ success: false, message: "Invalid credentials" }, { status: 401 });
         }
 
-        if (!user.isActive) {
+        if (!user.is_active) {
             return NextResponse.json({ success: false, message: "Account is disabled. Contact support." }, { status: 403 });
         }
 
-        if (!user.isVerified) {
+        if (!user.is_verified) {
             return NextResponse.json({ success: false, message: "Email not verified. Please check your inbox.", isUnverified: true }, { status: 403 });
         }
 
@@ -33,13 +33,19 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "Invalid credentials" }, { status: 401 });
         }
 
+        // Fetch user's primary tenant for the token
+        const tenantRes = await dbQuery("SELECT tenant_id FROM tenant_users WHERE user_id = $1 LIMIT 1", [user.user_id]);
+        const tenantId = tenantRes.rows[0]?.tenant_id;
+
         const tokenData = {
-            _id: user._id,
+            id: user.user_id,
+            _id: user.user_id, // Backward compatibility
             email: user.email,
-            role: user.role
+            role: user.role,
+            tenantId: tenantId
         };
 
-        const token = jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn: '1d' });
+        const token = jwt.sign(tokenData, JWT_SECRET, { expiresIn: '1d' });
         
         const cookieStore = await cookies();
         cookieStore.set('disibin', token, {
@@ -49,24 +55,20 @@ export async function POST(req) {
             path: '/',
         });
 
-        const response = NextResponse.json({
+        return NextResponse.json({
             success: true,
             message: `Welcome back, ${user.name}!`,
             data: {
-                _id: user._id,
+                id: user.user_id,
+                _id: user.user_id,
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                tenantId: tenantId
             }
         });
 
-        return response;
-
     } catch (error) {
-        return NextResponse.json({
-            success: false,
-            message: 'Failed to login',
-            error: error.message
-        }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }

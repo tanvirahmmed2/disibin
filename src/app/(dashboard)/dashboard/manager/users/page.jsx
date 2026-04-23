@@ -51,14 +51,14 @@ const ManagerUsers = () => {
         )},
         { label: 'Role', key: 'role', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider
-                ${row.role === 'client' ? 'bg-slate-100 text-slate-500' : 'bg-primary/10 text-primary'}`}>
+                ${row.role === 'user' ? 'bg-slate-100 text-slate-500' : 'bg-primary/10 text-primary'}`}>
                 {row.role}
             </span>
         )},
-        { label: 'Status', key: 'isActive', render: (row) => (
+        { label: 'Status', key: 'is_active', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider
-                ${row.isActive ? 'bg-primary/10 text-primary-dark' : 'bg-primary text-primary'}`}>
-                {row.isActive ? 'Active' : 'Inactive'}
+                ${row.is_active ? 'bg-primary/10 text-primary-dark' : 'bg-primary text-primary'}`}>
+                {row.is_active ? 'Active' : 'Inactive'}
             </span>
         )},
     ]
@@ -66,15 +66,15 @@ const ManagerUsers = () => {
     const actions = (row) => (
         <div className="flex gap-2">
             <button 
-                onClick={() => toggleStatus(row._id, row.isActive)}
-                className={`p-2 rounded-lg transition-all ${row.isActive ? 'hover:bg-white text-white' : 'hover:bg-primary/5 text-primary'}`}
-                title={row.isActive ? 'Suspend Access' : 'Restore Access'}
+                onClick={() => toggleStatus(row.user_id, row.is_active)}
+                className={`p-2 rounded-lg transition-all ${row.is_active ? 'hover:bg-white text-white' : 'hover:bg-primary/5 text-primary'}`}
+                title={row.is_active ? 'Suspend Access' : 'Restore Access'}
             >
                 <RiToggleLine size={18} />
             </button>
             <button 
                 disabled={row.role === 'admin'}
-                onClick={() => handleDelete(row._id)}
+                onClick={() => handleDelete(row.user_id)}
                 className="p-2 hover:bg-primary rounded-lg text-primary transition-all disabled:opacity-20"
                 title="Delete User"
             >

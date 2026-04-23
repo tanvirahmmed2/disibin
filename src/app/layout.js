@@ -1,5 +1,6 @@
 import { Poppins } from "next/font/google";
 import ContextProvider from "@/component/helper/Context";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 const poppins = Poppins({ 
@@ -19,8 +20,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`\ w-full overflow-x-hidden relative bg-white md:text-base text-sm`}>
+      <body className={`\ w-full overflow-x-hidden relative bg-white md:text-base text-sm min-h-screen`}>
         <ContextProvider>
+          <Toaster position="top-right" />
           <main>{children}</main>
         </ContextProvider>
       </body>

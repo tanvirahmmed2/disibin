@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { MdDeleteOutline } from 'react-icons/md'
 import axios from 'axios'
+import toast from 'react-hot-toast'
 
 const WishlistPage = () => {
     const { removeFromwishlist, wishlist, clearWishlist, userData } = useContext(Context)
@@ -18,8 +19,8 @@ const WishlistPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        if (!userData?._id) {
-            alert("Please login first")
+        if (!userData?.user_id) {
+            toast.error("Please login first")
             return
         }
 
@@ -38,12 +39,12 @@ const WishlistPage = () => {
             const res = await axios.post('/api/purchase', data, { withCredentials: true })
 
             if (res.data.success) {
-                alert("Order placed successfully!")
+                toast.success("Order placed successfully!")
                 clearWishlist()
                 setIsPopUp(false)
             }
         } catch (error) {
-            alert(error?.response?.data?.message || 'Failed to place order')
+            toast.error(error?.response?.data?.message || 'Failed to place order')
         }
     }
 
@@ -58,7 +59,7 @@ const WishlistPage = () => {
                     
                     <div className='lg:col-span-2 space-y-6'>
                         {wishlist.map((item) => (
-                            <div key={item._id} className="w-full flex items-center gap-8 p-8 bg-white border rounded-[2.5rem] hover:shadow-xl">
+                            <div key={item.wishlist_id} className="w-full flex items-center gap-8 p-8 bg-white border rounded-[2.5rem] hover:shadow-xl">
                                 
                                 <div className="w-24 h-24 relative rounded-xl overflow-hidden bg-slate-50 shrink-0">
                                     {item.image ? (
@@ -81,7 +82,7 @@ const WishlistPage = () => {
                                 </div>
 
                                 <button 
-                                    onClick={() => removeFromwishlist(item._id)}
+                                    onClick={() => removeFromwishlist(item.wishlist_id)}
                                     className='p-3 bg-red-500 text-white rounded-xl hover:bg-red-600'
                                 >
                                     <MdDeleteOutline size={20} />

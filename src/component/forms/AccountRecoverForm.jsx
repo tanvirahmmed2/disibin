@@ -1,6 +1,7 @@
 'use client'
 import axios from 'axios'
 import React, { useState } from 'react'
+import toast from 'react-hot-toast'
 
 const AccountRecoverForm = () => {
   const [formData, setFromData] = useState({
@@ -20,10 +21,10 @@ const AccountRecoverForm = () => {
     e.preventDefault()
     try {
       const res= await axios.put('/api/user/recover', {email:formData.email}, {withCredentials:true})
-      alert(res.data.message)
+      toast.success(res.data.message)
       setPasswordBox(true)
     } catch (error) {
-      alert(error?.response?.data?.message || 'Failed to send otp')
+      toast.error(error?.response?.data?.message || 'Failed to send otp')
 
     }
   }
@@ -32,10 +33,10 @@ const AccountRecoverForm = () => {
     e.preventDefault()
     try {
       const res= await axios.patch('/api/user/recover/password', formData, {withCredentials:true})
-      alert(res.data.message)
+      toast.success(res.data.message)
       window.location.replace('/login')
     } catch (error) {
-      alert(error?.response?.data?.message ||'Failed to change password')
+      toast.error(error?.response?.data?.message ||'Failed to change password')
       
     }
   }

@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/db";
-import User from "@/lib/models/user";
-import { isLogin, isManager, isProjectManager } from "@/lib/middleware";
+import { dbQuery } from "@/lib/database/pg";
+import { isLogin, isManager, isSupport } from "@/lib/middleware";
+import bcrypt from "bcryptjs";
 
 export async function GET(req) {
     try {
-        await connectDB();
-        const auth = await isProjectManager();
+        const auth = await isSupport();
         if (!auth.success) {
             return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
         }
@@ -15,16 +14,28 @@ export async function GET(req) {
         const role = searchParams.get('role');
         const isActive = searchParams.get('isActive');
 
-        const query = {};
-        if (role) query.role = role;
-        if (isActive !== null && isActive !== undefined) query.isActive = isActive === 'true';
+        let sql = "SELECT user_id, name, email, phone, role, is_active FROM users WHERE 1=1";
+        const params = [];
 
-        const users = await User.find(query).select("-password").sort({ createdAt: -1 });
+
+        if (role) {
+            params.push(role);
+            sql += ` AND role = $${params.length}`;
+        }
+
+        if (isActive !== null && isActive !== undefined) {
+            params.push(isActive === 'true');
+            sql += ` AND is_active = $${params.length}`;
+        }
+
+        sql += " ORDER BY created_at DESC";
+
+        const res = await dbQuery(sql, params);
 
         return NextResponse.json({
             success: true,
             message: 'User data found successfully',
-            data: users
+            data: res.rows
         }, { status: 200 });
 
     } catch (error) {
@@ -34,7 +45,6 @@ export async function GET(req) {
 
 export async function PATCH(req) {
     try {
-        await connectDB();
         const auth = await isLogin();
         if (!auth.success) {
             return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
@@ -43,59 +53,71 @@ export async function PATCH(req) {
         const body = await req.json();
         const { 
             id, name, phone, city, country, 
-            addressLine1, addressLine2, state, 
-            postalCode, 
-            role, isActive 
+            addressLine1, address_line1,
+            addressLine2, address_line2,
+            state, 
+            postalCode, postal_code,
+            role, isActive, is_active,
+            password
         } = body;
 
         if (!id) {
             return NextResponse.json({ success: false, message: "User ID is required" }, { status: 400 });
         }
 
-        
         const isManagement = auth.data.role === 'admin' || auth.data.role === 'manager';
         
-        const targetUser = await User.findById(id);
-        if (!targetUser) {
+        // Ensure user can only update their own profile unless they are management
+        if (!isManagement && String(auth.data.id) !== String(id)) {
+            return NextResponse.json({ success: false, message: 'Unauthorized profile update' }, { status: 403 });
+        }
+
+        const targetRes = await dbQuery("SELECT * FROM users WHERE user_id = $1", [id]);
+
+        if (targetRes.rows.length === 0) {
             return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
         }
 
-        
-        if (targetUser.role === 'admin' && role && role !== 'admin') {
-            if (!isManagement || auth.data.role !== 'admin') {
-                return NextResponse.json({ success: false, message: 'Unauthorized role change' }, { status: 403 });
-            }
-            const adminCount = await User.countDocuments({ role: 'admin' });
-            if (adminCount <= 1) {
-                return NextResponse.json({
-                    success: false,
-                    message: "Safety Block: Cannot demote the only remaining admin."
-                }, { status: 400 });
-            }
-        }
+        const updateFields = [];
+        const updateParams = [id];
 
-        
-        const updateData = {
-            name: name || targetUser.name,
-            phone: phone || targetUser.phone,
-            city: city !== undefined ? city : targetUser.city,
-            country: country !== undefined ? country : targetUser.country,
-            addressLine1: addressLine1 !== undefined ? addressLine1 : targetUser.addressLine1,
-            addressLine2: addressLine2 !== undefined ? addressLine2 : targetUser.addressLine2,
-            state: state !== undefined ? state : targetUser.state,
-            postalCode: postalCode !== undefined ? postalCode : targetUser.postalCode,
+        const addField = (field, value) => {
+            if (value !== undefined && value !== null) {
+                updateParams.push(value);
+                updateFields.push(`${field} = $${updateParams.length}`);
+            }
         };
+
+        addField('name', name);
+        addField('phone', phone);
+        addField('city', city);
+        addField('country', country);
+        addField('address_line1', addressLine1 || address_line1);
+        addField('address_line2', addressLine2 || address_line2);
+        addField('state', state);
+        addField('postal_code', postalCode || postal_code);
+
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            addField('password', hashedPassword);
+        }
 
         if (isManagement) {
             if (role && (auth.data.role === 'admin' || (auth.data.role === 'manager' && role !== 'admin'))) {
-                updateData.role = role;
+                addField('role', role);
             }
-            if (isActive !== undefined) {
-                updateData.isActive = isActive;
+            if (isActive !== undefined || is_active !== undefined) {
+                addField('is_active', isActive !== undefined ? isActive : is_active);
             }
         }
 
-        const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true }).select("-password");
+        if (updateFields.length === 0) {
+            return NextResponse.json({ success: false, message: "No fields to update" }, { status: 400 });
+        }
+
+        const sql = `UPDATE users SET ${updateFields.join(', ')}, updated_at = NOW() WHERE user_id = $1 RETURNING *`;
+        const updatedRes = await dbQuery(sql, updateParams);
+        const updatedUser = updatedRes.rows[0];
 
         return NextResponse.json({
             success: true,

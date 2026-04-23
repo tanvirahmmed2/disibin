@@ -9,17 +9,17 @@ import Image from 'next/image'
 const ServiceDetails = ({ params }) => {
     const { title } = use(params)
     const { customServices } = useContext(Context)
-    const [memberships, setMemberships] = useState([])
+    const [packages, setPackages] = useState([])
     const [loading, setLoading] = useState(true)
 
     const service = customServices?.find(s => s.title.toLowerCase().replace(/ /g, '-') === title)
 
     useEffect(() => {
-        const fetchMemberships = async () => {
+        const fetchPackages = async () => {
             try {
-                const res = await axios.get('/api/membership')
+                const res = await axios.get('/api/package')
                 if (res.data.success) {
-                    setMemberships(res.data.data)
+                    setPackages(res.data.data)
                 }
             } catch (error) {
                 
@@ -27,7 +27,7 @@ const ServiceDetails = ({ params }) => {
                 setLoading(false)
             }
         }
-        fetchMemberships()
+        fetchPackages()
     }, [])
 
     if (!service) return (
@@ -111,7 +111,7 @@ const ServiceDetails = ({ params }) => {
                             <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter">Scalable Tiers.</h2>
                             <p className="text-slate-500 font-medium">Select a commitment level that matches your operational requirements.</p>
                         </div>
-                        <Link href="/memberships" className="btn-secondary">View All Plans</Link>
+                        <Link href="/packages" className="btn-secondary">View All Plans</Link>
                     </div>
 
                     {loading ? (
@@ -120,19 +120,19 @@ const ServiceDetails = ({ params }) => {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {memberships.slice(0, 3).map((plan) => (
-                                <div key={plan._id} className="p-12 bg-white border border-slate-100 rounded-[3rem] flex flex-col space-y-10 group hover:border-slate-900 transition-all duration-500">
+                            {packages.slice(0, 3).map((plan) => (
+                                <div key={plan.package_id} className="p-12 bg-white border border-slate-100 rounded-[3rem] flex flex-col space-y-10 group hover:border-slate-900 transition-all duration-500">
                                      <div className="space-y-4 text-center">
                                          <div className="w-16 h-16 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto text-slate-300 group-hover:text-emerald-500 transition-colors">
                                              <RiStarFill size={32} />
                                          </div>
-                                         <h4 className="text-2xl font-black text-slate-900 tracking-tight">{plan.title}</h4>
+                                         <h4 className="text-2xl font-black text-slate-900 tracking-tight">{plan.name}</h4>
                                      </div>
                                      <div className="text-center">
                                          <p className="text-[40px] font-black text-slate-900 tracking-tighter">${plan.price}</p>
                                          <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500">{plan.duration}</p>
                                      </div>
-                                     <Link href="/memberships" className="w-full py-5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest text-center hover:bg-emerald-500 transition-all duration-300">
+                                     <Link href="/packages" className="w-full py-5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest text-center hover:bg-emerald-500 transition-all duration-300">
                                          Commence Plan
                                      </Link>
                                 </div>

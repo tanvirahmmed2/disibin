@@ -1,20 +1,33 @@
 'use client'
 import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import toast from 'react-hot-toast'
 
 const UpdatePackageForm = ({ pack }) => {
-
+    const [categories, setCategories] = useState([])
     const [formData, setFormData] = useState({
-        title: pack?.title || '',
+        title: pack?.name || '',
         description: pack?.description || '',
         price: pack?.price || '',
         discount: pack?.discount || '',
-        category: pack?.category || '',
+        categoryId: pack?.category_id || '',
         features: pack?.features?.join(', ') || '',
     })
 
     const [image, setImage] = useState(null)
     const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await axios.get('/api/category')
+                setCategories(res.data.data || [])
+            } catch (error) {
+                console.error('Failed to fetch categories', error)
+            }
+        }
+        fetchCategories()
+    }, [])
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -31,13 +44,12 @@ const UpdatePackageForm = ({ pack }) => {
         try {
             const data = new FormData()
 
-            data.append('id', pack._id)
-
+            data.append('id', pack.package_id)
             data.append('title', formData.title)
             data.append('description', formData.description)
             data.append('price', Number(formData.price))
             data.append('discount', Number(formData.discount || 0))
-            data.append('category', formData.category)
+            data.append('categoryId', formData.categoryId)
 
             const featuresArray = formData.features
                 .split(',')
@@ -57,13 +69,13 @@ const UpdatePackageForm = ({ pack }) => {
             })
 
             if (res.data.success) {
-                alert('Package updated successfully')
+                toast.success('Package updated successfully')
             } else {
-                alert(res.data.message || 'Update failed')
+                toast.error(res.data.message || 'Update failed')
             }
 
         } catch (error) {
-            alert(error?.response?.data?.message || 'Update failed')
+            toast.error(error?.response?.data?.message || 'Update failed')
         } finally {
             setLoading(false)
         }
@@ -121,13 +133,20 @@ const UpdatePackageForm = ({ pack }) => {
 
             <div>
                 <label className='font-bold'>Category</label>
-                <input
-                    name="category"
-                    value={formData.category}
+                <select
+                    name="categoryId"
+                    value={formData.categoryId}
                     onChange={handleChange}
-                    className='input-standard'
+                    className="input-standard"
                     required
-                />
+                >
+                    <option value="">Select Category</option>
+                    {categories.map((cat) => (
+                        <option key={cat.category_id} value={cat.category_id}>
+                            {cat.name}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             <div>

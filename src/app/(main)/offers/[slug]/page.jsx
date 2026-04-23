@@ -58,7 +58,7 @@ const OfferDetails = ({ params }) => {
                         <div className="space-y-6">
                             <span className="px-4 py-1.5 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-lg inline-block">Flash Deal</span>
                             <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter leading-none">
-                                {offer.title}
+                                {offer.name}
                             </h1>
                             <p className="text-xl text-slate-500 font-medium leading-relaxed max-w-xl">
                                 {offer.description}
@@ -108,9 +108,9 @@ const OfferDetails = ({ params }) => {
                                 <div className="pt-10 space-y-4">
                                     <button 
                                         onClick={() => addToWishList({
-                                            itemId: offer._id,
+                                            packageId: offer.package_id,
                                             type: 'offer',
-                                            title: offer.title,
+                                            title: offer.name,
                                             slug: offer.slug,
                                             price: offer.price,
                                             discount: offer.discount

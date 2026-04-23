@@ -1,6 +1,7 @@
 'use client'
 import axios from 'axios';
 import React, { useState } from 'react'
+import toast from 'react-hot-toast'
 
 const UpdateUserForm = ({ user }) => {
     const [formData, setFormData] = useState({
@@ -25,9 +26,9 @@ const UpdateUserForm = ({ user }) => {
                 id: user.user_id,
                 ...formData
             });
-            alert(res.data.message);
+            toast.success(res.data.message);
         } catch (error) {
-            alert(error?.response?.data?.message || "Failed to update profile");
+            toast.error(error?.response?.data?.message || "Failed to update profile");
         }
     };
 

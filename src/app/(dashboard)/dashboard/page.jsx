@@ -24,7 +24,7 @@ const DashboardHome = () => {
     const { userData } = useContext(Context)
     const [stats, setStats] = useState(null)
     const [loading, setLoading] = useState(true)
-    const role = userData?.role || 'client'
+    const role = userData?.role || 'user'
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -37,7 +37,7 @@ const DashboardHome = () => {
                 setLoading(false)
             }
         }
-        if (userData?._id) fetchStats()
+        if (userData?.user_id) fetchStats()
     }, [userData])
 
     if (loading) return (
@@ -52,10 +52,10 @@ const DashboardHome = () => {
         <div className="max-w-7xl mx-auto py-8">
             <div className="mb-12">
                 <h1 className="text-4xl font-black text-slate-900 tracking-tight">
-                    {role === 'client' ? `Welcome back, ${userData?.name?.split(' ')[0]}!` : 'System Overview'}
+                    {role === 'user' ? `Welcome back, ${userData?.name?.split(' ')[0]}!` : 'System Overview'}
                 </h1>
                 <p className="text-slate-500 mt-2 font-medium">
-                    {role === 'client' ? 'Manage your services, tickets, and professional profile.' : 'Track platform activity and manage system operations.'}
+                    {role === 'user' ? 'Manage your services, tickets, and professional profile.' : 'Track platform activity and manage system operations.'}
                 </p>
             </div>
             
@@ -79,7 +79,7 @@ const DashboardHome = () => {
                 ))}
             </div>
             
-            {role !== 'client' && (
+            {role !== 'user' && (
                 <div className="mt-12 p-10 bg-emerald-500 rounded-[3rem] text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl shadow-primary/20">
                     <div className="space-y-2 text-center md:text-left">
                         <h2 className="text-3xl font-black tracking-tight uppercase">Management Console</h2>
@@ -96,7 +96,7 @@ const DashboardHome = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
                 <div className="lg:col-span-2 space-y-8">
-                    {role === 'client' && (
+                    {role === 'user' && (
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             {[
                                 { label: 'Support', href: '/dashboard/tickets', icon: RiTicketLine, color: 'primary' },

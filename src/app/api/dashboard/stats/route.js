@@ -1,79 +1,75 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/database/db';
-import User from '@/lib/models/user';
-import Blog from '@/lib/models/blog';
-import { Package } from '@/lib/models/package';
-import Project from '@/lib/models/project';
-import Task from '@/lib/models/task';
-import { Ticket } from '@/lib/models/ticket';
-import { isLogin, isManager, isAdmin } from '@/lib/middleware';
+import { dbQuery } from '@/lib/database/pg';
+import { isLogin } from '@/lib/middleware';
 
 export async function GET(req) {
     try {
-        await connectDB();
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
         const user = auth.data;
+        const tenantId = user.tenantId;
         const stats = {};
 
-        if (user.role === 'admin' || user.role === 'manager') {
-            
-            const [totalUsers, activePackages, totalBlogs, totalProjects, pendingTasks, openTickets] = await Promise.all([
-                User.countDocuments(),
-                Package.countDocuments({ isActive: true }),
-                Blog.countDocuments(),
-                Project.countDocuments(),
-                Task.countDocuments({ status: 'in_progress' }),
-                Ticket.countDocuments({ status: 'open' })
+        if (user.role === 'admin') {
+            // Global Admin View
+            const [usersRes, pkgRes, blogRes, projRes, taskRes, ticketRes, tenantRes] = await Promise.all([
+                dbQuery("SELECT COUNT(*) FROM users", []),
+                dbQuery("SELECT COUNT(*) FROM packages WHERE is_active = true", []),
+                dbQuery("SELECT COUNT(*) FROM blogs", []),
+                dbQuery("SELECT COUNT(*) FROM projects", []),
+                dbQuery("SELECT COUNT(*) FROM tasks WHERE status = 'in_progress'", []),
+                dbQuery("SELECT COUNT(*) FROM tickets WHERE status = 'open'", []),
+                dbQuery("SELECT COUNT(*) FROM tenants", [])
             ]);
 
             stats.overview = [
-                { title: 'Total Users', value: totalUsers, type: 'users' },
-                { title: 'Active Packages', value: activePackages, type: 'packages' },
-                { title: 'Total Blogs', value: totalBlogs, type: 'blogs' },
-                { title: 'Total Projects', value: totalProjects, type: 'projects' },
-                { title: 'Pending Tasks', value: pendingTasks, type: 'tasks' },
-                { title: 'Open Tickets', value: openTickets, type: 'tickets' }
+                { title: 'Total Users', value: parseInt(usersRes.rows[0].count), type: 'users' },
+                { title: 'Active Packages', value: parseInt(pkgRes.rows[0].count), type: 'packages' },
+                { title: 'Total Tenants', value: parseInt(tenantRes.rows[0].count), type: 'tenants' },
+                { title: 'Pending Tasks', value: parseInt(taskRes.rows[0].count), type: 'tasks' },
+                { title: 'Open Tickets', value: parseInt(ticketRes.rows[0].count), type: 'tickets' }
             ];
-        } else if (user.role === 'editor') {
-            const [totalBlogs, activePackages, totalProjects] = await Promise.all([
-                Blog.countDocuments(),
-                Package.countDocuments({ isActive: true }),
-                Project.countDocuments()
+        } else if (['manager', 'support', 'developer'].includes(user.role)) {
+            // Staff/Management View
+            const [taskRes, ticketRes, projectRes] = await Promise.all([
+                dbQuery("SELECT COUNT(*) FROM tasks WHERE status = 'in_progress'", []),
+                dbQuery("SELECT COUNT(*) FROM tickets WHERE status = 'open'", []),
+                dbQuery("SELECT COUNT(*) FROM projects", [])
             ]);
             stats.overview = [
-                { title: 'Published Blogs', value: totalBlogs, type: 'blogs' },
-                { title: 'Active Packages', value: activePackages, type: 'packages' },
-                { title: 'Live Projects', value: totalProjects, type: 'projects' }
-            ];
-        } else if (user.role === 'staff' || user.role === 'project_manager' || user.role === 'support') {
-            const query = user.role === 'staff' ? { assignedTo: user._id } : {};
-            const [myTasks, myTickets] = await Promise.all([
-                Task.countDocuments({ ...query, status: 'in_progress' }),
-                Ticket.countDocuments({ ...query, status: 'open' })
-            ]);
-            stats.overview = [
-                { title: 'Assigned Tasks', value: myTasks, type: 'tasks' },
-                { title: 'Open Tickets', value: myTickets, type: 'tickets' }
+                { title: 'Pending Tasks', value: parseInt(taskRes.rows[0].count), type: 'tasks' },
+                { title: 'Open Tickets', value: parseInt(ticketRes.rows[0].count), type: 'tickets' },
+                { title: 'Live Projects', value: parseInt(projectRes.rows[0].count), type: 'projects' }
             ];
         } else {
-            
-            const [myTickets, myPackages] = await Promise.all([
-                Ticket.countDocuments({ senderId: user._id }),
-                
-                
-                0 
+            // Standard User View
+            const [ticketCountRes, subCountRes, recentTicketsRes, recentSubsRes] = await Promise.all([
+                dbQuery("SELECT COUNT(*) FROM tickets WHERE user_id = $1", [user.id]),
+                dbQuery("SELECT COUNT(*) FROM subscriptions WHERE user_id = $1 AND status = 'active'", [user.id]),
+                dbQuery("SELECT ticket_id, subject, status, created_at FROM tickets WHERE user_id = $1 ORDER BY created_at DESC LIMIT 3", [user.id]),
+                dbQuery(`
+                    SELECT s.*, p.name as package_name 
+                    FROM subscriptions s 
+                    JOIN packages p ON s.package_id = p.package_id 
+                    WHERE s.user_id = $1 AND s.status = 'active' 
+                    ORDER BY s.created_at DESC LIMIT 3
+                `, [user.id])
             ]);
             stats.overview = [
-                { title: 'My Tickets', value: myTickets, type: 'tickets' },
-                { title: 'Purchased Packages', value: myPackages, type: 'packages' }
+                { title: 'My Tickets', value: parseInt(ticketCountRes.rows[0].count), type: 'tickets' },
+                { title: 'Active Subs', value: parseInt(subCountRes.rows[0].count), type: 'subs' }
             ];
+            stats.recent = {
+                tickets: recentTicketsRes.rows,
+                subscriptions: recentSubsRes.rows
+            };
         }
 
         return NextResponse.json({ success: true, data: stats });
 
     } catch (error) {
+        console.error("GET /api/dashboard/stats error:", error);
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }

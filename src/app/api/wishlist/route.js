@@ -1,23 +1,22 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/db";
-import Wishlist from "@/lib/models/wishlist";
+import { dbQuery } from "@/lib/database/pg";
 import { isLogin } from "@/lib/middleware";
 
 export async function GET(req) {
     try {
-        await connectDB();
-        const auth= await isLogin()
-        if(!auth.success){
-            return NextResponse.json({
-                success:false, message:auth.message
-            },{status:400})
-        }
-        const user = auth.data
+        const auth = await isLogin();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+        const user = auth.data;
 
-        if (!user._id) return NextResponse.json({ success: false, message: "User ID required" }, { status: 400 });
+        const res = await dbQuery(`
+            SELECT w.*, p.name as title, p.price, p.image, p.slug 
+            FROM wishlists w 
+            JOIN packages p ON w.package_id = p.package_id 
+            WHERE w.user_id = $1 
+            ORDER BY w.created_at DESC
+        `, [user.id]);
 
-        const items = await Wishlist.find({ userId:user._id }).sort({ createdAt: -1 });
-        return NextResponse.json({ success: true, message: 'Wishlist fetched', data: items });
+        return NextResponse.json({ success: true, message: 'Wishlist fetched', data: res.rows });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -25,106 +24,54 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-        await connectDB();
-        const auth= await isLogin()
-        if(!auth.success){
-            return NextResponse.json({
-                success:false, message:auth.message
-            },{status:400})
-        }
-        const user = auth.data
-        const body = await req.json();
-        const { itemId, type, title, price, image, slug, metadata } = body;
+        const auth = await isLogin();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+        const user = auth.data;
 
-        
-        const existing = await Wishlist.findOne({ userId:user._id, itemId, type });
-        if (existing) {
-            return NextResponse.json({ success: false, message: "Item already in wishlist" }, { status: 400 });
-        }
+        const { packageId } = await req.json();
+        if (!packageId) return NextResponse.json({ success: false, message: "Package ID required" }, { status: 400 });
 
-        const newItem = await Wishlist.create({
-            userId:user._id, itemId, type, title, price, image, slug, metadata
-        });
+        const existing = await dbQuery("SELECT wishlist_id FROM wishlists WHERE user_id = $1 AND package_id = $2", [user.id, packageId]);
+        if (existing.rows.length > 0) return NextResponse.json({ success: false, message: "Item already in wishlist" }, { status: 400 });
 
-        return NextResponse.json({ success: true, message: 'Item added to wishlist', data: newItem });
+        const res = await dbQuery("INSERT INTO wishlists (user_id, package_id) VALUES ($1, $2) RETURNING *", [user.id, packageId]);
+
+        return NextResponse.json({ success: true, message: 'Item added to wishlist', data: res.rows[0] });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
-export async function PATCH(req) {
+export async function DELETE(req) {
     try {
-        await connectDB();
-
         const auth = await isLogin();
-        if (!auth.success) {
-            return NextResponse.json({
-                success: false,
-                message: auth.message
-            }, { status: 400 });
-        }
-
-        const user = auth.data;
-        const body = await req.json();
-        const { id } = body;
-
-        if (!id) {
-            return NextResponse.json({
-                success: false,
-                message: "Item ID required"
-            }, { status: 400 });
-        }
-
-        const deleted = await Wishlist.findOneAndDelete({
-            _id: id,
-            userId: user._id
-        });
-
-        if (!deleted) {
-            return NextResponse.json({
-                success: false,
-                message: "Item not found"
-            }, { status: 404 });
-        }
-
-        return NextResponse.json({
-            success: true,
-            message: "Item removed from wishlist"
-        });
-
-    } catch (error) {
-        return NextResponse.json({
-            success: false,
-            message: error.message
-        }, { status: 500 });
-    }
-}
-
-export async function DELETE() {
-    try {
-        await connectDB();
-
-        const auth = await isLogin();
-        if (!auth.success) {
-            return NextResponse.json({
-                success: false,
-                message: auth.message
-            }, { status: 400 });
-        }
-
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
         const user = auth.data;
 
-        await Wishlist.deleteMany({ userId: user._id });
+        const { id, packageId, clearAll } = await req.json();
 
-        return NextResponse.json({
-            success: true,
-            message: "Wishlist cleared successfully"
-        });
+        if (clearAll) {
+            await dbQuery("DELETE FROM wishlists WHERE user_id = $1", [user.id]);
+            return NextResponse.json({ success: true, message: "Wishlist cleared successfully" });
+        }
 
+        let sql;
+        let params;
+        if (id) {
+            sql = "DELETE FROM wishlists WHERE wishlist_id = $1 AND user_id = $2 RETURNING *";
+            params = [id, user.id];
+        } else if (packageId) {
+            sql = "DELETE FROM wishlists WHERE package_id = $1 AND user_id = $2 RETURNING *";
+            params = [packageId, user.id];
+        } else {
+            return NextResponse.json({ success: false, message: "ID or Package ID required" }, { status: 400 });
+        }
+
+        const res = await dbQuery(sql, params);
+        if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Item not found" }, { status: 404 });
+
+        return NextResponse.json({ success: true, message: "Item removed from wishlist" });
     } catch (error) {
-        return NextResponse.json({
-            success: false,
-            message: error.message
-        }, { status: 500 });
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }

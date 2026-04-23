@@ -3,6 +3,7 @@ import React, { useContext } from 'react'
 import { Context } from '@/component/helper/Context'
 import { RiSearchLine, RiNotification3Line, RiMenuFoldLine, RiMenuUnfoldLine } from 'react-icons/ri'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const Topbar = ({ collapsed, setCollapsed }) => {
     const { userData } = useContext(Context)
@@ -34,13 +35,13 @@ const Topbar = ({ collapsed, setCollapsed }) => {
 
                 <div className="w-px h-8 bg-slate-100 mx-1"></div>
 
-                <div className="flex items-center gap-4 pl-2 cursor-pointer group">
+                <Link href='/profile' className="flex items-center gap-4 pl-2 cursor-pointer group">
                     <div className="text-right hidden sm:block">
                         <div className="text-sm font-bold text-slate-800 leading-tight group-hover:text-emerald-600 transition-colors">
                             {userData?.name || 'User'}
                         </div>
                         <div className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mt-0.5">
-                            {userData?.role || 'Client'}
+                            {userData?.role || 'User'}
                         </div>
                     </div>
                     <div className="w-11 h-11 rounded-[1.125rem] bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden shadow-sm group-hover:shadow-md group-hover:shadow-primary/20 group-hover:border-primary/20 transition-all">
@@ -50,7 +51,7 @@ const Topbar = ({ collapsed, setCollapsed }) => {
                             <span className="text-emerald-600 font-black text-lg">{userData?.name?.charAt(0) || 'U'}</span>
                         )}
                     </div>
-                </div>
+                </Link>
             </div>
         </header>
     )

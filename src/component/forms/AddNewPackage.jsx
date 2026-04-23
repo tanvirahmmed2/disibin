@@ -1,6 +1,7 @@
 'use client'
 import axios from 'axios'
 import React, { useState } from 'react'
+import toast from 'react-hot-toast'
 
 const AddNewPackage = () => {
   const [formData, setFormData] = useState({
@@ -30,7 +31,7 @@ const AddNewPackage = () => {
         data.append(key, formData[key])
       })
       const response = await axios.post('/api/package', data, { withCredentials: true })
-      alert(response.data.message)
+      toast.success(response.data.message)
       setFormData({
         title: '',
         description: '',
@@ -42,7 +43,7 @@ const AddNewPackage = () => {
       })
     } catch (error) {
       console.log(error)
-      alert(error?.response?.data?.message || "Failed to add new package")
+      toast.error(error?.response?.data?.message || "Failed to add new package")
 
     }
   }

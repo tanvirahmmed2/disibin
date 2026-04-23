@@ -24,25 +24,25 @@ const AdminPurchases = () => {
     }, [])
 
     const columns = [
-        { label: 'Client', key: 'user', render: (row) => (
+        { label: 'User', key: 'user_name', render: (row) => (
             <div className="flex flex-col">
-                <span className="font-bold text-slate-700">{row.user?.name || 'User'}</span>
-                <span className="text-xs text-slate-400">{row.user?.email}</span>
+                <span className="font-bold text-slate-700">{row.user_name || 'User'}</span>
+                <span className="text-xs text-slate-400">{row.user_email}</span>
             </div>
         )},
-        { label: 'Package Purchased', key: 'package', render: (row) => (
+        { label: 'Package Purchased', key: 'package_name', render: (row) => (
             <div className="flex flex-col">
-                <span className="font-bold text-primary">{row.package?.title}</span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">ID: {row.package?._id}</span>
+                <span className="font-bold text-primary">{row.package_name || 'Unknown Package'}</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">ID: {row.package_id?.slice(-8) || 'N/A'}</span>
             </div>
         )},
-        { label: 'Revenue', key: 'price', render: (row) => (
+        { label: 'Revenue', key: 'amount', render: (row) => (
             <div className="flex items-center gap-1 font-black text-slate-700 text-lg">
-                <span className="text-primary/50">$</span>{row.price}
+                <span className="text-primary/50">$</span>{row.amount}
             </div>
         )},
-        { label: 'Date', key: 'createdAt', render: (row) => (
-            <span className="text-xs text-slate-400 font-bold">{new Date(row.createdAt).toLocaleDateString()}</span>
+        { label: 'Date', key: 'created_at', render: (row) => (
+            <span className="text-xs text-slate-400 font-bold">{new Date(row.created_at).toLocaleDateString()}</span>
         )},
     ]
 

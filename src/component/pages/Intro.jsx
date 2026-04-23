@@ -6,7 +6,7 @@ import { Typewriter } from 'react-simple-typewriter'
 
 const Intro = () => {
   return (
-    <section className='relative w-full min-h-screen flex items-center justify-center pt-20 bg-emerald-500 overflow-hidden'>
+    <section className='relative w-full min-h-screen flex items-center justify-center py-20 bg-emerald-500 overflow-hidden'>
       
       <div className='absolute top-0 left-0 w-full h-full opacity-10'>
         <div className='absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-white rounded-full blur-[150px]' />

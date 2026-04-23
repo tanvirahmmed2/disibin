@@ -56,7 +56,7 @@ const GuestMessages = () => {
             <div className="flex flex-col">
                 {data.map((sup) => (
                     <div 
-                        key={sup._id} 
+                        key={sup.support_id} 
                         className="grid grid-cols-4 items-center px-6 py-4 border-b border-slate-100 last:border-none hover:bg-slate-50/80 transition-colors"
                     >
                         <div className="flex flex-col items-start gap-0.5">
@@ -80,7 +80,7 @@ const GuestMessages = () => {
 
                         <div className="flex flex-row gap-3 justify-end items-center">
                             <Link 
-                                href={`/dashboard/support/messages/${sup._id}`}
+                                href={`/dashboard/support/messages/${sup.support_id}`}
                                 className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline transition-all"
                             >
                                 Reply

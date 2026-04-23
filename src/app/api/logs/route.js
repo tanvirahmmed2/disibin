@@ -1,20 +1,23 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/database/db';
-import { Log } from '@/lib/models/log';
-import { isManager, isProjectManager, isAdmin } from '@/lib/middleware';
+import { dbQuery } from '@/lib/database/pg';
+import { isManager } from '@/lib/middleware';
+
+const mapLog = (row) => ({
+    ...row,
+    id: row.log_id,
+    _id: row.log_id,
+    userId: {
+        _id: row.user_id,
+        name: row.user_name,
+        email: row.user_email,
+        role: row.user_role
+    }
+});
 
 export async function GET(req) {
     try {
-        await connectDB();
-        
-        
-        const managerAuth = await isManager();
-        const pmAuth = await isProjectManager();
-        const adminAuth = await isAdmin();
-        
-        if (!managerAuth.success && !pmAuth.success && !adminAuth.success) {
-            return NextResponse.json({ success: false, message: 'Unauthorized access' }, { status: 401 });
-        }
+        const auth = await isManager();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
         const { searchParams } = new URL(req.url);
         const action = searchParams.get('action');
@@ -24,23 +27,40 @@ export async function GET(req) {
         const limit = parseInt(searchParams.get('limit')) || 20;
         const skip = (page - 1) * limit;
 
-        const query = {};
-        if (action) query.action = action;
-        if (targetType) query.targetType = targetType;
-        if (userId) query.userId = userId;
+        const params = [];
+        let whereClauses = [];
 
-        const logs = await Log.find(query)
-            .populate('userId', 'name email role')
-            .sort({ createdAt: -1 })
-            .skip(skip)
-            .limit(limit);
+        if (action) {
+            params.push(action);
+            whereClauses.push(`l.action = $${params.length}`);
+        }
+        if (targetType) {
+            params.push(targetType);
+            whereClauses.push(`l.target_type = $${params.length}`);
+        }
+        if (userId) {
+            params.push(userId);
+            whereClauses.push(`l.user_id = $${params.length}`);
+        }
 
-        const total = await Log.countDocuments(query);
+        const whereSql = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
+
+        const logsRes = await dbQuery(`
+            SELECT l.*, u.name as user_name, u.email as user_email, u.role as user_role
+            FROM logs l
+            JOIN users u ON l.user_id = u.user_id
+            ${whereSql}
+            ORDER BY l.created_at DESC
+            LIMIT ${limit} OFFSET ${skip}
+        `, params);
+
+        const countRes = await dbQuery(`SELECT COUNT(*) FROM logs l ${whereSql}`, params);
+        const total = parseInt(countRes.rows[0].count);
 
         return NextResponse.json({
             success: true,
             message: 'Logs fetched successfully',
-            data: logs,
+            data: logsRes.rows.map(mapLog),
             pagination: {
                 total,
                 page,

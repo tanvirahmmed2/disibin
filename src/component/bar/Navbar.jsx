@@ -15,8 +15,8 @@ const Navbar = () => {
     { name: 'Services', href: '/services' },
     { name: 'Offers', href: '/offers' },
     { name: 'Plans', href: '/packages' },
-    { name: 'Premium', href: '/memberships' },
     { name: 'Projects', href: '/projects' },
+    { name: 'Reviews', href: '/reviews' },
     { name: 'Blogs', href: '/blogs' },
     { name: 'About', href: '/about' },
   ]
@@ -63,9 +63,14 @@ const Navbar = () => {
                     <p className='text-sm font-semibold text-slate-900 truncate'>{userData?.name}</p>
                 </div>
                 <div className='space-y-1'>
-                    <Link href='/dashboard' className='flex items-center gap-3 px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-emerald-500 rounded-xl transition-all'>
-                    <RiDashboardLine className='text-lg' /> Dashboard
+                    <Link href='/user' className='flex items-center gap-3 px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-emerald-500 rounded-xl transition-all'>
+                      <RiUserLine className='text-lg' /> User Portal
                     </Link>
+                    {userData?.role !== 'user' && (
+                        <Link href='/dashboard' className='flex items-center gap-3 px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-emerald-500 rounded-xl transition-all'>
+                          <RiDashboardLine className='text-lg' /> Management Console
+                        </Link>
+                    )}
                     <Link href='/profile' className='flex items-center gap-3 px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-emerald-500 rounded-xl transition-all'>
                     <RiUserLine className='text-lg' /> Profile
                     </Link>

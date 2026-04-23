@@ -24,31 +24,31 @@ const ManagerPurchases = () => {
     }, [])
 
     const columns = [
-        { label: 'Client', key: 'user', render: (row) => (
+        { label: 'User', key: 'user', render: (row) => (
             <div className="flex flex-col">
-                <span className="font-bold text-slate-700">{row.user?.name || 'User'}</span>
-                <span className="text-xs text-slate-400">{row.user?.email}</span>
+                <span className="font-bold text-slate-700">{row.user_name || 'User'}</span>
+                <span className="text-xs text-slate-400">{row.user_email}</span>
             </div>
         )},
         { label: 'Package', key: 'package', render: (row) => (
             <div className="flex flex-col">
-                <span className="font-bold text-primary">{row.package?.title}</span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">ID: {row.package?._id?.slice(-6)}</span>
+                <span className="font-bold text-primary">{row.package_name || 'Unknown Package'}</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">ID: {row.package_id?.slice(-6) || 'N/A'}</span>
             </div>
         )},
-        { label: 'Amount', key: 'price', render: (row) => (
+        { label: 'Amount', key: 'amount', render: (row) => (
             <div className="flex items-center gap-1 font-black text-slate-700">
                 <RiMoneyDollarCircleLine className="text-primary/50" />
-                ${row.price}
+                ${row.amount}
             </div>
         )},
         { label: 'Status', key: 'status', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary-dark`}>
-                Completed
+                {row.status}
             </span>
         )},
-        { label: 'Date', key: 'createdAt', render: (row) => (
-            <span className="text-xs text-slate-400 font-bold">{new Date(row.createdAt).toLocaleDateString()}</span>
+        { label: 'Date', key: 'created_at', render: (row) => (
+            <span className="text-xs text-slate-400 font-bold">{new Date(row.created_at).toLocaleDateString()}</span>
         )},
     ]
 

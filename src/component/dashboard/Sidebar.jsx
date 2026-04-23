@@ -38,32 +38,20 @@ const SidebarItem = ({ item, collapsed }) => {
 
 const Sidebar = ({ collapsed }) => {
     const { userData, handleLogout } = useContext(Context)
-    const role = userData?.role || 'client'
-
-    const commonMenu = [
-        { label: 'Overview', href: '/dashboard', icon: RiDashboardLine },
-        { label: 'Purchases', href: '/dashboard/purchases', icon: RiStackLine },
-        { label: 'Subscriptions', href: '/dashboard/subscription', icon: RiShieldUserLine },
-        { label: 'Tickets', href: '/dashboard/tickets', icon: RiInboxLine },
-        { label: 'Reviews', href: '/dashboard/reviews', icon: RiPriceTag3Line },
-    ]
-
-    
-    if (role !== 'client') {
-        commonMenu.push({ label: 'Internal Chat', href: '/dashboard/message', icon: RiMailSendLine })
-    }
+    const role = userData?.role || 'user'
 
     const roleMenus = {
         admin: [
-            { label: 'Biz Overview', href: '/dashboard/admin/overview', icon: RiDashboardLine },
+            { label: 'Overview', href: '/dashboard/admin', icon: RiDashboardLine },
             { label: 'Manage Users', href: '/dashboard/admin/users', icon: RiTeamLine },
             { label: 'Roles Ops', href: '/dashboard/admin/roles', icon: RiShieldUserLine },
             { label: 'All Purchases', href: '/dashboard/admin/purchases', icon: RiPriceTag3Line },
-            { label: 'All Tickets', href: '/dashboard/admin/tickets', icon: RiInboxLine },
             { label: 'Activity Log', href: '/dashboard/admin/activity_log', icon: RiHistoryLine },
         ],
         manager: [
             { label: 'Assign Tasks', href: '/dashboard/manager/tasks', icon: RiStackLine },
+            { label: 'Manage Blogs', href: '/dashboard/manager/blogs', icon: RiArticleLine },
+            { label: 'Manage Packages', href: '/dashboard/manager/packages', icon: RiPriceTag3Line },
             { label: 'User Control', href: '/dashboard/manager/users', icon: RiTeamLine },
             { label: 'Reviews Ops', href: '/dashboard/manager/reviews', icon: RiPriceTag3Line },
             { label: 'Purchases Ops', href: '/dashboard/manager/purchases', icon: RiStackLine },
@@ -73,21 +61,8 @@ const Sidebar = ({ collapsed }) => {
             { label: 'Messages', href: '/dashboard/support/messages', icon: RiMailSendLine },
             { label: 'Tickets Queue', href: '/dashboard/support/tickets', icon: RiCustomerService2Line },
         ],
-        project_manager: [
-            { label: 'PM Tickets', href: '/dashboard/project-manager/tickets', icon: RiInboxLine },
-            { label: 'PM Tasks', href: '/dashboard/project-manager/tasks', icon: RiStackLine },
-            { label: 'Projects', href: '/dashboard/project-manager/projects', icon: RiProjectorLine },
-            { label: 'Activity Log', href: '/dashboard/project-manager/activity_log', icon: RiHistoryLine },
-        ],
-        editor: [
-            { label: 'Blogs', href: '/dashboard/editor/blogs', icon: RiArticleLine },
-            { label: 'Packages', href: '/dashboard/editor/packages', icon: RiStackLine },
-            { label: 'Offers', href: '/dashboard/editor/offers', icon: RiPriceTag3Line },
-            { label: 'Projects', href: '/dashboard/editor/projects', icon: RiProjectorLine },
-            { label: 'Memberships', href: '/dashboard/editor/memberships', icon: RiShieldUserLine },
-        ],
-        staff: [
-            { label: 'My Tasks', href: '/dashboard/staff/tasks', icon: RiStackLine },
+        developer: [
+            { label: 'My Tasks', href: '/dashboard/developer/tasks', icon: RiStackLine },
         ]
     }
 
@@ -103,14 +78,19 @@ const Sidebar = ({ collapsed }) => {
             </div>
 
             <nav className="flex flex-col gap-1.5 flex-1 overflow-y-auto no-scrollbar">
-                <div className={`text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ${collapsed ? 'text-center' : 'px-2'} hidden md:block`}>
-                    User Space
-                </div>
-                {commonMenu.map((item, index) => (
-                    <SidebarItem key={index} item={item} collapsed={collapsed} />
-                ))}
+                <SidebarItem 
+                    item={{ label: 'User Portal', href: '/user', icon: RiUserLine }} 
+                    collapsed={collapsed} 
+                />
+                
+                {role !== 'user' && (
+                    <SidebarItem 
+                        item={{ label: 'Internal Chat', href: '/dashboard/mail', icon: RiMailSendLine }} 
+                        collapsed={collapsed} 
+                    />
+                )}
 
-                {role !== 'client' && currentRoleMenu.length > 0 && (
+                {role !== 'user' && currentRoleMenu.length > 0 && (
                     <>
                         <div className={`text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-8 mb-2 ${collapsed ? 'text-center' : 'px-2'} hidden md:block`}>
                             {role.replace('_', ' ')} Console
@@ -123,10 +103,6 @@ const Sidebar = ({ collapsed }) => {
             </nav>
 
             <div className="flex flex-col gap-1.5 border-t border-slate-100 pt-4">
-                <SidebarItem 
-                    item={{ label: 'Settings', href: '/dashboard/settings', icon: RiSettingsLine }} 
-                    collapsed={collapsed} 
-                />
                 <button 
                   onClick={() => handleLogout()}
                   className={`flex items-center gap-3 px-3 py-3 rounded-xl text-emerald-600 hover:bg-emerald-500 transition-all duration-300 group

@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: rgb(89, 71, 253);
-  --color-primary-dark: rgb(70, 56, 220);
+  --color-primary: #10b981;
+  --color-primary-dark: #059669;
   --color-slate-50: #f8fafc;
   --color-slate-100: #f1f5f9;
   
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.02);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.04), 0 2px 4px -2px rgb(0 0 0 / 0.04);
-  --shadow-premium: 0 10px 40px -10px rgba(89, 71, 253, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.02);
+  --shadow-premium: 0 10px 40px -10px rgba(16, 185, 129, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.02);
 }
 
 @layer base {
@@ -35,7 +35,18 @@
   }
 
   .input-standard {
-    @apply w-full px-4 p-2 rounded-xl outline-none border border-emerald-200;
+    @apply w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold text-slate-700 text-sm focus:bg-white focus:border-emerald-500 transition-all;
+  }
+}
+
+@layer base {
+  input, textarea {
+    @apply truncate;
+  }
+  
+  input::placeholder, textarea::placeholder {
+    @apply truncate opacity-50;
+    text-overflow: ellipsis;
   }
 }
 

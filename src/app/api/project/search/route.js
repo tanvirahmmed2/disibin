@@ -1,10 +1,18 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/db";
-import { Project } from "@/lib/models/project";
+import { dbQuery } from "@/lib/database/pg";
+
+const mapProject = (row) => ({
+    ...row,
+    id: row.project_id,
+    _id: row.project_id,
+    title: row.title,
+    image: row.image,
+    imageId: row.image_id,
+    preview: row.live_url
+});
 
 export async function GET(req) {
     try {
-        await connectDB();
         const { searchParams } = new URL(req.url);
         const query = searchParams.get('q');
 
@@ -12,19 +20,21 @@ export async function GET(req) {
             return NextResponse.json({ success: false, message: 'Search query is required' }, { status: 400 });
         }
 
-        const regex = new RegExp(query, 'i');
-        const projects = await Project.find({
-            $or: [
-                { title: regex },
-                { category: regex },
-                { description: regex }
-            ]
-        }).sort({ createdAt: -1 });
+        const searchTerm = `%${query}%`;
+        const res = await dbQuery(`
+            SELECT p.*, c.name as category_name
+            FROM projects p
+            LEFT JOIN categories c ON p.category_id = c.category_id
+            WHERE p.title ILIKE $1 
+               OR p.description ILIKE $1 
+               OR c.name ILIKE $1
+            ORDER BY p.created_at DESC
+        `, [searchTerm]);
 
         return NextResponse.json({
             success: true,
             message: 'Search results found',
-            data: projects
+            data: res.rows.map(mapProject)
         }, { status: 200 });
 
     } catch (error) {

@@ -53,19 +53,17 @@ const AdminRoles = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Assign Specialized Role</label>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Assign User Role</label>
                             <select 
                                 value={role}
                                 onChange={(e) => setRole(e.target.value)}
                                 className="input-standard cursor-pointer"
                             >
                                 <option value="admin">Administrator</option>
-                                <option value="manager">Global Manager</option>
-                                <option value="project_manager">Project Manager</option>
-                                <option value="editor">Content Editor</option>
+                                <option value="manager">Manager</option>
                                 <option value="support">Support Agent</option>
-                                <option value="staff">Internal Staff</option>
-                                <option value="client">Standard Client</option>
+                                <option value="developer">Developer</option>
+                                <option value="user">Standard User</option>
                             </select>
                         </div>
 

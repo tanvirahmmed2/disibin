@@ -39,7 +39,7 @@ const SupportDashboard = () => {
     }
 
     const columns = view === 'tickets' ? [
-        { label: 'Client', key: 'senderId', render: (row) => (
+        { label: 'User', key: 'senderId', render: (row) => (
             <div className="flex flex-col">
                 <span className="font-bold text-slate-700">{row.senderId?.name || 'Guest'}</span>
                 <span className="text-xs text-slate-400">{row.senderId?.email || row.email}</span>
@@ -112,7 +112,7 @@ const SupportDashboard = () => {
             <div className="flex items-center justify-between">
                 <div className="flex flex-col gap-1">
                     <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Support Management</h1>
-                    <p className="text-slate-500">Respond to client tickets and general inquiries.</p>
+                    <p className="text-slate-500">Respond to user tickets and general inquiries.</p>
                 </div>
                 <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 shadow-sm">
                     <button 
@@ -120,7 +120,7 @@ const SupportDashboard = () => {
                         className={`px-6 py-2 rounded-xl text-xs font-bold transition-all
                         ${view === 'tickets' ? 'bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                     >
-                        Client Tickets
+                        User Tickets
                     </button>
                     <button 
                         onClick={() => setView('messages')}

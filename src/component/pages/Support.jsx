@@ -2,6 +2,7 @@
 import axios from 'axios'
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
+import toast from 'react-hot-toast'
 import { RiMailSendLine, RiMessage2Line, RiMapPinLine, RiPhoneLine } from 'react-icons/ri'
 
 const Support = () => {
@@ -23,10 +24,10 @@ const Support = () => {
     setLoading(true)
     try {
       const response = await axios.post('/api/support', formData, { withCredentials: true })
-      alert(response.data.message)
+      toast.success(response.data.message)
       setFormData({ name: '', email: '', subject: '', message: '' })
     } catch (error) {
-      alert(error?.response?.data?.message || "Failed to send message")
+      toast.error(error?.response?.data?.message || "Failed to send message")
     } finally {
       setLoading(false)
     }

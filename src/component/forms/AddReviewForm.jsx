@@ -2,6 +2,7 @@
 import axios from 'axios'
 import React, { useContext, useState } from 'react'
 import { Context } from '../helper/Context'
+import toast from 'react-hot-toast'
 
 const AddReviewForm = () => {
   const {userData}= useContext(Context)
@@ -31,7 +32,7 @@ const AddReviewForm = () => {
         data.append(key, formData[key])
       })
       const response = await axios.post('/api/review', data)
-      alert(response.data.message)
+      toast.success(response.data.message)
       setFormData({
         name: '',
         email: '',
@@ -42,7 +43,7 @@ const AddReviewForm = () => {
       })
       e.target.reset(); 
     } catch (error) {
-      alert(error.response?.data?.message || "Something went wrong")
+      toast.error(error.response?.data?.message || "Something went wrong")
     }
   }
 

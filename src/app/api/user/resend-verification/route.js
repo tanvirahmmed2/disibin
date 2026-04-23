@@ -1,31 +1,32 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/db";
-import User from "@/lib/models/user";
+import { dbQuery } from "@/lib/database/pg";
 import crypto from "crypto";
 import { sendVerificationEmail } from "@/lib/database/brevo";
+import { BASE_URL } from "@/lib/database/secret";
 
 export async function POST(req) {
     try {
-        await connectDB();
         const { email } = await req.json();
 
         if (!email) {
             return NextResponse.json({ success: false, message: 'Email is required' }, { status: 400 });
         }
 
-        const user = await User.findOne({ email, isVerified: false });
-        if (!user) {
+        const res = await dbQuery("SELECT user_id, name FROM users WHERE email = $1 AND is_verified = false", [email]);
+        if (res.rows.length === 0) {
             return NextResponse.json({ success: false, message: 'User not found or already verified' }, { status: 400 });
         }
+        const user = res.rows[0];
 
         const verificationToken = crypto.randomBytes(32).toString('hex');
         const tokenExpiresAt = new Date(Date.now() + 3600000); 
 
-        user.resetToken = verificationToken;
-        user.tokenExpiresAt = tokenExpiresAt;
-        await user.save();
+        await dbQuery(`
+            UPDATE users SET reset_token = $1, token_expires_at = $2, updated_at = NOW() 
+            WHERE user_id = $3
+        `, [verificationToken, tokenExpiresAt, user.user_id]);
 
-        const verificationUrl = `${process.env.BASE_URL}/verify-email?token=${verificationToken}&email=${email}`;
+        const verificationUrl = `${BASE_URL}/api/auth/verify-email?token=${verificationToken}&email=${email}`;
         await sendVerificationEmail(email, user.name, verificationUrl);
 
         return NextResponse.json({

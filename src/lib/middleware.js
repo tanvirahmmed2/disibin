@@ -1,10 +1,9 @@
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
-import connectDB from "./database/db";
+import { dbQuery } from "./database/pg";
 import { JWT_SECRET } from "./database/secret";
-import { User } from "./models/user";
 
-async function getAuthenticatedUser() {
+async function getAuthenticatedContext() {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('disibin')?.value;
@@ -12,89 +11,86 @@ async function getAuthenticatedUser() {
         if (!token) return null;
 
         const decoded = jwt.verify(token, JWT_SECRET);
-        if (!decoded || !decoded._id) return null;
+        const userId = decoded.id || decoded._id;
+        if (!decoded || !userId) return null;
 
-        await connectDB();
-        const user = await User.findById(decoded._id).select("-password").lean();
-        
-        if (!user || !user.isActive) return null;
+        const res = await dbQuery("SELECT user_id, name, email, role, is_active FROM users WHERE user_id = $1", [userId]);
+        if (res.rows.length === 0) return null;
+        const user = res.rows[0];
 
-        return user;
+        if (!user.is_active) return null;
+
+        let tenantId = decoded.tenantId;
+        if (!tenantId) {
+            const tenantRes = await dbQuery("SELECT tenant_id FROM tenant_users WHERE user_id = $1 LIMIT 1", [userId]);
+            tenantId = tenantRes.rows[0]?.tenant_id;
+        }
+
+        return {
+            id: user.user_id,
+            _id: user.user_id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            tenantId: tenantId
+        };
     } catch (error) {
         return null;
     }
 }
 
-
 export async function isLogin() {
-    const user = await getAuthenticatedUser();
-    if (!user) return { success: false, message: 'Please login' };
-    return { success: true, data: user };
+    const context = await getAuthenticatedContext();
+    if (!context) return { success: false, message: 'Please login' };
+    return { success: true, data: context };
 }
 
-
 export async function isAdmin() {
-    const user = await getAuthenticatedUser();
-    if (!user || user.role !== 'admin') {
+    const context = await getAuthenticatedContext();
+    if (!context || context.role !== 'admin') {
         return { success: false, message: 'Access denied: Admin only' };
     }
-    return { success: true, data: user };
+    return { success: true, data: context };
 }
 
 export async function isManager() {
-    const user = await getAuthenticatedUser();
-    if (!user || user.role !== 'manager' && user.role !== 'admin') {
+    const context = await getAuthenticatedContext();
+    if (!context || (context.role !== 'manager' && context.role !== 'admin')) {
         return { success: false, message: 'Access denied: Manager access required' };
     }
-    return { success: true, data: user };
-}
-
-export async function isProjectManager() {
-    const user = await getAuthenticatedUser();
-    if (!user || (user.role !== 'project_manager' && user.role !== 'manager' && user.role !== 'admin')) {
-        return { success: false, message: 'Access denied: Project Manager access required' };
-    }
-    return { success: true, data: user };
-}
-
-export async function isEditor() {
-    const user = await getAuthenticatedUser();
-    if (!user || (user.role !== 'editor' && user.role !== 'manager' && user.role !== 'admin')) {
-        return { success: false, message: 'Access denied: Editor access required' };
-    }
-    return { success: true, data: user };
+    return { success: true, data: context };
 }
 
 export async function isSupport() {
-    const user = await getAuthenticatedUser();
-    if (!user || (user.role !== 'support' && user.role !== 'manager' && user.role !== 'admin')) {
+    const context = await getAuthenticatedContext();
+    if (!context || (context.role !== 'support' && context.role !== 'manager' && context.role !== 'admin')) {
         return { success: false, message: 'Access denied: Support access required' };
     }
-    return { success: true, data: user };
+    return { success: true, data: context };
 }
 
-export async function isStaff() {
-    const user = await getAuthenticatedUser();
-    if (!user || (user.role !== 'staff' && user.role !== 'manager' && user.role !== 'admin')) {
-        return { success: false, message: 'Access denied: Staff access required' };
+export async function isDeveloper() {
+    const context = await getAuthenticatedContext();
+    if (!context || (context.role !== 'developer' && context.role !== 'manager' && context.role !== 'admin')) {
+        return { success: false, message: 'Access denied: Developer access required' };
     }
-    return { success: true, data: user };
+    return { success: true, data: context };
 }
 
-export async function isClient() {
-    const user = await getAuthenticatedUser();
-    if (!user || user.role !== 'client') {
-        return { success: false, message: 'Access denied: Client only' };
+export async function isUser() {
+    const context = await getAuthenticatedContext();
+    if (!context || context.role !== 'user') {
+        return { success: false, message: 'Access denied: User access required' };
     }
-    return { success: true, data: user };
+    return { success: true, data: context };
 }
 
 
 export async function hasRole(allowedRoles) {
-    const user = await getAuthenticatedUser();
-    if (!user) return { success: false, message: 'Please login' };
-    if (!allowedRoles.includes(user.role)) {
+    const context = await getAuthenticatedContext();
+    if (!context) return { success: false, message: 'Please login' };
+    if (!allowedRoles.includes(context.role)) {
         return { success: false, message: 'Access denied' };
     }
-    return { success: true, data: user };
+    return { success: true, data: context };
 }

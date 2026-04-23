@@ -3,6 +3,7 @@ import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaAndroid, FaCode, FaFigma } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 export const Context = createContext()
 
@@ -192,27 +193,21 @@ const ContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (userData?._id) {
+    if (userData?.user_id) {
       fetchUserWishlist();
     }
   }, [userData]);
 
   const addToWishList = async (item) => {
     if (!isLoggedin) {
-      alert("Please login to add items to your wishlist");
+      toast.error("Please login to add items to your wishlist");
       router.push("/login");
       return;
     }
 
     try {
       const data = {
-        itemId: item.itemId,
-        type: item.type,
-        title: item.title,
-        price: item.price,
-        slug: item.slug,
-        image: item.image,
-        metadata: item.metadata,
+        packageId: item.packageId
       };
 
       const res = await axios.post("/api/wishlist", data, {
@@ -221,10 +216,10 @@ const ContextProvider = ({ children }) => {
 
       if (res.data.success) {
         setWishList((prev) => [res.data.data, ...prev]);
-        alert("Added to wishlist");
+        toast.success("Added to wishlist");
       }
     } catch (error) {
-      alert(error?.response?.data?.message || "Failed to add to wishlist");
+      toast.error(error?.response?.data?.message || "Failed to add to wishlist");
     }
   };
 
@@ -240,10 +235,11 @@ const ContextProvider = ({ children }) => {
       );
 
       if (res.data.success) {
-        setWishList((prev) => prev.filter((item) => item._id !== id));
+        setWishList((prev) => prev.filter((item) => item.wishlist_id !== id));
+        toast.success("Removed from wishlist");
       }
     } catch (error) {
-      alert("Failed to remove item");
+      toast.error("Failed to remove item");
       console.log(error);
     }
   };
@@ -254,11 +250,11 @@ const ContextProvider = ({ children }) => {
         withCredentials: true,
       });
 
-      alert(res.data.message);
+      toast.success(res.data.message);
       setWishList([]);
     } catch (error) {
       console.log(error);
-      alert(
+      toast.error(
         error?.response?.data?.message || "Failed to clear wishlist"
       );
     }
@@ -271,11 +267,11 @@ const ContextProvider = ({ children }) => {
   const handleLogout = async () => {
     try {
       const res = await axios.get('/api/user/logout', { withCredentials: true })
-      alert(res.data.message)
+      toast.success(res.data.message)
       window.location.replace('/login')
     } catch (error) {
       console.log(error)
-      alert('Failed to logout')
+      toast.error('Failed to logout')
     }
   }
 

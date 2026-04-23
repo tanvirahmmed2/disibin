@@ -1,16 +1,24 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/db";
-import Purchase from "@/lib/models/purchase";
+import { dbQuery } from "@/lib/database/pg";
+import { isLogin } from "@/lib/middleware";
 
 export async function GET(req, { params }) {
     try {
-        await connectDB();
-        const { id } = params;
+        const auth = await isLogin();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
-        const purchase = await Purchase.findById(id);
-        if (!purchase) return NextResponse.json({ success: false, message: "Purchase not found" }, { status: 404 });
+        const { id } = await params;
 
-        return NextResponse.json({ success: true, message: 'Purchase record found', data: purchase });
+        const res = await dbQuery("SELECT * FROM purchases WHERE purchase_id = $1 AND user_id = $2", [id, auth.data.id]);
+        if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Purchase not found" }, { status: 404 });
+
+        const purchase = res.rows[0];
+        
+        return NextResponse.json({ 
+            success: true, 
+            message: 'Purchase record found', 
+            data: { ...purchase, id: purchase.purchase_id, _id: purchase.purchase_id } 
+        });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

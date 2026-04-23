@@ -35,7 +35,7 @@ const ManagerTasks = () => {
             ])
             setTasks(taskRes.data.data)
             
-            setUsers(userRes.data.data.filter(u => ['staff', 'support', 'project_manager'].includes(u.role)))
+            setUsers(userRes.data.data.filter(u => ['developer', 'support', 'manager'].includes(u.role)))
         } catch (error) {
             console.error('Failed to fetch data', error)
         } finally {
@@ -71,12 +71,12 @@ const ManagerTasks = () => {
                 </div>
             </div>
         )},
-        { label: 'Assigned To', key: 'assignedTo', render: (row) => (
+        { label: 'Assigned To', key: 'assigned_to_name', render: (row) => (
             <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold">
-                    {row.assignedTo?.name?.charAt(0) || '?'}
+                    {row.assigned_to_name?.charAt(0) || '?'}
                 </div>
-                <span className="text-xs font-medium text-slate-600">{row.assignedTo?.name || 'Unassigned'}</span>
+                <span className="text-xs font-medium text-slate-600">{row.assigned_to_name || 'Unassigned'}</span>
             </div>
         )},
         { label: 'Priority', key: 'priority', render: (row) => (
@@ -146,7 +146,7 @@ const ManagerTasks = () => {
                                 >
                                     <option value="">Select User</option>
                                     {users.map(u => (
-                                        <option key={u._id} value={u._id}>{u.name} ({u.role})</option>
+                                        <option key={u.user_id} value={u.user_id}>{u.name} ({u.role})</option>
                                     ))}
                                 </select>
                             </div>

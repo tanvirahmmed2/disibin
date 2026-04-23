@@ -52,16 +52,16 @@ const UserManager = () => {
         )},
         { label: 'Role', key: 'role', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider
-                ${row.role === 'admin' ? 'bg-emerald-500 text-emerald-500' : 
-                  row.role === 'manager' ? 'bg-emerald-500 text-emerald-500' : 
+                ${row.role === 'admin' ? 'bg-emerald-500/5 text-emerald-500' : 
+                  row.role === 'manager' ? 'bg-emerald-500/5 text-emerald-500' : 
                   'bg-slate-100 text-slate-500'}`}>
                 {row.role}
             </span>
         )},
-        { label: 'Status', key: 'isActive', render: (row) => (
+        { label: 'Status', key: 'is_active', render: (row) => (
             <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider
-                ${row.isActive ? 'bg-emerald-500/10 text-emerald-500-dark' : 'bg-emerald-500 text-emerald-500'}`}>
-                {row.isActive ? 'Active' : 'Inactive'}
+                ${row.is_active ? 'bg-emerald-500/10 text-emerald-500-dark' : 'bg-emerald-500 text-emerald-500'}`}>
+                {row.is_active ? 'Active' : 'Inactive'}
             </span>
         )},
     ]
@@ -76,9 +76,9 @@ const UserManager = () => {
                 <RiUserSharedLine size={18} /> Role
             </button>
             <button 
-                onClick={() => toggleStatus(row._id, row.isActive)}
-                className={`p-2 rounded-lg transition-all ${row.isActive ? 'hover:bg-emerald-500 text-emerald-500' : 'hover:bg-emerald-500/5 text-emerald-500'}`}
-                title={row.isActive ? 'Deactivate' : 'Activate'}
+                onClick={() => toggleStatus(row.user_id, row.is_active)}
+                className={`p-2 rounded-lg transition-all ${row.is_active ? 'hover:bg-emerald-500 text-emerald-500' : 'hover:bg-emerald-500/5 text-emerald-500'}`}
+                title={row.is_active ? 'Deactivate' : 'Activate'}
             >
                 <RiToggleLine size={18} />
             </button>
@@ -106,10 +106,10 @@ const UserManager = () => {
                         <p className="text-slate-500 mb-6 text-sm italic">Assigning new role to {promotingUser.name}</p>
                         
                         <div className="grid grid-cols-1 gap-2">
-                            {["admin", "manager", "project_manager", "editor", "support", "staff", "client"].map(role => (
+                            {["admin", "manager", "support", "developer", "user"].map(role => (
                                 <button
                                     key={role}
-                                    onClick={() => handlePromote(promotingUser._id, role)}
+                                    onClick={() => handlePromote(promotingUser.user_id, role)}
                                     className={`w-full py-3 rounded-xl text-sm font-bold capitalize transition-all
                                     ${promotingUser.role === role ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
                                 >

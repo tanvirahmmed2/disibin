@@ -1,6 +1,7 @@
 'use client'
 import axios from 'axios';
 import React, { useState } from 'react'
+import toast from 'react-hot-toast'
 
 const UpdateProjectForm = ({ project }) => {
     const [formData, setFormData] = useState({
@@ -28,7 +29,7 @@ const UpdateProjectForm = ({ project }) => {
         try {
             const data = new FormData();
             
-            data.append('id', project._id); 
+            data.append('id', project.project_id); 
             data.append('title', formData.title);
             data.append('category', formData.category);
             data.append('description', formData.description);
@@ -41,10 +42,10 @@ const UpdateProjectForm = ({ project }) => {
             });
 
             if (res.data.success) {
-                alert('Project updated successfully!');
+                toast.success('Project updated successfully!');
             }
         } catch (error) {
-            alert(error?.response?.data?.message || "Update failed");
+            toast.error(error?.response?.data?.message || "Update failed");
         } finally {
             setLoading(false);
         }

@@ -1,54 +1,111 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/db";
-import Message from "@/lib/models/Message";
-import { User } from "@/lib/models/user";
+import { dbQuery, transaction } from "@/lib/database/pg";
+import { isLogin } from "@/lib/middleware";
+
+const allowedChatRoles = ['admin', 'manager', 'support', 'developer'];
 
 export async function GET(req) {
     try {
-        await connectDB();
-        const { searchParams } = new URL(req.url);
-        const senderId = searchParams.get('senderId');
-        const receiverId = searchParams.get('receiverId');
+        const auth = await isLogin();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
-        if (!senderId || !receiverId) {
-            return NextResponse.json({ success: false, message: "Sender and Receiver IDs are required" }, { status: 400 });
+        const user = auth.data;
+        if (!allowedChatRoles.includes(user.role)) {
+            return NextResponse.json({ success: false, message: "Access denied" }, { status: 403 });
         }
 
-        const messages = await Message.find({
-            $or: [
-                { senderId: senderId, receiverId: receiverId },
-                { senderId: receiverId, receiverId: senderId }
-            ]
-        }).sort({ createdAt: 1 });
+        const { searchParams } = new URL(req.url);
+        const conversationId = searchParams.get('conversationId');
 
-        return NextResponse.json({ success: true, message: 'Messages fetched', data: messages });
+        if (conversationId) {
+            // Verify participant
+            const convCheck = await dbQuery(`
+                SELECT cp.conversation_id 
+                FROM conversation_participants cp
+                WHERE cp.conversation_id = $1 AND cp.user_id = $2
+            `, [conversationId, user.id]);
+
+            if (convCheck.rows.length === 0) return NextResponse.json({ success: false, message: "Conversation not found or access denied" }, { status: 404 });
+
+            const res = await dbQuery(`
+                SELECT m.*, u.name as sender_name 
+                FROM chat_messages m
+                JOIN users u ON m.sender_id = u.user_id
+                WHERE m.conversation_id = $1
+                ORDER BY m.created_at ASC
+            `, [conversationId]);
+
+            return NextResponse.json({ success: true, data: res.rows });
+        }
+
+        // List user's conversations
+        const res = await dbQuery(`
+            SELECT c.*, 
+                   (SELECT content FROM chat_messages WHERE conversation_id = c.conversation_id ORDER BY created_at DESC LIMIT 1) as last_message
+            FROM conversations c
+            JOIN conversation_participants cp ON c.conversation_id = cp.conversation_id
+            WHERE cp.user_id = $1
+            ORDER BY c.updated_at DESC
+        `, [user.id]);
+
+        return NextResponse.json({ success: true, data: res.rows });
+
     } catch (error) {
-        console.error("GET Messages Error:", error);
+        console.error("GET /api/messages error:", error);
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
 export async function POST(req) {
     try {
-        await connectDB();
-        const body = await req.json();
-        const { senderId, receiverId, message, attachments } = body;
+        const auth = await isLogin();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
-        if (!senderId || (!receiverId && !body.participants) || !message) {
-            return NextResponse.json({ success: false, message: "Missing required fields" }, { status: 400 });
+        const user = auth.data;
+        if (!allowedChatRoles.includes(user.role)) {
+            return NextResponse.json({ success: false, message: "Access denied" }, { status: 403 });
         }
 
-        const newMessage = await Message.create({
-            senderId,
-            receiverId,
-            participants: body.participants || [senderId, receiverId],
-            message,
-            attachments: attachments || []
+        const { receiverId, message, conversationId } = await req.json();
+        if (!message) return NextResponse.json({ success: false, message: "Message content required" }, { status: 400 });
+
+        const tenantId = user.tenantId;
+
+        const result = await transaction(async (client) => {
+            let activeConvId = conversationId;
+
+            if (!activeConvId) {
+                if (!receiverId) throw new Error("Receiver ID or Conversation ID required");
+
+                // Create new conversation
+                const newConv = await client.query(`
+                    INSERT INTO conversations (title, is_group)
+                    VALUES ($1, false)
+                    RETURNING conversation_id
+                `, ['Direct Message']);
+                activeConvId = newConv.rows[0].conversation_id;
+
+                await client.query(`
+                    INSERT INTO conversation_participants (conversation_id, user_id)
+                    VALUES ($1, $2), ($1, $3)
+                `, [activeConvId, user.id, receiverId]);
+            }
+
+            // Insert message
+            const msgRes = await client.query(`
+                INSERT INTO chat_messages (conversation_id, sender_id, content)
+                VALUES ($1, $2, $3)
+                RETURNING *
+            `, [activeConvId, user.id, message]);
+
+            await client.query("UPDATE conversations SET updated_at = NOW() WHERE conversation_id = $1", [activeConvId]);
+
+            return msgRes.rows[0];
         });
 
-        return NextResponse.json({ success: true, message: 'Message sent', data: newMessage });
+        return NextResponse.json({ success: true, message: 'Message sent', data: result });
+
     } catch (error) {
-        console.error("POST Message Error:", error);
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }

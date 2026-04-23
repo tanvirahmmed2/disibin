@@ -9,31 +9,22 @@ const DashboardLayout = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false)
     const { isLoggedin, userData } = useContext(Context)
     const router = useRouter()
-
-
-    
-    
     const pathname = usePathname()
 
     useEffect(() => {
-        if (!isLoggedin && !userData?._id) return router.push('/login')
+        if (!isLoggedin && !userData?.user_id) return router.push('/login')
 
-        
-        const managementRoutes = ['/dashboard/admin', '/dashboard/manager', '/dashboard/support', '/dashboard/project-manager', '/dashboard/editor', '/dashboard/staff'];
-        const isManagementRoute = managementRoutes.some(route => pathname.startsWith(route));
+        const validStaffRoles = ['admin', 'manager', 'support', 'developer']
+        const role = userData?.role
 
-        if (userData?.role === 'client' && isManagementRoute) {
-            router.replace('/dashboard')
+        if (role === 'user') {
+            return router.replace('/user')
         }
 
-        
-        if (userData?.role && isManagementRoute) {
-            const currentRoutePrefix = `/dashboard/${userData.role.replace('_', '-')}`;
-            if (userData.role !== 'admin' && !pathname.startsWith(currentRoutePrefix) && !pathname.startsWith('/dashboard/support') && !pathname.startsWith('/dashboard/mail')) {
-                
-                if (isManagementRoute) {
-                    router.replace('/dashboard')
-                }
+        if (role && validStaffRoles.includes(role)) {
+            const currentRoutePrefix = `/dashboard/${role}`;
+            if (role !== 'admin' && !pathname.startsWith(currentRoutePrefix) && pathname !== '/dashboard' && !pathname.startsWith('/dashboard/mail') && !pathname.startsWith('/dashboard/tickets')) {
+                router.replace('/dashboard')
             }
         }
     }, [isLoggedin, userData, pathname, router])

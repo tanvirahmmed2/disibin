@@ -1,25 +1,19 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/db";
-import { Project } from "@/lib/models/project";
+import { dbQuery } from "@/lib/database/pg";
 import cloudinary from "@/lib/database/cloudinary";
-import { isEditor } from "@/lib/middleware";
-import { createLog } from "@/lib/utils/logger";
+import { isLogin, isManager } from "@/lib/middleware";
 
 const generateSlug = (title) => {
-    return title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '');
+    return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 };
 
-export async function GET(req) {
+export async function GET() {
     try {
-        await connectDB();
-        const projects = await Project.find({}).sort({ createdAt: -1 });
+        const res = await dbQuery("SELECT * FROM projects ORDER BY created_at DESC", []);
         return NextResponse.json({
             success: true,
             message: 'Projects fetched successfully',
-            payload: projects
+            data: res.rows
         }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -28,54 +22,37 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-        await connectDB();
-        const auth = await isEditor();
+        const auth = await isManager();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
 
         const formData = await req.formData();
         const title = formData.get('title');
         const description = formData.get('description');
-        const category = formData.get('category');
+        const categoryId = formData.get('categoryId');
         const preview = formData.get('preview'); 
         const imageFile = formData.get('image');
 
-        if (!title || !description || !category || !preview || !imageFile) {
+        if (!title || !description || !imageFile) {
             return NextResponse.json({ success: false, message: 'Missing required fields' }, { status: 400 });
         }
 
         const slug = generateSlug(title);
-        const existing = await Project.findOne({ slug });
-        if (existing) return NextResponse.json({ success: false, message: 'Project title/slug already exists' }, { status: 400 });
+        const existing = await dbQuery("SELECT project_id FROM projects WHERE slug = $1", [slug]);
+        if (existing.rows.length > 0) return NextResponse.json({ success: false, message: 'Project slug already exists' }, { status: 400 });
 
         const buffer = Buffer.from(await imageFile.arrayBuffer());
         const cloudImage = await new Promise((resolve, reject) => {
-            const stream = cloudinary.uploader.upload_stream(
-                { folder: "projects" },
-                (err, result) => { if (err) reject(err); else resolve(result); }
-            );
+            const stream = cloudinary.uploader.upload_stream({ folder: "projects" }, (err, result) => { if (err) reject(err); else resolve(result); });
             stream.end(buffer);
         });
 
-        const project = await Project.create({
-            title,
-            slug,
-            description,
-            category,
-            preview,
-            image: cloudImage.secure_url,
-            imageId: cloudImage.public_id
-        });
+        const res = await dbQuery(`
+            INSERT INTO projects (title, slug, description, category_id, image, image_id, live_url)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING *
+        `, [title, slug, description, categoryId || null, cloudImage.secure_url, cloudImage.public_id, preview]);
 
-        await createLog({
-            userId: auth.data._id,
-            action: 'create',
-            targetType: 'project',
-            targetId: project._id,
-            description: `Created new project: ${project.title}`,
-            metadata: { category: project.category }
-        });
-
-        return NextResponse.json({ success: true, message: 'Project created', data: project });
+        return NextResponse.json({ success: true, message: 'Project created', data: res.rows[0] });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -84,61 +61,64 @@ export async function POST(req) {
 
 export async function PATCH(req) {
     try {
-        await connectDB();
-        const auth = await isEditor();
+        const auth = await isManager();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
 
         const formData = await req.formData();
         const id = formData.get('id');
-        
-        if (!id) return NextResponse.json({ success: false, message: 'Project ID is required' }, { status: 400 });
+        const title = formData.get('title');
+        const description = formData.get('description');
+        const categoryId = formData.get('categoryId');
+        const preview = formData.get('preview');
+        const imageFile = formData.get('image');
 
-        const project = await Project.findById(id);
-        if (!project) return NextResponse.json({ success: false, message: 'Project not found' }, { status: 404 });
+        const projectRes = await dbQuery("SELECT * FROM projects WHERE project_id = $1", [id]);
+        if (projectRes.rows.length === 0) return NextResponse.json({ success: false, message: 'Project not found' }, { status: 404 });
+        const project = projectRes.rows[0];
 
-        const updateData = {};
-        const fields = ['title', 'description', 'category', 'preview'];
-        
-        fields.forEach(field => {
-            const value = formData.get(field);
-            if (value) updateData[field] = value;
-        });
+        const updateFields = [];
+        const updateParams = [];
 
-        if (updateData.title) {
-            updateData.slug = generateSlug(updateData.title);
+        if (title) {
+            updateParams.push(title);
+            updateFields.push(`title = $${updateParams.length}`);
+            updateParams.push(generateSlug(title));
+            updateFields.push(`slug = $${updateParams.length}`);
+        }
+        if (description) {
+            updateParams.push(description);
+            updateFields.push(`description = $${updateParams.length}`);
+        }
+        if (categoryId) {
+            updateParams.push(categoryId);
+            updateFields.push(`category_id = $${updateParams.length}`);
+        }
+        if (preview) {
+            updateParams.push(preview);
+            updateFields.push(`live_url = $${updateParams.length}`);
         }
 
-        const imageFile = formData.get('image');
         if (imageFile && typeof imageFile !== 'string') {
-            // Delete old image
-            if (project.imageId) {
-                await cloudinary.uploader.destroy(project.imageId);
-            }
-            // Upload new image
+            if (project.image_id) await cloudinary.uploader.destroy(project.image_id);
             const buffer = Buffer.from(await imageFile.arrayBuffer());
             const cloudImage = await new Promise((resolve, reject) => {
-                const stream = cloudinary.uploader.upload_stream(
-                    { folder: "projects" },
-                    (err, result) => { if (err) reject(err); else resolve(result); }
-                );
+                const stream = cloudinary.uploader.upload_stream({ folder: "projects" }, (err, result) => { if (err) reject(err); else resolve(result); });
                 stream.end(buffer);
             });
-            updateData.image = cloudImage.secure_url;
-            updateData.imageId = cloudImage.public_id;
+            updateParams.push(cloudImage.secure_url);
+            updateFields.push(`image = $${updateParams.length}`);
+            updateParams.push(cloudImage.public_id);
+            updateFields.push(`image_id = $${updateParams.length}`);
         }
 
-        const updated = await Project.findByIdAndUpdate(id, updateData, { new: true });
+        if (updateFields.length > 0) {
+            updateParams.push(id);
+            const sql = `UPDATE projects SET ${updateFields.join(', ')}, updated_at = NOW() WHERE project_id = $${updateParams.length} RETURNING *`;
+            const updatedRes = await dbQuery(sql, updateParams);
+            return NextResponse.json({ success: true, message: 'Project updated', data: updatedRes.rows[0] });
+        }
 
-        await createLog({
-            userId: auth.data._id,
-            action: 'update',
-            targetType: 'project',
-            targetId: updated._id,
-            description: `Updated project: ${updated.title}`,
-            metadata: { updatedFields: Object.keys(updateData) }
-        });
-
-        return NextResponse.json({ success: true, message: 'Project updated', data: updated });
+        return NextResponse.json({ success: true, message: 'Project updated', data: project });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -147,27 +127,16 @@ export async function PATCH(req) {
 
 export async function DELETE(req) {
     try {
-        await connectDB();
-        const auth = await isEditor();
+        const auth = await isManager();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
 
         const { id } = await req.json();
-        const project = await Project.findById(id);
-        if (!project) return NextResponse.json({ success: false, message: 'Project not found' }, { status: 404 });
-
-        if (project.imageId) {
-            await cloudinary.uploader.destroy(project.imageId);
-        }
-
-        await Project.findByIdAndDelete(id);
-
-        await createLog({
-            userId: auth.data._id,
-            action: 'delete',
-            targetType: 'project',
-            targetId: id,
-            description: `Deleted project: ${project.title}`
-        });
+        const res = await dbQuery("DELETE FROM projects WHERE project_id = $1 RETURNING *", [id]);
+        
+        if (res.rows.length === 0) return NextResponse.json({ success: false, message: 'Project not found' }, { status: 404 });
+        
+        const project = res.rows[0];
+        if (project.image_id) await cloudinary.uploader.destroy(project.image_id);
 
         return NextResponse.json({ success: true, message: 'Project deleted' });
 

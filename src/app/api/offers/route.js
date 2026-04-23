@@ -1,31 +1,24 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/db";
-import { Offer } from "@/lib/models/offer";
-import { User } from "@/lib/models/user";
-import { createLog } from "@/lib/utils/logger";
-import { isEditor } from "@/lib/middleware";
+import { dbQuery } from "@/lib/database/pg";
+import { isLogin, isManager } from "@/lib/middleware";
 
 const generateSlug = (title) => {
-    return title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '');
+    return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 };
 
 export async function GET(req) {
     try {
-        await connectDB();
         const { searchParams } = new URL(req.url);
         const slug = searchParams.get('slug');
 
         if (slug) {
-            const offer = await Offer.findOne({ slug, status: 'active' });
-            if (!offer) return NextResponse.json({ success: false, message: "Offer not found" }, { status: 404 });
-            return NextResponse.json({ success: true, message: 'Offer fetched', data: offer });
+            const res = await dbQuery("SELECT * FROM packages WHERE slug = $1 AND is_active = true", [slug]);
+            if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Offer not found" }, { status: 404 });
+            return NextResponse.json({ success: true, message: 'Offer fetched', data: res.rows[0] });
         }
 
-        const offers = await Offer.find({ status: 'active' }).sort({ createdAt: -1 });
-        return NextResponse.json({ success: true, message: 'Offers fetched', payload: offers });
+        const res = await dbQuery("SELECT * FROM packages WHERE is_active = true ORDER BY created_at DESC", []);
+        return NextResponse.json({ success: true, message: 'Offers fetched', data: res.rows });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -33,41 +26,28 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-        await connectDB();
-        const auth = await isEditor();
+        const auth = await isManager();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
 
-        const body = await req.json();
-        const { title, description, price, discount, features } = body;
+        const { title, description, price, features } = await req.json();
 
         if (!title || !description || price === undefined) {
             return NextResponse.json({ success: false, message: "Missing required fields" }, { status: 400 });
         }
 
-        const slug = body.slug || generateSlug(title);
-        const existing = await Offer.findOne({ slug });
-        if (existing) return NextResponse.json({ success: false, message: "Offer slug already exists" }, { status: 400 });
+        const slug = generateSlug(title);
+        const existing = await dbQuery("SELECT package_id FROM packages WHERE slug = $1", [slug]);
+        if (existing.rows.length > 0) return NextResponse.json({ success: false, message: "Offer slug already exists" }, { status: 400 });
 
-        const newOffer = await Offer.create({
-            title,
-            slug,
-            description,
-            price,
-            discount: discount || 0,
-            features: features || [],
-            status: 'active'
-        });
+        const parsedFeatures = features || [];
 
-        await createLog({
-            userId: auth.data._id,
-            action: 'create',
-            targetType: 'offer',
-            targetId: newOffer._id,
-            description: `Created new offer: ${newOffer.title}`,
-            metadata: { price: newOffer.price, discount: newOffer.discount }
-        });
+        const res = await dbQuery(`
+            INSERT INTO packages (name, slug, description, price, duration_days, features, is_active, image, image_id)
+            VALUES ($1, $2, $3, $4, 30, $5, true, '', '')
+            RETURNING *
+        `, [title, slug, description, Number(price), parsedFeatures]);
 
-        return NextResponse.json({ success: true, message: 'Offer created successfully', data: newOffer }, { status: 201 });
+        return NextResponse.json({ success: true, message: 'Offer created successfully', data: res.rows[0] }, { status: 201 });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -75,34 +55,51 @@ export async function POST(req) {
 
 export async function PATCH(req) {
     try {
-        await connectDB();
-        const auth = await isEditor();
+        const auth = await isManager();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
 
         const body = await req.json();
-        const { id, ...updateData } = body;
+        const { id, title, description, price, features, isActive } = body;
 
         if (!id) return NextResponse.json({ success: false, message: "Offer ID required" }, { status: 400 });
 
-        const offer = await Offer.findById(id);
-        if (!offer) return NextResponse.json({ success: false, message: "Offer not found" }, { status: 404 });
+        const pkgRes = await dbQuery("SELECT * FROM packages WHERE package_id = $1", [id]);
+        if (pkgRes.rows.length === 0) return NextResponse.json({ success: false, message: "Offer not found" }, { status: 404 });
 
-        if (updateData.title) {
-            updateData.slug = generateSlug(updateData.title);
+        const updateFields = [];
+        const updateParams = [];
+
+        if (title) {
+            updateParams.push(title);
+            updateFields.push(`name = $${updateParams.length}`);
+            updateParams.push(generateSlug(title));
+            updateFields.push(`slug = $${updateParams.length}`);
+        }
+        if (description) {
+            updateParams.push(description);
+            updateFields.push(`description = $${updateParams.length}`);
+        }
+        if (price !== undefined) {
+            updateParams.push(Number(price));
+            updateFields.push(`price = $${updateParams.length}`);
+        }
+        if (features) {
+            updateParams.push(features);
+            updateFields.push(`features = $${updateParams.length}`);
+        }
+        if (isActive !== undefined) {
+            updateParams.push(isActive);
+            updateFields.push(`is_active = $${updateParams.length}`);
         }
 
-        const updatedOffer = await Offer.findByIdAndUpdate(id, updateData, { new: true });
+        if (updateFields.length > 0) {
+            updateParams.push(id);
+            const sql = `UPDATE packages SET ${updateFields.join(', ')}, updated_at = NOW() WHERE package_id = $${updateParams.length} RETURNING *`;
+            const updatedRes = await dbQuery(sql, updateParams);
+            return NextResponse.json({ success: true, message: 'Offer updated successfully', data: updatedRes.rows[0] });
+        }
 
-        await createLog({
-            userId: auth.data._id,
-            action: 'update',
-            targetType: 'offer',
-            targetId: updatedOffer._id,
-            description: `Updated offer: ${updatedOffer.title}`,
-            metadata: { updatedFields: Object.keys(updateData) }
-        });
-
-        return NextResponse.json({ success: true, message: 'Offer updated successfully', data: updatedOffer });
+        return NextResponse.json({ success: true, message: 'Offer updated successfully', data: pkgRes.rows[0] });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -110,25 +107,13 @@ export async function PATCH(req) {
 
 export async function DELETE(req) {
     try {
-        await connectDB();
-        const auth = await isEditor();
+        const auth = await isManager();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
 
         const { id } = await req.json();
-        if (!id) return NextResponse.json({ success: false, message: "Offer ID required" }, { status: 400 });
-
-        const offer = await Offer.findById(id);
-        if (!offer) return NextResponse.json({ success: false, message: "Offer not found" }, { status: 404 });
-
-        await Offer.findByIdAndDelete(id);
-
-        await createLog({
-            userId: auth.data._id,
-            action: 'delete',
-            targetType: 'offer',
-            targetId: id,
-            description: `Deleted offer: ${offer.title}`
-        });
+        const res = await dbQuery("DELETE FROM packages WHERE package_id = $1 RETURNING *", [id]);
+        
+        if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Offer not found" }, { status: 404 });
 
         return NextResponse.json({ success: true, message: 'Offer deleted successfully' });
     } catch (error) {

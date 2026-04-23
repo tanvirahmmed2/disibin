@@ -9,9 +9,9 @@ const OfferCard = ({ offer }) => {
 
     const handleAddToWishlist = () => {
         addToWishList({
-            itemId: offer._id,
+            packageId: offer.package_id,
             type: 'offer',
-            title: offer.title,
+            title: offer.name,
             slug: offer.slug,
             price: offer.price,
             discount: offer.discount,
@@ -31,7 +31,7 @@ const OfferCard = ({ offer }) => {
                 </div>
                 
                 <h3 className="text-2xl font-black text-slate-800 mb-4 tracking-tight group-hover:text-emerald-600 transition-colors">
-                    {offer.title}
+                    {offer.name}
                 </h3>
                 
                 <p className="text-sm text-slate-500 font-medium leading-relaxed mb-8 line-clamp-3">

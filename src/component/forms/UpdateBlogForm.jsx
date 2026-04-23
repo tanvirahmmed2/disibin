@@ -3,12 +3,13 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { RiSave3Line } from 'react-icons/ri'
+import toast from 'react-hot-toast'
 
 const UpdateBlogForm = ({ blog }) => {
     const router = useRouter()
     
     const [formData, setFormData] = useState({
-        id: blog?._id || '',
+        id: blog?.blog_id || '',
         title: blog?.title || '',
         description: blog?.description || '',
         tags: blog?.tags?.join(', ') || '',  
@@ -42,12 +43,12 @@ const UpdateBlogForm = ({ blog }) => {
             const response = await axios.patch('/api/blog', data)
             
             if (response.data.success) {
-                alert('Article updated successfully!')
-                router.push('/dashboard/editor/blogs')
+                toast.success('Article updated successfully!')
+                router.push('/dashboard/manager/blogs')
                 router.refresh()
             }
         } catch (error) {
-            alert(error?.response?.data?.message || "Failed to update article")
+            toast.error(error?.response?.data?.message || "Failed to update article")
         } finally {
             setLoading(false)
         }
