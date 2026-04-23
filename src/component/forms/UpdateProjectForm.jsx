@@ -3,16 +3,29 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 
-const UpdateProjectForm = ({ project }) => {
+const UpdateProjectForm = ({ projectData }) => {
     const [formData, setFormData] = useState({
-        title: project?.title || '',
-        category: project?.category || '',
-        description: project?.description || '',
-        preview: project?.preview || '',
+        title: projectData?.title || '',
+        categoryId: projectData?.category_id || '',
+        description: projectData?.description || '',
+        preview: projectData?.live_url || '',
     });
     
+    const [categories, setCategories] = useState([]);
     const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    React.useEffect(() => {
+        const fetchCategories = async () => {
+          try {
+            const res = await axios.get('/api/category')
+            setCategories(res.data.data || [])
+          } catch (error) {
+            console.error('Failed to fetch categories', error)
+          }
+        }
+        fetchCategories()
+    }, [])
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -29,17 +42,15 @@ const UpdateProjectForm = ({ project }) => {
         try {
             const data = new FormData();
             
-            data.append('id', project.project_id); 
+            data.append('id', projectData.project_id); 
             data.append('title', formData.title);
-            data.append('category', formData.category);
+            data.append('categoryId', formData.categoryId);
             data.append('description', formData.description);
             data.append('preview', formData.preview);
             
             if (image) data.append('image', image);
 
-            const res = await axios.patch('/api/project', data, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
+            const res = await axios.patch('/api/project', data);
 
             if (res.data.success) {
                 toast.success('Project updated successfully!');
@@ -52,66 +63,79 @@ const UpdateProjectForm = ({ project }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className='w-full flex flex-col gap-5'>
-            <div className='flex flex-col w-full gap-1'>
-                <label className='text-sm font-bold text-slate-700 ml-1'>Project Title</label>
-                <input 
-                    name="title" 
-                    value={formData.title} 
-                    onChange={handleChange} 
-                    className='w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-primary/50 transition-all' 
-                    required 
-                />
-            </div>
-
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                <div className='flex flex-col w-full gap-1'>
-                    <label className='text-sm font-bold text-slate-700 ml-1'>Category</label>
+        <form onSubmit={handleSubmit} className='space-y-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                <div className='space-y-2'>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Project Title</label>
                     <input 
-                        name="category" 
-                        value={formData.category} 
+                        type="text" 
+                        name="title" 
+                        value={formData.title} 
                         onChange={handleChange} 
-                        className='w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-primary/50' 
-                        required
+                        className='w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all' 
+                        required 
                     />
                 </div>
-                <div className='flex flex-col w-full gap-1'>
-                    <label className='text-sm font-bold text-slate-700 ml-1'>Preview Link (Demo URL)</label>
+                <div className='space-y-2'>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Live URL (Preview)</label>
                     <input 
+                        type="url" 
                         name="preview" 
                         value={formData.preview} 
                         onChange={handleChange} 
-                        className='w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-primary/50' 
-                        required
+                        className='w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all' 
+                        required 
                     />
                 </div>
             </div>
 
-            <div className='flex flex-col w-full gap-1'>
-                <label className='text-sm font-bold text-slate-700 ml-1'>Description</label>
+            <div className='space-y-2'>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Category</label>
+                <select 
+                    name='categoryId' 
+                    value={formData.categoryId} 
+                    onChange={handleChange}
+                    required
+                    className='w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all'
+                >
+                    <option value="">Select a category</option>
+                    {categories.map(cat => (
+                        <option key={cat.category_id} value={cat.category_id}>{cat.name}</option>
+                    ))}
+                </select>
+            </div>
+
+            <div className='space-y-2'>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Project Description</label>
                 <textarea 
                     name="description" 
                     value={formData.description} 
                     onChange={handleChange} 
-                    rows="5"
-                    className='w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-primary/50 resize-none' 
+                    rows={4}
+                    className='w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all'
                     required 
                 />
             </div>
 
-            <div className='flex flex-col w-full gap-1'>
-                <label className='text-sm font-bold text-slate-700 ml-1'>Replace Image (Optional)</label>
-                <input 
-                    type="file" 
-                    onChange={(e) => setImage(e.target.files[0])} 
-                    className='w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary' 
-                />
+            <div className='space-y-2'>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Update Image (Optional)</label>
+                <div className="relative group">
+                    <input 
+                        type="file" 
+                        accept='image/*' 
+                        onChange={(e) => setImage(e.target.files[0])} 
+                        className='w-full bg-slate-50 border-2 border-dashed border-slate-100 rounded-xl px-4 py-8 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all cursor-pointer' 
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-slate-400 group-hover:text-emerald-500 transition-colors">
+                        {image ? image.name : 'Click or drag to replace cover image'}
+                    </div>
+                </div>
             </div>
 
             <button 
                 type="submit" 
                 disabled={loading}
-                className='bg-primary text-white py-4 rounded-xl hover:bg-primary-dark font-black text-lg transition-all active:scale-[0.98] disabled:opacity-50'
+                className='w-full py-4 bg-slate-900 text-white font-bold uppercase tracking-widest text-[11px] rounded-xl hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-500/10 active:scale-95 disabled:opacity-50 disabled:pointer-events-none' 
             >
                 {loading ? 'Saving Changes...' : 'Update Project Details'}
             </button>

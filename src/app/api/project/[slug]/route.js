@@ -1,34 +1,29 @@
 import { NextResponse } from "next/server";
 import { dbQuery } from "@/lib/database/pg";
 
-const mapProject = (row) => ({
-    ...row,
-    id: row.project_id,
-    _id: row.project_id,
-    title: row.title,
-    image: row.image,
-    imageId: row.image_id,
-    preview: row.live_url
-});
-
 export async function GET(req, { params }) {
     try {
         const { slug } = await params;
 
         if (!slug) {
-            return NextResponse.json({ success: false, message: 'slug not found' }, { status: 400 });
+            return NextResponse.json({ success: false, message: 'Slug is required' }, { status: 400 });
         }
 
-        const res = await dbQuery("SELECT * FROM projects WHERE slug = $1", [slug]);
+        const res = await dbQuery(`
+            SELECT p.*, c.name as category_name 
+            FROM projects p 
+            LEFT JOIN categories c ON p.category_id = c.category_id 
+            WHERE p.slug = $1 OR p.project_id::text = $1
+        `, [slug]);
 
         if (res.rows.length === 0) {
-            return NextResponse.json({ success: false, message: 'No project found with this slug' }, { status: 404 });
+            return NextResponse.json({ success: false, message: 'Project not found' }, { status: 404 });
         }
 
         return NextResponse.json({
             success: true,
-            message: 'project data found successfully',
-            payload: mapProject(res.rows[0])
+            message: 'Project fetched successfully',
+            data: res.rows[0]
         }, { status: 200 });
 
     } catch (error) {

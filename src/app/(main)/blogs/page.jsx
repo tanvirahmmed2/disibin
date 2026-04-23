@@ -17,7 +17,7 @@ const blogsPage = async () => {
       </div>
     </div>
   )
-  const blogs = data.payload || []
+  const blogs = data.data || []
 
     return (
     <main className='w-full min-h-screen bg-white pt-20'>
@@ -41,7 +41,7 @@ const blogsPage = async () => {
             ) : (
             <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10'>
                 {blogs.map((blog) => (
-                <BlogCard key={blog._id} blog={blog}/>
+                <BlogCard key={blog.blog_id} blog={blog}/>
                 ))}
             </div>
             )}

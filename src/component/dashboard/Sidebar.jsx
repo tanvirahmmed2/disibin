@@ -50,8 +50,12 @@ const Sidebar = ({ collapsed }) => {
         ],
         manager: [
             { label: 'Assign Tasks', href: '/dashboard/manager/tasks', icon: RiStackLine },
+            { label: 'My Tickets', href: '/dashboard/manager/tickets', icon: RiCustomerService2Line },
             { label: 'Manage Blogs', href: '/dashboard/manager/blogs', icon: RiArticleLine },
             { label: 'Manage Packages', href: '/dashboard/manager/packages', icon: RiPriceTag3Line },
+            { label: 'Project Ops', href: '/dashboard/manager/projects', icon: RiProjectorLine },
+            { label: 'Category Ops', href: '/dashboard/manager/categories', icon: RiPriceTag3Line },
+            { label: 'Coupon Ops', href: '/dashboard/manager/coupons', icon: RiInboxLine },
             { label: 'User Control', href: '/dashboard/manager/users', icon: RiTeamLine },
             { label: 'Reviews Ops', href: '/dashboard/manager/reviews', icon: RiPriceTag3Line },
             { label: 'Purchases Ops', href: '/dashboard/manager/purchases', icon: RiStackLine },

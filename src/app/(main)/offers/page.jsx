@@ -6,7 +6,7 @@ import { RiFlashlightLine, RiArrowRightLine } from 'react-icons/ri'
 const OffersPage = async () => {
     let offers = [];
     try {
-        const res = await fetch(`${BASE_URL}/api/offers`, {
+        const res = await fetch(`${BASE_URL}/api/coupon`, {
             method: 'GET',
             cache: 'no-store'
         })

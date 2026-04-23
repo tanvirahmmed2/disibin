@@ -32,16 +32,18 @@ export async function GET(req) {
             ];
         } else if (['manager', 'support', 'developer'].includes(user.role)) {
             // Staff/Management View
-            const [taskRes, ticketRes, projectRes] = await Promise.all([
+            const [taskRes, ticketRes, projectRes, assignedTicketsRes] = await Promise.all([
                 dbQuery("SELECT COUNT(*) FROM tasks WHERE status = 'in_progress'", []),
                 dbQuery("SELECT COUNT(*) FROM tickets WHERE status = 'open'", []),
-                dbQuery("SELECT COUNT(*) FROM projects", [])
+                dbQuery("SELECT COUNT(*) FROM projects", []),
+                dbQuery("SELECT ticket_id, subject, status, priority, created_at FROM tickets WHERE assigned_to = $1 AND status != 'closed' ORDER BY priority = 'urgent' DESC, created_at DESC LIMIT 5", [user.id])
             ]);
             stats.overview = [
                 { title: 'Pending Tasks', value: parseInt(taskRes.rows[0].count), type: 'tasks' },
                 { title: 'Open Tickets', value: parseInt(ticketRes.rows[0].count), type: 'tickets' },
                 { title: 'Live Projects', value: parseInt(projectRes.rows[0].count), type: 'projects' }
             ];
+            stats.assignedTickets = assignedTicketsRes.rows;
         } else {
             // Standard User View
             const [ticketCountRes, subCountRes, recentTicketsRes, recentSubsRes] = await Promise.all([

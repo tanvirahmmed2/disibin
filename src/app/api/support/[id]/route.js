@@ -10,13 +10,13 @@ export async function GET(req, { params }) {
         const { id } = await params;
         if (!id) return NextResponse.json({ success: false, message: 'ID required' }, { status: 400 });
 
-        const res = await dbQuery("SELECT * FROM contacts WHERE contact_id = $1", [id]);
+        const res = await dbQuery("SELECT * FROM support WHERE support_id = $1", [id]);
         if (res.rows.length === 0) return NextResponse.json({ success: false, message: 'Support message not found' }, { status: 404 });
 
         return NextResponse.json({
             success: true,
             message: 'Successfully fetched data',
-            payload: { ...res.rows[0], id: res.rows[0].contact_id, _id: res.rows[0].contact_id }
+            data: { ...res.rows[0], id: res.rows[0].support_id, _id: res.rows[0].support_id }
         }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

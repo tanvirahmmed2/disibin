@@ -99,18 +99,13 @@ const SupportTickets = () => {
     )
 
     return (
-        <div className="space-y-12 py-8 px-2">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-                <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-emerald-500 font-black text-[10px] uppercase tracking-[0.3em]">
-                        <RiShareForwardLine /> Operation Center
-                    </div>
-                    <h1 className="text-5xl font-black text-slate-900 tracking-tighter">Support Queue</h1>
-                    <p className="text-slate-500 font-bold opacity-70 max-w-md">Global monitoring and resolution hub for all platform support tickets.</p>
-                </div>
+        <div className="space-y-6 py-6 px-2">
+            <div className="space-y-1">
+                <h1 className="text-2xl font-bold text-slate-800">Support Queue</h1>
+                <p className="text-sm text-slate-500">Monitor and resolve platform support tickets.</p>
             </div>
 
-            <div className="bg-white p-3 rounded-[3rem] border border-slate-50 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                 <DataTable columns={columns} data={data} loading={loading} actions={actions} />
             </div>
         </div>

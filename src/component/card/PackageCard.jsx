@@ -21,48 +21,52 @@ const PackageCard = ({ pack }) => {
     }
 
     return (
-        <div className="group flex flex-col bg-white w-full shadow-2xl overflow-hidden rounded-[2.5rem] border border-slate-100 hover:border-emerald-500/10 transition-all duration-500">
-            <div className='relative w-full aspect-16/10 overflow-hidden bg-slate-50 border-b border-slate-50'>
+        <div className="group flex flex-col bg-white w-full rounded-[2rem] border border-slate-100 hover:border-emerald-500/20 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-500/5">
+            <div className='relative w-full aspect-[16/9] overflow-hidden rounded-t-[2rem]'>
                 <Image 
                     src={pack.image} 
                     alt={pack.name} 
                     fill
-                    className='object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000' 
+                    className='object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700' 
                 />
+                <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-[9px] font-black uppercase tracking-widest text-slate-800 shadow-sm border border-white/20">
+                        {pack.category_name || 'Standard'}
+                    </span>
+                </div>
             </div>
             
-            <div className='p-4 flex flex-col flex-1 space-y-8'>
-                <div className='space-y-4'>
-                    <div className='flex items-center gap-2'>
-                        <span className='w-1 h-1 rounded-full bg-emerald-500/50' />
-                        <span className='text-[10px] font-black uppercase tracking-[0.2em] text-slate-400'>{pack.category || 'Standard Plan'}</span>
-                    </div>
-                    <h3 className="text-3xl font-black text-slate-900 tracking-tighter leading-tight group-hover:text-emerald-500 transition-colors">
+            <div className='p-8 flex flex-col flex-1'>
+                <div className='mb-8'>
+                    <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-3 group-hover:text-emerald-500 transition-colors">
                         {pack.name}
                     </h3>
-                    <p className="text-slate-500 text-sm font-medium leading-relaxed line-clamp-2">
+                    <p className="text-slate-500 text-xs font-medium leading-relaxed line-clamp-2">
                         {pack.description}
                     </p>
                 </div>
 
-                <div className="flex items-center justify-between pt-8 border-t border-slate-50 mt-auto">
+                <div className="flex items-center justify-between mt-auto pt-6 border-t border-slate-50">
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Architecture Cost</span>
-                        <span className="text-3xl font-black text-slate-900 tracking-tighter group-hover:text-emerald-500 transition-colors">${pack.price || '99'}</span>
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Total Fee</span>
+                        <div className="flex items-baseline gap-1.5">
+                            <span className="text-2xl font-black text-slate-900 tracking-tight">৳{pack.price}</span>
+                            <span className="text-[10px] font-bold text-slate-300">/ {pack.duration_days}d</span>
+                        </div>
                     </div>
 
                     <div className="flex gap-2">
                         <button 
                             onClick={handleWishlist}
-                            className="w-14 h-14 bg-slate-50 text-slate-400 hover:text-emerald-500 flex items-center justify-center rounded-2xl transition-all duration-300 transform active:scale-95"
+                            className="w-11 h-11 bg-slate-50 text-slate-400 hover:text-emerald-500 flex items-center justify-center rounded-xl transition-all active:scale-95 border border-transparent hover:border-emerald-500/10"
                         >
-                            <RiHeartLine size={24} />
+                            <RiHeartLine size={20} />
                         </button>
                         <Link 
                             href={`/packages/${pack.slug}`} 
-                            className="w-14 h-14 bg-slate-900 text-white flex items-center justify-center rounded-2xl hover:bg-emerald-500 transition-all duration-300 transform active:scale-95"
+                            className="w-11 h-11 bg-slate-900 text-white flex items-center justify-center rounded-xl hover:bg-emerald-500 transition-all shadow-lg shadow-slate-900/10 active:scale-95"
                         >
-                            <RiArrowRightLine size={24} />
+                            <RiArrowRightLine size={20} />
                         </Link>
                     </div>
                 </div>

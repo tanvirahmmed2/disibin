@@ -12,13 +12,42 @@ export async function GET(req) {
         const slug = searchParams.get('slug');
 
         if (slug) {
-            const res = await dbQuery("SELECT * FROM packages WHERE slug = $1 AND is_active = true", [slug]);
-            if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Offer not found" }, { status: 404 });
-            return NextResponse.json({ success: true, message: 'Offer fetched', data: res.rows[0] });
+            // If slug is provided, we look for the coupon by code (serving as slug for offers)
+            const res = await dbQuery(`
+                SELECT c.*, p.name, p.description, p.price as original_price, p.image, p.duration_days, p.features, p.slug as package_slug
+                FROM coupons c
+                JOIN packages p ON c.package_id = p.package_id
+                WHERE c.code = $1 AND c.status = 'active'
+            `, [slug]);
+
+            if (res.rows.length === 0) {
+                return NextResponse.json({ success: false, message: "Offer not found" }, { status: 404 });
+            }
+
+            const offer = res.rows[0];
+            const discountAmount = offer.is_percentage ? (offer.original_price * offer.discount / 100) : offer.discount;
+            offer.price = offer.original_price - discountAmount;
+
+            return NextResponse.json({ success: true, message: 'Offer fetched', data: offer });
         }
 
-        const res = await dbQuery("SELECT * FROM packages WHERE is_active = true ORDER BY created_at DESC", []);
-        return NextResponse.json({ success: true, message: 'Offers fetched', data: res.rows });
+        const res = await dbQuery(`
+            SELECT c.*, p.name, p.description, p.price as original_price, p.image, p.duration_days, p.features, p.slug as package_slug
+            FROM coupons c
+            JOIN packages p ON c.package_id = p.package_id
+            WHERE c.status = 'active'
+            ORDER BY c.created_at DESC
+        `, []);
+
+        const offers = res.rows.map(offer => {
+            const discountAmount = offer.is_percentage ? (offer.original_price * offer.discount / 100) : offer.discount;
+            return {
+                ...offer,
+                price: offer.original_price - discountAmount
+            };
+        });
+
+        return NextResponse.json({ success: true, message: 'Offers fetched', data: offers });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -42,8 +71,8 @@ export async function POST(req) {
         const parsedFeatures = features || [];
 
         const res = await dbQuery(`
-            INSERT INTO packages (name, slug, description, price, duration_days, features, is_active, image, image_id)
-            VALUES ($1, $2, $3, $4, 30, $5, true, '', '')
+            INSERT INTO packages (name, slug, description, price, duration_days, features, image, image_id)
+            VALUES ($1, $2, $3, $4, 30, $5, '', '')
             RETURNING *
         `, [title, slug, description, Number(price), parsedFeatures]);
 
@@ -59,7 +88,7 @@ export async function PATCH(req) {
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
 
         const body = await req.json();
-        const { id, title, description, price, features, isActive } = body;
+        const { id, title, description, price, features } = body;
 
         if (!id) return NextResponse.json({ success: false, message: "Offer ID required" }, { status: 400 });
 
@@ -86,10 +115,6 @@ export async function PATCH(req) {
         if (features) {
             updateParams.push(features);
             updateFields.push(`features = $${updateParams.length}`);
-        }
-        if (isActive !== undefined) {
-            updateParams.push(isActive);
-            updateFields.push(`is_active = $${updateParams.length}`);
         }
 
         if (updateFields.length > 0) {

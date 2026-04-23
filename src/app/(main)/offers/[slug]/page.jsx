@@ -14,7 +14,7 @@ const OfferDetails = ({ params }) => {
     useEffect(() => {
         const fetchOffer = async () => {
             try {
-                const res = await axios.get(`/api/offers?slug=${slug}`)
+                const res = await axios.get(`/api/coupon?code=${slug}`)
                 if (res.data.success) {
                     setOffer(res.data.data)
                 }
@@ -85,23 +85,22 @@ const OfferDetails = ({ params }) => {
                             </div>
 
                             <div className="relative z-10">
-                                <h3 className="text-xl font-bold text-slate-800 mb-8">Offer Summary</h3>
-                                
                                 <div className="space-y-6 border-b border-slate-50 pb-10">
                                     <div className="flex justify-between items-end">
                                         <div className="space-y-1">
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Investment</p>
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-5xl font-black text-slate-900">BDT {offer.price - offer.discount}</span>
-                                                {offer.discount > 0 && (
-                                                    <span className="text-lg text-slate-400 line-through font-bold">BDT {offer.price}</span>
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Investment</p>
+                                            <div className="flex items-baseline gap-3">
+                                                <span className="text-5xl font-black text-slate-900">৳{offer.price}</span>
+                                                {offer.original_price > offer.price && (
+                                                    <span className="text-xl font-bold text-slate-300 line-through">৳{offer.original_price}</span>
                                                 )}
+                                                <span className="text-xs font-black text-slate-300 uppercase tracking-[0.2em]">{offer.duration_days} Days Validity</span>
                                             </div>
                                         </div>
-                                    </div>
-                                    
-                                    <div className="flex items-center gap-2 px-4 py-2 bg-primary text-primary rounded-xl w-fit">
-                                        <span className="text-[10px] font-black uppercase tracking-widest">Saving BDT {offer.discount} Today</span>
+                                        <div className="text-right">
+                                            <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">Coupon Code</p>
+                                            <span className="px-4 py-2 bg-primary/10 text-primary rounded-xl text-sm font-bold font-mono border border-primary/20">{offer.code}</span>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -109,11 +108,11 @@ const OfferDetails = ({ params }) => {
                                     <button 
                                         onClick={() => addToWishList({
                                             packageId: offer.package_id,
+                                            couponId: offer.coupon_id,
                                             type: 'offer',
                                             title: offer.name,
-                                            slug: offer.slug,
-                                            price: offer.price,
-                                            discount: offer.discount
+                                            slug: offer.code,
+                                            price: offer.price
                                         })}
                                         className="w-full py-6 bg-primary text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-primary/20 hover:bg-slate-900 transition-all active:scale-[0.98]"
                                     >

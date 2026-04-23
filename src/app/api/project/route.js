@@ -9,7 +9,12 @@ const generateSlug = (title) => {
 
 export async function GET() {
     try {
-        const res = await dbQuery("SELECT * FROM projects ORDER BY created_at DESC", []);
+        const res = await dbQuery(`
+            SELECT p.*, c.name as category_name 
+            FROM projects p 
+            LEFT JOIN categories c ON p.category_id = c.category_id 
+            ORDER BY p.created_at DESC
+        `, []);
         return NextResponse.json({
             success: true,
             message: 'Projects fetched successfully',

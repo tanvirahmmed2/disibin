@@ -108,31 +108,31 @@ const SupportDashboard = () => {
     )
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6 py-6">
             <div className="flex items-center justify-between">
-                <div className="flex flex-col gap-1">
-                    <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Support Management</h1>
-                    <p className="text-slate-500">Respond to user tickets and general inquiries.</p>
+                <div className="space-y-1">
+                    <h1 className="text-2xl font-bold text-slate-800">Support Management</h1>
+                    <p className="text-sm text-slate-500">Respond to user tickets and inquiries.</p>
                 </div>
-                <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 shadow-sm">
+                <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
                     <button 
                         onClick={() => setView('tickets')}
-                        className={`px-6 py-2 rounded-xl text-xs font-bold transition-all
-                        ${view === 'tickets' ? 'bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`px-4 py-1.5 rounded-md text-xs font-semibold transition-all
+                        ${view === 'tickets' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                     >
                         User Tickets
                     </button>
                     <button 
                         onClick={() => setView('messages')}
-                        className={`px-6 py-2 rounded-xl text-xs font-bold transition-all
-                        ${view === 'messages' ? 'bg-white text-primary shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`px-4 py-1.5 rounded-md text-xs font-semibold transition-all
+                        ${view === 'messages' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                     >
                         Guest Messages
                     </button>
                 </div>
             </div>
 
-            <div className="bg-white p-2 rounded-[2.5rem] border border-slate-50 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                 <DataTable columns={columns} data={data} loading={loading} actions={actions} />
             </div>
         </div>

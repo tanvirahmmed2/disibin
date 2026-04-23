@@ -28,18 +28,18 @@ const Navbar = () => {
   return (
     <nav className='w-full fixed top-0 left-0 h-20 bg-white backdrop-blur-xl border-b border-slate-50 z-50 flex items-center'>
       <div className='max-w-7xl mx-auto px-6 w-full flex flex-row items-center justify-between'>
-        <Link href={'/'} className='text-3xl font-semibold text-slate-900 tracking-tighter hover:text-emerald-500 transition-colors'>
-          Disibin
+        <Link href={'/'} className='text-3xl font-black text-slate-900 tracking-tighter hover:text-emerald-500 transition-all duration-500'>
+          Disibin<span className="text-emerald-500">.</span>
         </Link>
 
-        <div className='hidden lg:flex items-center gap-2'>
+        <div className='hidden lg:flex items-center gap-1'>
           {navLinks.map((link) => (
             <Link 
               key={link.href}
               href={link.href} 
-              className={`px-5 py-2 rounded-xl text-[11px] font-semibold uppercase tracking-widest transition-all duration-300 ${
+              className={`px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
                 isActive(link.href) 
-                ? 'text-emerald-500 bg-emerald-500/10' 
+                ? 'text-emerald-600 bg-emerald-500/10' 
                 : 'text-slate-400 hover:text-slate-900'
               }`}
             >

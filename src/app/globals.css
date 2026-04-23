@@ -11,31 +11,48 @@
   --shadow-premium: 0 10px 40px -10px rgba(16, 185, 129, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.02);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 @layer base {
   body {
-    @apply bg-white text-slate-900 overflow-x-hidden selection:bg-primary/10 selection:text-primary font-sans;
+    @apply bg-white text-slate-900 overflow-x-hidden selection:bg-emerald-500/10 selection:text-emerald-600 font-sans;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-slate-50;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
   }
 }
 
 @layer components {
   .container-custom {
-    @apply max-w-7xl mx-auto px-6 w-full;
+    @apply max-w-[1440px] mx-auto px-6 w-full;
   }
   
   .card-premium {
-    @apply bg-white border border-slate-100 rounded-[2.5rem] shadow-sm transition-all duration-500 hover:border-primary/20 hover:shadow-premium hover:-translate-y-1;
+    @apply bg-white border border-slate-100 rounded-[2rem] shadow-sm transition-all duration-500 hover:border-emerald-500/20 hover:shadow-premium hover:-translate-y-1;
   }
   
   .btn-primary {
-    @apply px-5 py-5 bg-emerald-400 text-white font-black uppercase tracking-widest text-[11px] rounded-2xl hover:bg-emerald-600 hover:shadow-lg hover:shadow-primary/20 active:scale-95 transition-all cursor-pointer;
+    @apply px-5 py-5 bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-emerald-500 hover:shadow-xl hover:shadow-emerald-500/10 active:scale-95 transition-all cursor-pointer;
   }
   
   .btn-secondary {
-    @apply px-5 py-5 bg-white text-slate-900 border-2 border-slate-100 font-black uppercase tracking-widest text-[11px] rounded-2xl hover:bg-slate-50 active:scale-95 transition-all cursor-pointer;
+    @apply px-5 py-5 bg-white text-slate-900 border border-slate-200 font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-slate-50 active:scale-95 transition-all cursor-pointer;
   }
 
   .input-standard {
-    @apply w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold text-slate-700 text-sm focus:bg-white focus:border-emerald-500 transition-all;
+    @apply w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold text-slate-700 text-sm focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all;
   }
 }
 
@@ -45,11 +62,10 @@
   }
   
   input::placeholder, textarea::placeholder {
-    @apply truncate opacity-50;
+    @apply truncate opacity-30;
     text-overflow: ellipsis;
   }
 }
-
 
 @keyframes slide {
   from { transform: translateX(0); }
@@ -57,6 +73,15 @@
 }
 
 .animate-slide {
-  animation: slide 20s linear infinite;
+  animation: slide 30s linear infinite;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 

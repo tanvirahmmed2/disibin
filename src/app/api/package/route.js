@@ -53,12 +53,13 @@ export async function POST(req) {
         });
 
         const parsedFeatures = features ? features.split(",").map((f) => f.trim()).filter(Boolean) : [];
+        const durationDays = formData.get("durationDays") || 30;
 
         const res = await dbQuery(`
-            INSERT INTO packages (name, slug, description, category_id, price, duration_days, features, is_active, image, image_id)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            INSERT INTO packages (name, slug, description, category_id, price, duration_days, features, image, image_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING *
-        `, [title, slug, description, categoryId || null, Number(price), 30, parsedFeatures, true, cloudImage.secure_url, cloudImage.public_id]);
+        `, [title, slug, description, categoryId || null, Number(price), Number(durationDays), parsedFeatures, cloudImage.secure_url, cloudImage.public_id]);
 
         return NextResponse.json({
             success: true,
@@ -114,6 +115,10 @@ export async function PATCH(req) {
         if (features) {
             updateParams.push(features.split(",").map((f) => f.trim()).filter(Boolean));
             updateFields.push(`features = $${updateParams.length}`);
+        }
+        if (formData.get("durationDays")) {
+            updateParams.push(Number(formData.get("durationDays")));
+            updateFields.push(`duration_days = $${updateParams.length}`);
         }
         if (imageFile && typeof imageFile !== 'string') {
             if (pkg.image_id) await cloudinary.uploader.destroy(pkg.image_id);

@@ -29,7 +29,7 @@ const BlogCard = ({ blog }) => {
                 
                 <div className='flex items-center justify-between pt-6 border-t border-slate-50'>
                     <div className='flex gap-2 font-black text-[9px] uppercase tracking-widest text-slate-400'>
-                        {new Date(blog.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                        {new Date(blog.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                     </div>
                     <span className='text-slate-900 font-black text-[9px] uppercase tracking-widest group-hover:text-primary transition-colors'>
                         Read Full →

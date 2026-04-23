@@ -40,26 +40,41 @@ const ProjectsPage = () => {
   const uncategorizedProjects = projects.filter(p => !p.category_id)
 
   return (
-    <main className='w-full min-h-screen bg-white pt-20'>
-      <section className='py-12 border-b border-slate-50'>
-        <div className="container-custom">
-            <div className="max-w-3xl">
-                <span className='px-4 py-1.5 bg-emerald-500/5 text-emerald-500 text-[10px] font-black uppercase tracking-[0.3em] rounded-full inline-block mb-6'>Portfolio</span>
-                <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none mb-8">Selected Works<span className='text-emerald-500/50'>.</span></h1>
-                <p className="text-xl text-slate-500 font-medium leading-relaxed">A curated collection of digital products, brand experiences, and technical solutions crafted with precision.</p>
+    <main className='w-full min-h-screen bg-slate-50 pt-24 pb-20'>
+      {/* Header Section */}
+      <section className='mb-20'>
+        <div className="container-custom px-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
+            <div className="max-w-3xl space-y-6">
+                <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-emerald-500/10 text-emerald-600 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border border-emerald-500/10">
+                    Portfolio Gallery
+                </div>
+                <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter leading-[0.85]">
+                  Selected <span className="text-emerald-500">Works.</span>
+                </h1>
+                <p className="text-xl text-slate-500 font-medium leading-relaxed max-w-2xl">
+                  A curated collection of digital products, brand experiences, and technical solutions crafted with precision and purpose.
+                </p>
             </div>
+            <div className="hidden lg:block pb-4">
+                <div className="flex flex-col items-end gap-2 text-slate-400 font-black text-[10px] uppercase tracking-[0.3em]">
+                    <span>Case Studies</span>
+                    <div className="w-12 h-0.5 bg-slate-200" />
+                </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Filter Bar */}
-      <section className="sticky top-[80px] z-20 bg-white/80 backdrop-blur-xl border-b border-slate-100 py-4">
-        <div className="container-custom flex items-center gap-4 overflow-x-auto no-scrollbar">
+      <section className="sticky top-[80px] z-20 bg-white/60 backdrop-blur-2xl border-y border-slate-100 py-6 mb-16 shadow-sm">
+        <div className="container-custom px-4 flex items-center gap-6 overflow-x-auto no-scrollbar">
           <button 
             onClick={() => setSelectedCategory('all')}
-            className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${
+            className={`px-8 py-3 rounded-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
               selectedCategory === 'all' 
-              ? 'bg-slate-900 text-white shadow-lg' 
-              : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+              ? 'bg-slate-900 text-white shadow-xl shadow-slate-900/10' 
+              : 'bg-transparent text-slate-500 hover:text-emerald-600'
             }`}
           >
             All Projects
@@ -68,10 +83,10 @@ const ProjectsPage = () => {
             <button 
               key={cat.category_id}
               onClick={() => setSelectedCategory(cat.category_id.toString())}
-              className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest whitespace-nowrap transition-all ${
+              className={`px-8 py-3 rounded-full text-[9px] font-black uppercase tracking-[0.2em] whitespace-nowrap transition-all duration-300 ${
                 selectedCategory === cat.category_id.toString() 
-                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
-                : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20' 
+                : 'bg-transparent text-slate-500 hover:text-emerald-600'
               }`}
             >
               {cat.name}

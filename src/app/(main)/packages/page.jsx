@@ -43,47 +43,55 @@ const PackagesPage = () => {
     return (
         <main className='w-full min-h-screen bg-slate-50 pt-24 pb-20'>
             {/* Header Section */}
-            <section className='mb-16'>
+            <section className='mb-20'>
                 <div className="container-custom px-4">
-                    <div className="max-w-3xl space-y-4">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-emerald-100">
-                            <RiListCheck2 /> Solutions Architecture
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
+                        <div className="max-w-3xl space-y-6">
+                            <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-emerald-500/10 text-emerald-600 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border border-emerald-500/10">
+                                <RiListCheck2 size={14} /> Solutions Architecture
+                            </div>
+                            <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter leading-[0.85]">
+                                Service <span className="text-emerald-500">Plans.</span>
+                            </h1>
+                            <p className="text-xl text-slate-500 font-medium leading-relaxed max-w-2xl">
+                                Strategic technical models engineered for enterprise-grade scalability, performance, and future-proof digital transformation.
+                            </p>
                         </div>
-                        <h1 className="text-6xl font-black text-slate-900 tracking-tighter leading-none">
-                            Service <span className="text-emerald-500">Plans.</span>
-                        </h1>
-                        <p className="text-lg text-slate-500 font-medium leading-relaxed">
-                            Strategic technical models engineered for enterprise-grade scalability and performance.
-                        </p>
+                        <div className="hidden lg:block pb-4">
+                            <div className="flex flex-col items-end gap-2 text-slate-400 font-black text-[10px] uppercase tracking-[0.3em]">
+                                <span>Curated Tiers</span>
+                                <div className="w-12 h-0.5 bg-slate-200" />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
             {/* Filter Bar */}
-            <section className="sticky top-[80px] z-20 bg-white/80 backdrop-blur-xl border-y border-slate-100 py-4 mb-12">
-                <div className="container-custom px-4 flex items-center gap-4 overflow-x-auto no-scrollbar">
-                    <div className="flex items-center gap-2 text-slate-400 mr-2 border-r border-slate-100 pr-4">
-                        <RiFilter2Line size={18} />
-                        <span className="text-[10px] font-black uppercase tracking-widest">Filter</span>
+            <section className="sticky top-[80px] z-20 bg-white/60 backdrop-blur-2xl border-y border-slate-100 py-6 mb-16 shadow-sm">
+                <div className="container-custom px-4 flex items-center gap-6 overflow-x-auto no-scrollbar">
+                    <div className="flex items-center gap-2 text-slate-400 mr-2 border-r border-slate-200 pr-6">
+                        <RiFilter2Line size={16} />
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">Filter</span>
                     </div>
                     <button 
                         onClick={() => setSelectedCategory('all')}
-                        className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                        className={`px-8 py-3 rounded-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
                             selectedCategory === 'all' 
-                            ? 'bg-slate-900 text-white shadow-lg' 
-                            : 'bg-white text-slate-500 hover:bg-slate-50 border border-slate-100'
+                            ? 'bg-slate-900 text-white shadow-xl shadow-slate-900/10' 
+                            : 'bg-transparent text-slate-500 hover:text-emerald-600'
                         }`}
                     >
-                        All Packages
+                        All Services
                     </button>
                     {categories.map((cat) => (
                         <button 
                             key={cat.category_id}
                             onClick={() => setSelectedCategory(cat.category_id.toString())}
-                            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${
+                            className={`px-8 py-3 rounded-full text-[9px] font-black uppercase tracking-[0.2em] whitespace-nowrap transition-all duration-300 ${
                                 selectedCategory === cat.category_id.toString() 
-                                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
-                                : 'bg-white text-slate-500 hover:bg-slate-50 border border-slate-100'
+                                ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20' 
+                                : 'bg-transparent text-slate-500 hover:text-emerald-600'
                             }`}
                         >
                             {cat.name}

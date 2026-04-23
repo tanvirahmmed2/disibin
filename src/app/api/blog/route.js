@@ -45,10 +45,10 @@ export async function POST(req) {
         });
 
         const res = await dbQuery(`
-            INSERT INTO blogs (title, slug, description, image_url, author_id, is_published)
-            VALUES ($1, $2, $3, $4, $5, $6)
+            INSERT INTO blogs (title, slug, description, image, image_id)
+            VALUES ($1, $2, $3, $4, $5)
             RETURNING *
-        `, [title, slug, description, cloudImage.secure_url, auth.data.id, true]);
+        `, [title, slug, description, cloudImage.secure_url, cloudImage.public_id]);
 
         return NextResponse.json({ success: true, message: 'Blog created', data: res.rows[0] }, { status: 201 });
 
@@ -70,6 +70,7 @@ export async function PATCH(req) {
 
         const blogRes = await dbQuery("SELECT * FROM blogs WHERE blog_id = $1", [id]);
         if (blogRes.rows.length === 0) return NextResponse.json({ success: false, message: 'Blog not found' }, { status: 404 });
+        const blog = blogRes.rows[0];
 
         const updateFields = [];
         const updateParams = [];
@@ -85,13 +86,16 @@ export async function PATCH(req) {
             updateFields.push(`description = $${updateParams.length}`);
         }
         if (imageFile && typeof imageFile !== 'string') {
+            if (blog.image_id) await cloudinary.uploader.destroy(blog.image_id);
             const buffer = Buffer.from(await imageFile.arrayBuffer());
             const cloudImage = await new Promise((resolve, reject) => {
                 const stream = cloudinary.uploader.upload_stream({ folder: "blogs" }, (err, result) => { if (err) reject(err); else resolve(result); });
                 stream.end(buffer);
             });
             updateParams.push(cloudImage.secure_url);
-            updateFields.push(`image_url = $${updateParams.length}`);
+            updateFields.push(`image = $${updateParams.length}`);
+            updateParams.push(cloudImage.public_id);
+            updateFields.push(`image_id = $${updateParams.length}`);
         }
 
         if (updateFields.length > 0) {
@@ -101,7 +105,7 @@ export async function PATCH(req) {
             return NextResponse.json({ success: true, message: 'Blog updated', data: updatedRes.rows[0] }, { status: 200 });
         }
 
-        return NextResponse.json({ success: true, message: 'Blog updated', data: blogRes.rows[0] }, { status: 200 });
+        return NextResponse.json({ success: true, message: 'Blog updated', data: blog }, { status: 200 });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
