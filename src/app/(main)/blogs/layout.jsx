@@ -1,16 +1,8 @@
-import React from 'react'
-
-export const metadata={
-    title:'Blog | Disibin',
-    description:'Blog Disibin page'
+export const metadata = {
+    title: 'Tech Insights & Development Blog',
+    description: 'Explore the latest trends in software development, UI/UX design, and digital transformation on the Disibin blog.',
 }
 
-const BlogLayout = ({children}) => {
-  return (
-    <div className='w-full'>
-      {children}
-    </div>
-  )
+export default function BlogLayout({ children }) {
+    return <section className="w-full">{children}</section>
 }
-
-export default BlogLayout

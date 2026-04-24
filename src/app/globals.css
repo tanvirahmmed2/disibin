@@ -6,9 +6,9 @@
   --color-slate-50: #f8fafc;
   --color-slate-100: #f1f5f9;
   
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.02);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.04), 0 2px 4px -2px rgb(0 0 0 / 0.04);
-  --shadow-premium: 0 10px 40px -10px rgba(16, 185, 129, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.02);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --shadow-premium: 0 10px 25px -5px rgba(16, 185, 129, 0.05);
 }
 
 html {
@@ -17,7 +17,7 @@ html {
 
 @layer base {
   body {
-    @apply bg-white text-slate-900 overflow-x-hidden selection:bg-emerald-500/10 selection:text-emerald-600 font-sans;
+    @apply bg-white text-slate-800 overflow-x-hidden selection:bg-emerald-500/10 selection:text-emerald-600 font-[family-name:var(--font-poppins)] antialiased;
   }
 
   /* Custom Scrollbar */
@@ -36,23 +36,23 @@ html {
 
 @layer components {
   .container-custom {
-    @apply max-w-[1440px] mx-auto px-6 w-full;
+    @apply max-w-[1400px] mx-auto px-6 w-full;
   }
   
   .card-premium {
-    @apply bg-white border border-slate-100 rounded-[2rem] shadow-sm transition-all duration-500 hover:border-emerald-500/20 hover:shadow-premium hover:-translate-y-1;
+    @apply bg-white border border-slate-100 rounded-2xl shadow-sm transition-all duration-300 hover:border-emerald-500/10 hover:shadow-premium;
   }
   
   .btn-primary {
-    @apply px-5 py-5 bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-emerald-500 hover:shadow-xl hover:shadow-emerald-500/10 active:scale-95 transition-all cursor-pointer;
+    @apply px-8 py-4 bg-slate-900 text-white font-semibold text-sm rounded-xl hover:bg-emerald-500 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2;
   }
   
   .btn-secondary {
-    @apply px-5 py-5 bg-white text-slate-900 border border-slate-200 font-black uppercase tracking-widest text-[10px] rounded-2xl hover:bg-slate-50 active:scale-95 transition-all cursor-pointer;
+    @apply px-8 py-4 bg-white text-slate-900 border border-slate-200 font-semibold text-sm rounded-xl hover:bg-slate-50 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2;
   }
 
   .input-standard {
-    @apply w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold text-slate-700 text-sm focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all;
+    @apply w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl outline-none font-medium text-slate-700 text-sm focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all;
   }
 }
 
@@ -62,7 +62,7 @@ html {
   }
   
   input::placeholder, textarea::placeholder {
-    @apply truncate opacity-30;
+    @apply truncate opacity-40;
     text-overflow: ellipsis;
   }
 }
@@ -73,7 +73,7 @@ html {
 }
 
 .animate-slide {
-  animation: slide 30s linear infinite;
+  animation: slide 40s linear infinite;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -84,4 +84,3 @@ html {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-

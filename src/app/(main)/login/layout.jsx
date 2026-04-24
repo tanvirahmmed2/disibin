@@ -1,20 +1,8 @@
-import { isLogin } from '@/lib/middleware'
-import { redirect } from 'next/navigation'
-import React from 'react'
-
-export const metadata={
-    title:"Login",
-    description:'Login in Disibin'
+export const metadata = {
+    title: 'Login to Your Account',
+    description: 'Access your Disibin dashboard, manage your projects, and stay connected with our development team.',
 }
 
-const LoginLayout = async({children}) => {
-    const auth=await isLogin()
-    if(auth.success) return redirect('/profile')
-  return (
-    <div className='w-full'>
-      {children}
-    </div>
-  )
+export default function LoginLayout({ children }) {
+    return <section className="w-full">{children}</section>
 }
-
-export default LoginLayout

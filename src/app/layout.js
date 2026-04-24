@@ -20,7 +20,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`\ w-full overflow-x-hidden relative bg-white md:text-base text-sm min-h-screen`}>
+      <body className={`${poppins.variable} w-full overflow-x-hidden relative bg-white min-h-screen font-poppins antialiased`}>
         <ContextProvider>
           <Toaster position="top-right" />
           <main>{children}</main>

@@ -1,17 +1,8 @@
-
-
-export const metadata={
-    title:'Services | Disibin',
-    description:'Services provideed by Disibin'
+export const metadata = {
+    title: 'Professional Digital Services',
+    description: 'From web development to UI/UX design, discover the full range of professional services offered by Disibin.',
 }
 
-
-const ServicesLayout = ({children}) => {
-  return (
-    <div className="w-full">
-      {children}
-    </div>
-  )
+export default function ServicesLayout({ children }) {
+    return <section className="w-full">{children}</section>
 }
-
-export default ServicesLayout

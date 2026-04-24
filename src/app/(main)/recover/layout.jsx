@@ -1,20 +1,8 @@
-import { isLogin } from '@/lib/middleware'
-import { redirect } from 'next/navigation'
-import React from 'react'
-
-export const metadata={
-    title:"Recover | Disibin",
-    description:'Recover in Disibin'
+export const metadata = {
+    title: 'Recover Your Account',
+    description: 'Lost your password? Use our recovery tool to regain access to your Disibin account securely.',
 }
 
-const RecoverLayout = async({children}) => {
-    const auth=await isLogin()
-    if(auth.success) return redirect('/profile')
-  return (
-    <div className='w-full'>
-      {children}
-    </div>
-  )
+export default function RecoverLayout({ children }) {
+    return <section className="w-full">{children}</section>
 }
-
-export default RecoverLayout

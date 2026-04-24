@@ -1,16 +1,8 @@
-import React from 'react'
-
-export const metadata={
-    title:'Packages | Disibin',
-    description:'Packages Disibin page'
+export const metadata = {
+    title: 'Service Packages & Pricing',
+    description: 'Choose from our range of specialized development and design packages tailored to help your business grow.',
 }
 
-const PackagesLayout = ({children}) => {
-  return (
-    <div className='w-full'>
-      {children}
-    </div>
-  )
+export default function PackagesLayout({ children }) {
+    return <section className="w-full">{children}</section>
 }
-
-export default PackagesLayout

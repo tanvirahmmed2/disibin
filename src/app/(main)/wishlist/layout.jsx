@@ -1,22 +1,8 @@
-import { isLogin } from '@/lib/middleware'
-import { redirect } from 'next/navigation'
-import React from 'react'
-
-
-export const metadata={
-    title:'Wishlist | Disibin',
-    description:'Wishlist page'
+export const metadata = {
+    title: 'Your Wishlist',
+    description: 'Keep track of the packages and services you are interested in for future reference.',
 }
 
-
-const WishListLayout = async({children}) => {
-    const auth=await isLogin()
-    if(!auth.success) return redirect('/login')
-  return (
-    <div className='w-full'>
-      {children}
-    </div>
-  )
+export default function WishlistLayout({ children }) {
+    return <section className="w-full">{children}</section>
 }
-
-export default WishListLayout
