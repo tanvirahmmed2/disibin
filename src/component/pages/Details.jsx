@@ -21,16 +21,16 @@ const Details = () => {
         </div>
 
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           {services.map((service, index) => (
             <div
               key={service.id || index}
-              className="p-3 bg-slate-50/50 border border-slate-100 rounded-xl hover:bg-white hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300 group"
+              className="p-3 bg-slate-50/50 border border-slate-100 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300 group"
             >
               <div className="w-12 h-12 rounded-2xl bg-white border border-slate-100 text-slate-400 flex items-center justify-center text-2xl mb-8 group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500 transition-all duration-300">
                 {service.icon}
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-4 tracking-tight">
+              <h3 className="text-xl font-semibold text-slate-900 mb-4 tracking-tight">
                 {service.title}
               </h3>
               <p className="text-slate-500 text-sm font-medium leading-relaxed">
@@ -42,22 +42,22 @@ const Details = () => {
 
 
         {customServices && customServices.length > 0 && (
-          <div className="space-y-32">
-            {customServices.map((section, idx) => (
+          <div className="space-y-20">
+            {customServices.map((section) => (
               <div key={section.id} className='w-full flex flex-col items-center justify-center gap-6 group'>
                 <div className='w-full grid grid-cols-1 md:grid-cols-2 gap-4'>
                   <div className='flex flex-col gap-4'>
-                    <h1 className='text-2xl font-black'>{section.title}</h1>
-                    <p>{section.description}</p>
+                    <h1 className='text-2xl font-bold'>{section.title}</h1>
+                    <p className="text-slate-600 leading-relaxed">{section.description}</p>
                   </div>
                   <div className='overflow-hidden rounded-2xl aspect-video'>
-                    <Image src={section.image} alt='service image' width={1000} height={1000} className='aspect-video rounded-2xl group-hover:scale-150 transition duration-500 ease-in-out scale-125 overflow-hidden'/>
+                    <Image src={section.image} alt='service image' width={1000} height={1000} className='aspect-video rounded-2xl group-hover:scale-110 transition duration-700 ease-in-out scale-100 overflow-hidden'/>
                   </div>
                 </div>
                 <div className='w-full grid grid-cols-2 md:grid-cols-3 gap-4'>
                   {section.sections?.map((subSection) => (
-                      <div key={subSection.id} className="p-6 bg-white hover:bg-emerald-100 transition duration-500 ease-in-out border border-slate-100 rounded-2xl">
-                        <h4 className="font-bold text-slate-800 mb-2 text-sm uppercase tracking-wide">
+                      <div key={subSection.id} className="p-6 bg-white hover:bg-slate-50 transition duration-300 ease-in-out border border-slate-100 rounded-xl">
+                        <h4 className="font-semibold text-slate-800 mb-2 text-sm uppercase tracking-wide">
                           {subSection.title}
                         </h4>
                         <p className="text-sm text-slate-500 leading-relaxed">

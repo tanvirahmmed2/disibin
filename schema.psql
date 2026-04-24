@@ -136,31 +136,66 @@ CREATE TABLE coupons (
 
 CREATE TABLE purchases (
   purchase_id SERIAL PRIMARY KEY,
-  user_id INTEGER REFERENCES users(user_id) ON DELETE SET NULL, 
+
+  -- WHO PURCHASED
+  user_id INTEGER REFERENCES users(user_id) ON DELETE SET NULL,
+  tenant_id INTEGER REFERENCES tenants(tenant_id) ON DELETE CASCADE,
+
+  -- WHAT WAS PURCHASED
   package_id INTEGER REFERENCES packages(package_id) ON DELETE RESTRICT,
-  
+
+  -- OPTIONAL (for multi-duration or bulk buy)
+  quantity INTEGER DEFAULT 1,
+
+  -- FINANCIAL INFO
   amount NUMERIC(10, 2) NOT NULL,
+
+  -- STATUS FLOW
   status TEXT DEFAULT 'pending'
     CHECK (status IN ('pending', 'completed', 'failed', 'refunded')),
-    
+
+  -- PAYMENT REFERENCE
+  payment_method TEXT,
+  transaction_id TEXT UNIQUE,
+
+  -- TIMESTAMPS
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE subscriptions (
   subscription_id SERIAL PRIMARY KEY,
+
+  -- WHO OWNS IT
   user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+  tenant_id INTEGER REFERENCES tenants(tenant_id) ON DELETE CASCADE,
+
+  -- LINK TO PURCHASE
+  purchase_id INTEGER REFERENCES purchases(purchase_id) ON DELETE CASCADE,
+
+  -- PACKAGE INFO
   package_id INTEGER NOT NULL REFERENCES packages(package_id) ON DELETE RESTRICT,
-  
+
+  -- STRIPE / EXTERNAL BILLING
   stripe_subscription_id TEXT UNIQUE,
-  
-  status TEXT DEFAULT 'active'
-    CHECK (status IN ('active', 'past_due', 'canceled', 'unpaid', 'trialing')),
-    
+
+  -- BILLING MODE
+  billing_cycle TEXT DEFAULT 'one_time'
+    CHECK (billing_cycle IN ('one_time', 'monthly', 'yearly', 'custom')),
+
+  -- ACTIVE PERIOD
   current_period_start TIMESTAMP DEFAULT NOW(),
   current_period_end TIMESTAMP,
+
+  -- OPTIONAL OVERRIDE (for 1-year / custom plans)
+  override_days INTEGER,
+
   cancel_at_period_end BOOLEAN DEFAULT FALSE,
-  
+
+  -- STATUS
+  status TEXT DEFAULT 'active'
+    CHECK (status IN ('active', 'past_due', 'canceled', 'expired', 'trialing')),
+
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );

@@ -19,7 +19,7 @@ const OffersPage = async () => {
     return (
         <main className='w-full min-h-screen bg-slate-50 pt-24 pb-20'>
             <div className="container-custom">
-                {/* Header Section */}
+
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 px-4">
                     <div className="max-w-2xl space-y-4">
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-emerald-500/10">
@@ -39,7 +39,7 @@ const OffersPage = async () => {
                     </div>
                 </div>
 
-                {/* Content Section */}
+
                 <div className="w-full px-4">
                     {offers.length === 0 ? (
                         <div className="p-20 text-center bg-white border border-slate-100 rounded-3xl shadow-sm">

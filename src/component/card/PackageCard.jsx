@@ -21,8 +21,8 @@ const PackageCard = ({ pack }) => {
     }
 
     return (
-        <div className="group flex flex-col bg-white w-full rounded-[2rem] border border-slate-100 hover:border-emerald-500/20 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-500/5">
-            <div className='relative w-full aspect-[16/9] overflow-hidden rounded-t-[2rem]'>
+        <div className="group flex flex-col bg-white w-full rounded-2xl border border-slate-100 hover:border-emerald-500/10 transition-all duration-300 hover:shadow-md">
+            <div className='relative w-full aspect-[16/9] overflow-hidden rounded-t-2xl'>
                 <Image 
                     src={pack.image} 
                     alt={pack.name} 
@@ -30,7 +30,7 @@ const PackageCard = ({ pack }) => {
                     className='object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700' 
                 />
                 <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-[9px] font-black uppercase tracking-widest text-slate-800 shadow-sm border border-white/20">
+                    <span className="px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-[9px] font-semibold uppercase tracking-widest text-slate-800 border border-white/20">
                         {pack.category_name || 'Standard'}
                     </span>
                 </div>
@@ -38,7 +38,7 @@ const PackageCard = ({ pack }) => {
             
             <div className='p-8 flex flex-col flex-1'>
                 <div className='mb-8'>
-                    <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-3 group-hover:text-emerald-500 transition-colors">
+                    <h3 className="text-2xl font-bold text-slate-900 tracking-tight mb-3 group-hover:text-emerald-600 transition-colors">
                         {pack.name}
                     </h3>
                     <p className="text-slate-500 text-xs font-medium leading-relaxed line-clamp-2">
@@ -48,23 +48,23 @@ const PackageCard = ({ pack }) => {
 
                 <div className="flex items-center justify-between mt-auto pt-6 border-t border-slate-50">
                     <div className="flex flex-col">
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Total Fee</span>
+                        <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-[0.2em] mb-1">Total Fee</span>
                         <div className="flex items-baseline gap-1.5">
-                            <span className="text-2xl font-black text-slate-900 tracking-tight">৳{pack.price}</span>
-                            <span className="text-[10px] font-bold text-slate-300">/ {pack.duration_days}d</span>
+                            <span className="text-2xl font-bold text-slate-900 tracking-tight">৳{pack.price}</span>
+                            <span className="text-[10px] font-semibold text-slate-300">/ {pack.duration_days}d</span>
                         </div>
                     </div>
 
                     <div className="flex gap-2">
                         <button 
                             onClick={handleWishlist}
-                            className="w-11 h-11 bg-slate-50 text-slate-400 hover:text-emerald-500 flex items-center justify-center rounded-xl transition-all active:scale-95 border border-transparent hover:border-emerald-500/10"
+                            className="w-11 h-11 bg-slate-50 text-slate-400 hover:text-emerald-600 flex items-center justify-center rounded-xl transition-all active:scale-95 border border-transparent hover:border-emerald-500/10"
                         >
                             <RiHeartLine size={20} />
                         </button>
                         <Link 
                             href={`/packages/${pack.slug}`} 
-                            className="w-11 h-11 bg-slate-900 text-white flex items-center justify-center rounded-xl hover:bg-emerald-500 transition-all shadow-lg shadow-slate-900/10 active:scale-95"
+                            className="w-11 h-11 bg-slate-900 text-white flex items-center justify-center rounded-xl hover:bg-emerald-600 transition-all active:scale-95"
                         >
                             <RiArrowRightLine size={20} />
                         </Link>

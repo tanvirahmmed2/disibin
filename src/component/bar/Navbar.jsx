@@ -8,7 +8,7 @@ import { CgProfile } from 'react-icons/cg';
 import { RiLogoutBoxRLine, RiDashboardLine, RiUserLine, RiHeartLine } from 'react-icons/ri';
 
 const Navbar = () => {
-  const { sidebar, setSidebar, isLoggedin, userData, handleLogout } = useContext(Context)
+  const { sidebar, setSidebar, isLoggedIn, userData, handleLogout } = useContext(Context)
   const pathname = usePathname()
 
   const navLinks = [
@@ -28,7 +28,7 @@ const Navbar = () => {
   return (
     <nav className='w-full fixed top-0 left-0 h-20 bg-white backdrop-blur-xl border-b border-slate-50 z-50 flex items-center'>
       <div className='max-w-7xl mx-auto px-6 w-full flex flex-row items-center justify-between'>
-        <Link href={'/'} className='text-3xl font-black text-slate-900 tracking-tighter hover:text-emerald-500 transition-all duration-500'>
+        <Link href={'/'} className='text-3xl font-bold text-slate-900 tracking-tighter hover:text-emerald-500 transition-all duration-500'>
           Disibin<span className="text-emerald-500">.</span>
         </Link>
 
@@ -37,7 +37,7 @@ const Navbar = () => {
             <Link 
               key={link.href}
               href={link.href} 
-              className={`px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
+              className={`px-5 py-2.5 rounded-full text-[10px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 ${
                 isActive(link.href) 
                 ? 'text-emerald-600 bg-emerald-500/10' 
                 : 'text-slate-400 hover:text-slate-900'
@@ -49,10 +49,10 @@ const Navbar = () => {
           
           <div className='ml-4 h-4 w-px bg-slate-100'></div>
 
-          {isLoggedin ? (
+          {isLoggedIn ? (
             <div className='relative ml-4 group'>
               <button className='flex items-center gap-3 p-1 rounded-full group-hover:bg-slate-50 transition-colors'>
-                <div className='w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center text-white font-semibold text-sm transition-transform active:scale-95'>
+                <div className='w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white font-semibold text-sm transition-transform active:scale-95'>
                   {userData?.name?.charAt(0) || <CgProfile />}
                 </div>
               </button>
@@ -99,7 +99,7 @@ const Navbar = () => {
 
         <button 
           onClick={() => setSidebar(!sidebar)} 
-          className='lg:hidden p-3 rounded-2xl text-slate-900 bg-slate-50 hover:bg-slate-100 transition-colors'
+          className='lg:hidden p-2.5 rounded-xl text-slate-900 bg-slate-50 hover:bg-slate-100 transition-colors'
         >
           {sidebar ? <MdClose size={24} /> : <MdOutlineMenu size={24} />}
         </button>

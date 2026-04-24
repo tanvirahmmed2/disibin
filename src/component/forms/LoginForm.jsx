@@ -40,14 +40,14 @@ const LoginForm = () => {
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5 }} 
-            className='w-full flex-col flex gap-5' 
+            className='w-full flex-col flex gap-4' 
             onSubmit={handleSubmit}
         >
-            <div className='w-full flex flex-col gap-2'>
-                <label htmlFor="email" className="text-sm font-bold text-slate-700">Email Address</label>
+            <div className='w-full flex flex-col gap-1.5'>
+                <label htmlFor="email" className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Email Address</label>
                 <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-emerald-500/50 transition-colors">
-                        <RiMailLine size={20} />
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-300 group-focus-within:text-emerald-500 transition-colors">
+                        <RiMailLine size={18} />
                     </div>
                     <input 
                         type="email" 
@@ -56,22 +56,24 @@ const LoginForm = () => {
                         required 
                         onChange={handleChange} 
                         value={formData.email} 
+                        placeholder="name@example.com"
                         className='input-standard pl-12'
                     />
                 </div>
             </div>
 
-            <div className='w-full flex flex-col gap-2'>
-                <label htmlFor="password" className="text-sm font-bold text-slate-700">Password</label>
+            <div className='w-full flex flex-col gap-1.5'>
+                <label htmlFor="password" className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Password</label>
                 <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-emerald-500/50 transition-colors">
-                        <RiLockPasswordLine size={20} />
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-300 group-focus-within:text-emerald-500 transition-colors">
+                        <RiLockPasswordLine size={18} />
                     </div>
                     <input 
                         type="password" 
                         name='password' 
                         id='password' 
                         required 
+                        placeholder="••••••••"
                         onChange={handleChange} 
                         value={formData.password} 
                         className='input-standard pl-12'
@@ -79,21 +81,21 @@ const LoginForm = () => {
                 </div>
             </div>
 
-            <div className='w-full flex flex-row items-center justify-between mt-2'>
-                <Link className='text-sm font-bold text-slate-500  transition-colors' href={'/recover'}>Forgot password?</Link>
-                <Link className='text-sm font-bold  transition-colors' href={'/register'}>Create account</Link>
+            <div className='w-full flex flex-row items-center justify-between mt-1'>
+                <Link className='text-xs font-semibold text-slate-400 hover:text-slate-600 transition-colors' href={'/recover'}>Forgot password?</Link>
+                <Link className='text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition-colors' href={'/register'}>Create account</Link>
             </div>
 
             <button 
                 type='submit' 
                 disabled={isLoading}
-                className='w-full mt-4 py-4 bg-emerald-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-emerald-400 hover:shadow-lg hover:shadow-emerald-500/10 transition-all active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none'
+                className='w-full mt-4 py-4 bg-slate-900 text-white rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none'
             >
                 {isLoading ? (
-                    <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                 ) : (
                     <>
-                        <RiLoginCircleLine size={24} />
+                        <RiLoginCircleLine size={20} />
                         Sign In
                     </>
                 )}

@@ -41,17 +41,17 @@ const skills = [
   { name: 'Vercel', icon: RiVercelLine },
   { name: 'Render', icon: RiBlenderLine},
   { name: 'Github', icon: RiGithubLine},
-  { name: 'WeCommerce', icon: MdOutlineDesignServices},
+  { name: 'WooCommerce', icon: MdOutlineDesignServices},
 ]
 
 
 
 const SkillSlider = () => {
   return (
-    <section className="w-full py-32 bg-emerald-500  overflow-hidden border-y border-slate-50">
-      <div className="container-custom mb-16 text-center">
-         <span className='text-emerald-500 font-black tracking-[0.4em] uppercase text-[10px] mb-4 inline-block'>Infrastructure</span>
-         <h2 className='text-4xl md:text-5xl font-black text-slate-900 tracking-tighter'>The Stack We Master.</h2>
+    <section className="w-full py-24 bg-emerald-500 overflow-hidden border-y border-white/10">
+      <div className="container-custom mb-12 text-center">
+         <span className='text-white/80 font-semibold tracking-[0.4em] uppercase text-[10px] mb-4 inline-block'>Infrastructure</span>
+         <h2 className='text-4xl md:text-5xl font-bold text-white tracking-tighter'>The Stack We Master.</h2>
       </div>
 
       <div className="flex gap-16 whitespace-nowrap animate-slide select-none">
@@ -60,22 +60,22 @@ const SkillSlider = () => {
           const Icon = skill.icon
           return (
             <div
-              key={index}
-              className="flex items-center gap-4 text-slate-200 group hover:text-emerald-500/50 transition-colors duration-500"
+              key={`${skill.name}-${index}`}
+              className="flex items-center gap-4 text-white/40 group hover:text-white transition-colors duration-500"
             >
               <Icon size={40} className="filter grayscale group-hover:grayscale-0 transition-all" />
-              <span className='text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all'>{skill.name}</span>
+              <span className='text-[10px] font-semibold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all'>{skill.name}</span>
             </div>
           )
         })}
       </div>
 
-      <div className='container-custom mt-20'>
+      <div className='container-custom mt-16'>
         <div className='flex flex-wrap items-center justify-center gap-2 max-w-4xl mx-auto'>
             {skills.map((skill) => (
             <span 
                 key={skill.name} 
-                className='px-6 py-2.5 bg-slate-50 text-slate-400 text-[9px] font-black uppercase tracking-widest rounded-full border border-slate-100 hover:border-emerald-500/10 hover:text-emerald-500 transition-all cursor-default'
+                className='px-5 py-2 bg-white/5 text-white/50 text-[9px] font-semibold uppercase tracking-widest rounded-full border border-white/10 hover:border-white/20 hover:text-white transition-all cursor-default'
             >
                 {skill.name}
             </span>

@@ -109,7 +109,7 @@ const ChatPage = () => {
         <div className="flex flex-col h-[calc(100vh-140px)] bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="flex flex-1 overflow-hidden">
                 
-                {/* Sidebar */}
+
                 <div className={`w-full md:w-80 flex-shrink-0 border-r border-slate-100 flex flex-col ${selectedUser ? 'hidden md:flex' : 'flex'}`}>
                     <div className="p-6 border-b border-slate-100">
                         <h2 className="text-xl font-bold text-slate-800 mb-4">Messages</h2>
@@ -153,11 +153,11 @@ const ChatPage = () => {
                     </div>
                 </div>
 
-                {/* Chat Area */}
+
                 <div className={`flex-1 flex flex-col bg-white ${!selectedUser ? 'hidden md:flex' : 'flex'}`}>
                     {selectedUser ? (
                         <>
-                            {/* Header */}
+
                             <div className="p-4 md:p-6 border-b border-slate-100 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <button onClick={() => setSelectedUser(null)} className="md:hidden p-2 text-slate-500">
@@ -173,7 +173,7 @@ const ChatPage = () => {
                                 </div>
                             </div>
 
-                            {/* Messages */}
+
                             <div className="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar bg-slate-50/30">
                                 {chatLoading && messages.length === 0 ? (
                                     <div className="h-full flex items-center justify-center text-slate-400">Loading...</div>
@@ -204,7 +204,7 @@ const ChatPage = () => {
                                 <div ref={messagesEndRef} />
                             </div>
 
-                            {/* Input */}
+
                             <div className="p-4 border-t border-slate-100">
                                 <form onSubmit={handleSendMessage} className="flex items-center gap-3">
                                     <button type="button" className="p-2 text-slate-300 hover:text-emerald-500 transition-all">

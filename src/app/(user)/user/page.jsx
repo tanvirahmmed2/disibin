@@ -63,7 +63,7 @@ const DashboardHome = () => {
                     </p>
                 </div>
                 {role === 'user' && (
-                    <div className="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg text-xs font-bold border border-emerald-100">
+                    <div className="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg text-xs font-semibold border border-emerald-100">
                         {recent.subscriptions.length} Active Services
                     </div>
                 )}
@@ -93,7 +93,7 @@ const DashboardHome = () => {
                 <div className="lg:col-span-2 space-y-8">
                     {role === 'user' && (
                         <div className="space-y-4">
-                            <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">Quick Access</h2>
+                            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-1">Quick Access</h2>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 {[
                                     { label: 'Support', href: '/user/tickets', icon: RiTicketLine },
@@ -109,7 +109,7 @@ const DashboardHome = () => {
                                         <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center mb-3 group-hover:bg-emerald-500 group-hover:text-white transition-all">
                                             <link.icon size={24} />
                                         </div>
-                                        <span className="text-xs font-bold text-slate-600 group-hover:text-emerald-600 transition-colors">{link.label}</span>
+                                        <span className="text-xs font-semibold text-slate-600 group-hover:text-emerald-600 transition-colors">{link.label}</span>
                                     </button>
                                 ))}
                             </div>
@@ -119,26 +119,26 @@ const DashboardHome = () => {
                     {role === 'user' && (
                         <div className="space-y-4">
                             <div className="flex items-center justify-between px-1">
-                                <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Services</h2>
-                                <button onClick={() => router.push('/user/subscription')} className="text-xs font-bold text-emerald-600 hover:underline">View All</button>
+                                <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Services</h2>
+                                <button onClick={() => router.push('/user/subscription')} className="text-xs font-semibold text-emerald-600 hover:underline">View All</button>
                             </div>
                             <div className="space-y-3">
                                 {recent.subscriptions.length === 0 ? (
-                                    <div className="p-10 border-2 border-dashed border-slate-100 rounded-2xl text-center">
+                                    <div className="p-10 border border-dashed border-slate-200 rounded-2xl text-center">
                                         <p className="text-slate-400 text-sm">No active services found</p>
                                     </div>
                                 ) : recent.subscriptions.map((sub, i) => (
-                                    <div key={i} className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between hover:border-emerald-200 transition-all">
+                                    <div key={i} className="bg-white p-5 rounded-2xl border border-slate-100 flex items-center justify-between hover:border-emerald-200 transition-all shadow-sm">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-slate-50 text-slate-400 rounded-lg flex items-center justify-center font-bold">
+                                            <div className="w-10 h-10 bg-slate-50 text-slate-400 rounded-lg flex items-center justify-center font-semibold">
                                                 {sub.package_name.charAt(0)}
                                             </div>
                                             <div>
-                                                <h4 className="font-bold text-slate-800">{sub.package_name}</h4>
+                                                <h4 className="font-semibold text-slate-800">{sub.package_name}</h4>
                                                 <p className="text-[10px] text-slate-400 font-medium">Expires {new Date(sub.end_date).toLocaleDateString()}</p>
                                             </div>
                                         </div>
-                                        <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-bold">Active</span>
+                                        <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-semibold border border-emerald-100">Active</span>
                                     </div>
                                 ))}
                             </div>
@@ -152,7 +152,7 @@ const DashboardHome = () => {
                        <div className="relative z-10 space-y-4">
                           <h3 className="text-xl font-bold tracking-tight">Need Support?</h3>
                           <p className="text-slate-400 text-sm leading-relaxed">Our team is here to assist you with any technical needs.</p>
-                          <button onClick={() => router.push('/user/tickets')} className="w-full py-3 bg-emerald-500 text-white font-bold text-sm rounded-xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-2">
+                          <button onClick={() => router.push('/user/tickets')} className="w-full py-3 bg-emerald-500 text-white font-semibold text-sm rounded-xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-2">
                               Open Ticket
                           </button>
                        </div>
@@ -160,17 +160,17 @@ const DashboardHome = () => {
 
                     {role === 'user' && recent.tickets.length > 0 && (
                         <div className="space-y-4">
-                             <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">Latest Tickets</h2>
+                             <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-1">Latest Tickets</h2>
                              <div className="space-y-3">
                                 {recent.tickets.map((ticket, i) => (
-                                    <div key={i} onClick={() => router.push(`/user/tickets`)} className="bg-white p-4 rounded-xl border border-slate-200 hover:shadow-sm cursor-pointer transition-all">
+                                    <div key={i} onClick={() => router.push(`/user/tickets`)} className="bg-white p-4 rounded-xl border border-slate-100 hover:shadow-sm cursor-pointer transition-all">
                                         <div className="flex justify-between items-start mb-1">
-                                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${ticket.status === 'open' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
+                                            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${ticket.status === 'open' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-500'}`}>
                                                 {ticket.status}
                                             </span>
                                             <span className="text-[10px] text-slate-400">{new Date(ticket.created_at).toLocaleDateString()}</span>
                                         </div>
-                                        <h5 className="text-sm font-bold text-slate-700 truncate">{ticket.subject}</h5>
+                                        <h5 className="text-sm font-semibold text-slate-700 truncate">{ticket.subject}</h5>
                                     </div>
                                 ))}
                              </div>

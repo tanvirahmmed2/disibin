@@ -7,15 +7,31 @@ import { useRouter } from 'next/navigation'
 
 const UserLayout = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false)
-    const { isLoggedin, userData } = useContext(Context)
+    const { isLoggedIn, userData, isLoadingAuth } = useContext(Context)
     const router = useRouter()
 
     useEffect(() => {
-        if (!isLoggedin && !userData?.user_id) return router.push('/login')
-    }, [isLoggedin, userData, router])
+        if (!isLoadingAuth && !isLoggedIn && !userData?.user_id) {
+            return router.push('/login')
+        }
+    }, [isLoadingAuth, isLoggedIn, userData, router])
+
+    if (isLoadingAuth) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-slate-50">
+                <div className="w-12 h-12 border-4 border-slate-200 border-t-emerald-500 rounded-full animate-spin"></div>
+            </div>
+        )
+    }
 
     return (
-        <div className="flex min-h-screen bg-[#FDFDFF]">
+        <div className="flex min-h-screen bg-slate-50">
+            {!collapsed && (
+                <div 
+                    className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-40 lg:hidden"
+                    onClick={() => setCollapsed(true)}
+                ></div>
+            )}
             <UserSidebar collapsed={collapsed} />
             
             <div className="flex-1 flex flex-col min-w-0">

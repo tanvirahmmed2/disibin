@@ -50,8 +50,8 @@ const DashboardHome = () => {
 
     return (
         <div className="max-w-7xl mx-auto py-8">
-            <div className="mb-12">
-                <h1 className="text-4xl font-black text-slate-900 tracking-tight">
+            <div className="mb-10">
+                <h1 className="text-4xl font-bold text-slate-900 tracking-tight">
                     {role === 'user' ? `Welcome back, ${userData?.name?.split(' ')[0]}!` : 'System Overview'}
                 </h1>
                 <p className="text-slate-500 mt-2 font-medium">
@@ -74,20 +74,19 @@ const DashboardHome = () => {
                             stat.type === 'tickets' ? RiTicketLine :
                             RiDashboardLine
                         }
-                        color={['primary', 'indigo', 'violet', 'fuchsia'][index % 4]}
                     />
                 ))}
             </div>
             
             {role !== 'user' && (
-                <div className="mt-12 p-10 bg-emerald-500 rounded-[3rem] text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl shadow-primary/20">
+                <div className="mt-12 p-10 bg-slate-900 rounded-2xl text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-lg border border-slate-800">
                     <div className="space-y-2 text-center md:text-left">
-                        <h2 className="text-3xl font-black tracking-tight uppercase">Management Console</h2>
-                        <p className="text-white/80 font-medium opacity-80">Navigate to your specialized role-based tools.</p>
+                        <h2 className="text-3xl font-bold tracking-tight uppercase">Management Console</h2>
+                        <p className="text-slate-400 font-medium">Navigate to your specialized role-based tools.</p>
                     </div>
                     <button 
                         onClick={() => router.push(`/dashboard/${role.replace('_', '-')}`)}
-                        className="px-10 py-5 bg-white text-emerald-500 font-black uppercase tracking-widest text-[11px] rounded-2xl hover:bg-slate-50 transition-all flex items-center gap-3 active:scale-95 shadow-xl"
+                        className="px-10 py-5 bg-emerald-500 text-white font-semibold uppercase tracking-widest text-[11px] rounded-xl hover:bg-emerald-600 transition-all flex items-center gap-3 active:scale-95 shadow-lg shadow-emerald-500/20"
                     >
                         Access Panel <RiDashboardLine size={18} />
                     </button>
@@ -99,20 +98,20 @@ const DashboardHome = () => {
                     {role === 'user' && (
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             {[
-                                { label: 'Support', href: '/dashboard/tickets', icon: RiTicketLine, color: 'primary' },
-                                { label: 'Orders', href: '/dashboard/purchases', icon: RiPriceTag3Line, color: 'indigo' },
-                                { label: 'Status', href: '/dashboard/subscription', icon: RiShieldFlashLine, color: 'violet' },
-                                { label: 'Reviews', href: '/dashboard/reviews', icon: RiUserFollowLine, color: 'fuchsia' },
+                                { label: 'Support', href: '/dashboard/tickets', icon: RiTicketLine },
+                                { label: 'Orders', href: '/dashboard/purchases', icon: RiPriceTag3Line },
+                                { label: 'Status', href: '/dashboard/subscription', icon: RiShieldFlashLine },
+                                { label: 'Reviews', href: '/dashboard/reviews', icon: RiUserFollowLine },
                             ].map((link, i) => (
                                 <button 
                                     key={i} 
                                     onClick={() => router.push(link.href)}
-                                    className="flex flex-col items-center justify-center p-6 bg-white border border-slate-100 rounded-3xl hover:border-primary/20 hover:shadow-premium transition-all group"
+                                    className="flex flex-col items-center justify-center p-6 bg-white border border-slate-100 rounded-2xl hover:border-emerald-500/20 hover:shadow-sm transition-all group"
                                 >
-                                    <div className={`w-12 h-12 rounded-2xl bg-${link.color}/10 text-emerald-500 flex items-center justify-center mb-3 group-hover:bg-emerald-500 group-hover:text-white transition-all`}>
+                                    <div className="w-12 h-12 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center mb-3 group-hover:bg-emerald-500 group-hover:text-white transition-all">
                                         <link.icon size={24} />
                                     </div>
-                                    <span className="text-[10px] uppercase font-black text-slate-400 tracking-widest group-hover:text-emerald-500 transition-colors">{link.label}</span>
+                                    <span className="text-[10px] uppercase font-semibold text-slate-400 tracking-widest group-hover:text-emerald-500 transition-colors">{link.label}</span>
                                 </button>
                             ))}
                         </div>
@@ -120,27 +119,27 @@ const DashboardHome = () => {
                 </div>
 
                 <div className="space-y-8">
-                    <div className="card-premium p-10 bg-slate-900 text-white relative overflow-hidden group">
-                       <div className="absolute top-0 right-0 p-8 text-white/5 group-hover:text-emerald-500/10 transition-colors pointer-events-none">
-                          <RiCustomerService2Line size={120} />
+                    <div className="p-10 bg-slate-50 border border-slate-100 rounded-2xl relative overflow-hidden group">
+                       <div className="absolute top-0 right-0 p-8 text-slate-200 pointer-events-none">
+                          <RiCustomerService2Line size={100} />
                        </div>
                        <div className="relative z-10 space-y-6">
                           <div>
-                            <h3 className="text-2xl font-black tracking-tight mb-2">Need Help?</h3>
-                            <p className="text-slate-400 text-sm font-medium leading-relaxed">Our specialized support team is ready to assist you.</p>
+                            <h3 className="text-2xl font-bold text-slate-900 tracking-tight mb-2">Need Help?</h3>
+                            <p className="text-slate-500 text-sm font-medium leading-relaxed">Our specialized support team is ready to assist you.</p>
                           </div>
-                          <button onClick={() => router.push('/dashboard/tickets')} className="w-full py-5 bg-emerald-500 text-white font-black uppercase tracking-widest text-[11px] rounded-2xl hover:bg-emerald-500-dark transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
+                          <button onClick={() => router.push('/dashboard/tickets')} className="w-full py-4 bg-slate-900 text-white font-semibold uppercase tracking-widest text-[11px] rounded-xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 shadow-sm">
                               Open Ticket
                           </button>
                        </div>
                     </div>
 
-                    <div className="card-premium p-10 flex flex-col items-center text-center">
-                        <div className="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-4">
+                    <div className="p-8 flex flex-col items-center text-center bg-white border border-slate-100 rounded-2xl shadow-sm">
+                        <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mb-4">
                             <RiCheckDoubleLine size={24} />
                         </div>
-                        <h3 className="font-bold text-slate-800">System Integrity</h3>
-                        <p className="text-[10px] text-emerald-500 font-black mt-1 uppercase tracking-widest">Optimized</p>
+                        <h3 className="font-semibold text-slate-900">System Integrity</h3>
+                        <p className="text-[10px] text-emerald-600 font-semibold mt-1 uppercase tracking-widest">Optimized</p>
                     </div>
                 </div>
             </div>

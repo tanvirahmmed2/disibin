@@ -57,7 +57,7 @@ const UserProfile = () => {
     <div className="w-full min-h-screen bg-slate-50 py-24 px-6">
       <div className="max-w-6xl mx-auto space-y-10">
         
-        {/* Header Profile Card */}
+
         <div className="bg-white rounded-3xl p-10 md:p-14 flex flex-col md:flex-row items-center gap-10 border border-slate-100 shadow-sm relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-20 -mt-20 opacity-50"></div>
             
@@ -100,10 +100,10 @@ const UserProfile = () => {
             </div>
         </div>
 
-        {/* Info Grid */}
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
             
-            {/* Geographic Data */}
+
             <div className="bg-white p-10 rounded-3xl border border-slate-100 shadow-sm space-y-8">
                 <h3 className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-3">
                     <RiMapPin2Line size={20} className="text-emerald-500" />
@@ -140,7 +140,7 @@ const UserProfile = () => {
                 </div>
             </div>
 
-            {/* System Info & Actions */}
+
             <div className="flex flex-col gap-10">
                 <div className="bg-white p-10 rounded-3xl border border-slate-100 shadow-sm flex-1 space-y-8">
                     <h3 className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-3">

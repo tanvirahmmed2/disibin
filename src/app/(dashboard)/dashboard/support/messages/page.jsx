@@ -45,7 +45,7 @@ const GuestMessages = () => {
         </div>
     ) : (
         <div className="w-full overflow-hidden rounded-xl border border-slate-200 shadow-sm bg-white">
-            {/* Table Header */}
+
             <div className="grid grid-cols-4 bg-slate-50 border-b border-slate-200 px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-600">
                 <span className="text-left">Sender</span>
                 <span className="text-center">Subject</span>

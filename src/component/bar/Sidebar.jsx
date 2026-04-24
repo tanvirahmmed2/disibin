@@ -4,7 +4,7 @@ import React, { useContext } from 'react'
 import { Context } from '../helper/Context'
 
 const Sidebar = () => {
-    const { sidebar, setSidebar, isLoggedin, handleLogout, userData } = useContext(Context)
+    const { sidebar, setSidebar, isLoggedIn, handleLogout, userData } = useContext(Context)
     const closeSidebar = () => {
         setSidebar(false)
     }
@@ -23,38 +23,38 @@ const Sidebar = () => {
             
             {sidebar && (
                 <div 
-                    className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"
+                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 lg:hidden"
                     onClick={closeSidebar}
                 ></div>
             )}
 
             
-            <div className={`fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-white border-r border-slate-100 z-40 flex flex-col p-6 shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${sidebar ? 'translate-x-0' : '-translate-x-full'}`}>
+            <div className={`fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-white border-r border-slate-100 z-40 flex flex-col p-6 transition-transform duration-300 ease-in-out lg:hidden ${sidebar ? 'translate-x-0' : '-translate-x-full'}`}>
                 <div className="flex flex-col gap-2 flex-1 overflow-y-auto">
                     {navLinks.map((link) => (
                         <Link 
                             key={link.href}
                             href={link.href} 
-                            className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-500/5 hover:text-emerald-500 hover:pl-6 transition-all duration-300 w-full' 
+                            className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-500/5 hover:text-emerald-500 transition-all duration-300 w-full' 
                             onClick={closeSidebar}
                         >
                             {link.name}
                         </Link>
                     ))}
                     
-                    <div className="my-4 h-px w-full bg-slate-100"></div>
+                    <div className="my-4 h-px w-full bg-slate-50"></div>
 
-                    {isLoggedin ? (
+                    {isLoggedIn ? (
                         <div className='flex flex-col gap-2'>
-                            <Link href={userData?.role === 'user' ? '/user' : '/dashboard'} className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-500/5 hover:text-emerald-500 hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Dashboard</Link>
-                            <Link href='/profile' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-500/5 hover:text-emerald-500 hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Profile</Link>
-                            <Link href='/wishlist' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-500/5 hover:text-emerald-500 hover:pl-6 transition-all duration-300 w-full' onClick={closeSidebar}>Wishlist</Link>
-                            <button className='px-4 py-3 rounded-xl text-red-500 font-medium hover:bg-red-50 text-left hover:pl-6 transition-all duration-300 w-full' onClick={() => { closeSidebar(); handleLogout() }}>Logout</button>
+                            <Link href={userData?.role === 'user' ? '/user' : '/dashboard'} className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-500/5 hover:text-emerald-500 transition-all duration-300 w-full' onClick={closeSidebar}>Dashboard</Link>
+                            <Link href='/profile' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-500/5 hover:text-emerald-500 transition-all duration-300 w-full' onClick={closeSidebar}>Profile</Link>
+                            <Link href='/wishlist' className='px-4 py-3 rounded-xl text-slate-600 font-medium hover:bg-emerald-500/5 hover:text-emerald-500 transition-all duration-300 w-full' onClick={closeSidebar}>Wishlist</Link>
+                            <button className='px-4 py-3 rounded-xl text-red-500 font-medium hover:bg-red-50 text-left transition-all duration-300 w-full' onClick={() => { closeSidebar(); handleLogout() }}>Logout</button>
                         </div>
                     ) : (
                         <div className='flex flex-col gap-3 mt-auto pt-4'>
-                            <Link href='/login' className='w-full py-3 rounded-xl bg-emerald-500/5 text-emerald-500 text-center font-bold hover:bg-emerald-500/10 transition-colors' onClick={closeSidebar}>Login</Link>
-                            <Link href='/register' className='w-full py-3 rounded-xl bg-emerald-500 text-white text-center font-bold hover:bg-emerald-500-dark shadow-lg shadow-primary/10 transition-all' onClick={closeSidebar}>Register</Link>
+                            <Link href='/login' className='w-full py-3 rounded-xl bg-slate-50 text-slate-900 text-center font-semibold hover:bg-slate-100 transition-colors' onClick={closeSidebar}>Login</Link>
+                            <Link href='/register' className='w-full py-3 rounded-xl bg-slate-900 text-white text-center font-semibold hover:bg-emerald-600 transition-all' onClick={closeSidebar}>Register</Link>
                         </div>
                     )}
                 </div>

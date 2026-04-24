@@ -44,7 +44,7 @@ const ReviewsPage = () => {
                     </p>
                 </div>
 
-                {/* Reviews Grid */}
+
                 {reviews.length === 0 ? (
                     <div className="text-center py-20">
                         <RiChatQuoteLine size={80} className="mx-auto text-slate-200 mb-6" />

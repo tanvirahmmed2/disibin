@@ -111,7 +111,7 @@ const SettingsPage = () => {
                     </div>
 
                     <div className="space-y-8">
-                        {/* Section 1: Basic Identity */}
+
                         <div className="space-y-4">
                             <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest border-l-4 border-emerald-500 pl-3">Basic Identity</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -146,7 +146,7 @@ const SettingsPage = () => {
                             </div>
                         </div>
 
-                        {/* Section 2: Localization & Address */}
+
                         <div className="space-y-4">
                             <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest border-l-4 border-emerald-500 pl-3">Localization & Address</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

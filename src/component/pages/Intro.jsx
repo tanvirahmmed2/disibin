@@ -13,17 +13,17 @@ const Intro = () => {
         <div className='absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-white rounded-full blur-[150px]' />
       </div>
       
-      <div className='container-custom flex flex-col items-center text-center space-y-12 relative z-10'>
+      <div className='container-custom flex flex-col items-center text-center space-y-10 relative z-10'>
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className='space-y-6'
+          className='space-y-4'
         >
-          <span className='px-6 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-full inline-block'>
+          <span className='px-6 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] font-semibold uppercase tracking-[0.4em] rounded-full inline-block'>
             Design • Build • Inspire
           </span>
-          <h1 className='text-6xl md:text-[10rem] font-black text-white tracking-tighter leading-[0.85] uppercase'>
+          <h1 className='text-6xl md:text-[8rem] font-bold text-white tracking-tighter leading-[0.9] uppercase'>
             Disibin<span className='text-white/30'>.</span>
           </h1>
         </motion.div>
@@ -34,7 +34,7 @@ const Intro = () => {
           transition={{ delay: 0.5, duration: 1 }}
           className='max-w-3xl'
         >
-          <h2 className='text-xl md:text-3xl font-bold text-white mb-8 leading-tight'>
+          <h2 className='text-xl md:text-3xl font-semibold text-white mb-6 leading-tight'>
             We 
             <span className='text-white px-3 relative italic'>
               <Typewriter
@@ -50,7 +50,7 @@ const Intro = () => {
             </span>
             Future-Proof Software.
           </h2>
-          <p className='text-white/70 font-medium leading-relaxed text-base md:text-lg max-w-2xl mx-auto'>
+          <p className='text-white/80 font-medium leading-relaxed text-base md:text-lg max-w-2xl mx-auto'>
             Crafting high-performance digital solutions that help modern businesses grow, adapt, and stand out in a global landscape.
           </p>
         </motion.div>
@@ -59,12 +59,12 @@ const Intro = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.8, duration: 0.8 }}
-          className='flex flex-wrap items-center justify-center gap-6 pt-6'
+          className='flex flex-wrap items-center justify-center gap-4 pt-4'
         >
-          <Link href='/packages' className='px-12 py-6 bg-white text-emerald-500 font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-slate-50 hover:shadow-2xl hover:shadow-white/20 transition-all active:scale-95'>
+          <Link href='/packages' className='px-10 py-5 bg-white text-emerald-600 font-semibold uppercase tracking-widest text-xs rounded-xl hover:bg-slate-50 transition-all active:scale-95'>
             Get Started
           </Link>
-          <Link href='/projects' className='px-12 py-6 bg-transparent text-white border-2 border-white/20 font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-white/10 transition-all active:scale-95'>
+          <Link href='/projects' className='px-10 py-5 bg-transparent text-white border border-white/30 font-semibold uppercase tracking-widest text-xs rounded-xl hover:bg-white/10 transition-all active:scale-95'>
             View Work
           </Link>
         </motion.div>

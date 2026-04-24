@@ -42,15 +42,14 @@ const PackagesPage = () => {
 
     return (
         <main className='w-full min-h-screen bg-slate-50 pt-24 pb-20'>
-            {/* Header Section */}
-            <section className='mb-20'>
+            <section className='mb-16'>
                 <div className="container-custom px-4">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
                         <div className="max-w-3xl space-y-6">
-                            <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-emerald-500/10 text-emerald-600 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border border-emerald-500/10">
+                            <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-semibold uppercase tracking-[0.2em] border border-emerald-100">
                                 <RiListCheck2 size={14} /> Solutions Architecture
                             </div>
-                            <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter leading-[0.85]">
+                            <h1 className="text-6xl md:text-8xl font-bold text-slate-900 tracking-tighter leading-[0.85]">
                                 Service <span className="text-emerald-500">Plans.</span>
                             </h1>
                             <p className="text-xl text-slate-500 font-medium leading-relaxed max-w-2xl">
@@ -58,59 +57,28 @@ const PackagesPage = () => {
                             </p>
                         </div>
                         <div className="hidden lg:block pb-4">
-                            <div className="flex flex-col items-end gap-2 text-slate-400 font-black text-[10px] uppercase tracking-[0.3em]">
+                            <div className="flex flex-col items-end gap-2 text-slate-300 font-semibold text-[10px] uppercase tracking-[0.3em]">
                                 <span>Curated Tiers</span>
-                                <div className="w-12 h-0.5 bg-slate-200" />
+                                <div className="w-12 h-px bg-slate-200" />
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Filter Bar */}
-            <section className="sticky top-[80px] z-20 bg-white/60 backdrop-blur-2xl border-y border-slate-100 py-6 mb-16 shadow-sm">
-                <div className="container-custom px-4 flex items-center gap-6 overflow-x-auto no-scrollbar">
-                    <div className="flex items-center gap-2 text-slate-400 mr-2 border-r border-slate-200 pr-6">
-                        <RiFilter2Line size={16} />
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">Filter</span>
-                    </div>
-                    <button 
-                        onClick={() => setSelectedCategory('all')}
-                        className={`px-8 py-3 rounded-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
-                            selectedCategory === 'all' 
-                            ? 'bg-slate-900 text-white shadow-xl shadow-slate-900/10' 
-                            : 'bg-transparent text-slate-500 hover:text-emerald-600'
-                        }`}
-                    >
-                        All Services
-                    </button>
-                    {categories.map((cat) => (
-                        <button 
-                            key={cat.category_id}
-                            onClick={() => setSelectedCategory(cat.category_id.toString())}
-                            className={`px-8 py-3 rounded-full text-[9px] font-black uppercase tracking-[0.2em] whitespace-nowrap transition-all duration-300 ${
-                                selectedCategory === cat.category_id.toString() 
-                                ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20' 
-                                : 'bg-transparent text-slate-500 hover:text-emerald-600'
-                            }`}
-                        >
-                            {cat.name}
-                        </button>
-                    ))}
-                </div>
-            </section>
-
-            {/* Content Section */}
             <section className='w-full'>
-                <div className='container-custom px-4 space-y-16'>
-                    {filteredCategories.length > 0 ? filteredCategories.map((cat) => {
+                <div className='container-custom px-4 space-y-24'>
+                    {categories.length > 0 ? categories.map((cat) => {
                         const catPackages = packages.filter(p => p.category_id === cat.category_id)
                         if (catPackages.length === 0) return null
                         return (
-                            <div key={cat.category_id} className="space-y-8">
-                                <div className="flex items-center gap-4">
-                                    <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">{cat.name}</h2>
-                                    <div className="h-px flex-1 bg-slate-200"></div>
+                            <div key={cat.category_id} className="space-y-12">
+                                <div className="flex items-center gap-6">
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] font-semibold text-emerald-500 uppercase tracking-[0.3em] mb-1">Category</span>
+                                        <h2 className="text-3xl font-bold text-slate-900 tracking-tight">{cat.name}</h2>
+                                    </div>
+                                    <div className="h-px flex-1 bg-slate-100 mt-6"></div>
                                 </div>
                                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
                                     {catPackages.map((pack) => (
@@ -121,19 +89,21 @@ const PackagesPage = () => {
                         )
                     }) : (
                         packages.length === 0 && (
-                            <div className="p-20 text-center bg-white border border-slate-100 rounded-3xl">
-                                <h3 className="text-2xl font-black text-slate-800 mb-2 tracking-tight">No Packages Found</h3>
+                            <div className="p-20 text-center bg-white border border-slate-100 rounded-2xl">
+                                <h3 className="text-2xl font-bold text-slate-900 mb-2 tracking-tight">No Packages Found</h3>
                                 <p className="text-slate-500 font-medium">We are currently refining our service tiers. Check back soon!</p>
                             </div>
                         )
                     )}
 
-                    {/* Uncategorized Section */}
-                    {(selectedCategory === 'all' && uncategorizedPackages.length > 0) && (
-                        <div className="space-y-8">
-                            <div className="flex items-center gap-4">
-                                <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">General Services</h2>
-                                <div className="h-px flex-1 bg-slate-200"></div>
+                    {uncategorizedPackages.length > 0 && (
+                        <div className="space-y-12">
+                            <div className="flex items-center gap-6">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-semibold text-emerald-500 uppercase tracking-[0.3em] mb-1">Category</span>
+                                    <h2 className="text-3xl font-bold text-slate-900 tracking-tight">General Services</h2>
+                                </div>
+                                <div className="h-px flex-1 bg-slate-100 mt-6"></div>
                             </div>
                             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
                                 {uncategorizedPackages.map((pack) => (

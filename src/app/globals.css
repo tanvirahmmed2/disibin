@@ -51,6 +51,10 @@ html {
     @apply px-8 py-4 bg-white text-slate-900 border border-slate-200 font-semibold text-sm rounded-xl hover:bg-slate-50 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2;
   }
 
+  .btn-outline {
+    @apply px-8 py-4 bg-transparent text-emerald-600 border border-emerald-500/20 font-semibold text-sm rounded-xl hover:bg-emerald-50 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2;
+  }
+
   .input-standard {
     @apply w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-xl outline-none font-medium text-slate-700 text-sm focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 transition-all;
   }
@@ -58,12 +62,11 @@ html {
 
 @layer base {
   input, textarea {
-    @apply truncate;
+    @apply antialiased;
   }
   
   input::placeholder, textarea::placeholder {
-    @apply truncate opacity-40;
-    text-overflow: ellipsis;
+    @apply text-slate-400 opacity-60;
   }
 }
 

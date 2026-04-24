@@ -1,6 +1,7 @@
 'use client'
 import React, { useContext } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Context } from '@/component/helper/Context'
 import { RiFlashlightLine, RiArrowRightUpLine } from 'react-icons/ri'
 
@@ -19,72 +20,78 @@ const OfferCard = ({ offer }) => {
     }
 
     return (
-        <div className="group relative flex flex-col bg-white rounded-[2rem] border border-slate-100 hover:border-emerald-500/20 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-500/5 overflow-hidden p-8">
-            <div className="absolute top-0 right-0 p-12 text-emerald-600/5 group-hover:text-emerald-600/10 transition-colors transform translate-x-4 -translate-y-4">
-                <RiFlashlightLine size={140} />
-            </div>
-            
-            <div className="relative z-10 flex-1">
-                <div className="flex items-center gap-2 mb-8">
-                    <span className="px-3 py-1 bg-emerald-500/10 text-emerald-600 text-[9px] font-black uppercase tracking-widest rounded-full border border-emerald-500/10">
+        <div className="group flex flex-col bg-white w-full rounded-2xl border border-slate-100 hover:border-emerald-500/10 transition-all duration-300 hover:shadow-md overflow-hidden">
+            <div className='relative w-full aspect-[16/9] overflow-hidden rounded-t-2xl bg-slate-50'>
+                {offer.image ? (
+                    <Image 
+                        src={offer.image} 
+                        alt={offer.name} 
+                        fill
+                        className='object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700' 
+                    />
+                ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-slate-200">
+                        <RiFlashlightLine size={80} className="opacity-10" />
+                    </div>
+                )}
+                <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-[9px] font-semibold uppercase tracking-widest text-slate-800 border border-white/20">
                         Exclusive Deal
                     </span>
-                    {offer.code && (
-                        <span className="px-3 py-1 bg-slate-900 text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-full">
+                </div>
+                {offer.code && (
+                    <div className="absolute top-4 right-4">
+                        <span className="px-3 py-1 bg-slate-900 text-white text-[9px] font-semibold uppercase tracking-[0.2em] rounded-full">
                             {offer.code}
                         </span>
-                    )}
+                    </div>
+                )}
+            </div>
+            
+            <div className='p-8 flex flex-col flex-1'>
+                <div className='mb-8'>
+                    <h3 className="text-2xl font-bold text-slate-900 tracking-tight mb-3 group-hover:text-emerald-600 transition-colors">
+                        {offer.name}
+                    </h3>
+                    <p className="text-slate-500 text-xs font-medium leading-relaxed line-clamp-2">
+                        {offer.description}
+                    </p>
                 </div>
-                
-                <h3 className="text-3xl font-black text-slate-900 mb-4 tracking-tight group-hover:text-emerald-500 transition-colors leading-tight">
-                    {offer.name}
-                </h3>
-                
-                <p className="text-xs text-slate-500 font-medium leading-relaxed mb-8 line-clamp-3">
-                    {offer.description}
-                </p>
 
-                <div className="space-y-3 mb-10">
-                    {offer.features?.slice(0, 4).map((feature, i) => (
-                        <div key={i} className="flex items-center gap-3 text-slate-600 font-medium text-[11px]">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/30" />
+                <div className="space-y-2 mb-8 flex-1">
+                    {offer.features?.slice(0, 3).map((feature, i) => (
+                        <div key={i} className="flex items-center gap-2 text-slate-400 text-[10px] font-medium">
+                            <div className="w-1 h-1 rounded-full bg-emerald-500" />
                             {feature}
                         </div>
                     ))}
                 </div>
-            </div>
 
-            <div className="relative z-10 pt-8 border-t border-slate-50 mt-auto">
-                <div className="flex items-end justify-between mb-8">
-                    <div>
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Investment</p>
-                        <div className="flex items-center gap-3">
-                            <span className="text-3xl font-black text-slate-900">৳{offer.price}</span>
+                <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+                    <div className="flex flex-col">
+                        <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-[0.2em] mb-1">Investment</span>
+                        <div className="flex items-baseline gap-1.5">
+                            <span className="text-2xl font-bold text-slate-900 tracking-tight">৳{offer.price}</span>
                             {offer.original_price > offer.price && (
-                                <span className="text-sm font-bold text-slate-300 line-through">৳{offer.original_price}</span>
+                                <span className="text-[10px] font-semibold text-slate-300 line-through">৳{offer.original_price}</span>
                             )}
                         </div>
                     </div>
-                    <div className="text-right">
-                        <span className="px-3 py-1 bg-slate-50 rounded-full text-[9px] font-black text-slate-400 uppercase tracking-widest border border-slate-100">
-                            {offer.duration_days} Days
-                        </span>
-                    </div>
-                </div>
 
-                <div className="flex gap-3">
-                    <button 
-                        onClick={handleAddToWishlist}
-                        className="flex-1 py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500 transition-all active:scale-95 shadow-lg shadow-slate-900/10"
-                    >
-                        Add to Wishlist
-                    </button>
-                    <Link 
-                        href={`/offers/${offer.code}`}
-                        className="p-4 bg-slate-50 text-slate-400 hover:text-emerald-600 hover:bg-emerald-600/5 rounded-2xl transition-all active:scale-95 border border-slate-100/50"
-                    >
-                        <RiArrowRightUpLine size={20} />
-                    </Link>
+                    <div className="flex gap-2">
+                        <button 
+                            onClick={handleAddToWishlist}
+                            className="w-11 h-11 bg-slate-50 text-slate-400 hover:text-emerald-600 flex items-center justify-center rounded-xl transition-all active:scale-95 border border-transparent hover:border-emerald-500/10"
+                        >
+                            <RiFlashlightLine size={20} />
+                        </button>
+                        <Link 
+                            href={`/offers/${offer.code}`} 
+                            className="w-11 h-11 bg-slate-900 text-white flex items-center justify-center rounded-xl hover:bg-emerald-600 transition-all active:scale-95"
+                        >
+                            <RiArrowRightUpLine size={20} />
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>

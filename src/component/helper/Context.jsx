@@ -149,9 +149,10 @@ const customServices = [
 const ContextProvider = ({ children }) => {
   const router = useRouter()
   const [sidebar, setSidebar] = useState(false);
-  const [isLoggedin, setIsLogggedin] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
-  const [wishlist, setWishList] = useState([]);
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+  const [wishlist, setWishlist] = useState([]);
 
   useEffect(() => {
     const fetchLogin = async () => {
@@ -161,17 +162,19 @@ const ContextProvider = ({ children }) => {
         });
 
         if (res.data.success) {
-          setIsLogggedin(true);
+          setIsLoggedIn(true);
           setUserData(res.data.data);
         } else {
-          setIsLogggedin(false);
+          setIsLoggedIn(false);
           setUserData(null);
-          setWishList([]);
+          setWishlist([]);
         }
       } catch (error) {
-        setIsLogggedin(false);
+        setIsLoggedIn(false);
         setUserData(null);
-        setWishList([]);
+        setWishlist([]);
+      } finally {
+        setIsLoadingAuth(false);
       }
     };
 
@@ -185,7 +188,7 @@ const ContextProvider = ({ children }) => {
       });
 
       if (res.data.success) {
-        setWishList(res.data.data);
+        setWishlist(res.data.data);
       }
     } catch (error) {
       console.error("Failed to fetch wishlist", error);
@@ -199,7 +202,7 @@ const ContextProvider = ({ children }) => {
   }, [userData]);
 
   const addToWishList = async (item) => {
-    if (!isLoggedin) {
+    if (!isLoggedIn) {
       toast.error("Please login to add items to your wishlist");
       router.push("/login");
       return;
@@ -215,7 +218,7 @@ const ContextProvider = ({ children }) => {
       });
 
       if (res.data.success) {
-        setWishList((prev) => [res.data.data, ...prev]);
+        setWishlist((prev) => [res.data.data, ...prev]);
         toast.success("Added to wishlist");
       }
     } catch (error) {
@@ -223,7 +226,7 @@ const ContextProvider = ({ children }) => {
     }
   };
 
-  const removeFromwishlist = async (id) => {
+  const removeFromWishlist = async (id) => {
     const confirm = window.confirm("Are you sure?");
     if (!confirm) return;
 
@@ -235,7 +238,7 @@ const ContextProvider = ({ children }) => {
       );
 
       if (res.data.success) {
-        setWishList((prev) => prev.filter((item) => item.wishlist_id !== id));
+        setWishlist((prev) => prev.filter((item) => item.wishlist_id !== id));
         toast.success("Removed from wishlist");
       }
     } catch (error) {
@@ -251,7 +254,7 @@ const ContextProvider = ({ children }) => {
       });
 
       toast.success(res.data.message);
-      setWishList([]);
+      setWishlist([]);
     } catch (error) {
       console.log(error);
       toast.error(
@@ -276,7 +279,7 @@ const ContextProvider = ({ children }) => {
   }
 
   const contextValues = {
-    sidebar, setSidebar, isLoggedin, userData, removeFromwishlist, addToWishList, wishlist, clearWishlist, customServices, handleLogout, services
+    sidebar, setSidebar, isLoggedIn, userData, isLoadingAuth, removeFromWishlist, addToWishList, wishlist, clearWishlist, customServices, handleLogout, services
   }
 
   return (
