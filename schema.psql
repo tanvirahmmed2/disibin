@@ -360,6 +360,39 @@ CREATE TABLE tasks (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
+
+CREATE TABLE task_messages (
+  message_id SERIAL PRIMARY KEY,
+
+  -- link to task
+  task_id INTEGER NOT NULL
+    REFERENCES tasks(task_id)
+    ON DELETE CASCADE,
+
+  -- sender (manager / developer / staff)
+  sender_id INTEGER
+    REFERENCES users(user_id)
+    ON DELETE SET NULL,
+
+  -- message content
+  message TEXT NOT NULL,
+
+  -- message type for UI handling
+  message_type TEXT DEFAULT 'text'
+    CHECK (message_type IN ('text', 'file', 'image', 'system')),
+
+  -- attachments (images, files, links)
+  attachments JSONB DEFAULT '[]'::jsonb,
+
+  -- optional reply system (thread-like feature)
+  reply_to INTEGER
+    REFERENCES task_messages(message_id)
+    ON DELETE SET NULL,
+
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+
 CREATE TABLE notifications (
   notification_id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
@@ -470,3 +503,6 @@ CREATE TABLE wishlists (
   
   UNIQUE(user_id, package_id)
 );
+
+
+

@@ -231,10 +231,9 @@ const ContextProvider = ({ children }) => {
     if (!confirm) return;
 
     try {
-      const res = await axios.patch(
+      const res = await axios.delete(
         "/api/wishlist",
-        { id },
-        { withCredentials: true }
+        { data: { id }, withCredentials: true }
       );
 
       if (res.data.success) {
@@ -250,6 +249,7 @@ const ContextProvider = ({ children }) => {
   const clearWishlist = async () => {
     try {
       const res = await axios.delete("/api/wishlist", {
+        data: { clearAll: true },
         withCredentials: true,
       });
 

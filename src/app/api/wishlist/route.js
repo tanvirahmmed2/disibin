@@ -28,15 +28,20 @@ export async function POST(req) {
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
         const user = auth.data;
 
-        const { packageId } = await req.json();
+        const { packageId, quantity } = await req.json();
         if (!packageId) return NextResponse.json({ success: false, message: "Package ID required" }, { status: 400 });
+        
+        const qty = quantity && quantity > 0 ? quantity : 1;
 
-        const existing = await dbQuery("SELECT wishlist_id FROM wishlists WHERE user_id = $1 AND package_id = $2", [user.id, packageId]);
-        if (existing.rows.length > 0) return NextResponse.json({ success: false, message: "Item already in wishlist" }, { status: 400 });
-
-        const res = await dbQuery("INSERT INTO wishlists (user_id, package_id) VALUES ($1, $2) RETURNING *", [user.id, packageId]);
-
-        return NextResponse.json({ success: true, message: 'Item added to wishlist', data: res.rows[0] });
+        const existing = await dbQuery("SELECT wishlist_id, quantity FROM wishlists WHERE user_id = $1 AND package_id = $2", [user.id, packageId]);
+        
+        if (existing.rows.length > 0) {
+            const res = await dbQuery("UPDATE wishlists SET quantity = quantity + $1 WHERE wishlist_id = $2 RETURNING *", [qty, existing.rows[0].wishlist_id]);
+            return NextResponse.json({ success: true, message: 'Wishlist quantity updated', data: res.rows[0] });
+        } else {
+            const res = await dbQuery("INSERT INTO wishlists (user_id, package_id, quantity) VALUES ($1, $2, $3) RETURNING *", [user.id, packageId, qty]);
+            return NextResponse.json({ success: true, message: 'Item added to wishlist', data: res.rows[0] });
+        }
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
