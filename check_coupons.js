@@ -22,17 +22,11 @@ const pool = new Pool({
 
 async function run() {
     try {
-        console.log("Adding quantity to wishlists...");
-        await pool.query(`ALTER TABLE wishlists ADD COLUMN quantity INTEGER DEFAULT 1;`);
-        console.log("Success!");
+        const res = await pool.query("SELECT * FROM coupons;");
+        console.log("Coupons in DB:", res.rows);
     } catch(e) {
-        if(e.message.includes("already exists") || e.message.includes("duplicate column")) {
-            console.log("Column already exists.");
-        } else {
-            console.error(e);
-        }
+        console.error(e);
     }
     process.exit(0);
 }
-
 run();

@@ -12,16 +12,22 @@ export async function GET(req) {
                 SELECT c.*, p.name, p.description, p.price as original_price, p.image, p.duration_days, p.features, p.slug as package_slug 
                 FROM coupons c 
                 LEFT JOIN packages p ON c.package_id = p.package_id 
-                WHERE c.code = $1 AND c.status = 'active'
-            `, [code.toUpperCase()]);
+                WHERE UPPER(c.code) = UPPER($1) AND c.status = 'active'
+            `, [code]);
 
-            if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Offer not found" }, { status: 404 });
+            if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Coupon not found" }, { status: 404 });
 
             const offer = res.rows[0];
-            const discountAmount = offer.is_percentage ? (Number(offer.original_price) * Number(offer.discount) / 100) : Number(offer.discount);
-            offer.price = Number(offer.original_price) - discountAmount;
+            
+            // Only calculate price if it's a package-specific coupon
+            if (offer.package_id) {
+                const discountAmount = offer.is_percentage ? (Number(offer.original_price) * Number(offer.discount) / 100) : Number(offer.discount);
+                offer.price = Number(offer.original_price) - discountAmount;
+            } else {
+                offer.price = null;
+            }
 
-            return NextResponse.json({ success: true, message: 'Offer fetched', data: offer });
+            return NextResponse.json({ success: true, message: 'Coupon fetched', data: offer });
         }
 
         const res = await dbQuery(`

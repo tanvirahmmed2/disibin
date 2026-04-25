@@ -9,7 +9,8 @@ export async function GET(req) {
         const user = auth.data;
 
         const res = await dbQuery(`
-            SELECT w.*, p.name as title, p.price, p.image, p.slug 
+            SELECT w.wishlist_id, w.user_id, w.package_id, w.quantity, w.created_at,
+                   p.name as title, p.price, p.image, p.slug, p.duration_days, p.features, p.description
             FROM wishlists w 
             JOIN packages p ON w.package_id = p.package_id 
             WHERE w.user_id = $1 
