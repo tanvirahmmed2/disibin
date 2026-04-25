@@ -139,7 +139,7 @@ const ClientSubscription = () => {
                                 onClick={() => setRenewingSub(sub)}
                                 className={`w-full py-4 text-white font-bold text-sm uppercase tracking-widest rounded-xl transition-all mt-auto ${needsRenewal ? 'bg-amber-500 hover:bg-amber-600' : 'bg-slate-900 hover:bg-emerald-600'}`}
                             >
-                                Renew Subscription
+                                Renew Subscription (৳{sub.price})
                             </button>
                         </div>
                     )

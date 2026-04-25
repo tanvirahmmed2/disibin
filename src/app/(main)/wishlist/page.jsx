@@ -41,7 +41,7 @@ const WishlistPage = () => {
         setAppliedCoupon(null)
     }
 
-    const subTotal = localWishlist.reduce((acc, item) => acc + ((Number(item.price) || 0) * item.quantity), 0)
+    const subTotal = localWishlist.reduce((acc, item) => acc + ((Number(item.price) || 0) * (item.quantity || 1)), 0)
 
     let discountAmount = 0
     if (appliedCoupon) {
@@ -50,11 +50,9 @@ const WishlistPage = () => {
             const matchingItems = localWishlist.filter(item => item.package_id === appliedCoupon.package_id)
             const packageSubtotal = matchingItems.reduce((acc, item) => acc + (Number(item.price) * item.quantity), 0)
             
-            if (appliedCoupon.is_percentage) {
-                discountAmount = packageSubtotal * (Number(appliedCoupon.discount) / 100)
-            } else {
-                discountAmount = Number(appliedCoupon.discount)
-            }
+            discountAmount = appliedCoupon.is_percentage
+                ? packageSubtotal * (Number(appliedCoupon.discount) / 100)
+                : Number(appliedCoupon.discount)
             discountAmount = Math.min(discountAmount, packageSubtotal)
         } else {
             // Generic coupon: Apply to subtotal
@@ -87,7 +85,7 @@ const WishlistPage = () => {
                 const discAmt = coupon.is_percentage
                     ? subTotal * (Number(coupon.discount) / 100)
                     : Number(coupon.discount)
-                toast.success(`Coupon applied! You save BDT ${Math.min(discAmt, subTotal).toFixed(2)}`)
+                toast.success(`Coupon applied! You save ৳${Math.min(discAmt, subTotal).toFixed(2)}`)
             } else {
                 toast.error("Invalid or expired coupon code")
                 setAppliedCoupon(null)
@@ -116,7 +114,7 @@ const WishlistPage = () => {
             const res = await axios.post('/api/purchase', {
                 items: localWishlist.map(item => ({
                     packageId: item.package_id,
-                    quantity: item.quantity,
+                    quantity: item.quantity || 1,
                 })),
                 paymentMethod,
                 couponCode: appliedCoupon?.code || null
@@ -220,7 +218,7 @@ const WishlistPage = () => {
 
                                 <div className="flex flex-col items-end gap-3 shrink-0">
                                     <p className="font-bold text-slate-900 text-base">
-                                        BDT {(Number(item.price) * item.quantity).toFixed(2)}
+                                        ৳{(Number(item.price) * (item.quantity || 1)).toFixed(2)}
                                     </p>
                                     <button
                                         onClick={() => removeFromWishlist(item.wishlist_id)}
@@ -345,7 +343,7 @@ const WishlistPage = () => {
                             )}
                             <div className="flex justify-between text-lg font-bold text-slate-900 pt-2 border-t border-slate-100">
                                 <span>Total</span>
-                                <span>BDT {totalAmount.toFixed(2)}</span>
+                                <span>৳{totalAmount.toFixed(2)}</span>
                             </div>
                         </div>
 

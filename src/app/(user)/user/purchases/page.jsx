@@ -35,8 +35,8 @@ const ClientPurchases = () => {
                 <span className="text-[10px] text-slate-400 font-medium uppercase tracking-widest">{row.category_name}</span>
             </div>
         )},
-        { label: 'Amount', key: 'amount', render: (row) => (
-            <span className="font-bold text-emerald-600">${row.amount}</span>
+        { label: 'Amount', key: 'final_amount', render: (row) => (
+            <span className="font-bold text-emerald-600">৳{row.final_amount}</span>
         )},
         { label: 'Status', key: 'status', render: (row) => (
             <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider

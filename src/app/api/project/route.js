@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { dbQuery } from "@/lib/database/pg";
 import cloudinary from "@/lib/database/cloudinary";
 import { isLogin, isManager } from "@/lib/middleware";
+import { createLog } from "@/lib/utils/logger";
 
 const generateSlug = (title) => {
     return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -57,7 +58,17 @@ export async function POST(req) {
             RETURNING *
         `, [title, slug, description, categoryId || null, cloudImage.secure_url, cloudImage.public_id, preview]);
 
-        return NextResponse.json({ success: true, message: 'Project created', data: res.rows[0] });
+        const project = res.rows[0];
+
+        await createLog({
+            userId: auth.data.id,
+            action: 'create',
+            targetType: 'project',
+            targetId: project.project_id,
+            description: `Created project: ${project.title}`
+        });
+
+        return NextResponse.json({ success: true, message: 'Project created', data: project });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -120,7 +131,17 @@ export async function PATCH(req) {
             updateParams.push(id);
             const sql = `UPDATE projects SET ${updateFields.join(', ')}, updated_at = NOW() WHERE project_id = $${updateParams.length} RETURNING *`;
             const updatedRes = await dbQuery(sql, updateParams);
-            return NextResponse.json({ success: true, message: 'Project updated', data: updatedRes.rows[0] });
+            const updatedProject = updatedRes.rows[0];
+
+            await createLog({
+                userId: auth.data.id,
+                action: 'update',
+                targetType: 'project',
+                targetId: updatedProject.project_id,
+                description: `Updated project: ${updatedProject.title}`
+            });
+
+            return NextResponse.json({ success: true, message: 'Project updated', data: updatedProject });
         }
 
         return NextResponse.json({ success: true, message: 'Project updated', data: project });
@@ -140,8 +161,16 @@ export async function DELETE(req) {
         
         if (res.rows.length === 0) return NextResponse.json({ success: false, message: 'Project not found' }, { status: 404 });
         
-        const project = res.rows[0];
-        if (project.image_id) await cloudinary.uploader.destroy(project.image_id);
+        const deletedProject = res.rows[0];
+        if (deletedProject.image_id) await cloudinary.uploader.destroy(deletedProject.image_id);
+
+        await createLog({
+            userId: auth.data.id,
+            action: 'delete',
+            targetType: 'project',
+            targetId: deletedProject.project_id,
+            description: `Deleted project: ${deletedProject.title}`
+        });
 
         return NextResponse.json({ success: true, message: 'Project deleted' });
 

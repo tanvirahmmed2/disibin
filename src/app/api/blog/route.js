@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { dbQuery } from "@/lib/database/pg";
 import cloudinary from "@/lib/database/cloudinary";
 import { isLogin, isManager } from "@/lib/middleware";
+import { createLog } from "@/lib/utils/logger";
 
 const generateSlug = (title) => {
     return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -45,12 +46,22 @@ export async function POST(req) {
         });
 
         const res = await dbQuery(`
-            INSERT INTO blogs (title, slug, description, image, image_id)
-            VALUES ($1, $2, $3, $4, $5)
+            INSERT INTO blogs (title, slug, description, image, image_id, author_id)
+            VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING *
-        `, [title, slug, description, cloudImage.secure_url, cloudImage.public_id]);
+        `, [title, slug, description, cloudImage.secure_url, cloudImage.public_id, auth.data.id]);
 
-        return NextResponse.json({ success: true, message: 'Blog created', data: res.rows[0] }, { status: 201 });
+        const blog = res.rows[0];
+
+        await createLog({
+            userId: auth.data.id,
+            action: 'create',
+            targetType: 'blog',
+            targetId: blog.blog_id,
+            description: `Created blog post: ${blog.title}`
+        });
+
+        return NextResponse.json({ success: true, message: 'Blog created', data: blog }, { status: 201 });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -102,7 +113,17 @@ export async function PATCH(req) {
             updateParams.push(id);
             const sql = `UPDATE blogs SET ${updateFields.join(', ')}, updated_at = NOW() WHERE blog_id = $${updateParams.length} RETURNING *`;
             const updatedRes = await dbQuery(sql, updateParams);
-            return NextResponse.json({ success: true, message: 'Blog updated', data: updatedRes.rows[0] }, { status: 200 });
+            const updatedBlog = updatedRes.rows[0];
+
+            await createLog({
+                userId: auth.data.id,
+                action: 'update',
+                targetType: 'blog',
+                targetId: updatedBlog.blog_id,
+                description: `Updated blog post: ${updatedBlog.title}`
+            });
+
+            return NextResponse.json({ success: true, message: 'Blog updated', data: updatedBlog }, { status: 200 });
         }
 
         return NextResponse.json({ success: true, message: 'Blog updated', data: blog }, { status: 200 });
@@ -121,6 +142,16 @@ export async function DELETE(req) {
         const res = await dbQuery("DELETE FROM blogs WHERE blog_id = $1 RETURNING *", [id]);
         
         if (res.rows.length === 0) return NextResponse.json({ success: false, message: 'Blog not found' }, { status: 404 });
+
+        const deletedBlog = res.rows[0];
+
+        await createLog({
+            userId: auth.data.id,
+            action: 'delete',
+            targetType: 'blog',
+            targetId: deletedBlog.blog_id,
+            description: `Deleted blog post: ${deletedBlog.title}`
+        });
 
         return NextResponse.json({ success: true, message: 'Blog deleted' }, { status: 200 });
 

@@ -12,8 +12,8 @@ export async function POST(req) {
 
         const result = await transaction(async (client) => {
             const payRes = await client.query(`
-                INSERT INTO payments (purchase_id, amount, method, status, success, transaction_id, paid_at)
-                VALUES ($1, $2, $3, 'completed', true, $4, NOW())
+                INSERT INTO payments (purchase_id, amount, method, status, transaction_id, paid_at)
+                VALUES ($1, $2, $3, 'success', $4, NOW())
                 RETURNING *
             `, [purchaseId, amount, paymentMethod, transactionId]);
 

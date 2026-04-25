@@ -137,7 +137,7 @@ const ManagerTasks = () => {
                 </div>
                 <div className="flex flex-col">
                     <span className="font-bold text-slate-700 group-hover:text-emerald-600 transition-colors">{row.title}</span>
-                    <span className="text-[10px] text-slate-400 truncate max-w-[150px]">{row.description}</span>
+                    <span className="text-[10px] text-slate-400 truncate max-w-[150px]">{row.description || 'No description'}</span>
                 </div>
             </div>
         )},

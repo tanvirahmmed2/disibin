@@ -22,7 +22,7 @@ export async function PATCH(req) {
 
         // Log action
         await dbQuery(`
-            INSERT INTO logs (user_id, action, target_type, target_id, description)
+            INSERT INTO logs (user_id, action, entity_type, entity_id, description)
             VALUES ($1, $2, $3, $4, $5)
         `, [auth.data.id, 'update', 'user', res.rows[0].user_id, `Changed role for ${email} to ${role}`]);
 

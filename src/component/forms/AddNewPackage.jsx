@@ -79,7 +79,7 @@ const AddNewPackage = () => {
           />
         </div>
         <div className='space-y-2'>
-          <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Price ($)</label>
+          <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Price (৳)</label>
           <input 
             type="number" 
             min={0} 

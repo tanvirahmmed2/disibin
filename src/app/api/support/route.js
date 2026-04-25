@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { dbQuery } from '@/lib/database/pg';
 import { isLogin, isSupport, isManager } from '@/lib/middleware';
+import { createLog } from '@/lib/utils/logger';
 
 export async function GET(req) {
     try {
@@ -33,7 +34,17 @@ export async function POST(req) {
             RETURNING *
         `, [name, email, subject, message]);
 
-        return NextResponse.json({ success: true, message: 'Message sent successfully', data: res.rows[0] });
+        const supportMsg = res.rows[0];
+
+        await createLog({
+            userId: null, // Public contact form
+            action: 'create',
+            targetType: 'support_contact',
+            targetId: supportMsg.support_id,
+            description: `New support contact from ${name} (${email}): ${subject}`
+        });
+
+        return NextResponse.json({ success: true, message: 'Message sent successfully', data: supportMsg });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -57,7 +68,17 @@ export async function PATCH(req) {
 
         if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Message not found" }, { status: 404 });
 
-        return NextResponse.json({ success: true, message: 'Status updated', data: res.rows[0] });
+        const updatedMsg = res.rows[0];
+
+        await createLog({
+            userId: auth.data.id,
+            action: 'update',
+            targetType: 'support_contact',
+            targetId: updatedMsg.support_id,
+            description: `Updated support message status to ${status} for message ID ${id}`
+        });
+
+        return NextResponse.json({ success: true, message: 'Status updated', data: updatedMsg });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -75,6 +96,16 @@ export async function DELETE(req) {
         const res = await dbQuery("DELETE FROM support WHERE support_id = $1 RETURNING *", [id]);
 
         if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Message not found" }, { status: 404 });
+
+        const deletedMsg = res.rows[0];
+
+        await createLog({
+            userId: auth.data.id,
+            action: 'delete',
+            targetType: 'support_contact',
+            targetId: deletedMsg.support_id,
+            description: `Deleted support message ID ${id} from ${deletedMsg.name}`
+        });
 
         return NextResponse.json({ success: true, message: "Message deleted successfully" });
     } catch (error) {

@@ -10,7 +10,11 @@ export async function GET(req) {
 
         const res = await dbQuery(`
             SELECT w.wishlist_id, w.user_id, w.package_id, w.quantity, w.created_at,
-                   p.name as title, p.price, p.image, p.slug, p.duration_days, p.features, p.description
+                   p.name as title, p.price, p.image, p.slug, p.duration_days, p.description,
+                   (SELECT json_agg(f.name) 
+                    FROM package_features pf 
+                    JOIN features f ON pf.feature_id = f.feature_id 
+                    WHERE pf.package_id = p.package_id) as features
             FROM wishlists w 
             JOIN packages p ON w.package_id = p.package_id 
             WHERE w.user_id = $1 

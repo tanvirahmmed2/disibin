@@ -79,10 +79,10 @@ export async function POST(req) {
 
                 // Create new conversation
                 const newConv = await client.query(`
-                    INSERT INTO conversations (title, is_group)
-                    VALUES ($1, false)
+                    INSERT INTO conversations (title, is_group, created_by)
+                    VALUES ($1, false, $2)
                     RETURNING conversation_id
-                `, ['Direct Message']);
+                `, ['Direct Message', user.id]);
                 activeConvId = newConv.rows[0].conversation_id;
 
                 await client.query(`

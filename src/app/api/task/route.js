@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { dbQuery } from '@/lib/database/pg';
 import { isLogin, isManager, isDeveloper } from '@/lib/middleware';
+import { createLog } from '@/lib/utils/logger';
 
 export async function GET(req) {
     try {
@@ -43,15 +44,30 @@ export async function POST(req) {
         const { title, description, assignedTo, priority, dueDate } = await req.json();
         if (!title) return NextResponse.json({ success: false, message: "Title is required" }, { status: 400 });
 
+        const validPriorities = ['low', 'medium', 'high', 'urgent'];
+        const taskPriority = validPriorities.includes(priority) ? priority : 'medium';
+
         const user = auth.data;
 
         const res = await dbQuery(`
             INSERT INTO tasks (title, description, assigned_to, created_by, status, priority, due_date)
             VALUES ($1, $2, $3, $4, 'pending', $5, $6)
             RETURNING *
-        `, [title, description, assignedTo || null, user.id, priority || 'medium', dueDate || null]);
+        `, [title, description, assignedTo || null, user.id, taskPriority, dueDate || null]);
 
-        return NextResponse.json({ success: true, message: 'Task created', data: res.rows[0] });
+        const task = res.rows[0];
+
+        if (task.assigned_to) {
+            await createLog({
+                userId: user.id,
+                action: 'assign',
+                targetType: 'task',
+                targetId: task.task_id,
+                description: `Assigned task "${task.title}" to user ID ${task.assigned_to}`
+            });
+        }
+
+        return NextResponse.json({ success: true, message: 'Task created', data: task });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -68,22 +84,27 @@ export async function PATCH(req) {
 
         const user = auth.data;
 
+        const validStatuses = ['pending', 'in_progress', 'in_review', 'completed'];
+        const validPriorities = ['low', 'medium', 'high', 'urgent'];
+
         let updateFields = [];
         let params = [];
 
-        if (status) {
+        if (status && validStatuses.includes(status)) {
             params.push(status);
             updateFields.push(`status = $${params.length}`);
         }
 
         // Managers can update everything
         if (user.role === 'manager' || user.role === 'admin') {
-            if (priority) {
+            if (priority && validPriorities.includes(priority)) {
                 params.push(priority);
                 updateFields.push(`priority = $${params.length}`);
             }
             if (description !== undefined) {
                 params.push(description);
+                updateFields.push(`description = $${updateParams?.length || params.length}`); // Fixed typo from previous logic if any
+                updateFields.pop(); // Remove above and redo correctly
                 updateFields.push(`description = $${params.length}`);
             }
             if (assignedTo !== undefined) {
@@ -104,7 +125,7 @@ export async function PATCH(req) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
         }
 
-        if (updateFields.length === 0) {
+        if (updateFields.length === 0 && !status) { // Ensure at least one update or status change
             return NextResponse.json({ success: false, message: "No fields to update" }, { status: 400 });
         }
 
@@ -116,7 +137,19 @@ export async function PATCH(req) {
         const res = await dbQuery(sql, params);
         if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Task not found" }, { status: 404 });
 
-        return NextResponse.json({ success: true, message: 'Task updated', data: res.rows[0] });
+        const updatedTask = res.rows[0];
+
+        if (assignedTo !== undefined) {
+            await createLog({
+                userId: user.id,
+                action: 'assign',
+                targetType: 'task',
+                targetId: updatedTask.task_id,
+                description: assignedTo ? `Assigned task "${updatedTask.title}" to user ID ${assignedTo}` : `Unassigned task "${updatedTask.title}"`
+            });
+        }
+
+        return NextResponse.json({ success: true, message: 'Task updated', data: updatedTask });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

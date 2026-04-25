@@ -33,23 +33,23 @@ export async function POST(req) {
 
             // 3. Create Purchase
             const purchaseRes = await client.query(`
-                INSERT INTO purchases (user_id, package_id, amount, status)
-                VALUES ($1, $2, $3, 'completed')
+                INSERT INTO purchases (user_id, package_id, original_amount, final_amount, status)
+                VALUES ($1, $2, $3, $4, 'completed')
                 RETURNING *
-            `, [userId, packageId, amount]);
+            `, [userId, packageId, amount, amount]);
             const purchase = purchaseRes.rows[0];
 
             // 4. Create Subscription
             const subRes = await client.query(`
-                INSERT INTO subscriptions (user_id, package_id, status, current_period_start)
-                VALUES ($1, $2, 'active', NOW())
+                INSERT INTO subscriptions (user_id, package_id, status, current_period_start, purchase_id, tenant_id)
+                VALUES ($1, $2, 'active', NOW(), $3, $4)
                 RETURNING *
-            `, [userId, packageId]);
+            `, [userId, packageId, purchase.purchase_id, tenant.tenant_id]);
             const subscription = subRes.rows[0];
 
             // 5. Create Default Website
             const websiteRes = await client.query(`
-                INSERT INTO websites (tenant_id, name, url, status)
+                INSERT INTO websites (tenant_id, name, domain, status)
                 VALUES ($1, $2, $3, 'active')
                 RETURNING *
             `, [tenant.tenant_id, `${tenantName} Website`, `${subdomain || tenant.subdomain}.disibin.com`]);
@@ -65,7 +65,7 @@ export async function POST(req) {
 
         // Log sensitive action
         await dbQuery(`
-            INSERT INTO logs (user_id, action, target_type, target_id, description)
+            INSERT INTO logs (user_id, action, entity_type, entity_id, description)
             VALUES ($1, $2, $3, $4, $5)
         `, [userId, 'create', 'tenant', result.tenant.tenant_id, `Purchased package and created tenant: ${tenantName}`]);
 

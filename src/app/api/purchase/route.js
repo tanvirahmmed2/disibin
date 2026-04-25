@@ -164,31 +164,45 @@ export async function POST(req) {
                     [tenantName]
                 );
                 tenantId = tenantRes.rows[0].tenant_id;
-
-                // Create subscription linked to this tenant
-                await dbQuery(`
-                    INSERT INTO subscriptions (user_id, tenant_id, package_id, current_period_end, status)
-                    VALUES ($1, $2, $3, NOW() + ($4 || ' days')::INTERVAL, 'active')
-                `, [user.id, tenantId, item.package_id, String(durationDays)]);
-            } else {
-                // RENEWAL: extend the existing subscription period, don't create new tenant
-                await dbQuery(`
-                    UPDATE subscriptions
-                    SET current_period_end = current_period_end + ($1 || ' days')::INTERVAL,
-                        updated_at = NOW()
-                    WHERE subscription_id = $2 AND user_id = $3
-                `, [String(durationDays), subscriptionId, user.id]);
             }
 
             // Create purchase record — linked to tenant via tenant_id
             const purchaseRes = await dbQuery(`
-                INSERT INTO purchases (user_id, package_id, amount, status, tenant_id)
-                VALUES ($1, $2, $3, 'pending', $4)
+                INSERT INTO purchases (user_id, package_id, original_amount, discount_amount, final_amount, status, tenant_id, coupon_id)
+                VALUES ($1, $2, $3, $4, $5, 'pending', $6, $7)
                 RETURNING *
-            `, [user.id, item.package_id, itemFinalCost, tenantId]);
+            `, [
+                user.id, 
+                item.package_id, 
+                itemOriginalCost, 
+                itemDiscount, 
+                itemFinalCost, 
+                tenantId, 
+                (appliedCoupon && (appliedCoupon.package_id === item.package_id || !appliedCoupon.package_id)) ? appliedCoupon.coupon_id : null
+            ]);
 
             const purchase = purchaseRes.rows[0];
             purchases.push(purchase);
+
+            if (!subscriptionId) {
+                // NEW PURCHASE: create a tenant first (if not already created for this item)
+                // Actually, the previous code created tenant before purchase. Let's keep that logic but fix the order for linking.
+                
+                // Link subscription to this purchase
+                await dbQuery(`
+                    INSERT INTO subscriptions (user_id, tenant_id, package_id, purchase_id, current_period_end, status)
+                    VALUES ($1, $2, $3, $4, NOW() + ($5 || ' days')::INTERVAL, 'active')
+                `, [user.id, tenantId, item.package_id, purchase.purchase_id, String(durationDays)]);
+            } else {
+                // RENEWAL: extend the existing subscription period and link latest purchase
+                await dbQuery(`
+                    UPDATE subscriptions
+                    SET current_period_end = current_period_end + ($1 || ' days')::INTERVAL,
+                        purchase_id = $2,
+                        updated_at = NOW()
+                    WHERE subscription_id = $3 AND user_id = $4
+                `, [String(durationDays), purchase.purchase_id, subscriptionId, user.id]);
+            }
 
             // Create payment record — also linked to tenant
             await dbQuery(`

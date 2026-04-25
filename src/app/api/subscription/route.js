@@ -9,7 +9,11 @@ export async function GET() {
         const user = auth.data;
 
         const res = await dbQuery(`
-            SELECT s.*, pkg.name as package_name, pkg.duration_days as duration_days, pkg.features
+            SELECT s.*, pkg.name as package_name, pkg.duration_days as duration_days,
+                   (SELECT json_agg(f.name) 
+                    FROM package_features pf 
+                    JOIN features f ON pf.feature_id = f.feature_id 
+                    WHERE pf.package_id = pkg.package_id) as features
             FROM subscriptions s
             LEFT JOIN packages pkg ON s.package_id = pkg.package_id
             WHERE s.user_id = $1 
@@ -41,7 +45,7 @@ export async function POST(req) {
             INSERT INTO subscriptions (user_id, package_id, status, stripe_subscription_id, current_period_start)
             VALUES ($1, $2, $3, $4, NOW())
             RETURNING *
-        `, [user.id, package_id, 'incomplete', transactionId]);
+        `, [user.id, package_id, 'unpaid', transactionId]);
 
         return NextResponse.json({
             success: true,

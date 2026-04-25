@@ -14,7 +14,11 @@ export async function GET(req) {
         if (slug) {
             // If slug is provided, we look for the coupon by code (serving as slug for offers)
             const res = await dbQuery(`
-                SELECT c.*, p.name, p.description, p.price as original_price, p.image, p.duration_days, p.features, p.slug as package_slug
+                SELECT c.*, p.name, p.description, p.price as original_price, p.image, p.duration_days, p.slug as package_slug,
+                       (SELECT json_agg(f.name) 
+                        FROM package_features pf 
+                        JOIN features f ON pf.feature_id = f.feature_id 
+                        WHERE pf.package_id = p.package_id) as features
                 FROM coupons c
                 JOIN packages p ON c.package_id = p.package_id
                 WHERE c.code = $1 AND c.status = 'active'
@@ -25,14 +29,18 @@ export async function GET(req) {
             }
 
             const offer = res.rows[0];
-            const discountAmount = offer.is_percentage ? (offer.original_price * offer.discount / 100) : offer.discount;
-            offer.price = offer.original_price - discountAmount;
+            const discountAmount = offer.is_percentage ? (Number(offer.original_price) * Number(offer.discount) / 100) : Number(offer.discount);
+            offer.price = Number(offer.original_price) - discountAmount;
 
             return NextResponse.json({ success: true, message: 'Offer fetched', data: offer });
         }
 
         const res = await dbQuery(`
-            SELECT c.*, p.name, p.description, p.price as original_price, p.image, p.duration_days, p.features, p.slug as package_slug
+            SELECT c.*, p.name, p.description, p.price as original_price, p.image, p.duration_days, p.slug as package_slug,
+                   (SELECT json_agg(f.name) 
+                    FROM package_features pf 
+                    JOIN features f ON pf.feature_id = f.feature_id 
+                    WHERE pf.package_id = p.package_id) as features
             FROM coupons c
             JOIN packages p ON c.package_id = p.package_id
             WHERE c.status = 'active'
@@ -40,10 +48,10 @@ export async function GET(req) {
         `, []);
 
         const offers = res.rows.map(offer => {
-            const discountAmount = offer.is_percentage ? (offer.original_price * offer.discount / 100) : offer.discount;
+            const discountAmount = offer.is_percentage ? (Number(offer.original_price) * Number(offer.discount) / 100) : Number(offer.discount);
             return {
                 ...offer,
-                price: offer.original_price - discountAmount
+                price: Number(offer.original_price) - discountAmount
             };
         });
 
@@ -71,12 +79,28 @@ export async function POST(req) {
         const parsedFeatures = features || [];
 
         const res = await dbQuery(`
-            INSERT INTO packages (name, slug, description, price, duration_days, features, image, image_id)
-            VALUES ($1, $2, $3, $4, 30, $5, '', '')
+            INSERT INTO packages (name, slug, description, price, duration_days, image, image_id, created_by)
+            VALUES ($1, $2, $3, $4, 30, '', '', $5)
             RETURNING *
-        `, [title, slug, description, Number(price), parsedFeatures]);
+        `, [title, slug, description, Number(price), auth.data.id]);
 
-        return NextResponse.json({ success: true, message: 'Offer created successfully', data: res.rows[0] }, { status: 201 });
+        const newPkg = res.rows[0];
+
+        if (features && Array.isArray(features)) {
+            for (const featureName of features) {
+                let featRes = await dbQuery("SELECT feature_id FROM features WHERE name = $1", [featureName]);
+                let featureId;
+                if (featRes.rows.length === 0) {
+                    const newFeat = await dbQuery("INSERT INTO features (name) VALUES ($1) RETURNING feature_id", [featureName]);
+                    featureId = newFeat.rows[0].feature_id;
+                } else {
+                    featureId = featRes.rows[0].feature_id;
+                }
+                await dbQuery("INSERT INTO package_features (package_id, feature_id) VALUES ($1, $2) ON CONFLICT DO NOTHING", [newPkg.package_id, featureId]);
+            }
+        }
+
+        return NextResponse.json({ success: true, message: 'Offer created successfully', data: newPkg }, { status: 201 });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -112,19 +136,39 @@ export async function PATCH(req) {
             updateParams.push(Number(price));
             updateFields.push(`price = $${updateParams.length}`);
         }
-        if (features) {
-            updateParams.push(features);
-            updateFields.push(`features = $${updateParams.length}`);
-        }
 
         if (updateFields.length > 0) {
             updateParams.push(id);
             const sql = `UPDATE packages SET ${updateFields.join(', ')}, updated_at = NOW() WHERE package_id = $${updateParams.length} RETURNING *`;
-            const updatedRes = await dbQuery(sql, updateParams);
-            return NextResponse.json({ success: true, message: 'Offer updated successfully', data: updatedRes.rows[0] });
+            await dbQuery(sql, updateParams);
         }
 
-        return NextResponse.json({ success: true, message: 'Offer updated successfully', data: pkgRes.rows[0] });
+        if (features && Array.isArray(features)) {
+            await dbQuery("DELETE FROM package_features WHERE package_id = $1", [id]);
+            for (const featureName of features) {
+                let featRes = await dbQuery("SELECT feature_id FROM features WHERE name = $1", [featureName]);
+                let featureId;
+                if (featRes.rows.length === 0) {
+                    const newFeat = await dbQuery("INSERT INTO features (name) VALUES ($1) RETURNING feature_id", [featureName]);
+                    featureId = newFeat.rows[0].feature_id;
+                } else {
+                    featureId = featRes.rows[0].feature_id;
+                }
+                await dbQuery("INSERT INTO package_features (package_id, feature_id) VALUES ($1, $2) ON CONFLICT DO NOTHING", [id, featureId]);
+            }
+        }
+
+        const finalPkg = await dbQuery(`
+            SELECT p.*,
+                   (SELECT json_agg(f.name) 
+                    FROM package_features pf 
+                    JOIN features f ON pf.feature_id = f.feature_id 
+                    WHERE pf.package_id = p.package_id) as features
+            FROM packages p 
+            WHERE p.package_id = $1
+        `, [id]);
+
+        return NextResponse.json({ success: true, message: 'Offer updated successfully', data: finalPkg.rows[0] });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

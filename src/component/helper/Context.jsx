@@ -199,7 +199,7 @@ const ContextProvider = ({ children }) => {
     if (userData?.user_id) {
       fetchUserWishlist();
     }
-  }, [userData]);
+  }, [userData?.user_id]);
 
   const addToWishList = async (item) => {
     if (!isLoggedIn) {
@@ -210,7 +210,7 @@ const ContextProvider = ({ children }) => {
 
     try {
       const data = {
-        packageId: item.packageId
+        packageId: item.package_id
       };
 
       const res = await axios.post("/api/wishlist", data, {
@@ -220,6 +220,7 @@ const ContextProvider = ({ children }) => {
       if (res.data.success) {
         setWishlist((prev) => [res.data.data, ...prev]);
         toast.success("Added to wishlist");
+        fetchUserWishlist(); // Refresh to get full item data (title, price etc)
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || "Failed to add to wishlist");
@@ -263,8 +264,8 @@ const ContextProvider = ({ children }) => {
     }
   };
 
-  const isInWishlist = (itemId) => {
-    return wishlist.some((item) => item.itemId === itemId);
+  const isInWishlist = (package_id) => {
+    return wishlist.some((item) => item.package_id === package_id);
   };
 
   const handleLogout = async () => {

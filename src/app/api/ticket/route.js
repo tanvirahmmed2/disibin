@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { dbQuery, transaction } from '@/lib/database/pg';
 import { isLogin, isSupport, isManager } from '@/lib/middleware';
+import { createLog } from '@/lib/utils/logger';
 
 export async function GET(req) {
     try {
@@ -43,8 +44,6 @@ export async function GET(req) {
         } else if (user.role === 'manager') {
             params.push(user.id);
             sql += ` AND t.assigned_to = $${params.length}`;
-        } else if (user.role === 'admin') {
-            return NextResponse.json({ success: true, message: 'Tickets fetched', data: [] });
         }
 
         if (status) {
@@ -67,17 +66,20 @@ export async function POST(req) {
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
-        const { subject, message, priority, category } = await req.json();
+        const { subject, message, priority } = await req.json();
         if (!subject || !message) return NextResponse.json({ success: false, message: 'Subject and message are required' }, { status: 400 });
 
         const user = auth.data;
 
+        const validPriorities = ['low', 'medium', 'high', 'urgent'];
+        const taskPriority = validPriorities.includes(priority) ? priority : 'medium';
+
         const result = await transaction(async (client) => {
             const ticketRes = await client.query(`
-                INSERT INTO tickets (user_id, subject, category, status, priority)
+                INSERT INTO tickets (user_id, subject, message, status, priority)
                 VALUES ($1, $2, $3, 'open', $4)
                 RETURNING *
-            `, [user.id, subject, category || 'General Support', priority || 'medium']);
+            `, [user.id, subject, message, taskPriority]);
             
             const ticket = ticketRes.rows[0];
 
@@ -89,11 +91,14 @@ export async function POST(req) {
             return ticket;
         });
 
-        // Log sensitive action
-        await dbQuery(`
-            INSERT INTO logs (user_id, action, entity_type, entity_id, description)
-            VALUES ($1, $2, $3, $4, $5)
-        `, [user.id, 'create', 'ticket', result.ticket_id, `Opened a new ticket: ${subject}`]);
+        // Log ticket creation
+        await createLog({
+            userId: user.id,
+            action: 'create',
+            targetType: 'ticket',
+            targetId: result.ticket_id,
+            description: `Opened a new ticket: ${subject}`
+        });
 
         return NextResponse.json({ success: true, message: 'Ticket created', data: result });
 
@@ -112,6 +117,9 @@ export async function PATCH(req) {
 
         const user = auth.data;
 
+        const validStatuses = ['open', 'in_progress', 'resolved', 'closed'];
+        const validPriorities = ['low', 'medium', 'high', 'urgent'];
+
         const result = await transaction(async (client) => {
             const ticketCheck = await client.query(`
                 SELECT * FROM tickets WHERE ticket_id = $1
@@ -127,7 +135,7 @@ export async function PATCH(req) {
             const updateParams = [];
 
             if (isStaff) {
-                if (status) {
+                if (status && validStatuses.includes(status)) {
                     updateParams.push(status);
                     updateFields.push(`status = $${updateParams.length}`);
                 }
@@ -135,7 +143,7 @@ export async function PATCH(req) {
                     updateParams.push(assignedId === '' ? null : assignedId);
                     updateFields.push(`assigned_to = $${updateParams.length}`);
                 }
-                if (priority) {
+                if (priority && validPriorities.includes(priority)) {
                     updateParams.push(priority);
                     updateFields.push(`priority = $${updateParams.length}`);
                 }
@@ -160,6 +168,15 @@ export async function PATCH(req) {
                     VALUES ($1, $2, $3)
                 `, [id, user.id, message]);
                 await client.query("UPDATE tickets SET updated_at = NOW() WHERE ticket_id = $1", [id]);
+
+                // Log support message creation
+                await createLog({
+                    userId: user.id,
+                    action: 'create',
+                    targetType: 'ticket_message',
+                    targetId: id,
+                    description: `Sent a message on ticket ID ${id}`
+                });
             }
 
             return updatedTicket;

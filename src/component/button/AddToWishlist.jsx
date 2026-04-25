@@ -8,9 +8,9 @@ const AddToWishlist = ({pack}) => {
   return (
     <button 
         onClick={() => addToWishList({
-            itemId: pack._id,
+            package_id: pack.package_id,
             type: 'package',
-            title: pack.title,
+            name: pack.name,
             price: pack.price,
             slug: pack.slug,
             image: pack.image

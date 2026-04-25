@@ -36,10 +36,9 @@ const ManagerPurchases = () => {
                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">ID: {row.package_id?.slice(-6) || 'N/A'}</span>
             </div>
         )},
-        { label: 'Amount', key: 'amount', render: (row) => (
-            <div className="flex items-center gap-1 font-black text-slate-700">
-                <RiMoneyDollarCircleLine className="text-primary/50" />
-                ${row.amount}
+        { label: 'Revenue', key: 'final_amount', render: (row) => (
+            <div className="flex items-center gap-1 font-black text-slate-900 text-lg">
+                <span className="text-emerald-500/50">৳</span>{row.final_amount}
             </div>
         )},
         { label: 'Status', key: 'status', render: (row) => (

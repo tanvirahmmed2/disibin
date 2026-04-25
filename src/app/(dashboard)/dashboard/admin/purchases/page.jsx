@@ -36,9 +36,9 @@ const AdminPurchases = () => {
                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">ID: {row.package_id?.slice(-8) || 'N/A'}</span>
             </div>
         )},
-        { label: 'Revenue', key: 'amount', render: (row) => (
-            <div className="flex items-center gap-1 font-black text-slate-700 text-lg">
-                <span className="text-primary/50">$</span>{row.amount}
+        { label: 'Revenue', key: 'final_amount', render: (row) => (
+            <div className="flex items-center gap-1 font-black text-slate-900 text-lg">
+                <span className="text-emerald-500/50">৳</span>{row.final_amount}
             </div>
         )},
         { label: 'Date', key: 'created_at', render: (row) => (

@@ -21,7 +21,7 @@ export async function GET(req) {
 
         const { searchParams } = new URL(req.url);
         const action = searchParams.get('action');
-        const targetType = searchParams.get('targetType');
+        const entityType = searchParams.get('entityType') || searchParams.get('targetType');
         const userId = searchParams.get('userId');
         const page = parseInt(searchParams.get('page')) || 1;
         const limit = parseInt(searchParams.get('limit')) || 20;
@@ -34,9 +34,9 @@ export async function GET(req) {
             params.push(action);
             whereClauses.push(`l.action = $${params.length}`);
         }
-        if (targetType) {
-            params.push(targetType);
-            whereClauses.push(`l.target_type = $${params.length}`);
+        if (entityType) {
+            params.push(entityType);
+            whereClauses.push(`l.entity_type = $${params.length}`);
         }
         if (userId) {
             params.push(userId);
