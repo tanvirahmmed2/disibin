@@ -2,9 +2,15 @@
 import React from 'react'
 import { RiTicketLine, RiCheckLine, RiFlashlightLine } from 'react-icons/ri'
 import Image from 'next/image'
+import toast from 'react-hot-toast'
 
 const CouponCard = ({ coupon }) => {
    
+
+    const handleCopy=(code)=>{
+        navigator.clipboard.writeText(code)
+        toast.success('Copied')
+    }
 
     return (
         <div className="group flex flex-col bg-white w-full rounded-xl border border-slate-100 hover:border-emerald-500/10 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-500/5 overflow-hidden">
@@ -90,12 +96,12 @@ const CouponCard = ({ coupon }) => {
                                 </span>
                             </div>
                         )}
-                        <p
+                        <button onClick={()=>handleCopy(coupon.code)}
                             className="w-14 h-14 bg-slate-50 text-slate-400 hover:text-emerald-600 flex items-center justify-center rounded-2xl transition-all active:scale-90 border border-transparent hover:border-emerald-500/10"
                             title="Add to Wishlist"
                         >
                             <RiFlashlightLine size={24} />
-                        </p>
+                        </button>
                     </div>
                 </div>
             </div>
