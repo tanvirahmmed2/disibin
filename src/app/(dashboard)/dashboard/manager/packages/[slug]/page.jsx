@@ -55,7 +55,7 @@ const EditPackagePage = () => {
                 </div>
             </div>
 
-            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm max-w-3xl">
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm w-full">
                 <UpdatePackageForm packageData={Package} />
             </div>
         </div>

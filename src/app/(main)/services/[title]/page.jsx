@@ -129,11 +129,11 @@ const ServiceDetails = ({ params }) => {
                                          <h4 className="text-2xl font-black text-slate-900 tracking-tight">{plan.name}</h4>
                                      </div>
                                      <div className="text-center">
-                                         <p className="text-[40px] font-black text-slate-900 tracking-tighter">${plan.price}</p>
+                                         <p className="text-[40px] font-black text-slate-900 tracking-tighter">৳{plan.price}</p>
                                          <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500">{plan.duration}</p>
                                      </div>
-                                     <Link href="/packages" className="w-full py-5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest text-center hover:bg-emerald-500 transition-all duration-300">
-                                         Commence Plan
+                                     <Link href={`/packages/${plan.slug}`} className="w-full py-5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest text-center hover:bg-emerald-500 transition-all duration-300">
+                                         View Plan
                                      </Link>
                                 </div>
                             ))}

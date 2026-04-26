@@ -4,8 +4,10 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import { Context } from '@/component/helper/Context'
 import { RiShieldFlashLine, RiTimeLine, RiCheckLine, RiInformationLine, RiAlertLine } from 'react-icons/ri'
+import { useRouter } from 'next/navigation'
 
 const ClientSubscription = () => {
+    const router=useRouter()
     const { isLoggedIn } = useContext(Context)
     const [subs, setSubs] = useState([])
     const [loading, setLoading] = useState(true)
@@ -13,6 +15,7 @@ const ClientSubscription = () => {
     // Renewal Modal State
     const [renewingSub, setRenewingSub] = useState(null)
     const [paymentMethod, setPaymentMethod] = useState('bkash')
+    const [transactionId, setTransactionId] = useState('')
     const [renewing, setRenewing] = useState(false)
 
     const fetchSubs = async () => {
@@ -41,6 +44,7 @@ const ClientSubscription = () => {
                     price: renewingSub.price // Just for reference, backend recalculates
                 }],
                 paymentMethod,
+                transactionId,
                 subscriptionId: renewingSub.subscription_id
             }
 
@@ -135,12 +139,20 @@ const ClientSubscription = () => {
                                 </div>
                             </div>
 
-                            <button 
-                                onClick={() => setRenewingSub(sub)}
-                                className={`w-full py-4 text-white font-bold text-sm uppercase tracking-widest rounded-xl transition-all mt-auto ${needsRenewal ? 'bg-amber-500 hover:bg-amber-600' : 'bg-slate-900 hover:bg-emerald-600'}`}
-                            >
-                                Renew Subscription (৳{sub.price})
-                            </button>
+                            <div className="flex gap-3 mt-auto">
+                                <button 
+                                    onClick={() => router.push(`/user/subscription/${sub.subscription_id}`)}
+                                    className="flex-1 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm uppercase tracking-widest rounded-xl transition-all"
+                                >
+                                    View Details
+                                </button>
+                                <button 
+                                    onClick={() => setRenewingSub(sub)}
+                                    className={`flex-1 py-4 text-white font-bold text-sm uppercase tracking-widest rounded-xl transition-all ${needsRenewal ? 'bg-amber-500 hover:bg-amber-600' : 'bg-slate-900 hover:bg-emerald-600'}`}
+                                >
+                                    Renew (৳{sub.price})
+                                </button>
+                            </div>
                         </div>
                     )
                 })}
@@ -169,6 +181,18 @@ const ClientSubscription = () => {
                                     <option value="nagad">Nagad (Manual)</option>
                                     <option value="bank">Bank Transfer</option>
                                 </select>
+                            </div>
+
+                            <div>
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Transaction ID / Reference</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={transactionId}
+                                    onChange={(e) => setTransactionId(e.target.value)}
+                                    placeholder="Enter transaction ID"
+                                    className="w-full p-4 bg-white border border-slate-200 rounded-xl font-medium focus:outline-none focus:border-emerald-500 transition-colors"
+                                />
                             </div>
 
                             <div className="flex gap-3">

@@ -152,23 +152,37 @@ export async function PATCH(req) {
         const updateFields = [];
         const updateParams = [];
 
-        const fields = ["package_id", "code", "discount", "is_percentage", "start_date", "end_date", "status", "usage_limit", "max_discount"];
+        // Fields that can be cleared (sent as empty string → null)
+        const nullableFields = ['package_id', 'start_date', 'end_date', 'max_discount'];
+        const numericFields = ['discount', 'usage_limit', 'max_discount'];
+        const allFields = ['package_id', 'code', 'discount', 'is_percentage', 'start_date', 'end_date', 'status', 'usage_limit', 'max_discount'];
         
-        for (const field of fields) {
-            const value = formData.get(field);
-            if (value !== null) {
-                let finalValue = value;
-                if (field === "discount" || field === "usage_limit" || field === "max_discount") finalValue = Number(value);
-                if (field === "is_percentage") finalValue = value === "true";
-                if (field === "code") finalValue = value.toUpperCase();
-                
-                updateParams.push(finalValue);
-                updateFields.push(`${field} = $${updateParams.length}`);
+        for (const field of allFields) {
+            // formData.get returns null if key is absent, '' if key present but empty
+            const raw = formData.get(field);
+            if (raw === null) continue; // field not submitted at all — skip
+
+            let finalValue;
+
+            if (field === 'is_percentage') {
+                finalValue = raw === 'true';
+            } else if (nullableFields.includes(field) && raw === '') {
+                finalValue = null; // convert empty string → null for nullable columns
+            } else if (numericFields.includes(field) && raw !== '') {
+                finalValue = Number(raw);
+                if (isNaN(finalValue)) continue; // skip invalid numbers
+            } else if (field === 'code') {
+                finalValue = raw.toUpperCase();
+            } else {
+                finalValue = raw || null;
             }
+
+            updateParams.push(finalValue);
+            updateFields.push(`${field} = $${updateParams.length}`);
         }
 
         const imageFile = formData.get("image");
-        if (imageFile && typeof imageFile !== "string") {
+        if (imageFile && typeof imageFile !== "string" && imageFile.size > 0) {
             const buffer = Buffer.from(await imageFile.arrayBuffer());
             const cloudImage = await new Promise((resolve, reject) => {
                 const stream = cloudinary.uploader.upload_stream({ folder: "coupons" }, (err, result) => (err ? reject(err) : resolve(result)));
@@ -185,6 +199,9 @@ export async function PATCH(req) {
             updateParams.push(id);
             const sql = `UPDATE coupons SET ${updateFields.join(', ')} WHERE coupon_id = $${updateParams.length} RETURNING *`;
             const updatedRes = await dbQuery(sql, updateParams);
+
+            if (updatedRes.rows.length === 0) return NextResponse.json({ success: false, message: 'Coupon not found' }, { status: 404 });
+
             const updatedCoupon = updatedRes.rows[0];
 
             await createLog({

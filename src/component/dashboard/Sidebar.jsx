@@ -18,7 +18,12 @@ import {
     RiPriceTag3Line,
     RiLogoutBoxRLine,
     RiHistoryLine,
-    RiMoneyDollarBoxLine
+    RiMoneyDollarBoxLine,
+    RiSearch2Line,
+    RiShieldStarLine,
+    RiServerLine,
+    RiBankCard2Line,
+    RiRefundLine
 } from 'react-icons/ri'
 
 const SidebarItem = ({ item, collapsed }) => {
@@ -43,26 +48,38 @@ const Sidebar = ({ collapsed }) => {
 
     const roleMenus = {
         admin: [
-            { label: 'Overview', href: '/dashboard/admin', icon: RiDashboardLine },
-            { label: 'Manage Users', href: '/dashboard/admin/users', icon: RiTeamLine },
-            { label: 'Roles', href: '/dashboard/admin/roles', icon: RiShieldUserLine },
-            { label: 'All Purchases', href: '/dashboard/admin/purchases', icon: RiPriceTag3Line },
             { label: 'Activity Log', href: '/dashboard/admin/activity_log', icon: RiHistoryLine },
-        ],
-        manager: [
-            { label: 'Assign Tasks', href: '/dashboard/manager/tasks', icon: RiStackLine },
-            { label: 'My Tickets', href: '/dashboard/manager/tickets', icon: RiCustomerService2Line },
-            { label: 'Manage Blogs', href: '/dashboard/manager/blogs', icon: RiArticleLine },
-            { label: 'Manage Packages', href: '/dashboard/manager/packages', icon: RiPriceTag3Line },
-            { label: 'Project', href: '/dashboard/manager/projects', icon: RiProjectorLine },
+            { label: 'All Purchases', href: '/dashboard/admin/purchases', icon: RiPriceTag3Line },
             { label: 'Category', href: '/dashboard/manager/categories', icon: RiPriceTag3Line },
             { label: 'Coupon', href: '/dashboard/manager/coupons', icon: RiInboxLine },
-            { label: 'User Control', href: '/dashboard/manager/users', icon: RiTeamLine },
-            { label: 'Reviews', href: '/dashboard/manager/reviews', icon: RiPriceTag3Line },
-            { label: 'Purchases', href: '/dashboard/manager/purchases', icon: RiMoneyDollarBoxLine },
+            { label: 'Data Hub', href: '/dashboard/data', icon: RiSearch2Line },
+            { label: 'Manage Users', href: '/dashboard/admin/users', icon: RiTeamLine },
+            { label: 'Overview', href: '/dashboard/admin', icon: RiDashboardLine },
+            { label: 'Packages', href: '/dashboard/manager/packages', icon: RiPriceTag3Line },
+            { label: 'Payments', href: '/dashboard/payments', icon: RiBankCard2Line },
+            { label: 'Refunds', href: '/dashboard/manager/refunds', icon: RiRefundLine },
+            { label: 'Roles', href: '/dashboard/admin/roles', icon: RiShieldUserLine },
+        ],
+        manager: [
             { label: 'Activity Log', href: '/dashboard/manager/activity_log', icon: RiHistoryLine },
+            { label: 'Assign Tasks', href: '/dashboard/manager/tasks', icon: RiStackLine },
+            { label: 'Category', href: '/dashboard/manager/categories', icon: RiPriceTag3Line },
+            { label: 'Coupon', href: '/dashboard/manager/coupons', icon: RiInboxLine },
+            { label: 'Data Hub', href: '/dashboard/data', icon: RiSearch2Line },
+            { label: 'Manage Blogs', href: '/dashboard/manager/blogs', icon: RiArticleLine },
+            { label: 'Manage Packages', href: '/dashboard/manager/packages', icon: RiPriceTag3Line },
+            { label: 'My Tickets', href: '/dashboard/manager/tickets', icon: RiCustomerService2Line },
+            { label: 'Payments', href: '/dashboard/payments', icon: RiBankCard2Line },
+            { label: 'Project', href: '/dashboard/manager/projects', icon: RiProjectorLine },
+            { label: 'Purchases', href: '/dashboard/manager/purchases', icon: RiMoneyDollarBoxLine },
+            { label: 'Refunds', href: '/dashboard/manager/refunds', icon: RiRefundLine },
+            { label: 'Reviews', href: '/dashboard/manager/reviews', icon: RiPriceTag3Line },
+            { label: 'Subscriptions', href: '/dashboard/manager/subscriptions', icon: RiShieldStarLine },
+            { label: 'Tenants', href: '/dashboard/manager/tenants', icon: RiServerLine },
+            { label: 'User Control', href: '/dashboard/manager/users', icon: RiTeamLine },
         ],
         support: [
+            { label: 'Data Hub', href: '/dashboard/data', icon: RiSearch2Line },
             { label: 'Messages', href: '/dashboard/support/messages', icon: RiMailSendLine },
             { label: 'Tickets Queue', href: '/dashboard/support/tickets', icon: RiCustomerService2Line },
         ],

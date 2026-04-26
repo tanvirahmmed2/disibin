@@ -26,21 +26,56 @@ export async function POST(req) {
         const purchase = purchaseRes.rows[0];
         if (purchase.status !== 'pending') return NextResponse.json({ success: false, message: "Purchase is already processed" }, { status: 400 });
 
-        // 2. Create Tenant
-        const tenantName = `${(purchase.user_email || '').split('@')[0]}-${purchase.package_slug || purchase.package_id}-${Date.now()}`;
-        const tenantRes = await dbQuery(`
-            INSERT INTO tenants (name, owner_id, status)
-            VALUES ($1, $2, 'active')
-            RETURNING *
-        `, [tenantName, purchase.user_id]);
-        const tenantId = tenantRes.rows[0].tenant_id;
+        // 2. Check for existing subscription for this package (Renewal check)
+        const existingSubRes = await dbQuery(`
+            SELECT * FROM subscriptions 
+            WHERE user_id = $1 AND package_id = $2 AND status NOT IN ('refunded', 'canceled')
+            LIMIT 1
+        `, [purchase.user_id, purchase.package_id]);
 
-        // 3. Create Subscription
-        const durationDays = purchase.duration_days; // Base duration
-        await dbQuery(`
-            INSERT INTO subscriptions (user_id, tenant_id, package_id, purchase_id, current_period_start, current_period_end, status)
-            VALUES ($1, $2, $3, $4, NOW(), NOW() + ($5 || ' days')::INTERVAL, 'active')
-        `, [purchase.user_id, tenantId, purchase.package_id, purchase.purchase_id, String(durationDays)]);
+        let tenantId;
+        let isRenewal = false;
+        let subscriptionId;
+
+        if (existingSubRes.rows.length > 0) {
+            // RENEWAL LOGIC
+            const existingSub = existingSubRes.rows[0];
+            tenantId = existingSub.tenant_id;
+            subscriptionId = existingSub.subscription_id;
+            isRenewal = true;
+
+            const durationDays = purchase.duration_days || 30;
+            
+            // Calculate new expiry: if already expired, start from NOW. If still active, stack it.
+            await dbQuery(`
+                UPDATE subscriptions 
+                SET 
+                    current_period_end = CASE 
+                        WHEN current_period_end > NOW() THEN current_period_end + ($1 || ' days')::INTERVAL
+                        ELSE NOW() + ($1 || ' days')::INTERVAL
+                    END,
+                    status = 'active',
+                    purchase_id = $2,
+                    updated_at = NOW()
+                WHERE subscription_id = $3
+            `, [String(durationDays), purchaseId, subscriptionId]);
+
+        } else {
+            // NEW SUBSCRIPTION LOGIC
+            const tenantName = `${(purchase.user_email || '').split('@')[0]}-${purchase.package_slug || purchase.package_id}-${Date.now()}`;
+            const tenantRes = await dbQuery(`
+                INSERT INTO tenants (name, owner_id, status)
+                VALUES ($1, $2, 'active')
+                RETURNING *
+            `, [tenantName, purchase.user_id]);
+            tenantId = tenantRes.rows[0].tenant_id;
+
+            const durationDays = purchase.duration_days || 30;
+            await dbQuery(`
+                INSERT INTO subscriptions (user_id, tenant_id, package_id, purchase_id, current_period_start, current_period_end, status)
+                VALUES ($1, $2, $3, $4, NOW(), NOW() + ($5 || ' days')::INTERVAL, 'active')
+            `, [purchase.user_id, tenantId, purchase.package_id, purchase.purchase_id, String(durationDays)]);
+        }
 
         // 4. Update Purchase
         await dbQuery(`
@@ -69,8 +104,10 @@ export async function POST(req) {
             VALUES ($1, $2, $3, $4)
         `, [
             purchase.user_id,
-            'Service Activated!',
-            `Your purchase for "${purchase.package_name}" has been approved. You can now access your service.`,
+            isRenewal ? 'Subscription Renewed!' : 'Service Activated!',
+            isRenewal 
+                ? `Your subscription for "${purchase.package_name}" has been extended. Thank you for staying with us!`
+                : `Your purchase for "${purchase.package_name}" has been approved. You can now access your service.`,
             '/dashboard/user/purchases'
         ]);
 

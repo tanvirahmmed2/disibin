@@ -13,6 +13,7 @@ const WishlistPage = () => {
 
     const [showCheckout, setShowCheckout] = useState(false)
     const [paymentMethod, setPaymentMethod] = useState('bkash')
+    const [transactionId, setTransactionId] = useState('')
     const [couponCode, setCouponCode] = useState('')
     const [appliedCoupon, setAppliedCoupon] = useState(null)
     const [verifyingCoupon, setVerifyingCoupon] = useState(false)
@@ -117,6 +118,7 @@ const WishlistPage = () => {
                     quantity: item.quantity || 1,
                 })),
                 paymentMethod,
+                transactionId,
                 couponCode: appliedCoupon?.code || null
             }, { withCredentials: true })
 
@@ -318,6 +320,20 @@ const WishlistPage = () => {
                                                 </div>
                                             </button>
                                         ))}
+                                    </div>
+                                    <div className="mt-4 space-y-2">
+                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Transaction ID / Reference</label>
+                                        <input 
+                                            type="text" 
+                                            value={transactionId}
+                                            onChange={(e) => setTransactionId(e.target.value)}
+                                            placeholder="e.g. 9B2X..."
+                                            className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:border-emerald-500 transition-colors placeholder:font-normal placeholder:text-slate-300"
+                                            required
+                                        />
+                                        <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
+                                            Please send the exact amount to our {paymentMethod} merchant number and enter the Transaction ID above.
+                                        </p>
                                     </div>
                                 </div>
 

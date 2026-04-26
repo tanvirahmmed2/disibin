@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 const NewPackagePage = () => {
     return (
-        <div className="space-y-6 py-6 px-4">
+        <div className="space-y-6 py-6 px-4 w-full">
             <div className="flex flex-col gap-4">
                 <Link 
                     href="/dashboard/manager/packages" 
@@ -20,7 +20,7 @@ const NewPackagePage = () => {
                 </div>
             </div>
 
-            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm max-w-3xl">
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm w-full">
                 <AddNewPackage />
             </div>
         </div>

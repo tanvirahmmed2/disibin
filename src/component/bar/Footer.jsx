@@ -56,7 +56,7 @@ const Footer = () => {
         </div>
 
         <div className='pt-10 border-t border-white/5 flex items-center justify-center'>
-            <p className='text-slate-500 text-[9px] font-semibold uppercase tracking-[0.4em]'>© {currentYear} DISIBIN | Precision Engineering</p>
+            <p className='text-slate-500 text-[9px] font-semibold uppercase tracking-[0.4em]'>© {currentYear} DISIBIN | BUILD WORLD_WIDE NETWORK</p>
         </div>
       </div>
     </footer>

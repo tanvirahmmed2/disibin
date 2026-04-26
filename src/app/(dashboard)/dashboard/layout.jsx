@@ -27,7 +27,7 @@ const DashboardLayout = ({ children }) => {
 
         if (role && validStaffRoles.includes(role)) {
             const currentRoutePrefix = `/dashboard/${role}`;
-            if (role !== 'admin' && !pathname.startsWith(currentRoutePrefix) && pathname !== '/dashboard' && !pathname.startsWith('/dashboard/mail') && !pathname.startsWith('/dashboard/tickets')) {
+            if (role !== 'admin' && !pathname.startsWith(currentRoutePrefix) && pathname !== '/dashboard' && !pathname.startsWith('/dashboard/mail') && !pathname.startsWith('/dashboard/tickets') && !pathname.startsWith('/dashboard/data') && !pathname.startsWith('/dashboard/payments')) {
                 router.replace('/dashboard')
             }
         }

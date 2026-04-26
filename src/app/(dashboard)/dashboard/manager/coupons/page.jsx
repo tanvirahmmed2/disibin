@@ -21,6 +21,8 @@ const CouponManagement = () => {
         start_date: '',
         end_date: '',
         status: 'active',
+        usage_limit: '',
+        max_discount: '',
         image: null
     })
 
@@ -63,11 +65,16 @@ const CouponManagement = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         const data = new FormData()
-        Object.keys(formData).forEach(key => {
-            if (formData[key] !== null && formData[key] !== undefined) {
-                data.append(key, formData[key])
-            }
+
+        // Explicitly append all fields, converting booleans to strings for FormData
+        const textFields = ['package_id', 'code', 'discount', 'start_date', 'end_date', 'status', 'usage_limit', 'max_discount']
+        textFields.forEach(key => {
+            // Send empty string for nullable fields so the API can set them to null
+            data.append(key, formData[key] ?? '')
         })
+        data.append('is_percentage', formData.is_percentage ? 'true' : 'false')
+
+        if (formData.image instanceof File) data.append('image', formData.image)
         if (currentCoupon) data.append('id', currentCoupon.coupon_id)
 
         try {
@@ -149,6 +156,8 @@ const CouponManagement = () => {
                         start_date: row.start_date?.split('T')[0] || '',
                         end_date: row.end_date?.split('T')[0] || '',
                         status: row.status,
+                        usage_limit: row.usage_limit || '',
+                        max_discount: row.max_discount || '',
                         image: null
                     })
                     setIsModalOpen(true)
@@ -177,7 +186,7 @@ const CouponManagement = () => {
                     onClick={() => {
                         setCurrentCoupon(null)
                         setImagePreview(null)
-                        setFormData({ package_id: '', code: '', discount: '', is_percentage: true, start_date: '', end_date: '', status: 'active', image: null })
+                        setFormData({ package_id: '', code: '', discount: '', is_percentage: true, start_date: '', end_date: '', status: 'active', usage_limit: '', max_discount: '', image: null })
                         setIsModalOpen(true)
                     }}
                     className="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-emerald-500 transition-all shadow-lg shadow-slate-900/10 flex items-center gap-2"
@@ -302,6 +311,31 @@ const CouponManagement = () => {
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                 </select>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Usage Limit</label>
+                                    <input 
+                                        type="number" 
+                                        value={formData.usage_limit}
+                                        onChange={(e) => setFormData({...formData, usage_limit: e.target.value})}
+                                        placeholder="0 = unlimited"
+                                        min="0"
+                                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Max Discount (৳)</label>
+                                    <input 
+                                        type="number" 
+                                        value={formData.max_discount}
+                                        onChange={(e) => setFormData({...formData, max_discount: e.target.value})}
+                                        placeholder="Cap for % discounts"
+                                        min="0"
+                                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
+                                    />
+                                </div>
                             </div>
 
                             <div className="flex gap-3 pt-4">

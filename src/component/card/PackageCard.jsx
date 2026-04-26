@@ -10,14 +10,7 @@ const PackageCard = ({ pack }) => {
 
     const handleWishlist = (e) => {
         e.preventDefault()
-        addToWishList({
-            packageId: pack.package_id,
-            type: 'package',
-            title: pack.name,
-            price: pack.price,
-            slug: pack.slug,
-            image: pack.image
-        })
+        addToWishList(pack)
     }
 
     return (

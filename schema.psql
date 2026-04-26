@@ -223,7 +223,7 @@ CREATE TABLE subscriptions (
   stripe_subscription_id TEXT UNIQUE,
 
   status TEXT DEFAULT 'active'
-    CHECK (status IN ('active','past_due','canceled','unpaid','trialing','expired')),
+    CHECK (status IN ('active','past_due','canceled','unpaid','trialing','expired','refunded','pending')),
 
   current_period_start TIMESTAMP DEFAULT now(),
   current_period_end TIMESTAMP,
