@@ -73,7 +73,7 @@ const ClientReviews = () => {
             </div>
         )},
         { label: 'Comment', key: 'comment', render: (row) => (
-            <p className="text-slate-600 text-sm italic max-w-xs truncate">"{row.comment}"</p>
+            <p className="text-slate-600 text-sm italic max-w-xs truncate">&quot;{row.comment}&quot;</p>
         )},
         { label: 'Status', key: 'isApproved', render: (row) => (
             <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase

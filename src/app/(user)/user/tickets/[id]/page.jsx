@@ -13,7 +13,7 @@ const TicketChat = () => {
     const [message, setMessage] = useState('')
     const [loading, setLoading] = useState(true)
 
-    const fetchTicket = async () => {
+    const fetchTicket = React.useCallback(async () => {
         try {
             const res = await axios.get(`/api/ticket`)
             const current = res.data.data.find(t => String(t.ticket_id) === String(id))
@@ -23,7 +23,7 @@ const TicketChat = () => {
         } finally {
             setLoading(false)
         }
-    }
+    }, [id])
 
     useEffect(() => {
         if (id) {
@@ -31,7 +31,7 @@ const TicketChat = () => {
             const interval = setInterval(fetchTicket, 5000)
             return () => clearInterval(interval)
         }
-    }, [id])
+    }, [id, fetchTicket])
 
     const sendMessage = async () => {
         if (!message.trim()) return

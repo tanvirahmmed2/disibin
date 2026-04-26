@@ -69,7 +69,7 @@ const ReviewsPage = () => {
                                     </div>
                                     <p className="text-slate-600 font-medium italic leading-relaxed text-lg relative">
                                         <RiChatQuoteLine className="absolute -top-4 -left-4 text-emerald-50/50 w-12 h-12 -z-10" />
-                                        "{review.comment}"
+                                        &quot;{review.comment}&quot;
                                     </p>
                                 </div>
                                 

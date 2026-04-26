@@ -98,6 +98,7 @@ CREATE TABLE wishlists (
 -- =====================================================
 CREATE TABLE coupons (
   coupon_id SERIAL PRIMARY KEY,
+
   package_id INT REFERENCES packages(package_id),
 
   code TEXT UNIQUE NOT NULL,
@@ -113,6 +114,9 @@ CREATE TABLE coupons (
 
   status TEXT DEFAULT 'active'
     CHECK (status IN ('active','inactive')),
+
+  image TEXT,
+  image_id TEXT,
 
   created_by INT REFERENCES users(user_id),
   created_at TIMESTAMP DEFAULT now()

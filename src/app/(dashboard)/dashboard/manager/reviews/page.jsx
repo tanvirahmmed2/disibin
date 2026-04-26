@@ -60,7 +60,7 @@ const ManagerReviews = () => {
             </div>
         )},
         { label: 'Comment', key: 'comment', render: (row) => (
-            <p className="text-sm text-slate-600 font-medium italic leading-relaxed max-w-[300px] truncate">"{row.comment}"</p>
+            <p className="text-sm text-slate-600 font-medium italic leading-relaxed max-w-[300px] truncate">&quot;{row.comment}&quot;</p>
         )},
         { label: 'Status', key: 'is_approved', render: (row) => (
             <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider

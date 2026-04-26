@@ -6,7 +6,7 @@ import { Context } from '@/component/helper/Context'
 import { RiFileList3Line, RiDownload2Line, RiPriceTag3Line } from 'react-icons/ri'
 
 const ClientPurchases = () => {
-    const { isLoggedin } = useContext(Context)
+    const { isLoggedIn } = useContext(Context)
     const [purchases, setPurchases] = useState([])
     const [loading, setLoading] = useState(true)
 
@@ -22,8 +22,8 @@ const ClientPurchases = () => {
     }
 
     useEffect(() => {
-        if (isLoggedin) fetchPurchases()
-    }, [isLoggedin])
+        if (isLoggedIn) fetchPurchases()
+    }, [isLoggedIn])
 
     const columns = [
         { label: 'Order ID', key: 'purchase_id', render: (row) => (
@@ -32,7 +32,9 @@ const ClientPurchases = () => {
         { label: 'Asset', key: 'package_name', render: (row) => (
             <div className="flex flex-col">
                 <span className="font-bold text-slate-700">{row.package_name}</span>
-                <span className="text-[10px] text-slate-400 font-medium uppercase tracking-widest">{row.category_name}</span>
+                <span className="text-[10px] text-slate-400 font-medium uppercase tracking-widest">
+                    {row.transaction_id ? `TXN: ${row.transaction_id}` : `ORD-${row.purchase_id}`}
+                </span>
             </div>
         )},
         { label: 'Amount', key: 'final_amount', render: (row) => (

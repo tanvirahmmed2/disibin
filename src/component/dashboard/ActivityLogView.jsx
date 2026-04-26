@@ -16,7 +16,7 @@ const ActivityLogView = ({ title = "System Activity Log" }) => {
         pages: 1
     })
 
-    const fetchLogs = async (page = 1) => {
+    const fetchLogs = React.useCallback(async (page = 1) => {
         setLoading(true)
         try {
             const params = new URLSearchParams({
@@ -34,11 +34,11 @@ const ActivityLogView = ({ title = "System Activity Log" }) => {
         } finally {
             setLoading(false)
         }
-    }
+    }, [filters])
 
     useEffect(() => {
         fetchLogs(1)
-    }, [filters])
+    }, [filters, fetchLogs])
 
     const columns = [
         { label: 'Action', key: 'action', render: (row) => (

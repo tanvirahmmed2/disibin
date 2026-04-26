@@ -32,7 +32,7 @@ const InternalMail = () => {
     const [staffUsers, setStaffUsers] = useState([])
     const [staffLoading, setStaffLoading] = useState(false)
 
-    const fetchChats = async () => {
+    const fetchChats = React.useCallback(async () => {
         try {
             const res = await axios.get('/api/messages')
             setChats(res.data.data)
@@ -44,18 +44,18 @@ const InternalMail = () => {
         } finally {
             setLoading(false)
         }
-    }
+    }, [activeChatId])
 
-    const fetchMessages = async (convId) => {
+    const fetchMessages = React.useCallback(async (convId) => {
         try {
             const res = await axios.get(`/api/messages?conversationId=${convId}`)
             setMessages(res.data.data)
         } catch (error) {
             console.error('Failed to fetch messages', error)
         }
-    }
+    }, [])
 
-    const fetchStaff = async () => {
+    const fetchStaff = React.useCallback(async () => {
         setStaffLoading(true)
         try {
             const res = await axios.get('/api/messages/conversations')
@@ -65,7 +65,7 @@ const InternalMail = () => {
         } finally {
             setStaffLoading(false)
         }
-    }
+    }, [])
 
     const handleStartChat = async (targetUser) => {
         try {
@@ -83,11 +83,11 @@ const InternalMail = () => {
 
     useEffect(() => {
         if (userData?.user_id) fetchChats()
-    }, [userData])
+    }, [userData?.user_id, fetchChats])
 
     useEffect(() => {
         if (showNewMessage) fetchStaff()
-    }, [showNewMessage])
+    }, [showNewMessage, fetchStaff])
 
     useEffect(() => {
         if (activeChatId) {
@@ -95,7 +95,7 @@ const InternalMail = () => {
             const interval = setInterval(() => fetchMessages(activeChatId), 5000)
             return () => clearInterval(interval)
         }
-    }, [activeChatId])
+    }, [activeChatId, fetchMessages])
 
     const sendMessage = async () => {
         if (!inputText.trim() || !activeChatId) return

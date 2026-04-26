@@ -1,19 +1,19 @@
-import OfferCard from '@/component/card/OfferCard'
+import CouponCard from '@/component/card/CouponCard'
 import { BASE_URL } from '@/lib/database/secret'
 import React from 'react'
-import { RiFlashlightLine, RiArrowRightLine } from 'react-icons/ri'
+import { RiTicketLine, RiArrowRightLine } from 'react-icons/ri'
 
-const OffersPage = async () => {
-    let offers = [];
+const CouponsPage = async () => {
+    let coupons = [];
     try {
         const res = await fetch(`${BASE_URL}/api/coupon`, {
             method: 'GET',
             cache: 'no-store'
         })
         const data = await res.json()
-        offers = data.data || []
+        coupons = data.data || []
     } catch (error) {
-        console.error("Offers Fetch Error:", error);
+        console.error("Coupons Fetch Error:", error);
     }
 
     return (
@@ -23,13 +23,13 @@ const OffersPage = async () => {
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 px-4">
                     <div className="max-w-2xl space-y-4">
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-emerald-500/10">
-                            <RiFlashlightLine /> Exclusive Opportunities
+                            <RiTicketLine /> Exclusive Savings
                         </div>
                         <h1 className="text-6xl font-black text-slate-900 tracking-tighter leading-none">
-                            Limited Time <span className="text-emerald-500">Offers.</span>
+                            Active <span className="text-emerald-500">Coupons.</span>
                         </h1>
                         <p className="text-lg text-slate-500 font-medium leading-relaxed">
-                            Strategic digital packages designed for rapid scaling. Secure your competitive advantage with our curated deal collection.
+                            Unlock premium digital services with our strategic promotional codes. Apply these deals at checkout to maximize your value.
                         </p>
                     </div>
                     <div className="hidden md:block">
@@ -41,18 +41,18 @@ const OffersPage = async () => {
 
 
                 <div className="w-full px-4">
-                    {offers.length === 0 ? (
+                    {coupons.length === 0 ? (
                         <div className="p-20 text-center bg-white border border-slate-100 rounded-3xl shadow-sm">
                             <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-6 text-slate-200">
-                                <RiFlashlightLine size={40} />
+                                <RiTicketLine size={40} />
                             </div>
-                            <h3 className="text-2xl font-black text-slate-800 mb-2 tracking-tight">No Active Offers</h3>
-                            <p className="text-slate-500 font-medium max-w-sm mx-auto">Our editors are currently finalizing new strategic deals. Check back shortly for updates.</p>
+                            <h3 className="text-2xl font-black text-slate-800 mb-2 tracking-tight">No Active Coupons</h3>
+                            <p className="text-slate-500 font-medium max-w-sm mx-auto">We are currently updating our promotional offers. Please check back later for new coupon codes.</p>
                         </div>
                     ) : (
                         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-                            {offers.map((offer) => (
-                                <OfferCard key={offer.offer_id || offer.package_id} offer={offer}/>
+                            {coupons.map((coupon) => (
+                                <CouponCard key={coupon.coupon_id} coupon={coupon}/>
                             ))}
                         </div>
                     )}
@@ -62,4 +62,4 @@ const OffersPage = async () => {
     )
 }
 
-export default OffersPage
+export default CouponsPage

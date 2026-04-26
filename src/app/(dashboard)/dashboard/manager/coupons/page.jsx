@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import DataTable from '@/component/dashboard/DataTable'
-import { RiAddLine, RiEdit2Line, RiDeleteBin6Line, RiTicketLine } from 'react-icons/ri'
+import { RiAddLine, RiEdit2Line, RiDeleteBin6Line, RiTicketLine, RiImageAddLine } from 'react-icons/ri'
 import toast from 'react-hot-toast'
+import Image from 'next/image'
 
 const CouponManagement = () => {
     const [coupons, setCoupons] = useState([])
@@ -11,6 +12,7 @@ const CouponManagement = () => {
     const [loading, setLoading] = useState(true)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [currentCoupon, setCurrentCoupon] = useState(null)
+    const [imagePreview, setImagePreview] = useState(null)
     const [formData, setFormData] = useState({
         package_id: '',
         code: '',
@@ -18,7 +20,8 @@ const CouponManagement = () => {
         is_percentage: true,
         start_date: '',
         end_date: '',
-        status: 'active'
+        status: 'active',
+        image: null
     })
 
     const fetchCoupons = async () => {
@@ -47,15 +50,32 @@ const CouponManagement = () => {
         fetchPackages()
     }, [])
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0]
+        if (file) {
+            setFormData({ ...formData, image: file })
+            const reader = new FileReader()
+            reader.onloadend = () => setImagePreview(reader.result)
+            reader.readAsDataURL(file)
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
+        const data = new FormData()
+        Object.keys(formData).forEach(key => {
+            if (formData[key] !== null && formData[key] !== undefined) {
+                data.append(key, formData[key])
+            }
+        })
+        if (currentCoupon) data.append('id', currentCoupon.coupon_id)
+
         try {
-            const payload = { ...formData, package_id: formData.package_id || null }
             if (currentCoupon) {
-                await axios.patch('/api/coupon', { id: currentCoupon.coupon_id, ...payload })
+                await axios.patch('/api/coupon', data)
                 toast.success('Coupon updated')
             } else {
-                await axios.post('/api/coupon', payload)
+                await axios.post('/api/coupon', data)
                 toast.success('Coupon created')
             }
             setIsModalOpen(false)
@@ -77,17 +97,23 @@ const CouponManagement = () => {
     }
 
     const columns = [
+        { label: 'Preview', key: 'image', render: (row) => (
+            <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                {row.image ? (
+                    <Image src={row.image} alt={row.code} fill className="object-cover" />
+                ) : (
+                    <div className="flex items-center justify-center h-full text-slate-300">
+                        <RiTicketLine size={20} />
+                    </div>
+                )}
+            </div>
+        )},
         { label: 'Code', key: 'code', render: (row) => (
-            <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-lg shadow-slate-200">
-                    <RiTicketLine size={16} />
-                </div>
-                <div>
-                    <p className="font-bold text-slate-800">{row.code}</p>
-                    <p className="text-[9px] text-slate-400 font-black uppercase tracking-tighter">
-                        {row.package_name || 'Site-wide'}
-                    </p>
-                </div>
+            <div className="flex flex-col">
+                <p className="font-bold text-slate-800">{row.code}</p>
+                <p className="text-[9px] text-slate-400 font-black uppercase tracking-tighter">
+                    {row.package_name || 'Site-wide'}
+                </p>
             </div>
         )},
         { label: 'Discount', key: 'discount', render: (row) => (
@@ -114,6 +140,7 @@ const CouponManagement = () => {
             <button 
                 onClick={() => {
                     setCurrentCoupon(row)
+                    setImagePreview(row.image)
                     setFormData({
                         package_id: row.package_id || '',
                         code: row.code,
@@ -121,7 +148,8 @@ const CouponManagement = () => {
                         is_percentage: row.is_percentage,
                         start_date: row.start_date?.split('T')[0] || '',
                         end_date: row.end_date?.split('T')[0] || '',
-                        status: row.status
+                        status: row.status,
+                        image: null
                     })
                     setIsModalOpen(true)
                 }}
@@ -143,12 +171,13 @@ const CouponManagement = () => {
             <div className="flex items-center justify-between">
                 <div className="space-y-1">
                     <h1 className="text-2xl font-bold text-slate-800">Coupon Management</h1>
-                    <p className="text-sm text-slate-500">Create and manage promotional discounts and offers.</p>
+                    <p className="text-sm text-slate-500">Create and manage promotional discounts and offers with custom visuals.</p>
                 </div>
                 <button 
                     onClick={() => {
                         setCurrentCoupon(null)
-                        setFormData({ package_id: '', code: '', discount: '', is_percentage: true, start_date: '', end_date: '', status: 'active' })
+                        setImagePreview(null)
+                        setFormData({ package_id: '', code: '', discount: '', is_percentage: true, start_date: '', end_date: '', status: 'active', image: null })
                         setIsModalOpen(true)
                     }}
                     className="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-emerald-500 transition-all shadow-lg shadow-slate-900/10 flex items-center gap-2"
@@ -163,9 +192,32 @@ const CouponManagement = () => {
 
             {isModalOpen && (
                 <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-[2.5rem] w-full max-w-lg p-8 shadow-2xl animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh] no-scrollbar">
+                    <div className="bg-white rounded-[2.5rem] w-full max-w-xl p-8 shadow-2xl animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh] no-scrollbar">
                         <h2 className="text-xl font-bold text-slate-800 mb-6">{currentCoupon ? 'Edit Coupon' : 'New Coupon'}</h2>
-                        <form onSubmit={handleSubmit} className="space-y-5">
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            
+                            <div className="relative group cursor-pointer">
+                                <input 
+                                    type="file" 
+                                    onChange={handleFileChange}
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                    accept="image/*"
+                                />
+                                <div className={`aspect-video rounded-3xl border-2 border-dashed transition-all flex flex-col items-center justify-center overflow-hidden
+                                    ${imagePreview ? 'border-emerald-500/20 bg-emerald-50/10' : 'border-slate-200 bg-slate-50 hover:border-emerald-500/40'}`}>
+                                    {imagePreview ? (
+                                        <Image src={imagePreview} alt="Preview" fill className="object-cover" />
+                                    ) : (
+                                        <>
+                                            <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-slate-400 mb-3 group-hover:text-emerald-500 group-hover:scale-110 transition-all">
+                                                <RiImageAddLine size={24} />
+                                            </div>
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Upload Promotional Visual</p>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Coupon Code</label>
@@ -252,7 +304,7 @@ const CouponManagement = () => {
                                 </select>
                             </div>
 
-                            <div className="flex gap-3 pt-2">
+                            <div className="flex gap-3 pt-4">
                                 <button 
                                     type="button" 
                                     onClick={() => setIsModalOpen(false)}
@@ -264,7 +316,7 @@ const CouponManagement = () => {
                                     type="submit"
                                     className="flex-1 py-4 bg-slate-900 text-white font-bold uppercase tracking-widest text-[11px] rounded-2xl hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-500/10"
                                 >
-                                    {currentCoupon ? 'Update' : 'Create'}
+                                    {currentCoupon ? 'Update Coupon' : 'Create Coupon'}
                                 </button>
                             </div>
                         </form>

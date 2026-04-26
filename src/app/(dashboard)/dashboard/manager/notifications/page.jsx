@@ -165,7 +165,7 @@ const ManagerNotifications = () => {
                             <div className="p-16 text-center">
                                 <RiNotification3Line size={48} className="mx-auto text-slate-200 mb-4" />
                                 <h3 className="text-lg font-bold text-slate-900">No system alerts</h3>
-                                <p className="text-slate-500 font-medium">You're all caught up.</p>
+                                <p className="text-slate-500 font-medium">You&apos;re all caught up.</p>
                             </div>
                         ) : (
                             <div className="divide-y divide-slate-100">

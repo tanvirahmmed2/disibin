@@ -16,17 +16,19 @@ export async function GET(req) {
         if ((user.role === 'admin' || user.role === 'manager') && personal !== 'true') {
             sql = `
                 SELECT p.*, pkg.name as package_name, pkg.slug as package_slug,
-                       u.name as user_name, u.email as user_email
+                       u.name as user_name, u.email as user_email, pay.transaction_id
                 FROM purchases p
                 LEFT JOIN packages pkg ON p.package_id = pkg.package_id
                 JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN payments pay ON p.purchase_id = pay.purchase_id
                 ORDER BY p.created_at DESC
             `;
         } else {
             sql = `
-                SELECT p.*, pkg.name as package_name, pkg.slug as package_slug 
+                SELECT p.*, pkg.name as package_name, pkg.slug as package_slug, pay.transaction_id
                 FROM purchases p
                 LEFT JOIN packages pkg ON p.package_id = pkg.package_id
+                LEFT JOIN payments pay ON p.purchase_id = pay.purchase_id
                 WHERE p.user_id = $1 
                 ORDER BY p.created_at DESC
             `;
@@ -50,7 +52,7 @@ export async function POST(req) {
         const user = auth.data;
 
         const body = await req.json();
-        const { items, paymentMethod, couponCode, subscriptionId } = body;
+        const { items, paymentMethod, couponCode, subscriptionId, transactionId } = body;
 
         if (!items || items.length === 0) {
             return NextResponse.json({ success: false, message: "No items provided" }, { status: 400 });
@@ -154,22 +156,10 @@ export async function POST(req) {
             const itemFinalCost = Math.max(0, itemOriginalCost - itemDiscount);
             const durationDays     = item.duration_days * item.quantity;
 
-            let tenantId = renewalTenantId;
-
-            if (!subscriptionId) {
-                // NEW PURCHASE: create a tenant first
-                const tenantName = `${(user.email || '').split('@')[0]}-${item.slug || item.package_id}-${Date.now()}`;
-                const tenantRes  = await dbQuery(
-                    "INSERT INTO tenants (name, status) VALUES ($1, 'active') RETURNING *",
-                    [tenantName]
-                );
-                tenantId = tenantRes.rows[0].tenant_id;
-            }
-
-            // Create purchase record — linked to tenant via tenant_id
+            // Create purchase record — status pending, no tenant yet
             const purchaseRes = await dbQuery(`
-                INSERT INTO purchases (user_id, package_id, original_amount, discount_amount, final_amount, status, tenant_id, coupon_id)
-                VALUES ($1, $2, $3, $4, $5, 'pending', $6, $7)
+                INSERT INTO purchases (user_id, package_id, original_amount, discount_amount, final_amount, status, coupon_id)
+                VALUES ($1, $2, $3, $4, $5, 'pending', $6)
                 RETURNING *
             `, [
                 user.id, 
@@ -177,38 +167,17 @@ export async function POST(req) {
                 itemOriginalCost, 
                 itemDiscount, 
                 itemFinalCost, 
-                tenantId, 
                 (appliedCoupon && (appliedCoupon.package_id === item.package_id || !appliedCoupon.package_id)) ? appliedCoupon.coupon_id : null
             ]);
 
             const purchase = purchaseRes.rows[0];
             purchases.push(purchase);
 
-            if (!subscriptionId) {
-                // NEW PURCHASE: create a tenant first (if not already created for this item)
-                // Actually, the previous code created tenant before purchase. Let's keep that logic but fix the order for linking.
-                
-                // Link subscription to this purchase
-                await dbQuery(`
-                    INSERT INTO subscriptions (user_id, tenant_id, package_id, purchase_id, current_period_end, status)
-                    VALUES ($1, $2, $3, $4, NOW() + ($5 || ' days')::INTERVAL, 'active')
-                `, [user.id, tenantId, item.package_id, purchase.purchase_id, String(durationDays)]);
-            } else {
-                // RENEWAL: extend the existing subscription period and link latest purchase
-                await dbQuery(`
-                    UPDATE subscriptions
-                    SET current_period_end = current_period_end + ($1 || ' days')::INTERVAL,
-                        purchase_id = $2,
-                        updated_at = NOW()
-                    WHERE subscription_id = $3 AND user_id = $4
-                `, [String(durationDays), purchase.purchase_id, subscriptionId, user.id]);
-            }
-
-            // Create payment record — also linked to tenant
+            // Create payment record — status pending
             await dbQuery(`
-                INSERT INTO payments (purchase_id, user_id, amount, method, status, tenant_id)
+                INSERT INTO payments (purchase_id, user_id, amount, method, status, transaction_id)
                 VALUES ($1, $2, $3, $4, 'pending', $5)
-            `, [purchase.purchase_id, user.id, itemFinalCost, paymentMethod || 'manual', tenantId]);
+            `, [purchase.purchase_id, user.id, itemFinalCost, paymentMethod || 'manual', transactionId || null]);
         }
 
         // ── 5. Clear wishlist ─────────────────────────────────────────────────
@@ -269,6 +238,33 @@ export async function PATCH(req) {
         if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Purchase not found" }, { status: 404 });
 
         return NextResponse.json({ success: true, message: 'Purchase updated', data: res.rows[0] });
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}
+
+export async function DELETE(req) {
+    try {
+        const auth = await isLogin();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+
+        const user = auth.data;
+        if (user.role !== 'admin' && user.role !== 'manager') {
+            return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
+        }
+
+        const { id } = await req.json();
+        if (!id) return NextResponse.json({ success: false, message: "Purchase ID required" }, { status: 400 });
+
+        // First delete associated payments
+        await dbQuery("DELETE FROM payments WHERE purchase_id = $1", [id]);
+        
+        // Then delete the purchase
+        const res = await dbQuery("DELETE FROM purchases WHERE purchase_id = $1 RETURNING *", [id]);
+
+        if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Purchase not found" }, { status: 404 });
+
+        return NextResponse.json({ success: true, message: 'Purchase deleted successfully' });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

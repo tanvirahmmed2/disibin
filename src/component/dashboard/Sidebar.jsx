@@ -17,7 +17,8 @@ import {
     RiMailSendLine,
     RiPriceTag3Line,
     RiLogoutBoxRLine,
-    RiHistoryLine
+    RiHistoryLine,
+    RiMoneyDollarBoxLine
 } from 'react-icons/ri'
 
 const SidebarItem = ({ item, collapsed }) => {
@@ -58,7 +59,7 @@ const Sidebar = ({ collapsed }) => {
             { label: 'Coupon', href: '/dashboard/manager/coupons', icon: RiInboxLine },
             { label: 'User Control', href: '/dashboard/manager/users', icon: RiTeamLine },
             { label: 'Reviews', href: '/dashboard/manager/reviews', icon: RiPriceTag3Line },
-            { label: 'Purchases', href: '/dashboard/manager/purchases', icon: RiStackLine },
+            { label: 'Purchases', href: '/dashboard/manager/purchases', icon: RiMoneyDollarBoxLine },
             { label: 'Activity Log', href: '/dashboard/manager/activity_log', icon: RiHistoryLine },
         ],
         support: [

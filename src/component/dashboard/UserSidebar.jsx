@@ -12,7 +12,10 @@ import {
     RiShieldUserLine,
     RiPriceTag3Line,
     RiLogoutBoxRLine,
-    RiMailSendLine
+    RiMailSendLine,
+    RiMoneyDollarBoxLine,
+    RiShieldStarLine,
+    RiFoldersLine
 } from 'react-icons/ri'
 
 const SidebarItem = ({ item, collapsed }) => {
@@ -37,11 +40,10 @@ const UserSidebar = ({ collapsed }) => {
     const isStaff = ['admin', 'manager', 'support', 'developer'].includes(role)
 
     const userMenu = [
-        { label: 'User Portal', href: '/user', icon: RiUserLine },
-        { label: 'Purchases', href: `/user/purchases`, icon: RiStackLine },
-        { label: 'Subscriptions', href: `/user/subscription`, icon: RiShieldUserLine },
-        { label: 'Tickets', href: `/user/tickets`, icon: RiInboxLine },
-        { label: 'Reviews', href: `/user/reviews`, icon: RiPriceTag3Line },
+        { label: 'My Subscriptions', href: '/user/subscription', icon: RiShieldStarLine },
+        { label: 'Purchase History', href: '/user/purchases', icon: RiMoneyDollarBoxLine },
+        { label: 'Support Tickets', href: `/user/tickets`, icon: RiInboxLine },
+        { label: 'Service Reviews', href: `/user/reviews`, icon: RiPriceTag3Line },
     ]
 
     return (

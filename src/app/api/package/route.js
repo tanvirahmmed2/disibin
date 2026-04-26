@@ -12,7 +12,7 @@ export async function GET() {
     try {
         const res = await dbQuery(`
             SELECT p.*, c.name as category_name,
-                   (SELECT json_agg(f.name) 
+                   (SELECT json_agg(json_build_object('name', f.name, 'description', f.description, 'value', pf.value)) 
                     FROM package_features pf 
                     JOIN features f ON pf.feature_id = f.feature_id 
                     WHERE pf.package_id = p.package_id) as features
@@ -187,7 +187,7 @@ export async function PATCH(req) {
 
         const finalPkg = await dbQuery(`
             SELECT p.*, c.name as category_name,
-                   (SELECT json_agg(f.name) 
+                   (SELECT json_agg(json_build_object('name', f.name, 'description', f.description, 'value', pf.value)) 
                     FROM package_features pf 
                     JOIN features f ON pf.feature_id = f.feature_id 
                     WHERE pf.package_id = p.package_id) as features

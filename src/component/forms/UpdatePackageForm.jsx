@@ -10,7 +10,7 @@ const UpdatePackageForm = ({ packageData }) => {
         description: packageData?.description || '',
         price: packageData?.price || '',
         categoryId: packageData?.category_id || '',
-        features: packageData?.features?.join(', ') || '',
+        features: packageData?.features?.map(f => typeof f === 'object' ? f.name : f).join(', ') || '',
         durationDays: packageData?.duration_days || 30
     })
 

@@ -44,7 +44,7 @@ const Review = () => {
                 </div>
                 
                 <div className='space-y-6'>
-                    <p className='text-xl md:text-2xl font-black text-slate-900 leading-tight italic'>"{reviews[index].comment}"</p>
+                    <p className='text-xl md:text-2xl font-black text-slate-900 leading-tight italic'>&quot;{reviews[index].comment}&quot;</p>
                     <div>
                         <h4 className='font-black text-slate-900 uppercase tracking-widest text-[10px]'>{reviews[index].user_name}</h4>
                         <p className='text-emerald-500 font-black text-[9px] uppercase tracking-[0.2em] mt-1'>{reviews[index].user_email}</p>

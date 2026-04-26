@@ -294,99 +294,55 @@ const WishlistPage = () => {
                             </div>
                         </div>
 
-                        <button
-                            onClick={() => setShowCheckout(true)}
-                            className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2"
-                        >
-                            Proceed to Checkout <RiArrowRightLine size={16} />
-                        </button>
+                        {!showCheckout ? (
+                            <button
+                                onClick={() => setShowCheckout(true)}
+                                className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2"
+                            >
+                                Proceed to Checkout <RiArrowRightLine size={16} />
+                            </button>
+                        ) : (
+                            <div className="space-y-6 animate-in slide-in-from-top-4 duration-500">
+                                <div className="pt-6 border-t border-slate-100">
+                                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Select Payment Method</h4>
+                                    <div className="grid grid-cols-1 gap-3">
+                                        {['bkash', 'nagad'].map((method) => (
+                                            <button
+                                                key={method}
+                                                onClick={() => setPaymentMethod(method)}
+                                                className={`flex items-center justify-between p-4 rounded-xl border transition-all ${paymentMethod === method ? 'border-emerald-500 bg-emerald-50/30' : 'border-slate-100 bg-white hover:border-slate-200'}`}
+                                            >
+                                                <span className="text-sm font-bold text-slate-700 capitalize">{method}</span>
+                                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === method ? 'border-emerald-500 bg-emerald-500' : 'border-slate-200'}`}>
+                                                    {paymentMethod === method && <RiCheckLine className="text-white" size={12} />}
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
 
-                        <div className="flex items-center justify-center gap-2 text-[10px] text-slate-400 font-semibold uppercase tracking-widest">
-                            <RiShieldCheckLine size={12} /> Secure Checkout
+                                <form onSubmit={handleSubmit} className="space-y-4">
+                                    <button
+                                        type="submit"
+                                        disabled={submitting}
+                                        className="w-full py-4 bg-slate-900 text-white font-bold uppercase tracking-widest text-xs rounded-xl shadow-lg shadow-slate-900/10 hover:bg-emerald-600 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                                    >
+                                        {submitting ? 'Processing...' : 'Confirm & Place Order'}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowCheckout(false)}
+                                        className="w-full py-3 bg-slate-50 text-slate-400 hover:text-slate-600 font-bold uppercase tracking-widest text-[9px] rounded-xl transition-all"
+                                    >
+                                        Cancel & Edit Cart
+                                    </button>
+                                </form>
+                            </div>
+                        )}
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* Checkout Modal */}
-            {showCheckout && (
-                <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm z-[100] p-4">
-                    <div className="bg-white p-8 rounded-2xl w-full max-w-md shadow-2xl border border-slate-100">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold text-slate-900">Confirm Your Order</h2>
-                            <button onClick={() => setShowCheckout(false)} className="p-2 text-slate-400 hover:text-slate-900 rounded-lg hover:bg-slate-50 transition-colors">
-                                <RiCloseLine size={20} />
-                            </button>
-                        </div>
-
-                        {/* Items summary */}
-                        <div className="bg-slate-50 rounded-xl p-4 mb-6 space-y-2 border border-slate-100 max-h-36 overflow-y-auto">
-                            {localWishlist.map(item => (
-                                <div key={item.wishlist_id} className="flex justify-between text-sm text-slate-600 font-medium">
-                                    <span className="truncate mr-2">{item.title} <span className="text-slate-400">×{item.quantity}</span></span>
-                                    <span className="shrink-0 font-bold text-slate-800">BDT {(Number(item.price) * item.quantity).toFixed(2)}</span>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Totals */}
-                        <div className="space-y-2 mb-6 text-sm font-medium text-slate-600">
-                            <div className="flex justify-between">
-                                <span>Subtotal</span>
-                                <span>BDT {subTotal.toFixed(2)}</span>
-                            </div>
-                            {appliedCoupon && (
-                                <div className="flex justify-between text-emerald-600 font-semibold">
-                                    <span>Discount ({appliedCoupon.code})</span>
-                                    <span>– BDT {discountAmount.toFixed(2)}</span>
-                                </div>
-                            )}
-                            <div className="flex justify-between text-lg font-bold text-slate-900 pt-2 border-t border-slate-100">
-                                <span>Total</span>
-                                <span>৳{totalAmount.toFixed(2)}</span>
-                            </div>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            <div>
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">
-                                    Payment Method
-                                </label>
-                                <select
-                                    className="w-full p-4 bg-white border border-slate-200 rounded-xl font-medium text-sm focus:outline-none focus:border-emerald-500 transition-colors"
-                                    value={paymentMethod}
-                                    onChange={(e) => setPaymentMethod(e.target.value)}
-                                >
-                                    <option value="bkash">bKash (Manual Transfer)</option>
-                                    <option value="nagad">Nagad (Manual Transfer)</option>
-                                    <option value="bank">Bank Transfer</option>
-                                </select>
-                                <p className="text-xs text-slate-400 mt-2 font-medium">
-                                    You'll receive payment instructions after confirming.
-                                </p>
-                            </div>
-
-                            <div className="flex gap-3 pt-2">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowCheckout(false)}
-                                    className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold p-4 rounded-xl transition-colors text-sm"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={submitting}
-                                    className="flex-1 bg-slate-900 text-white font-bold p-4 rounded-xl hover:bg-emerald-500 transition-colors shadow-md text-sm disabled:opacity-50"
-                                >
-                                    {submitting ? 'Placing Order...' : 'Confirm Order'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-        </div>
     )
 }
 

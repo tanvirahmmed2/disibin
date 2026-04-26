@@ -27,7 +27,7 @@ const ChatPage = () => {
     
     const messagesEndRef = useRef(null)
 
-    const fetchUsers = async () => {
+    const fetchUsers = React.useCallback(async () => {
         try {
             const res = await axios.get(`/api/messages/conversations?currentUserId=${userData?.user_id}`)
             setUsers(res.data.data)
@@ -36,9 +36,9 @@ const ChatPage = () => {
         } finally {
             setLoading(false)
         }
-    }
+    }, [userData?.user_id])
 
-    const fetchMessages = async (receiverId) => {
+    const fetchMessages = React.useCallback(async (receiverId) => {
         setChatLoading(true)
         try {
             const res = await axios.get(`/api/messages?senderId=${userData?.user_id}&receiverId=${receiverId}`)
@@ -48,23 +48,24 @@ const ChatPage = () => {
         } finally {
             setChatLoading(false)
         }
-    }
+    }, [userData?.user_id])
 
     useEffect(() => {
         if (userData?.user_id) {
             fetchUsers()
         }
-    }, [userData])
+    }, [userData?.user_id, fetchUsers])
 
     useEffect(() => {
         if (selectedUser) {
-            fetchMessages(selectedUser.user_id || selectedUser.id)
+            const userId = selectedUser.user_id || selectedUser.id
+            fetchMessages(userId)
             const interval = setInterval(() => {
-                fetchMessages(selectedUser.user_id || selectedUser.id)
+                fetchMessages(userId)
             }, 5000)
             return () => clearInterval(interval)
         }
-    }, [selectedUser])
+    }, [selectedUser, fetchMessages])
 
     useEffect(() => {
         scrollToBottom()

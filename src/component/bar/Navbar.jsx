@@ -13,7 +13,7 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Services', href: '/services' },
-    { name: 'Offers', href: '/offers' },
+    { name: 'Coupons', href: '/coupons' },
     { name: 'Plans', href: '/packages' },
     { name: 'Projects', href: '/projects' },
     { name: 'Reviews', href: '/reviews' },

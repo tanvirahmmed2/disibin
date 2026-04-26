@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { dbQuery } from "@/lib/database/pg";
 import { isManager } from "@/lib/middleware";
 import { createLog } from "@/lib/utils/logger";
+import cloudinary from "@/lib/database/cloudinary";
 
 export async function GET(req) {
     try {
@@ -10,7 +11,13 @@ export async function GET(req) {
 
         if (code) {
             const res = await dbQuery(`
-                SELECT c.*, p.name, p.description, p.price as original_price, p.image, p.duration_days, p.slug as package_slug 
+                SELECT c.*, p.name, p.description, p.price as original_price, 
+                       COALESCE(c.image, p.image) as image, 
+                       p.duration_days, p.slug as slug,
+                       (SELECT json_agg(f.name) 
+                        FROM package_features pf 
+                        JOIN features f ON pf.feature_id = f.feature_id 
+                        WHERE pf.package_id = p.package_id) as features
                 FROM coupons c 
                 LEFT JOIN packages p ON c.package_id = p.package_id 
                 WHERE UPPER(c.code) = UPPER($1) AND c.status = 'active'
@@ -31,19 +38,35 @@ export async function GET(req) {
             return NextResponse.json({ success: true, message: 'Coupon fetched', data: offer });
         }
 
+        const offersOnly = searchParams.get('offersOnly') === 'true';
+        let whereClause = "WHERE c.status = 'active'";
+        if (offersOnly) {
+            whereClause += " AND c.package_id IS NOT NULL";
+        }
+
         const res = await dbQuery(`
-            SELECT c.*, p.name, p.description, p.price as original_price, p.image, p.duration_days, p.slug as package_slug 
+            SELECT c.*, p.name, p.description, p.price as original_price, 
+                   COALESCE(c.image, p.image) as image, 
+                   p.duration_days, p.slug as slug,
+                   (SELECT json_agg(f.name) 
+                    FROM package_features pf 
+                    JOIN features f ON pf.feature_id = f.feature_id 
+                    WHERE pf.package_id = p.package_id) as features
             FROM coupons c 
             LEFT JOIN packages p ON c.package_id = p.package_id 
-            WHERE c.status = 'active'
+            ${whereClause}
             ORDER BY c.created_at DESC
         `, []);
 
         const data = res.rows.map(offer => {
-            const discountAmount = offer.is_percentage ? (Number(offer.original_price) * Number(offer.discount) / 100) : Number(offer.discount);
+            let price = null;
+            if (offer.package_id) {
+                const discountAmount = offer.is_percentage ? (Number(offer.original_price) * Number(offer.discount) / 100) : Number(offer.discount);
+                price = Number(offer.original_price) - discountAmount;
+            }
             return {
                 ...offer,
-                price: Number(offer.original_price) - discountAmount
+                price
             };
         });
 
@@ -62,17 +85,40 @@ export async function POST(req) {
         const auth = await isManager();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
 
-        const { package_id, code, discount, is_percentage, start_date, end_date, status, usage_limit, max_discount } = await req.json();
+        const formData = await req.formData();
+        const package_id = formData.get("package_id");
+        const code = formData.get("code");
+        const discount = formData.get("discount");
+        const is_percentage = formData.get("is_percentage") === "true";
+        const start_date = formData.get("start_date");
+        const end_date = formData.get("end_date");
+        const status = formData.get("status") || "active";
+        const usage_limit = formData.get("usage_limit") || 0;
+        const max_discount = formData.get("max_discount");
+        const imageFile = formData.get("image");
         
         if (!code || discount === undefined) {
             return NextResponse.json({ success: false, message: "Missing required fields" }, { status: 400 });
         }
 
+        let imageUrl = null;
+        let imageId = null;
+
+        if (imageFile && imageFile.size > 0) {
+            const buffer = Buffer.from(await imageFile.arrayBuffer());
+            const cloudImage = await new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream({ folder: "coupons" }, (err, result) => (err ? reject(err) : resolve(result)));
+                stream.end(buffer);
+            });
+            imageUrl = cloudImage.secure_url;
+            imageId = cloudImage.public_id;
+        }
+
         const res = await dbQuery(`
-            INSERT INTO coupons (package_id, code, discount, is_percentage, start_date, end_date, status, usage_limit, max_discount, created_by)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            INSERT INTO coupons (package_id, code, discount, is_percentage, start_date, end_date, status, usage_limit, max_discount, image, image_id, created_by)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
             RETURNING *
-        `, [package_id || null, code.toUpperCase(), Number(discount), is_percentage ?? true, start_date, end_date, status || 'active', usage_limit || 0, max_discount || null, auth.data.id]);
+        `, [package_id || null, code.toUpperCase(), Number(discount), is_percentage, start_date || null, end_date || null, status, Number(usage_limit), max_discount || null, imageUrl, imageId, auth.data.id]);
 
         const coupon = res.rows[0];
 
@@ -99,39 +145,40 @@ export async function PATCH(req) {
         const auth = await isManager();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
 
-        const { id, package_id, code, discount, is_percentage, start_date, end_date, status } = await req.json();
+        const formData = await req.formData();
+        const id = formData.get("id");
         if (!id) return NextResponse.json({ success: false, message: "ID is required" }, { status: 400 });
 
         const updateFields = [];
         const updateParams = [];
 
-        if (package_id !== undefined) {
-            updateParams.push(package_id || null);
-            updateFields.push(`package_id = $${updateParams.length}`);
+        const fields = ["package_id", "code", "discount", "is_percentage", "start_date", "end_date", "status", "usage_limit", "max_discount"];
+        
+        for (const field of fields) {
+            const value = formData.get(field);
+            if (value !== null) {
+                let finalValue = value;
+                if (field === "discount" || field === "usage_limit" || field === "max_discount") finalValue = Number(value);
+                if (field === "is_percentage") finalValue = value === "true";
+                if (field === "code") finalValue = value.toUpperCase();
+                
+                updateParams.push(finalValue);
+                updateFields.push(`${field} = $${updateParams.length}`);
+            }
         }
-        if (code) {
-            updateParams.push(code.toUpperCase());
-            updateFields.push(`code = $${updateParams.length}`);
-        }
-        if (discount !== undefined) {
-            updateParams.push(Number(discount));
-            updateFields.push(`discount = $${updateParams.length}`);
-        }
-        if (is_percentage !== undefined) {
-            updateParams.push(is_percentage);
-            updateFields.push(`is_percentage = $${updateParams.length}`);
-        }
-        if (start_date) {
-            updateParams.push(start_date);
-            updateFields.push(`start_date = $${updateParams.length}`);
-        }
-        if (end_date) {
-            updateParams.push(end_date);
-            updateFields.push(`end_date = $${updateParams.length}`);
-        }
-        if (status) {
-            updateParams.push(status);
-            updateFields.push(`status = $${updateParams.length}`);
+
+        const imageFile = formData.get("image");
+        if (imageFile && typeof imageFile !== "string") {
+            const buffer = Buffer.from(await imageFile.arrayBuffer());
+            const cloudImage = await new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream({ folder: "coupons" }, (err, result) => (err ? reject(err) : resolve(result)));
+                stream.end(buffer);
+            });
+            
+            updateParams.push(cloudImage.secure_url);
+            updateFields.push(`image = $${updateParams.length}`);
+            updateParams.push(cloudImage.public_id);
+            updateFields.push(`image_id = $${updateParams.length}`);
         }
 
         if (updateFields.length > 0) {

@@ -15,7 +15,7 @@ const AddToWishlist = ({pack}) => {
             slug: pack.slug,
             image: pack.image
         })} 
-        className='w-full bg-slate-900 cursor-pointer text-white p-3 font-black uppercase tracking-widest text-[10px] text-center rounded-xl flex gap-2 items-center justify-center hover:bg-primary transition-all active:scale-95'
+        className='flex-1 bg-slate-900 cursor-pointer text-white p-3 font-black uppercase tracking-widest text-[10px] text-center rounded-xl flex gap-2 items-center justify-center hover:bg-primary transition-all active:scale-95'
     >
         <FaPlus/> Add to Wishlist
     </button>
