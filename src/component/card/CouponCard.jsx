@@ -39,16 +39,16 @@ const CouponCard = ({ coupon }) => {
                 </div>
                 <div className="absolute top-6 right-6">
                     <div className="bg-slate-900/90 backdrop-blur-md text-white px-4 py-2 rounded-2xl border border-white/10 shadow-xl">
-                        <p className="text-[8px] font-black uppercase tracking-[0.3em] opacity-60 mb-0.5 text-center">Use Code</p>
-                        <p className="text-sm font-black tracking-widest font-mono text-emerald-400">{coupon.code}</p>
+                        <p className="text-[8px]  uppercase tracking-[0.3em] opacity-60 mb-0.5 text-center">Use Code</p>
+                        <p className="text-sm  tracking-widest font-mono text-emerald-400">{coupon.code}</p>
                     </div>
                 </div>
             </div>
             
             <div className='p-10 flex flex-col flex-1 space-y-8'>
                 <div>
-                    <h3 className="text-3xl font-black text-slate-900 tracking-tighter mb-4 group-hover:text-emerald-600 transition-colors">
-                        {coupon.code || "Special Promotion"}
+                    <h3 className="text-xl text-slate-900 tracking-tighter mb-4 group-hover:text-emerald-600 transition-colors">
+                       Save {coupon.discount}{coupon.is_percentage ? '%' : '৳' || "Special Promotion"} on any purchase
                     </h3>
                 </div>
 
@@ -70,17 +70,17 @@ const CouponCard = ({ coupon }) => {
 
                 <div className="flex items-center justify-between pt-8 border-t border-slate-100">
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Final Price</span>
+                        <span className="text-[10px]  text-slate-400 uppercase tracking-[0.2em] mb-1">Final Price</span>
                         <div className="flex items-baseline gap-2">
                             {coupon.price !== null ? (
                                 <>
-                                    <span className="text-3xl font-black text-slate-900 tracking-tighter">৳{coupon.price}</span>
+                                    <span className="text-3xl  text-slate-900 tracking-tighter">৳{coupon.price}</span>
                                     {coupon.original_price > coupon.price && (
                                         <span className="text-xs font-bold text-slate-300 line-through">৳{coupon.original_price}</span>
                                     )}
                                 </>
                             ) : (
-                                <span className="text-3xl font-black text-slate-900 tracking-tighter">
+                                <span className="text-3xl  text-slate-900 tracking-tighter">
                                     {coupon.discount}{coupon.is_percentage ? '%' : '৳'} <span className="text-sm text-emerald-500 uppercase ml-1">OFF</span>
                                 </span>
                             )}
@@ -90,8 +90,8 @@ const CouponCard = ({ coupon }) => {
                     <div className="flex items-center gap-6">
                         {coupon.end_date && (
                             <div className="flex flex-col items-end">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1 text-right">Valid Until</span>
-                                <span className="text-sm font-black text-red-500 bg-red-50 px-3 py-1 rounded-lg">
+                                <span className="text-[10px]  text-slate-400 uppercase tracking-[0.2em] mb-1 text-right">Valid Until</span>
+                                <span className="text-sm  text-red-500 bg-red-50 px-3 py-1 rounded-lg">
                                     {new Date(coupon.end_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
                                 </span>
                             </div>
