@@ -1,26 +1,14 @@
 'use client'
-import React, { useContext } from 'react'
-import { Context } from '@/component/helper/Context'
+import React from 'react'
 import { RiTicketLine, RiCheckLine, RiFlashlightLine } from 'react-icons/ri'
 import Image from 'next/image'
 
 const CouponCard = ({ coupon }) => {
-    const { addToWishList } = useContext(Context)
-
-    const handleAddToWishlist = () => {
-        addToWishList({
-            package_id: coupon.package_id,
-            type: 'coupon',
-            title: coupon.name || coupon.code,
-            slug: coupon.slug || coupon.code,
-            price: coupon.price || coupon.discount,
-            image: coupon.image 
-        })
-    }
+   
 
     return (
-        <div className="group flex flex-col bg-white w-full rounded-[2rem] border border-slate-100 hover:border-emerald-500/10 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-500/5 overflow-hidden">
-            <div className='relative w-full aspect-[16/10] overflow-hidden bg-slate-50'>
+        <div className="group flex flex-col bg-white w-full rounded-xl border border-slate-100 hover:border-emerald-500/10 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-500/5 overflow-hidden">
+            <div className='relative w-full aspect-16/10 overflow-hidden bg-slate-50'>
                 {coupon.image ? (
                     <Image 
                         src={coupon.image} 
@@ -54,11 +42,8 @@ const CouponCard = ({ coupon }) => {
             <div className='p-10 flex flex-col flex-1 space-y-8'>
                 <div>
                     <h3 className="text-3xl font-black text-slate-900 tracking-tighter mb-4 group-hover:text-emerald-600 transition-colors">
-                        {coupon.name || "Special Promotion"}
+                        {coupon.code || "Special Promotion"}
                     </h3>
-                    <p className="text-slate-500 text-sm font-medium leading-relaxed">
-                        {coupon.description || "Unlock exclusive benefits and premium features with this limited-time promotional code."}
-                    </p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-3">
@@ -105,13 +90,12 @@ const CouponCard = ({ coupon }) => {
                                 </span>
                             </div>
                         )}
-                        <button 
-                            onClick={handleAddToWishlist}
+                        <p
                             className="w-14 h-14 bg-slate-50 text-slate-400 hover:text-emerald-600 flex items-center justify-center rounded-2xl transition-all active:scale-90 border border-transparent hover:border-emerald-500/10"
                             title="Add to Wishlist"
                         >
                             <RiFlashlightLine size={24} />
-                        </button>
+                        </p>
                     </div>
                 </div>
             </div>
