@@ -26,7 +26,6 @@ export async function POST(req) {
         const purchase = purchaseRes.rows[0];
         if (purchase.status !== 'pending') return NextResponse.json({ success: false, message: "Purchase is already processed" }, { status: 400 });
 
-        // 2. Check for existing subscription for this package (Renewal check)
         const existingSubRes = await dbQuery(`
             SELECT * FROM subscriptions 
             WHERE user_id = $1 AND package_id = $2 AND status NOT IN ('refunded', 'canceled')

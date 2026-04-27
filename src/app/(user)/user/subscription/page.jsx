@@ -183,6 +183,18 @@ const ClientSubscription = () => {
                                 </select>
                             </div>
 
+                            {/* Send money instruction */}
+                            <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+                                <span className="text-amber-500 text-lg mt-0.5">📲</span>
+                                <div>
+                                    <p className="text-[10px] font-black text-amber-700 uppercase tracking-widest mb-1">Send Payment To</p>
+                                    <p className="text-base font-black text-amber-800 tracking-widest font-mono">01987131369</p>
+                                    <p className="text-[10px] text-amber-600 font-medium mt-1 capitalize">
+                                        Send via <strong>{paymentMethod}</strong> — exact amount of <strong>৳{renewingSub?.price}</strong>
+                                    </p>
+                                </div>
+                            </div>
+
                             <div>
                                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Transaction ID / Reference</label>
                                 <input

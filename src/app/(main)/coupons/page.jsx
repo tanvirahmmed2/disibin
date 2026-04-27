@@ -50,7 +50,7 @@ const CouponsPage = async () => {
                             <p className="text-slate-500 font-medium max-w-sm mx-auto">We are currently updating our promotional offers. Please check back later for new coupon codes.</p>
                         </div>
                     ) : (
-                        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+                        <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
                             {coupons.map((coupon) => (
                                 <CouponCard key={coupon.coupon_id} coupon={coupon}/>
                             ))}

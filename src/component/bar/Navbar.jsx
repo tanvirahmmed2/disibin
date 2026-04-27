@@ -29,7 +29,7 @@ const Navbar = () => {
     <nav className='w-full fixed top-0 left-0 h-20 bg-white backdrop-blur-xl border-b border-slate-50 z-50 flex items-center'>
       <div className='max-w-7xl mx-auto px-6 w-full flex flex-row items-center justify-between'>
         <Link href={'/'} className='text-3xl font-bold text-slate-900 tracking-tighter hover:text-emerald-500 transition-all duration-500'>
-          Disibin<span className="text-emerald-500">.</span>
+          Disibin
         </Link>
 
         <div className='hidden lg:flex items-center gap-1'>

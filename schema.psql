@@ -269,22 +269,52 @@ CREATE TABLE tenant_users (
 -- =====================================================
 -- WEBSITES
 -- =====================================================
-CREATE TABLE websites (
+CREATE TABLE public.websites (
   website_id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES tenants(tenant_id),
+
+  tenant_id INTEGER REFERENCES tenants(tenant_id),
 
   name TEXT,
   domain TEXT UNIQUE,
-
   theme TEXT,
 
   status TEXT DEFAULT 'development'
     CHECK (status IN ('active','development','maintenance','suspended')),
 
   created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
-);
+  updated_at TIMESTAMP DEFAULT now(),
 
+  -- Business Info
+  business_name TEXT,
+  logo TEXT,
+  favicon TEXT,
+
+  -- Contact
+  email TEXT,
+  phone TEXT,
+  address TEXT,
+  city TEXT,
+  country TEXT,
+
+  -- SEO
+  meta_title TEXT,
+  meta_description TEXT,
+
+
+  -- Social
+  facebook TEXT,
+  instagram TEXT,
+  linkedin TEXT,
+  youtube TEXT,
+
+  -- UI
+  primary_color TEXT DEFAULT '#10b981',
+  secondary_color TEXT DEFAULT '#ffffff',
+
+  -- Flags
+  is_public BOOLEAN DEFAULT TRUE,
+  is_store_enabled BOOLEAN DEFAULT TRUE
+);
 -- =====================================================
 -- BLOGS
 -- =====================================================
