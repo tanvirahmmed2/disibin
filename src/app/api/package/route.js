@@ -157,7 +157,12 @@ export async function PATCH(req) {
             if (pkg.image_id) await cloudinary.uploader.destroy(pkg.image_id);
             const buffer = Buffer.from(await imageFile.arrayBuffer());
             const cloudImage = await new Promise((resolve, reject) => {
-                const stream = cloudinary.uploader.upload_stream({ folder: "packages" }, (err, result) => (err ? reject(err) : resolve(result)));
+                const stream = cloudinary.uploader.upload_stream({
+                    folder: "packages",
+                    public_id: generateSlug(title), 
+                    use_filename: true,   
+                    unique_filename: false 
+                }, (err, result) => (err ? reject(err) : resolve(result)));
                 stream.end(buffer);
             });
             updateParams.push(cloudImage.secure_url);
