@@ -15,7 +15,10 @@ import {
     RiCloseLine,
     RiAddLine,
     RiDeleteBinLine,
-    RiSaveLine
+    RiSaveLine,
+    RiArrowUpSLine,
+    RiArrowDownSLine,
+    RiExternalLinkLine
 } from 'react-icons/ri'
 import toast from 'react-hot-toast'
 
@@ -64,19 +67,9 @@ const EditableField = ({ label, value, onSave, type = 'text' }) => {
     )
 }
 
-/* ─── Website row with inline edit ──────────────────────────────────── */
-const WebsiteRow = ({ site, onUpdate, onDelete }) => {
-    const [editing, setEditing] = useState(false)
-    const [form, setForm] = useState({ name: site.name || '', domain: site.domain || '', status: site.status })
-    const [saving, setSaving] = useState(false)
-
-    const handleSave = async () => {
-        setSaving(true)
-        await onUpdate(site.website_id, form)
-        setSaving(false)
-        setEditing(false)
-    }
-
+/* ─── Website row — Read Only Full View ───────────────────────────────── */
+const WebsiteRow = ({ site }) => {
+    const [expanded, setExpanded] = useState(false)
     const statusColors = {
         active: 'bg-emerald-50 text-emerald-600 border-emerald-100',
         development: 'bg-blue-50 text-blue-600 border-blue-100',
@@ -84,69 +77,111 @@ const WebsiteRow = ({ site, onUpdate, onDelete }) => {
         suspended: 'bg-red-50 text-red-500 border-red-100',
     }
 
-    if (editing) {
-        return (
-            <div className="p-4 bg-slate-50 rounded-2xl border border-emerald-200 space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div>
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Website Name</label>
-                        <input value={form.name} onChange={e => setForm({...form, name: e.target.value})}
-                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-emerald-400"
-                            placeholder="My Website" />
-                    </div>
-                    <div>
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Domain</label>
-                        <input value={form.domain} onChange={e => setForm({...form, domain: e.target.value})}
-                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-emerald-400"
-                            placeholder="example.com" />
-                    </div>
-                    <div>
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Status</label>
-                        <select value={form.status} onChange={e => setForm({...form, status: e.target.value})}
-                            className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-emerald-400">
-                            <option value="active">Active</option>
-                            <option value="development">Development</option>
-                            <option value="maintenance">Maintenance</option>
-                            <option value="suspended">Suspended</option>
-                        </select>
-                    </div>
-                </div>
-                <div className="flex gap-2">
-                    <button onClick={handleSave} disabled={saving}
-                        className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white text-xs font-bold rounded-xl hover:bg-emerald-600 transition-colors disabled:opacity-50">
-                        <RiSaveLine size={14} /> {saving ? 'Saving...' : 'Save Changes'}
-                    </button>
-                    <button onClick={() => setEditing(false)}
-                        className="px-4 py-2 bg-slate-100 text-slate-500 text-xs font-bold rounded-xl hover:bg-slate-200 transition-colors">
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        )
-    }
-
     return (
-        <div className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-slate-200 transition-colors">
-            <div className="flex-1 min-w-0">
-                <p className="font-bold text-slate-800 truncate">{site.name || 'Unnamed Site'}</p>
-                <p className="text-xs text-slate-400 font-medium truncate">{site.domain || 'No domain'}</p>
-            </div>
-            <div className="flex items-center gap-3 ml-4">
-                <span className={`px-3 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-wider ${statusColors[site.status] || 'bg-slate-50 text-slate-400 border-slate-100'}`}>
-                    {site.status}
-                </span>
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => setEditing(true)} className="p-1.5 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-lg transition-all">
-                        <RiEdit2Line size={16} />
-                    </button>
-                    <button onClick={() => onDelete(site.website_id)} className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
-                        <RiDeleteBinLine size={16} />
+        <div className="bg-slate-50 rounded-[2rem] border border-slate-100 overflow-hidden">
+            <div className="flex justify-between items-center p-6 bg-white border-b border-slate-100">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center shrink-0 overflow-hidden">
+                        {site.logo ? <img src={site.logo} className="w-full h-full object-contain" alt="Logo" /> : <RiGlobalLine className="text-slate-200" size={24} />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <p className="font-bold text-slate-800 truncate text-lg">{site.name || 'Unnamed Site'}</p>
+                        <p className="text-xs text-slate-400 font-medium truncate">{site.domain || 'No domain'}</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-3">
+                    <span className={`px-3 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-wider ${statusColors[site.status] || 'bg-slate-50 text-slate-400 border-slate-100'}`}>
+                        {site.status}
+                    </span>
+                    <button 
+                        onClick={() => setExpanded(!expanded)}
+                        className="p-2 bg-slate-100 text-slate-500 rounded-xl hover:bg-emerald-500 hover:text-white transition-all"
+                    >
+                        {expanded ? <RiArrowUpSLine size={20} /> : <RiArrowDownSLine size={20} />}
                     </button>
                 </div>
             </div>
+
+            {expanded && (
+                <div className="p-8 space-y-8 bg-slate-50/50">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {/* Business & Appearance */}
+                        <div className="space-y-6">
+                            <div>
+                                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Business & Appearance</h4>
+                                <div className="space-y-3">
+                                    <DetailItem label="Official Name" value={site.business_name} />
+                                    <DetailItem label="Email" value={site.email} />
+                                    <DetailItem label="Phone" value={site.phone} />
+                                    <DetailItem label="Address" value={`${site.address || ''}, ${site.city || ''}, ${site.country || ''}`} />
+                                    <div className="flex gap-4 pt-2">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-4 h-4 rounded" style={{ backgroundColor: site.primary_color }}></div>
+                                            <span className="text-[10px] font-bold text-slate-500">Primary</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-4 h-4 rounded" style={{ backgroundColor: site.secondary_color }}></div>
+                                            <span className="text-[10px] font-bold text-slate-500">Secondary</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Social Presence</h4>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <DetailItem label="Facebook" value={site.facebook} isLink />
+                                    <DetailItem label="Instagram" value={site.instagram} isLink />
+                                    <DetailItem label="LinkedIn" value={site.linkedin} isLink />
+                                    <DetailItem label="YouTube" value={site.youtube} isLink />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* SEO & Settings */}
+                        <div className="space-y-6">
+                            <div>
+                                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">SEO Metadata</h4>
+                                <div className="space-y-4 bg-white p-5 rounded-2xl border border-slate-100">
+                                    <div>
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Meta Title</p>
+                                        <p className="text-sm font-bold text-slate-800">{site.meta_title || 'N/A'}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Meta Description</p>
+                                        <p className="text-xs text-slate-500 leading-relaxed font-medium">{site.meta_description || 'No description provided.'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className={`p-4 rounded-2xl border ${site.is_public ? 'bg-emerald-50 border-emerald-100' : 'bg-slate-100 border-slate-200 opacity-50'}`}>
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Visibility</p>
+                                    <p className="text-xs font-bold text-slate-700">{site.is_public ? 'Public' : 'Hidden'}</p>
+                                </div>
+                                <div className={`p-4 rounded-2xl border ${site.is_store_enabled ? 'bg-purple-50 border-purple-100' : 'bg-slate-100 border-slate-200 opacity-50'}`}>
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Store</p>
+                                    <p className="text-xs font-bold text-slate-700">{site.is_store_enabled ? 'Enabled' : 'Disabled'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
+
+const DetailItem = ({ label, value, isLink }) => (
+    <div>
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">{label}</p>
+        {isLink && value ? (
+            <a href={value} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-emerald-600 hover:underline flex items-center gap-1">
+                View Profile <RiExternalLinkLine size={12} />
+            </a>
+        ) : (
+            <p className="text-sm font-bold text-slate-700 truncate">{value || 'N/A'}</p>
+        )}
+    </div>
+)
 
 /* ─── Main Page ──────────────────────────────────────────────────────── */
 const TenantDetails = () => {
@@ -157,8 +192,6 @@ const TenantDetails = () => {
     const [data, setData] = useState(null)
     const [loading, setLoading] = useState(true)
     const [updating, setUpdating] = useState(false)
-    const [addingWebsite, setAddingWebsite] = useState(false)
-    const [newSite, setNewSite] = useState({ name: '', domain: '', status: 'development' })
 
     const fetchData = async () => {
         try {
@@ -179,7 +212,8 @@ const TenantDetails = () => {
             const res = await axios.patch(`/api/tenant/${id}`, { [field]: value })
             if (res.data.success) {
                 toast.success('Updated successfully')
-                setData(prev => ({ ...prev, [field]: value }))
+                // Refresh data to show synced changes if any
+                fetchData()
             }
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to update')
@@ -194,47 +228,6 @@ const TenantDetails = () => {
             await handleTenantUpdate('status', newStatus)
         } finally {
             setUpdating(false)
-        }
-    }
-
-    const handleWebsiteUpdate = async (websiteId, form) => {
-        try {
-            const res = await axios.patch('/api/website', { id: websiteId, ...form })
-            if (res.data.success) {
-                toast.success('Website updated')
-                setData(prev => ({
-                    ...prev,
-                    websites: prev.websites.map(w => w.website_id === websiteId ? res.data.data : w)
-                }))
-            }
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to update website')
-            throw error
-        }
-    }
-
-    const handleWebsiteDelete = async (websiteId) => {
-        if (!window.confirm('Delete this website?')) return
-        try {
-            await axios.delete('/api/website', { data: { id: websiteId } })
-            toast.success('Website deleted')
-            setData(prev => ({ ...prev, websites: prev.websites.filter(w => w.website_id !== websiteId) }))
-        } catch (error) {
-            toast.error('Failed to delete website')
-        }
-    }
-
-    const handleAddWebsite = async () => {
-        try {
-            const res = await axios.post('/api/website', { tenant_id: id, ...newSite })
-            if (res.data.success) {
-                toast.success('Website added')
-                setData(prev => ({ ...prev, websites: [...(prev.websites || []), res.data.data] }))
-                setNewSite({ name: '', domain: '', status: 'development' })
-                setAddingWebsite(false)
-            }
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to add website')
         }
     }
 
@@ -348,19 +341,15 @@ const TenantDetails = () => {
                     </div>
                 </div>
 
-                {/* Websites — full CRUD */}
+                {/* Websites — Read Only for Managers */}
                 <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm space-y-6">
                     <div className="flex items-center justify-between border-b border-slate-50 pb-4">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center">
                                 <RiGlobalLine size={20} />
                             </div>
-                            <h2 className="text-xl font-bold text-slate-800">Websites</h2>
+                            <h2 className="text-xl font-bold text-slate-800">Linked Website</h2>
                         </div>
-                        <button onClick={() => setAddingWebsite(true)}
-                            className="flex items-center gap-1.5 px-3 py-2 bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-emerald-500 transition-colors">
-                            <RiAddLine size={14} /> Add Site
-                        </button>
                     </div>
 
                     <div className="space-y-3">
@@ -368,47 +357,13 @@ const TenantDetails = () => {
                             <WebsiteRow
                                 key={site.website_id}
                                 site={site}
-                                onUpdate={handleWebsiteUpdate}
-                                onDelete={handleWebsiteDelete}
                             />
                         ))}
 
-                        {(!data.websites || data.websites.length === 0) && !addingWebsite && (
+                        {(!data.websites || data.websites.length === 0) && (
                             <div className="text-center py-8">
                                 <RiGlobalLine size={32} className="text-slate-200 mx-auto mb-2" />
                                 <p className="text-sm text-slate-400 font-medium">No websites configured.</p>
-                            </div>
-                        )}
-
-                        {/* Add new website form */}
-                        {addingWebsite && (
-                            <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 space-y-3">
-                                <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">New Website</p>
-                                <div className="grid grid-cols-1 gap-3">
-                                    <input value={newSite.name} onChange={e => setNewSite({...newSite, name: e.target.value})}
-                                        placeholder="Website name" 
-                                        className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-medium focus:outline-none focus:border-emerald-400 bg-white" />
-                                    <input value={newSite.domain} onChange={e => setNewSite({...newSite, domain: e.target.value})}
-                                        placeholder="domain.com" 
-                                        className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-medium focus:outline-none focus:border-emerald-400 bg-white" />
-                                    <select value={newSite.status} onChange={e => setNewSite({...newSite, status: e.target.value})}
-                                        className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-medium focus:outline-none focus:border-emerald-400 bg-white">
-                                        <option value="development">Development</option>
-                                        <option value="active">Active</option>
-                                        <option value="maintenance">Maintenance</option>
-                                        <option value="suspended">Suspended</option>
-                                    </select>
-                                </div>
-                                <div className="flex gap-2">
-                                    <button onClick={handleAddWebsite}
-                                        className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white text-xs font-bold rounded-xl hover:bg-emerald-600 transition-colors">
-                                        <RiCheckLine size={14} /> Add Website
-                                    </button>
-                                    <button onClick={() => setAddingWebsite(false)}
-                                        className="px-4 py-2 bg-white border border-slate-200 text-slate-500 text-xs font-bold rounded-xl hover:bg-slate-50 transition-colors">
-                                        Cancel
-                                    </button>
-                                </div>
                             </div>
                         )}
                     </div>

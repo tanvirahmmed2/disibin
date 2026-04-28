@@ -104,13 +104,15 @@ const ManagerSubscriptions = () => {
             >
                 <RiInformationLine size={18} />
             </button>
-            <button 
-                onClick={() => handleDelete(row.subscription_id)}
-                className="p-2 hover:bg-red-50 rounded-lg text-red-500 transition-all"
-                title="Delete Subscription"
-            >
-                <RiDeleteBinLine size={18} />
-            </button>
+            {row.status === 'refunded' && (
+                <button 
+                    onClick={() => handleDelete(row.subscription_id)}
+                    className="p-2 hover:bg-red-50 rounded-lg text-red-500 transition-all"
+                    title="Delete Refunded Subscription"
+                >
+                    <RiDeleteBinLine size={18} />
+                </button>
+            )}
         </div>
     )
 

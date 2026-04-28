@@ -139,6 +139,11 @@ export async function DELETE(req) {
             return NextResponse.json({ success: false, message: "Only managers can delete subscriptions" }, { status: 403 });
         }
 
+        // ENFORCEMENT: Only refunded subscriptions can be deleted
+        if (sub.status !== 'refunded') {
+            return NextResponse.json({ success: false, message: "Only refunded subscriptions can be permanently deleted" }, { status: 400 });
+        }
+
         if (isStaff) {
             // FULL CASCADING DELETE for Staff
             const { tenant_id, purchase_id } = sub;

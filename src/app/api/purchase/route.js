@@ -256,13 +256,19 @@ export async function DELETE(req) {
         const { id } = await req.json();
         if (!id) return NextResponse.json({ success: false, message: "Purchase ID required" }, { status: 400 });
 
+        // Check status first
+        const checkRes = await dbQuery("SELECT status FROM purchases WHERE purchase_id = $1", [id]);
+        if (checkRes.rows.length === 0) return NextResponse.json({ success: false, message: "Purchase not found" }, { status: 404 });
+        
+        if (checkRes.rows[0].status !== 'refunded') {
+            return NextResponse.json({ success: false, message: "Only refunded purchases can be permanently deleted" }, { status: 400 });
+        }
+
         // First delete associated payments
         await dbQuery("DELETE FROM payments WHERE purchase_id = $1", [id]);
         
         // Then delete the purchase
         const res = await dbQuery("DELETE FROM purchases WHERE purchase_id = $1 RETURNING *", [id]);
-
-        if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Purchase not found" }, { status: 404 });
 
         return NextResponse.json({ success: true, message: 'Purchase deleted successfully' });
     } catch (error) {

@@ -1,45 +1,24 @@
 import { NextResponse } from "next/server";
 import { dbQuery } from "@/lib/database/pg";
-import { isManager } from "@/lib/middleware";
+import { isLogin, isManager } from "@/lib/middleware";
 
-// PATCH /api/website/[id] — update a website's name, domain, status
-export async function PATCH(req, { params }) {
+// GET /api/website — list all websites for the current user
+export async function GET(req) {
     try {
-        const auth = await isManager();
-        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
+        const auth = await isLogin();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+        const user = auth.data;
 
-        const { id } = await params;
-        const body = await req.json();
-        const { name, domain, status, theme } = body;
-
-        const validStatuses = ['active', 'development', 'maintenance', 'suspended'];
-        if (status && !validStatuses.includes(status)) {
-            return NextResponse.json({ success: false, message: "Invalid status" }, { status: 400 });
-        }
-
-        const updateFields = [];
-        const updateParams = [];
-
-        if (name !== undefined) { updateParams.push(name.trim() || null); updateFields.push(`name = $${updateParams.length}`); }
-        if (domain !== undefined) { updateParams.push(domain.trim() || null); updateFields.push(`domain = $${updateParams.length}`); }
-        if (status !== undefined) { updateParams.push(status); updateFields.push(`status = $${updateParams.length}`); }
-        if (theme !== undefined) { updateParams.push(theme.trim() || null); updateFields.push(`theme = $${updateParams.length}`); }
-
-        if (updateFields.length === 0) {
-            return NextResponse.json({ success: false, message: "No fields to update" }, { status: 400 });
-        }
-
-        updateParams.push(id);
+        // List all websites for the user
         const res = await dbQuery(`
-            UPDATE websites 
-            SET ${updateFields.join(', ')}, updated_at = NOW()
-            WHERE website_id = $${updateParams.length}
-            RETURNING *
-        `, updateParams);
-
-        if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Website not found" }, { status: 404 });
-
-        return NextResponse.json({ success: true, message: 'Website updated', data: res.rows[0] });
+            SELECT w.*, t.name as tenant_name
+            FROM websites w
+            JOIN tenant_users tu ON w.tenant_id = tu.tenant_id
+            JOIN tenants t ON w.tenant_id = t.tenant_id
+            WHERE tu.user_id = $1
+        `, [user.id]);
+        
+        return NextResponse.json({ success: true, data: res.rows });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

@@ -40,6 +40,7 @@ const UserSidebar = ({ collapsed }) => {
     const isStaff = ['admin', 'manager', 'support', 'developer'].includes(role)
 
     const userMenu = [
+        { label: 'My Projects', href: '/user/website', icon: RiFoldersLine },
         { label: 'My Subscriptions', href: '/user/subscription', icon: RiShieldStarLine },
         { label: 'Purchase History', href: '/user/purchases', icon: RiMoneyDollarBoxLine },
         { label: 'Support Tickets', href: `/user/tickets`, icon: RiInboxLine },

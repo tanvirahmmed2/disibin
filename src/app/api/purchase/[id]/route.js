@@ -58,3 +58,25 @@ export async function GET(req, { params }) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
+
+export async function DELETE(req, { params }) {
+    try {
+        const auth = await isManager();
+        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 403 });
+
+        const { id } = await params;
+
+        // Verify status is refunded before deleting
+        const checkRes = await dbQuery("SELECT status FROM purchases WHERE purchase_id = $1", [id]);
+        if (checkRes.rows.length === 0) return NextResponse.json({ success: false, message: "Purchase not found" }, { status: 404 });
+        
+        if (checkRes.rows[0].status !== 'refunded') {
+            return NextResponse.json({ success: false, message: "Only refunded purchases can be permanently deleted" }, { status: 400 });
+        }
+
+        await dbQuery("DELETE FROM purchases WHERE purchase_id = $1", [id]);
+        return NextResponse.json({ success: true, message: "Purchase deleted permanently" });
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}

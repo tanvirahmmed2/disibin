@@ -118,6 +118,14 @@ const SubscriptionDetails = () => {
                                     <p className="text-sm font-semibold text-slate-700">{data.tenant_domain || 'Unassigned'}</p>
                                 </div>
                             </div>
+                            {data.website_id && (
+                                <button 
+                                    onClick={() => router.push(`/user/website/${data.website_id}`)}
+                                    className="w-full mt-4 flex items-center justify-center gap-2 py-3 bg-emerald-500 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/10"
+                                >
+                                    <RiGlobalLine size={16} /> Manage Website
+                                </button>
+                            )}
                         </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center h-full text-center py-4">

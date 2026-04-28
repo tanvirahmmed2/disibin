@@ -105,7 +105,7 @@ const Package = async ({ params }) => {
                                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Total Investment</p>
                                     <div className="flex items-baseline gap-2">
                                         <span className="text-4xl font-black tracking-tighter">৳{pack.price}</span>
-                                        <span className="text-xs font-bold text-white/40 uppercase tracking-widest">/ {pack.duration_days}</span>
+                                        <span className="text-xs font-bold text-white/40 uppercase tracking-widest">/ {pack.duration_days} DAYS</span>
                                     </div>
                                 </div>
 

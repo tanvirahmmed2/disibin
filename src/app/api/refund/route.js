@@ -125,11 +125,11 @@ export async function POST(req) {
             [subscription_id]
         );
 
-        // 6. Cleanup tenant (websites → tenant_users → tenant)
+        // 6. Suspend tenant instead of deleting
         if (sub.tenant_id) {
-            await dbQuery("DELETE FROM websites     WHERE tenant_id = $1", [sub.tenant_id]);
-            await dbQuery("DELETE FROM tenant_users WHERE tenant_id = $1", [sub.tenant_id]);
-            await dbQuery("DELETE FROM tenants      WHERE tenant_id = $1", [sub.tenant_id]);
+            await dbQuery("UPDATE tenants SET status = 'suspended', updated_at = NOW() WHERE tenant_id = $1", [sub.tenant_id]);
+            // Optional: Suspend websites too
+            await dbQuery("UPDATE websites SET status = 'suspended', updated_at = NOW() WHERE tenant_id = $1", [sub.tenant_id]);
         }
 
         // 7. Log the action
@@ -139,12 +139,12 @@ export async function POST(req) {
         `, [
             auth.data.id,
             subscription_id,
-            `Refund of ৳${refund_amount} for subscription #${subscription_id}. Reason: ${reason || 'N/A'}`
+            `Refund of ৳${refund_amount} for subscription #${subscription_id}. Tenant suspended.`
         ]);
 
         return NextResponse.json({
             success: true,
-            message: `Refund of ৳${refund_amount} processed. Subscription cancelled and workspace deleted.`
+            message: `Refund of ৳${refund_amount} processed. Subscription marked as refunded and tenant suspended.`
         });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
