@@ -107,7 +107,12 @@ export async function POST(req) {
         if (imageFile && imageFile.size > 0) {
             const buffer = Buffer.from(await imageFile.arrayBuffer());
             const cloudImage = await new Promise((resolve, reject) => {
-                const stream = cloudinary.uploader.upload_stream({ folder: "coupons" }, (err, result) => (err ? reject(err) : resolve(result)));
+                const stream = cloudinary.uploader.upload_stream({
+                    folder: "coupon",
+                    public_id: code, 
+                    use_filename: true,   
+                    unique_filename: false 
+                }, (err, result) => (err ? reject(err) : resolve(result)));
                 stream.end(buffer);
             });
             imageUrl = cloudImage.secure_url;

@@ -39,12 +39,26 @@ export async function POST(req) {
         const existing = await dbQuery("SELECT blog_id FROM blogs WHERE slug = $1", [slug]);
         if (existing.rows.length > 0) return NextResponse.json({ success: false, message: 'Blog title already exists' }, { status: 400 });
 
+        
         const buffer = Buffer.from(await imageFile.arrayBuffer());
+
+        
+
         const cloudImage = await new Promise((resolve, reject) => {
-            const stream = cloudinary.uploader.upload_stream({ folder: "blogs" }, (err, result) => { if (err) reject(err); else resolve(result); });
+            const stream = cloudinary.uploader.upload_stream(
+                {
+                    folder: "blogs",
+                    public_id: slug, 
+                    use_filename: true,   
+                    unique_filename: false 
+                },
+                (err, result) => {
+                    if (err) reject(err);
+                    else resolve(result);
+                }
+            );
             stream.end(buffer);
         });
-
         const res = await dbQuery(`
             INSERT INTO blogs (title, slug, description, image, image_id, author_id)
             VALUES ($1, $2, $3, $4, $5, $6)
@@ -140,7 +154,7 @@ export async function DELETE(req) {
 
         const { id } = await req.json();
         const res = await dbQuery("DELETE FROM blogs WHERE blog_id = $1 RETURNING *", [id]);
-        
+
         if (res.rows.length === 0) return NextResponse.json({ success: false, message: 'Blog not found' }, { status: 404 });
 
         const deletedBlog = res.rows[0];
