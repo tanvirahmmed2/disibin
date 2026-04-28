@@ -105,7 +105,7 @@ const Package = async ({ params }) => {
                                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Total Investment</p>
                                     <div className="flex items-baseline gap-2">
                                         <span className="text-4xl font-black tracking-tighter">৳{pack.price}</span>
-                                        <span className="text-xs font-bold text-white/40 uppercase tracking-widest">/ One-time</span>
+                                        <span className="text-xs font-bold text-white/40 uppercase tracking-widest">/ {pack.duration_days}</span>
                                     </div>
                                 </div>
 
@@ -136,7 +136,7 @@ const Package = async ({ params }) => {
                                 </div>
                             </div>
 
-                            <div className="p-6 bg-emerald-50 border border-emerald-100 rounded-[2rem] text-center space-y-2">
+                            <div className="p-6 bg-emerald-50 border border-emerald-100 rounded-xl text-center space-y-2">
                                 <p className="text-xs font-bold text-emerald-800 uppercase tracking-widest">Need a custom plan?</p>
                                 <p className="text-[10px] text-emerald-600 font-medium">Contact our architects for a tailored solution.</p>
                             </div>
