@@ -499,7 +499,7 @@ CREATE TABLE ticket_messages (
 -- =====================================================
 CREATE TABLE reviews (
   review_id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES users(user_id),
+  user_id INT REFERENCES users(user_id) UNIQUE,
 
   rating INT CHECK (rating BETWEEN 1 AND 5),
   comment TEXT,

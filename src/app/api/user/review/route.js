@@ -30,6 +30,12 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: 'Rating and comment are required' }, { status: 400 });
         }
 
+        // Enforce one review per user
+        const existing = await dbQuery("SELECT review_id FROM reviews WHERE user_id = $1", [auth.data.id]);
+        if (existing.rows.length > 0) {
+            return NextResponse.json({ success: false, message: 'You have already submitted a review. Delete it first to submit a new one.' }, { status: 409 });
+        }
+
         const res = await dbQuery(
             "INSERT INTO reviews (user_id, rating, comment) VALUES ($1, $2, $3) RETURNING *",
             [auth.data.id, rating, comment]

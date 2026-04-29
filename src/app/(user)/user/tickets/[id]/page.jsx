@@ -15,9 +15,8 @@ const TicketChat = () => {
 
     const fetchTicket = React.useCallback(async () => {
         try {
-            const res = await axios.get(`/api/ticket`)
-            const current = res.data.data.find(t => String(t.ticket_id) === String(id))
-            setTicket(current)
+            const res = await axios.get(`/api/ticket/${id}`)
+            setTicket(res.data.data)
         } catch (error) {
             console.error('Failed to fetch ticket', error)
         } finally {

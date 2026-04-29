@@ -7,7 +7,7 @@ import { RiStarFill, RiDeleteBin6Line, RiCloseLine, RiChatQuoteLine } from 'reac
 import toast from 'react-hot-toast'
 
 const ClientReviews = () => {
-    const { isLoggedin } = useContext(Context)
+    const { isLoggedIn } = useContext(Context)
     const [reviews, setReviews] = useState([])
     const [loading, setLoading] = useState(true)
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -30,14 +30,17 @@ const ClientReviews = () => {
     }
 
     useEffect(() => {
-        if (isLoggedin) fetchReviews()
-    }, [isLoggedin])
+        if (isLoggedIn) fetchReviews()
+    }, [isLoggedIn])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setSubmitting(true)
         try {
-            const res = await axios.post('/api/user/review', formData)
+            const res = await axios.post('/api/user/review', {
+                rating: formData.rating,
+                comment: formData.comment
+            })
             if (res.data.success) {
                 toast.success('Review submitted for approval.')
                 setIsModalOpen(false)
@@ -102,12 +105,18 @@ const ClientReviews = () => {
                     <h1 className="text-3xl font-bold text-slate-900 tracking-tight">System Feedback</h1>
                     <p className="text-slate-500 text-sm">Manage your testimonials and platform experience reviews.</p>
                 </div>
-                <button 
-                    onClick={() => setIsModalOpen(true)}
-                    className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-slate-900/10 hover:bg-emerald-500 transition-all"
-                >
-                    Post Review
-                </button>
+                {reviews.length === 0 ? (
+                    <button 
+                        onClick={() => setIsModalOpen(true)}
+                        className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-slate-900/10 hover:bg-emerald-500 transition-all"
+                    >
+                        Post Review
+                    </button>
+                ) : (
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl">
+                        Delete your review to post a new one
+                    </span>
+                )}
             </div>
 
             <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">

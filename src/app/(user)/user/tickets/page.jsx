@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 
 const ClientTickets = () => {
     const router = useRouter()
-    const { isLoggedin } = useContext(Context)
+    const { isLoggedIn } = useContext(Context)
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
 
@@ -24,8 +24,8 @@ const ClientTickets = () => {
     }
 
     useEffect(() => {
-        if (isLoggedin) fetchTickets()
-    }, [isLoggedin])
+        if (isLoggedIn) fetchTickets()
+    }, [isLoggedIn])
 
     const columns = [
         { label: 'Ticket Info', key: 'subject', render: (row) => (

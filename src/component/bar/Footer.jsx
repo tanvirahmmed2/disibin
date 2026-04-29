@@ -49,7 +49,7 @@ const Footer = () => {
                 <p>Rahmatpur, Sadar<br/>Mymensingh - 2200, BD</p>
                 <div className="pt-2">
                   <p className='text-white font-semibold'>+880 1805 003886</p>
-                  <p className="text-emerald-500">contact@disibin.com</p>
+                  <p className="text-emerald-500">disibin@gmail.com</p>
                 </div>
             </div>
           </div>

@@ -14,7 +14,7 @@ import {
 } from 'react-icons/ri'
 
 const ChatPage = () => {
-    const { userData, isLoggedin } = useContext(Context)
+    const { userData } = useContext(Context)
     const router = useRouter()
     
     const [users, setUsers] = useState([])
