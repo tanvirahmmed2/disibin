@@ -51,20 +51,20 @@ const Details = () => {
                     <p className="text-slate-600 leading-relaxed">{section.description}</p>
                   </div>
                   <div className='overflow-hidden rounded-2xl aspect-video'>
-                    <Image src={section.image} alt='service image' width={1000} height={1000} className='aspect-video rounded-2xl group-hover:scale-110 transition duration-700 ease-in-out scale-100 overflow-hidden'/>
+                    <Image src={section.image} alt='service image' width={1000} height={1000} className='aspect-video rounded-2xl group-hover:scale-110 transition duration-700 ease-in-out scale-100 overflow-hidden' />
                   </div>
                 </div>
                 <div className='w-full grid grid-cols-2 md:grid-cols-3 gap-4'>
                   {section.sections?.map((subSection) => (
-                      <div key={subSection.id} className="p-6 bg-white hover:bg-slate-50 transition duration-300 ease-in-out border border-slate-100 rounded-xl">
-                        <h4 className="font-semibold text-slate-800 mb-2 text-sm uppercase tracking-wide">
-                          {subSection.title}
-                        </h4>
-                        <p className="text-sm text-slate-500 leading-relaxed">
-                          {subSection.description}
-                        </p>
-                      </div>
-                    ))}
+                    <div key={subSection.id} className="p-6 bg-white hover:bg-slate-50 transition duration-300 ease-in-out border border-slate-100 rounded-xl">
+                      <h4 className="font-semibold text-slate-800 mb-2 text-sm uppercase tracking-wide">
+                        {subSection.title}
+                      </h4>
+                      <p className="text-sm text-slate-500 leading-relaxed">
+                        {subSection.description}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
               // <div key={section.id || idx} className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
