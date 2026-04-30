@@ -87,7 +87,6 @@ const ReviewsPage = () => {
                 </div>
             </section>
 
-            {/* ── Reviews Grid ── */}
             <section className="w-full py-24 bg-white">
                 <div className="container-custom">
                     {reviews.length === 0 ? (

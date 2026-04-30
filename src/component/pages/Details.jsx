@@ -8,7 +8,7 @@ const Details = () => {
   const { services, customServices } = useContext(Context)
   return (
     <section className='w-full py-24 bg-white'>
-      <div className='max-w-7xl mx-auto px-6'>
+      <div className='max-w-352 mx-auto px-6'>
         <div className="mb-20">
           <span className='text-emerald-500 font-bold tracking-widest uppercase text-[11px] mb-3 block'>
             What We Do
