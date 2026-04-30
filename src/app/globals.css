@@ -36,7 +36,7 @@ html {
 
 @layer components {
   .container-custom {
-    @apply max-w-[1400px] mx-auto px-6 w-full;
+    @apply max-w-7xl mx-auto px-6 w-full;
   }
   
   .card-premium {

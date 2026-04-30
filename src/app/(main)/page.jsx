@@ -6,6 +6,7 @@ import Intro from '@/component/pages/Intro'
 import Review from '@/component/pages/Review'
 import SkillSlider from '@/component/pages/SkillSlider'
 import Support from '@/component/pages/Support'
+import Faqs from '@/component/pages/Faqs'
 
 
 
@@ -18,6 +19,7 @@ const MainPage = () => {
       <Details />
       <Review/>
       <SkillSlider/>
+      <Faqs/>
       <Support/>
     </main>
   )
