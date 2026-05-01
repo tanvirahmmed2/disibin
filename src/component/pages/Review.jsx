@@ -43,9 +43,9 @@ const Review = () => {
 
     const variants = {
         enter: (direction) => ({
-            x: direction > 0 ? 500 : -500,
+            x: direction > 0 ? 200 : -200,
             opacity: 0,
-            scale: 0.9
+            scale: 0.95
         }),
         center: {
             zIndex: 1,
@@ -55,37 +55,34 @@ const Review = () => {
         },
         exit: (direction) => ({
             zIndex: 0,
-            x: direction < 0 ? 500 : -500,
+            x: direction < 0 ? 200 : -200,
             opacity: 0,
-            scale: 0.9
+            scale: 0.95
         })
     }
 
     if (!reviews || reviews.length === 0) return null
 
     return (
-        <section className='w-full py-20 bg-slate-50/30 relative overflow-hidden'>
-            {/* Background Accents */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-[120px] -mr-48 -mt-48"></div>
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/5 rounded-full blur-[120px] -ml-48 -mb-48"></div>
+        <section className='w-full py-12 bg-white relative overflow-hidden'>
+            {/* Subtle Decor */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-[80px] -mr-32 -mt-32"></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/5 rounded-full blur-[80px] -ml-32 -mb-32"></div>
 
-            <div className='container-custom flex flex-col items-center justify-center space-y-12 relative'>
+            <div className='container-custom flex flex-col items-center justify-center space-y-8 relative px-4'>
                 <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className='text-center space-y-4'
+                    className='text-center space-y-2'
                 >
-                    <span className='text-emerald-500 font-bold tracking-[0.5em] uppercase text-[10px] block'>Testimonials</span>
-                    <h2 className='text-4xl md:text-6xl font-bold text-slate-900 tracking-tighter leading-tight'>
-                        What Our Clients <span className="text-emerald-500">Say.</span>
+                    <span className='text-emerald-600 font-bold tracking-[0.3em] uppercase text-[9px] block'>Client Feedback</span>
+                    <h2 className='text-2xl md:text-3xl font-bold text-slate-900 tracking-tight'>
+                        Real Results. <span className="text-slate-400">Real Stories.</span>
                     </h2>
-                    <p className="text-slate-500 font-medium text-base max-w-xl mx-auto">
-                        Real stories from business owners who transformed their operations with our digital solutions.
-                    </p>
                 </motion.div>
 
-                <div className='w-full max-w-4xl relative min-h-[350px] flex items-center justify-center'>
+                <div className='w-full max-w-2xl relative min-h-[400px] md:min-h-[350px] flex items-center justify-center'>
                     <AnimatePresence initial={false} custom={direction}>
                         <motion.div
                             key={index}
@@ -96,37 +93,38 @@ const Review = () => {
                             exit="exit"
                             transition={{
                                 x: { type: "spring", stiffness: 300, damping: 30 },
-                                opacity: { duration: 0.4 },
-                                scale: { duration: 0.4 }
+                                opacity: { duration: 0.3 },
+                                scale: { duration: 0.3 }
                             }}
                             className='absolute w-full'
                         >
-                            <div className='bg-white border border-slate-100 p-8 md:p-12 rounded-[3rem] shadow-lg flex flex-col items-center text-center space-y-8 relative'>
-                                <div className='absolute top-8 left-8 text-emerald-500/10'>
-                                    <RiDoubleQuotesL size={60} />
-                                </div>
+                            <div className='bg-slate-50/50 border border-slate-100 p-5 md:p-8 rounded-2xl flex flex-col gap-6 relative group transition-all hover:border-emerald-500/20'>
+                                <RiDoubleQuotesL className="text-emerald-500/20 transition-colors group-hover:text-emerald-500/40" size={32} />
                                 
-                                <div className='relative w-20 h-20 rounded-2xl overflow-hidden bg-slate-100 shadow-xl border-4 border-white rotate-3 group'>
-                                    <Image 
-                                        src={reviews[index].user_image} 
-                                        alt={reviews[index].user_name} 
-                                        fill 
-                                        className='object-cover grayscale group-hover:grayscale-0 transition-all duration-700'
-                                    />
-                                </div>
-                                
-                                <div className='space-y-6 relative z-10'>
-                                    <div className="flex justify-center gap-1 text-emerald-500">
+                                <div className='space-y-5'>
+                                    {/* Stars */}
+                                    <div className="flex gap-0.5 text-amber-400">
                                         {[...Array(5)].map((_, i) => (
-                                            <RiStarFill key={i} size={16} />
+                                            <RiStarFill key={i} size={14} className={i < reviews[index].rating ? 'text-amber-400' : 'text-slate-200'} />
                                         ))}
                                     </div>
-                                    <p className='text-xl md:text-2xl font-bold text-slate-900 leading-relaxed italic tracking-tight'>
+
+                                    <p className='text-base md:text-lg font-medium text-slate-700 leading-relaxed italic'>
                                         &quot;{reviews[index].comment}&quot;
                                     </p>
-                                    <div>
-                                        <h4 className='font-bold text-slate-900 uppercase tracking-widest text-xs'>{reviews[index].user_name}</h4>
-                                        <p className='text-emerald-500 font-bold text-[10px] uppercase tracking-[0.3em] mt-1'>{reviews[index].user_email}</p>
+
+                                    {/* Author Info Area - Card Like */}
+                                    <div className="flex items-center gap-4 pt-5 border-t border-slate-100">
+                                        <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 text-emerald-500 font-bold text-sm flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500 transition-all">
+                                            {reviews[index].user_name?.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div className="text-left">
+                                            <p className="text-sm font-bold text-slate-800">{reviews[index].user_name}</p>
+                                            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-500">Verified Client</p>
+                                        </div>
+                                        <p className="ml-auto text-[10px] font-bold uppercase tracking-widest text-slate-300">
+                                            {new Date(reviews[index].created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -134,13 +132,8 @@ const Review = () => {
                     </AnimatePresence>
                 </div>
 
-                <div className='flex items-center gap-4 pt-6'>
-                    <button 
-                        onClick={prevStep}
-                        className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:border-emerald-500 hover:text-emerald-500 transition-all"
-                    >
-                        <RiDoubleQuotesL className="rotate-180" size={16} />
-                    </button>
+                {/* Simplified Controls */}
+                <div className='flex items-center gap-6'>
                     <div className='flex items-center gap-2'>
                         {reviews.map((_, i) => (
                             <button 
@@ -149,16 +142,10 @@ const Review = () => {
                                     setDirection(i > index ? 1 : -1)
                                     setIndex(i)
                                 }}
-                                className={`h-1.5 rounded-full transition-all duration-500 ${i === index ? 'w-8 bg-emerald-500 shadow-md shadow-emerald-500/20' : 'w-1.5 bg-slate-200 hover:bg-slate-300'}`}
+                                className={`h-1 rounded-full transition-all duration-500 ${i === index ? 'w-6 bg-emerald-500 shadow-sm' : 'w-1.5 bg-slate-200 hover:bg-slate-300'}`}
                             />
                         ))}
                     </div>
-                    <button 
-                        onClick={nextStep}
-                        className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:border-emerald-500 hover:text-emerald-500 transition-all"
-                    >
-                        <RiDoubleQuotesL size={16} />
-                    </button>
                 </div>
             </div>
         </section>
