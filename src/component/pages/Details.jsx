@@ -45,7 +45,7 @@ const Details = () => {
         {customServices && customServices.length > 0 && (
           <div className="space-y-20">
             {customServices.map((section) => (
-              <div key={section.id} className='w-full gap-10 flex flex-col md:flex-row items-center justify-cente md:items-start even:flex-row-reverse'>
+              <div key={section.id} className='w-full gap-10 flex flex-col md:flex-row items-center justify-cente md:items-start md:even:flex-row-reverse'>
                 <motion.div initial={{opacity:0}} whileInView={{opacity:1}} transition={{duration:1}} className='w-full'>
                   <Image src={section.image} alt={section.title} width={1000} height={1000} className='w-full aspect-3/2 object-cover rounded-2xl'/>
                 </motion.div>
