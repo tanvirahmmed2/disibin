@@ -9,7 +9,7 @@ export async function generateMetadata({ params }) {
     if (!res.ok) return { title: 'Project Not Found' }
     
     const data = await res.json()
-    const project = data.payload
+    const project = data.data
 
     return {
         title: project.title,

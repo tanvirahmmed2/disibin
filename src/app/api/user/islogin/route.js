@@ -50,7 +50,6 @@ export async function GET() {
                     ) AND status != 'suspended'
                 `, [user.user_id]);
 
-                // 4. Check for any past_due or suspended subs for the alert
                 const alertRes = await dbQuery(
                     "SELECT COUNT(*) as count FROM subscriptions WHERE user_id = $1 AND status IN ('past_due', 'suspended', 'expired')",
                     [user.user_id]
