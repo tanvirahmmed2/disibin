@@ -26,7 +26,7 @@ const Details = () => {
           {services.map((service, index) => (
             <motion.div initial={{opacity:0}} whileInView={{opacity:1}} transition={{duration:2}}
               key={service.id || index}
-              className="p-2 bg-emerald-500  ease-in-out border border-slate-100 rounded-xl hover:bg-white hover:shadow-md transition-all duration-500 group"
+              className="p-2 bg-emerald-500  ease-in-out border border-slate-100 rounded-xl hover:bg-white hover:shadow-md transition duration-700 group"
             >
               <div className="w-12 h-12 rounded-2xl bg-white border border-slate-100 text-slate-400 flex items-center justify-center text-2xl mb-8 group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500 transition-all duration-300">
                 {service.icon}

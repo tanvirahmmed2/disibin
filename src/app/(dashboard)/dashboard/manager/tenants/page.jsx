@@ -53,6 +53,11 @@ const ManagerTenants = () => {
         { label: 'Created', key: 'created_at', render: (row) => (
             <span className="text-slate-500 text-xs font-semibold">{new Date(row.created_at).toLocaleDateString()}</span>
         )},
+        { label: 'Expiry', key: 'expire_date', render: (row) => (
+            <span className={`text-xs font-bold ${new Date(row.expire_date) < new Date() ? 'text-red-500' : 'text-slate-700'}`}>
+                {row.expire_date ? new Date(row.expire_date).toLocaleDateString() : 'N/A'}
+            </span>
+        )},
     ]
 
     const actions = (row) => (

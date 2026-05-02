@@ -67,14 +67,25 @@ const EditableField = ({ label, value, onSave, type = 'text' }) => {
     )
 }
 
-/* ─── Website row — Read Only Full View ───────────────────────────────── */
-const WebsiteRow = ({ site }) => {
+/* ─── Website row — Editable Status ───────────────────────────────── */
+const WebsiteRow = ({ site, onStatusUpdate }) => {
     const [expanded, setExpanded] = useState(false)
+    const [updating, setUpdating] = useState(false)
+    
     const statusColors = {
         active: 'bg-emerald-50 text-emerald-600 border-emerald-100',
         development: 'bg-blue-50 text-blue-600 border-blue-100',
         maintenance: 'bg-amber-50 text-amber-600 border-amber-100',
         suspended: 'bg-red-50 text-red-500 border-red-100',
+    }
+
+    const handleStatusUpdate = async (newStatus) => {
+        setUpdating(true)
+        try {
+            await onStatusUpdate(newStatus)
+        } finally {
+            setUpdating(false)
+        }
     }
 
     return (
@@ -90,9 +101,18 @@ const WebsiteRow = ({ site }) => {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <span className={`px-3 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-wider ${statusColors[site.status] || 'bg-slate-50 text-slate-400 border-slate-100'}`}>
-                        {site.status}
-                    </span>
+                    <select
+                        value={site.status}
+                        onChange={(e) => handleStatusUpdate(e.target.value)}
+                        disabled={updating}
+                        className={`px-3 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-wider focus:outline-none transition-all
+                            ${statusColors[site.status] || 'bg-slate-50 text-slate-400 border-slate-100'}`}
+                    >
+                        <option value="active">Active</option>
+                        <option value="development">Development</option>
+                        <option value="maintenance">Maintenance</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
                     <button 
                         onClick={() => setExpanded(!expanded)}
                         className="p-2 bg-slate-100 text-slate-500 rounded-xl hover:bg-emerald-500 hover:text-white transition-all"
@@ -357,6 +377,7 @@ const TenantDetails = () => {
                             <WebsiteRow
                                 key={site.website_id}
                                 site={site}
+                                onStatusUpdate={(s) => handleTenantUpdate('websiteStatus', s)}
                             />
                         ))}
 

@@ -22,20 +22,55 @@ const SubscriptionDetails = () => {
     const [data, setData] = useState(null)
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await axios.get(`/api/subscription/${id}`, { withCredentials: true })
-                setData(res.data.data)
-            } catch (error) {
-                toast.error('Failed to load subscription details')
-                router.push('/user/subscription')
-            } finally {
-                setLoading(false)
-            }
+    // Renewal State
+    const [showRenewModal, setShowRenewModal] = useState(false)
+    const [paymentMethod, setPaymentMethod] = useState('bkash')
+    const [transactionId, setTransactionId] = useState('')
+    const [renewing, setRenewing] = useState(false)
+
+    const fetchData = async () => {
+        try {
+            const res = await axios.get(`/api/subscription/${id}`, { withCredentials: true })
+            setData(res.data.data)
+        } catch (error) {
+            toast.error('Failed to load subscription details')
+            router.push('/user/subscription')
+        } finally {
+            setLoading(false)
         }
+    }
+
+    useEffect(() => {
         if (id) fetchData()
     }, [id, router])
+
+    const handleRenew = async (e) => {
+        e.preventDefault()
+        setRenewing(true)
+        try {
+            const payload = {
+                items: [{
+                    packageId: data.package_id,
+                    quantity: 1,
+                    price: data.price
+                }],
+                paymentMethod,
+                transactionId,
+                subscriptionId: data.subscription_id
+            }
+
+            const res = await axios.post('/api/purchase', payload, { withCredentials: true })
+            if (res.data.success) {
+                toast.success('Renewal request submitted! Awaiting manager approval.')
+                setShowRenewModal(false)
+                fetchData()
+            }
+        } catch (error) {
+            toast.error(error?.response?.data?.message || 'Failed to renew')
+        } finally {
+            setRenewing(false)
+        }
+    }
 
     if (loading) return (
         <div className="flex items-center justify-center min-h-[60vh]">
@@ -91,6 +126,15 @@ const SubscriptionDetails = () => {
                             </p>
                         </div>
                     </div>
+
+                    {!data.package_lifetime && (
+                        <button 
+                            onClick={() => setShowRenewModal(true)}
+                            className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-emerald-500/20"
+                        >
+                            Renew Now (৳{data.price})
+                        </button>
+                    )}
                 </div>
 
                 {/* Tenant / Workspace */}
@@ -121,7 +165,7 @@ const SubscriptionDetails = () => {
                             {data.website_id && (
                                 <button 
                                     onClick={() => router.push(`/user/website/${data.website_id}`)}
-                                    className="w-full mt-4 flex items-center justify-center gap-2 py-3 bg-emerald-500 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/10"
+                                    className="w-full mt-4 flex items-center justify-center gap-2 py-3 bg-emerald-50 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/10"
                                 >
                                     <RiGlobalLine size={16} /> Manage Website
                                 </button>
@@ -192,6 +236,80 @@ const SubscriptionDetails = () => {
                 </div>
 
             </div>
+
+            {/* Renewal Modal */}
+            {showRenewModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm z-[100] p-4">
+                    <div className="bg-white p-8 rounded-2xl w-full max-w-md shadow-2xl border border-slate-100">
+                        <h2 className="text-xl font-bold mb-6 text-slate-900">Renew Subscription</h2>
+                        
+                        <div className="bg-slate-50 p-5 rounded-xl mb-6 space-y-3 border border-slate-100">
+                            <div className="flex justify-between items-center">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Plan Name</span>
+                                <span className="text-sm font-bold text-slate-800">{data.package_name}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Renewal Price</span>
+                                <span className="text-sm font-bold text-emerald-600 text-lg">৳{data.price}</span>
+                            </div>
+                            <div className="flex justify-between items-center pt-2 border-t border-slate-200">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Current Expiry</span>
+                                <span className="text-[11px] font-bold text-slate-600">{new Date(data.current_period_end).toLocaleDateString()}</span>
+                            </div>
+                            <p className="text-[9px] text-slate-400 font-medium italic mt-2">
+                                * Your new expiration date will be automatically calculated based on your current plan.
+                            </p>
+                        </div>
+
+                        <form onSubmit={handleRenew} className="space-y-6">
+                            <div>
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Payment Method</label>
+                                <select
+                                    className="w-full p-4 bg-white border border-slate-200 rounded-xl font-medium focus:outline-none focus:border-emerald-500 transition-colors"
+                                    value={paymentMethod}
+                                    onChange={(e) => setPaymentMethod(e.target.value)}
+                                >
+                                    <option value="bkash">bKash (Manual)</option>
+                                    <option value="nagad">Nagad (Manual)</option>
+                                    <option value="bank">Bank Transfer</option>
+                                </select>
+                            </div>
+
+                            <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+                                <span className="text-amber-500 text-lg mt-0.5">📲</span>
+                                <div>
+                                    <p className="text-[10px] font-black text-amber-700 uppercase tracking-widest mb-1">Send Payment To</p>
+                                    <p className="text-base font-black text-amber-800 tracking-widest font-mono">01987131369</p>
+                                    <p className="text-[10px] text-amber-600 font-medium mt-1 capitalize">
+                                        Send via <strong>{paymentMethod}</strong> — exact amount of <strong>৳{data.price}</strong>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Transaction ID / Reference</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={transactionId}
+                                    onChange={(e) => setTransactionId(e.target.value)}
+                                    placeholder="Enter transaction ID"
+                                    className="w-full p-4 bg-white border border-slate-200 rounded-xl font-medium focus:outline-none focus:border-emerald-500 transition-colors"
+                                />
+                            </div>
+
+                            <div className="flex gap-3">
+                                <button type="button" onClick={() => setShowRenewModal(false)} className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold p-4 rounded-xl transition-colors">
+                                    Cancel
+                                </button>
+                                <button type="submit" disabled={renewing} className="flex-1 bg-slate-900 text-white font-semibold p-4 rounded-xl hover:bg-emerald-600 transition-colors disabled:opacity-50 shadow-md">
+                                    {renewing ? 'Processing...' : 'Confirm Renewal'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

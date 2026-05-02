@@ -9,12 +9,14 @@ export async function GET(req) {
 
         // Fetch all tenants with owner information
         const res = await dbQuery(`
-            SELECT 
+            SELECT DISTINCT ON (t.tenant_id)
                 t.*, 
-                u.name as owner_name, u.email as owner_email
+                u.name as owner_name, u.email as owner_email,
+                sub.status as subscription_status, sub.current_period_end as expire_date
             FROM tenants t
             LEFT JOIN users u ON t.owner_id = u.user_id
-            ORDER BY t.created_at DESC
+            LEFT JOIN subscriptions sub ON t.tenant_id = sub.tenant_id
+            ORDER BY t.tenant_id, sub.current_period_end DESC NULLS LAST
         `);
 
         return NextResponse.json({ 

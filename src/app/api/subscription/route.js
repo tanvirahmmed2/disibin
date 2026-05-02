@@ -16,7 +16,7 @@ export async function GET(req) {
 
         if (fetchAll && (user.role === 'admin' || user.role === 'manager')) {
             sql = `
-                SELECT s.*, pkg.name as package_name, pkg.duration_days as duration_days,
+                SELECT s.*, pkg.name as package_name, pkg.duration_days as duration_days, pkg.price,
                        u.name as user_name, u.email as user_email,
                        (SELECT json_agg(f.name) 
                         FROM package_features pf 
@@ -29,7 +29,7 @@ export async function GET(req) {
             `;
         } else {
             sql = `
-                SELECT s.*, pkg.name as package_name, pkg.duration_days as duration_days,
+                SELECT s.*, pkg.name as package_name, pkg.duration_days as duration_days, pkg.price,
                        (SELECT json_agg(f.name) 
                         FROM package_features pf 
                         JOIN features f ON pf.feature_id = f.feature_id 

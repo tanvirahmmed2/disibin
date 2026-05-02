@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { dbQuery } from "@/lib/database/pg";
+import { dbQuery, transaction } from "@/lib/database/pg";
 import { isLogin } from "@/lib/middleware";
 
 export async function GET(req) {
@@ -121,15 +121,30 @@ export async function POST(req) {
 
         // ── 3. For renewals: look up existing subscription + its tenant ───────
         let renewalTenantId = null;
-        if (subscriptionId) {
-            const subRes = await dbQuery(
-                "SELECT tenant_id FROM subscriptions WHERE subscription_id = $1 AND user_id = $2",
-                [subscriptionId, user.id]
+        let renewalPackageId = null;
+        let targetSubId = subscriptionId;
+
+        // If no subscriptionId provided, try to find one automatically for these packages
+        if (!targetSubId) {
+            const existingSubsRes = await dbQuery(
+                "SELECT subscription_id, tenant_id, package_id FROM subscriptions WHERE user_id = $1 AND status NOT IN ('refunded', 'canceled', 'pending') AND package_id = ANY($2)",
+                [user.id, validItems.map(i => i.package_id)]
             );
-            if (subRes.rows.length === 0) {
-                return NextResponse.json({ success: false, message: "Subscription not found" }, { status: 404 });
+            if (existingSubsRes.rows.length > 0) {
+                // For simplicity, we'll pick the first matching one if multiple exist (rare case)
+                targetSubId = existingSubsRes.rows[0].subscription_id;
             }
-            renewalTenantId = subRes.rows[0].tenant_id;
+        }
+
+        if (targetSubId) {
+            const subRes = await dbQuery(
+                "SELECT tenant_id, package_id FROM subscriptions WHERE subscription_id = $1 AND user_id = $2",
+                [targetSubId, user.id]
+            );
+            if (subRes.rows.length > 0) {
+                renewalTenantId = subRes.rows[0].tenant_id;
+                renewalPackageId = subRes.rows[0].package_id;
+            }
         }
 
         // ── 4. Process each item ──────────────────────────────────────────────
@@ -156,22 +171,35 @@ export async function POST(req) {
             const itemFinalCost = Math.max(0, itemOriginalCost - itemDiscount);
             const durationDays     = item.duration_days * item.quantity;
 
+            // Determine if this specific item is the renewal
+            const itemTenantId = (subscriptionId && item.package_id === renewalPackageId) ? renewalTenantId : null;
+
             // Create purchase record — status pending, no tenant yet
             const purchaseRes = await dbQuery(`
-                INSERT INTO purchases (user_id, package_id, original_amount, discount_amount, final_amount, status, coupon_id)
-                VALUES ($1, $2, $3, $4, $5, 'pending', $6)
+                INSERT INTO purchases (user_id, package_id, package_name, duration_days, package_price, original_amount, discount_amount, final_amount, status, coupon_id, tenant_id)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'pending', $9, $10)
                 RETURNING *
             `, [
                 user.id, 
                 item.package_id, 
+                item.name, 
+                item.duration_days,
+                item.price,
                 itemOriginalCost, 
                 itemDiscount, 
                 itemFinalCost, 
-                (appliedCoupon && (appliedCoupon.package_id === item.package_id || !appliedCoupon.package_id)) ? appliedCoupon.coupon_id : null
+                (appliedCoupon && (appliedCoupon.package_id === item.package_id || !appliedCoupon.package_id)) ? appliedCoupon.coupon_id : null,
+                itemTenantId
             ]);
 
             const purchase = purchaseRes.rows[0];
             purchases.push(purchase);
+
+            // Create pending subscription to "save" the duration data (as we can't change schema)
+            await dbQuery(`
+                INSERT INTO subscriptions (user_id, package_id, purchase_id, current_period_start, current_period_end, status)
+                VALUES ($1, $2, $3, NOW(), NOW() + ($4 || ' days')::INTERVAL, 'pending')
+            `, [user.id, item.package_id, purchase.purchase_id, String(durationDays)]);
 
             // Create payment record — status pending
             await dbQuery(`
@@ -230,14 +258,48 @@ export async function PATCH(req) {
             return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
         }
 
-        const res = await dbQuery(
-            "UPDATE purchases SET status = $1, updated_at = NOW() WHERE purchase_id = $2 RETURNING *",
-            [status, id]
-        );
+        const res = await transaction(async (client) => {
+            const purchaseRes = await client.query(
+                "UPDATE purchases SET status = $1, updated_at = NOW() WHERE purchase_id = $2 RETURNING *",
+                [status, id]
+            );
 
-        if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Purchase not found" }, { status: 404 });
+            if (purchaseRes.rows.length === 0) throw new Error("Purchase not found");
 
-        return NextResponse.json({ success: true, message: 'Purchase updated', data: res.rows[0] });
+            // Sync payment status
+            if (status === 'rejected' || status === 'failed') {
+                await client.query("UPDATE payments SET status = 'failed', updated_at = NOW() WHERE purchase_id = $1", [id]);
+            } else if (status === 'approved' || status === 'completed') {
+                await client.query("UPDATE payments SET status = 'success', paid_at = COALESCE(paid_at, NOW()), updated_at = NOW() WHERE purchase_id = $1", [id]);
+            } else if (status === 'refunded') {
+                await client.query("UPDATE payments SET status = 'refunded', updated_at = NOW() WHERE purchase_id = $1", [id]);
+            }
+
+            // Sync Tenant & Website status
+            const tenantId = purchaseRes.rows[0].tenant_id;
+            if (tenantId) {
+                let workspaceStatus = 'active';
+                let websiteStatus = 'active';
+
+                if (status === 'suspended' || status === 'refunded') {
+                    workspaceStatus = 'suspended';
+                    websiteStatus = 'suspended';
+                }
+
+                // Update Tenant
+                await client.query("UPDATE tenants SET status = $1, updated_at = NOW() WHERE tenant_id = $2", [workspaceStatus, tenantId]);
+                
+                // Update Websites
+                await client.query("UPDATE websites SET status = $1, updated_at = NOW() WHERE tenant_id = $2", [websiteStatus, tenantId]);
+
+                // Update Subscriptions
+                await client.query("UPDATE subscriptions SET status = $1, updated_at = NOW() WHERE tenant_id = $2", [workspaceStatus === 'active' ? 'active' : 'suspended', tenantId]);
+            }
+
+            return purchaseRes.rows[0];
+        });
+
+        return NextResponse.json({ success: true, message: `Purchase marked as ${status}`, data: res });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

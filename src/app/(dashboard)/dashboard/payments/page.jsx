@@ -49,7 +49,6 @@ const PaymentsPage = () => {
     const [search, setSearch] = useState('')
     const [filterStatus, setFilterStatus] = useState('')
     const [filterMethod, setFilterMethod] = useState('')
-    const [updatingId, setUpdatingId] = useState(null)
 
     const fetchPayments = async () => {
         setLoading(true)
@@ -68,22 +67,6 @@ const PaymentsPage = () => {
     }
 
     useEffect(() => { fetchPayments() }, [filterStatus, filterMethod])
-
-    const handleStatusUpdate = async (paymentId, newStatus) => {
-        if (!window.confirm(`Mark this payment as "${newStatus}"?`)) return
-        setUpdatingId(paymentId)
-        try {
-            const res = await axios.patch('/api/payment', { id: paymentId, status: newStatus })
-            if (res.data.success) {
-                toast.success(`Payment marked as ${newStatus}`)
-                fetchPayments()
-            }
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to update')
-        } finally {
-            setUpdatingId(null)
-        }
-    }
 
     const filtered = payments.filter(p => {
         if (!search) return true
@@ -169,88 +152,55 @@ const PaymentsPage = () => {
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="border-b border-slate-50 text-left">
-                                    <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-4">Customer</th>
-                                    <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-4">Package</th>
-                                    <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-4">Amount</th>
-                                    <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-4">Method</th>
-                                    <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-4">Transaction ID</th>
-                                    <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-4">Status</th>
-                                    <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-4">Date</th>
-                                    <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-4">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-50">
-                                {filtered.map(pay => (
-                                    <tr key={pay.payment_id} className="hover:bg-slate-50/60 transition-colors">
-                                        <td className="px-6 py-4">
-                                            <div className="flex flex-col">
-                                                <span className="font-bold text-slate-800">{pay.user_name || 'Unknown'}</span>
-                                                <span className="text-xs text-slate-400 font-medium">{pay.user_email}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="font-semibold text-slate-700">{pay.package_name || 'N/A'}</span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="font-black text-emerald-600 text-base">৳{Number(pay.amount).toFixed(2)}</span>
-                                            {Number(pay.discount_amount) > 0 && (
-                                                <span className="ml-2 text-[10px] font-bold text-purple-500">-৳{Number(pay.discount_amount).toFixed(2)}</span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="px-2.5 py-1 bg-slate-50 border border-slate-100 rounded-lg text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                                                {pay.method || 'N/A'}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="font-mono text-xs text-slate-600 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">
-                                                {pay.transaction_id || '—'}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <Badge status={pay.status} />
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="text-xs font-semibold text-slate-500">
-                                                {new Date(pay.created_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {pay.status === 'pending' && (
-                                                <div className="flex items-center gap-1.5">
-                                                    <button
-                                                        disabled={updatingId === pay.payment_id}
-                                                        onClick={() => handleStatusUpdate(pay.payment_id, 'success')}
-                                                        className="px-3 py-1.5 bg-emerald-500 text-white text-[10px] font-bold rounded-lg hover:bg-emerald-600 transition-colors disabled:opacity-50 uppercase tracking-widest"
-                                                    >
-                                                        ✓ Approve
-                                                    </button>
-                                                    <button
-                                                        disabled={updatingId === pay.payment_id}
-                                                        onClick={() => handleStatusUpdate(pay.payment_id, 'failed')}
-                                                        className="px-3 py-1.5 bg-red-50 text-red-500 border border-red-100 text-[10px] font-bold rounded-lg hover:bg-red-500 hover:text-white transition-colors disabled:opacity-50 uppercase tracking-widest"
-                                                    >
-                                                        ✗ Reject
-                                                    </button>
-                                                </div>
-                                            )}
-                                            {pay.status === 'success' && (
-                                                <button
-                                                    disabled={updatingId === pay.payment_id}
-                                                    onClick={() => handleStatusUpdate(pay.payment_id, 'refunded')}
-                                                    className="px-3 py-1.5 bg-purple-50 text-purple-500 border border-purple-100 text-[10px] font-bold rounded-lg hover:bg-purple-500 hover:text-white transition-colors disabled:opacity-50 uppercase tracking-widest"
-                                                >
-                                                    Refund
-                                                </button>
-                                            )}
-                                            {(pay.status === 'failed' || pay.status === 'refunded') && (
-                                                <span className="text-[10px] text-slate-300 font-bold uppercase tracking-wider">—</span>
-                                            )}
-                                        </td>
+                                    <tr className="border-b border-slate-50 text-left">
+                                        <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-4">Customer</th>
+                                        <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-4">Package</th>
+                                        <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-4">Amount</th>
+                                        <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-4">Method</th>
+                                        <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-4">Transaction ID</th>
+                                        <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-4">Status</th>
+                                        <th className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-4">Date</th>
                                     </tr>
-                                ))}
-                            </tbody>
+                                </thead>
+                                <tbody className="divide-y divide-slate-50">
+                                    {filtered.map(pay => (
+                                        <tr key={pay.payment_id} className="hover:bg-slate-50/60 transition-colors">
+                                            <td className="px-6 py-4">
+                                                <div className="flex flex-col">
+                                                    <span className="font-bold text-slate-800">{pay.user_name || 'Unknown'}</span>
+                                                    <span className="text-xs text-slate-400 font-medium">{pay.user_email}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="font-semibold text-slate-700">{pay.package_name || 'N/A'}</span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="font-black text-emerald-600 text-base">৳{Number(pay.amount).toFixed(2)}</span>
+                                                {Number(pay.discount_amount) > 0 && (
+                                                    <span className="ml-2 text-[10px] font-bold text-purple-500">-৳{Number(pay.discount_amount).toFixed(2)}</span>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="px-2.5 py-1 bg-slate-50 border border-slate-100 rounded-lg text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                                                    {pay.method || 'N/A'}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="font-mono text-xs text-slate-600 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">
+                                                    {pay.transaction_id || '—'}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <Badge status={pay.status} />
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="text-xs font-semibold text-slate-500">
+                                                    {new Date(pay.created_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
                         </table>
                         <div className="px-6 py-4 border-t border-slate-50 text-xs text-slate-400 font-medium">
                             Showing {filtered.length} of {payments.length} transactions

@@ -65,12 +65,15 @@ export async function GET(req) {
             ORDER BY s.created_at DESC
         `, [userId]);
 
-        // 5. Fetch Tenants (Workspaces)
+        // 5. Fetch Tenants (Workspaces) with latest expire date
         const tenantsRes = await dbQuery(`
-            SELECT tenant_id, name, domain, status, created_at 
-            FROM tenants 
-            WHERE owner_id = $1
-            ORDER BY created_at DESC
+            SELECT DISTINCT ON (t.tenant_id)
+                t.tenant_id, t.name, t.domain, t.status, t.created_at,
+                sub.current_period_end as expire_date
+            FROM tenants t
+            LEFT JOIN subscriptions sub ON t.tenant_id = sub.tenant_id
+            WHERE t.owner_id = $1
+            ORDER BY t.tenant_id, sub.current_period_end DESC NULLS LAST
         `, [userId]);
 
         return NextResponse.json({

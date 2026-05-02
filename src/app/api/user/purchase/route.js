@@ -24,13 +24,13 @@ export async function POST(req) {
                 RETURNING *
             `, [tenantName, subdomain || tenantName.toLowerCase().replace(/ /g, '-')]);
             const tenant = tenantRes.rows[0];
-
+ 
             // 2. Create Tenant User (Owner)
             await client.query(`
                 INSERT INTO tenant_users (tenant_id, user_id, role)
                 VALUES ($1, $2, 'owner')
             `, [tenant.tenant_id, userId]);
-
+ 
             // 3. Create Purchase
             const purchaseRes = await client.query(`
                 INSERT INTO purchases (user_id, package_id, original_amount, final_amount, status)
@@ -38,7 +38,7 @@ export async function POST(req) {
                 RETURNING *
             `, [userId, packageId, amount, amount]);
             const purchase = purchaseRes.rows[0];
-
+ 
             // 4. Create Subscription
             const subRes = await client.query(`
                 INSERT INTO subscriptions (user_id, package_id, status, current_period_start, purchase_id, tenant_id)

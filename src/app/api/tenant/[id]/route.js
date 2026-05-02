@@ -10,7 +10,7 @@ export async function GET(req, { params }) {
         const { id } = await params;
 
         const res = await dbQuery(`
-            SELECT 
+            SELECT DISTINCT ON (t.tenant_id)
                 t.*, 
                 u.name as owner_name, u.email as owner_email, u.phone as owner_phone,
                 sub.status as subscription_status, sub.current_period_end,
@@ -20,6 +20,7 @@ export async function GET(req, { params }) {
             LEFT JOIN subscriptions sub ON t.tenant_id = sub.tenant_id
             LEFT JOIN packages pkg ON sub.package_id = pkg.package_id
             WHERE t.tenant_id = $1
+            ORDER BY t.tenant_id, sub.current_period_end DESC NULLS LAST
         `, [id]);
 
         if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Tenant not found" }, { status: 404 });
@@ -44,7 +45,7 @@ export async function PATCH(req, { params }) {
 
         const { id } = await params;
         const body = await req.json();
-        const { status, name, domain, subdomain } = body;
+        const { status, name, domain, subdomain, websiteStatus } = body;
 
         const updateFields = [];
         const updateParams = [];
@@ -69,47 +70,51 @@ export async function PATCH(req, { params }) {
             updateFields.push(`subdomain = $${updateParams.length}`);
         }
 
-        if (updateFields.length === 0) {
+        if (updateFields.length === 0 && websiteStatus === undefined) {
             return NextResponse.json({ success: false, message: "No fields to update" }, { status: 400 });
         }
 
         const result = await transaction(async (client) => {
-            // 0. Get current status before update
-            const currentRes = await client.query("SELECT status FROM tenants WHERE tenant_id = $1", [id]);
-            if (currentRes.rows.length === 0) throw new Error("Tenant not found");
-            const oldStatus = currentRes.rows[0].status;
+            let tenant = null;
+            
+            if (updateFields.length > 0) {
+                // 0. Get current status before update
+                const currentRes = await client.query("SELECT status FROM tenants WHERE tenant_id = $1", [id]);
+                if (currentRes.rows.length === 0) throw new Error("Tenant not found");
+                const oldStatus = currentRes.rows[0].status;
 
-            updateParams.push(id);
-            const res = await client.query(`
-                UPDATE tenants 
-                SET ${updateFields.join(', ')}, updated_at = NOW()
-                WHERE tenant_id = $${updateParams.length} 
-                RETURNING *
-            `, updateParams);
+                updateParams.push(id);
+                const res = await client.query(`
+                    UPDATE tenants 
+                    SET ${updateFields.join(', ')}, updated_at = NOW()
+                    WHERE tenant_id = $${updateParams.length} 
+                    RETURNING *
+                `, updateParams);
 
-            const tenant = res.rows[0];
+                tenant = res.rows[0];
 
-            // REACTIVATION LOGIC: If suspended -> active, restore refunded financial records
-            if (oldStatus === 'suspended' && status === 'active') {
-                // 1. Restore Subscription
-                const subRes = await client.query(
-                    "UPDATE subscriptions SET status = 'active', updated_at = NOW() WHERE tenant_id = $1 AND status = 'refunded' RETURNING purchase_id",
-                    [id]
-                );
-                
-                if (subRes.rows.length > 0) {
-                    const purchaseIds = subRes.rows.map(r => r.purchase_id).filter(pid => pid);
-                    if (purchaseIds.length > 0) {
-                        // 2. Restore Purchase
-                        await client.query(
-                            "UPDATE purchases SET status = 'approved', updated_at = NOW() WHERE purchase_id = ANY($1) AND status = 'refunded'",
-                            [purchaseIds]
-                        );
-                        // 3. Restore Payment
-                        await client.query(
-                            "UPDATE payments SET status = 'success', updated_at = NOW() WHERE purchase_id = ANY($1) AND status = 'refunded'",
-                            [purchaseIds]
-                        );
+                // REACTIVATION LOGIC: If suspended -> active, restore refunded financial records
+                if (oldStatus === 'suspended' && status === 'active') {
+                    // 1. Restore Subscription
+                    const subRes = await client.query(
+                        "UPDATE subscriptions SET status = 'active', updated_at = NOW() WHERE tenant_id = $1 AND status = 'refunded' RETURNING purchase_id",
+                        [id]
+                    );
+                    
+                    if (subRes.rows.length > 0) {
+                        const purchaseIds = subRes.rows.map(r => r.purchase_id).filter(pid => pid);
+                        if (purchaseIds.length > 0) {
+                            // 2. Restore Purchase
+                            await client.query(
+                                "UPDATE purchases SET status = 'approved', updated_at = NOW() WHERE purchase_id = ANY($1) AND status = 'refunded'",
+                                [purchaseIds]
+                            );
+                            // 3. Restore Payment
+                            await client.query(
+                                "UPDATE payments SET status = 'success', updated_at = NOW() WHERE purchase_id = ANY($1) AND status = 'refunded'",
+                                [purchaseIds]
+                            );
+                        }
                     }
                 }
             }
@@ -123,11 +128,14 @@ export async function PATCH(req, { params }) {
             }
             if (status !== undefined) {
                 // Map tenant status to website status
-                let webStatus = status;
-                if (status === 'active') webStatus = 'active';
-                if (status === 'suspended' || status === 'expired') webStatus = 'suspended';
+                let webStat = status;
+                if (status === 'active') webStat = 'active';
+                if (status === 'suspended' || status === 'expired') webStat = 'suspended';
                 
-                syncParams.push(webStatus);
+                syncParams.push(webStat);
+                syncFields.push(`status = $${syncParams.length}`);
+            } else if (websiteStatus !== undefined) {
+                syncParams.push(websiteStatus);
                 syncFields.push(`status = $${syncParams.length}`);
             }
 
@@ -139,7 +147,7 @@ export async function PATCH(req, { params }) {
                 );
             }
 
-            return tenant;
+            return tenant || { tenant_id: id };
         });
 
         return NextResponse.json({ success: true, message: 'Tenant and linked website domains updated', data: result });

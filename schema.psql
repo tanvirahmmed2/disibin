@@ -124,31 +124,54 @@ CREATE TABLE coupons (
 
 -- =====================================================
 -- PURCHASES
--- =====================================================
-CREATE TABLE purchases (
-  purchase_id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES users(user_id),
-  package_id INT REFERENCES packages(package_id),
+CREATE TABLE public.purchases (
+  -- Identity
+  purchase_id serial NOT NULL,
+  
+  -- Foreign Keys
+  user_id integer NULL,
+  package_id integer NULL,
+  coupon_id integer NULL,
+  tenant_id integer NULL,
+  approved_by integer NULL,
+  
+  -- Package Snapshot (Data preservation if package is deleted/edited)
+  package_name text NOT NULL,
+  duration_days integer NULL,
+  package_price numeric(10, 2) NULL,
+  package_details jsonb NULL DEFAULT '{}'::jsonb,
+  
+  -- Financials
+  original_amount numeric(10, 2) NULL,
+  discount_amount numeric(10, 2) NULL,
+  final_amount numeric(10, 2) NOT NULL,
+  
+  -- Status & Logistics
+  status text NULL DEFAULT 'pending'::text,
+  rejected_reason text NULL,
+  approved_at timestamp without time zone NULL,
+  
+  -- Audit Timestamps
+  created_at timestamp without time zone NULL DEFAULT now(),
+  updated_at timestamp without time zone NULL DEFAULT now(),
 
-  coupon_id INT REFERENCES coupons(coupon_id),
+  -- Constraints
+  CONSTRAINT purchases_pkey PRIMARY KEY (purchase_id),
+  CONSTRAINT purchases_approved_by_fkey FOREIGN KEY (approved_by) REFERENCES public.users (user_id) ON DELETE SET NULL,
+  CONSTRAINT purchases_coupon_id_fkey FOREIGN KEY (coupon_id) REFERENCES public.coupons (coupon_id) ON DELETE SET NULL,
+  CONSTRAINT fk_purchases_tenant FOREIGN KEY (tenant_id) REFERENCES public.tenants (tenant_id) ON DELETE CASCADE,
+  CONSTRAINT purchases_package_id_fkey FOREIGN KEY (package_id) REFERENCES public.packages (package_id) ON DELETE SET NULL,
+  CONSTRAINT purchases_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (user_id) ON DELETE SET NULL,
+  
+  CONSTRAINT purchases_status_check CHECK (
+    status IN ('pending', 'approved', 'rejected', 'completed', 'failed', 'refunded')
+  )
+) TABLESPACE pg_default;
 
-  original_amount NUMERIC(10,2),
-  discount_amount NUMERIC(10,2),
-  final_amount NUMERIC(10,2) NOT NULL,
-
-  status TEXT DEFAULT 'pending'
-    CHECK (status IN ('pending','approved','rejected','completed','failed','refunded')),
-
-  approved_by INT REFERENCES users(user_id),
-  approved_at TIMESTAMP,
-  rejected_reason TEXT,
-
-  tenant_id INT,
-
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
-);
-
+-- Indices for performance (Essential for Foreign Keys)
+CREATE INDEX idx_purchases_user_id ON public.purchases(user_id);
+CREATE INDEX idx_purchases_tenant_id ON public.purchases(tenant_id);
+CREATE INDEX idx_purchases_status ON public.purchases(status);
 -- =====================================================
 -- PAYMENTS
 -- =====================================================

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { dbQuery } from "@/lib/database/pg";
-import { isLogin } from "@/lib/middleware";
+import { isLogin, isManager } from "@/lib/middleware";
 
 export async function GET(req, { params }) {
     try {
@@ -13,7 +13,7 @@ export async function GET(req, { params }) {
         let sql = `
             SELECT 
                 sub.*, 
-                pkg.name as package_name, pkg.description as package_description, pkg.duration_days, pkg.is_lifetime as package_lifetime,
+                pkg.name as package_name, pkg.description as package_description, pkg.duration_days, pkg.is_lifetime as package_lifetime, pkg.price,
                 t.name as tenant_name, t.domain as tenant_domain, t.status as tenant_status,
                 p.final_amount, p.created_at as purchase_date,
                 pay.transaction_id, pay.method as payment_method, pay.status as payment_status,

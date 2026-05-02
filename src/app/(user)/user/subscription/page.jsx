@@ -164,9 +164,22 @@ const ClientSubscription = () => {
                     <div className="bg-white p-8 rounded-2xl w-full max-w-md shadow-2xl border border-slate-100">
                         <h2 className="text-xl font-bold mb-6 text-slate-900">Renew Subscription</h2>
                         
-                        <div className="bg-slate-50 p-4 rounded-xl mb-6 space-y-2 border border-slate-100">
-                            <p className="text-sm font-medium text-slate-600">You are renewing <strong>{renewingSub.package_name}</strong> for 1 cycle.</p>
-                            <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-2">New Expiry will be calculated based on your plan.</p>
+                        <div className="bg-slate-50 p-5 rounded-xl mb-6 space-y-3 border border-slate-100">
+                            <div className="flex justify-between items-center">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Plan Name</span>
+                                <span className="text-sm font-bold text-slate-800">{renewingSub.package_name}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Renewal Price</span>
+                                <span className="text-sm font-bold text-emerald-600 text-lg">৳{renewingSub.price}</span>
+                            </div>
+                            <div className="flex justify-between items-center pt-2 border-t border-slate-200">
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Current Expiry</span>
+                                <span className="text-[11px] font-bold text-slate-600">{new Date(renewingSub.current_period_end).toLocaleDateString()}</span>
+                            </div>
+                            <p className="text-[9px] text-slate-400 font-medium italic mt-2">
+                                * Your new expiration date will be automatically calculated by adding the plan duration to your current expiry (or starting from today if already expired).
+                            </p>
                         </div>
 
                         <form onSubmit={handleRenew} className="space-y-6">

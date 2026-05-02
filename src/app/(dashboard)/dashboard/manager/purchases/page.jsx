@@ -4,8 +4,10 @@ import axios from 'axios'
 import DataTable from '@/component/dashboard/DataTable'
 import { RiMoneyDollarCircleLine, RiInformationLine, RiCheckLine, RiCloseLine, RiRefreshLine } from 'react-icons/ri'
 import toast from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
 
 const ManagerPurchases = () => {
+    const router= useRouter()
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true)
     const [processing, setProcessing] = useState(null)
@@ -36,6 +38,55 @@ const ManagerPurchases = () => {
             }
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to approve purchase')
+        } finally {
+            setProcessing(null)
+        }
+    }
+
+    const handleReject = async (purchaseId) => {
+        if (!window.confirm('Are you sure you want to reject this purchase request?')) return
+        setProcessing(purchaseId)
+        try {
+            const res = await axios.patch('/api/purchase', { id: purchaseId, status: 'rejected' })
+            if (res.data.success) {
+                toast.success('Purchase rejected and payment marked as failed.')
+                fetchData()
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to reject purchase')
+        } finally {
+            setProcessing(null)
+        }
+    }
+
+    const handleSuspend = async (purchaseId, currentStatus) => {
+        const newStatus = currentStatus === 'suspended' ? 'approved' : 'suspended'
+        if (!window.confirm(`Are you sure you want to ${newStatus === 'suspended' ? 'SUSPEND' : 'ACTIVATE'} this service?`)) return
+        setProcessing(purchaseId)
+        try {
+            const res = await axios.patch('/api/purchase', { id: purchaseId, status: newStatus })
+            if (res.data.success) {
+                toast.success(`Service ${newStatus === 'suspended' ? 'suspended' : 'activated'}!`)
+                fetchData()
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to update status')
+        } finally {
+            setProcessing(null)
+        }
+    }
+
+    const handleRefund = async (purchaseId) => {
+        if (!window.confirm('Are you sure you want to REFUND this purchase? This will suspend services.')) return
+        setProcessing(purchaseId)
+        try {
+            const res = await axios.patch('/api/purchase', { id: purchaseId, status: 'refunded' })
+            if (res.data.success) {
+                toast.success('Purchase refunded and service canceled.')
+                fetchData()
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to refund')
         } finally {
             setProcessing(null)
         }
@@ -90,7 +141,8 @@ const ManagerPurchases = () => {
             <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest inline-block
                 ${row.status === 'pending' ? 'bg-amber-100 text-amber-700' : 
                   row.status === 'approved' || row.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 
-                  'bg-red-100 text-red-700'}`}>
+                  row.status === 'suspended' ? 'bg-red-50 text-red-500' :
+                  'bg-slate-100 text-slate-500'}`}>
                 {row.status}
             </span>
         )},
@@ -102,16 +154,45 @@ const ManagerPurchases = () => {
     const actions = (row) => (
         <div className="flex gap-2">
             {row.status === 'pending' && (
-                <button
-                    onClick={() => handleConfirm(row.purchase_id)}
-                    disabled={processing === row.purchase_id}
-                    className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 transition-all disabled:opacity-50 shadow-lg shadow-emerald-500/20"
-                >
-                    {processing === row.purchase_id ? <RiRefreshLine className="animate-spin" size={14} /> : <RiCheckLine size={14} />}
-                    Confirm
-                </button>
+                <>
+                    <button
+                        onClick={() => handleConfirm(row.purchase_id)}
+                        disabled={processing === row.purchase_id}
+                        className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 transition-all disabled:opacity-50 shadow-lg shadow-emerald-500/20"
+                    >
+                        {processing === row.purchase_id ? <RiRefreshLine className="animate-spin" size={14} /> : <RiCheckLine size={14} />}
+                        Accept
+                    </button>
+                    <button
+                        onClick={() => handleReject(row.purchase_id)}
+                        disabled={processing === row.purchase_id}
+                        className="flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-600 border border-amber-100 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-500 hover:text-white transition-all disabled:opacity-50"
+                    >
+                        {processing === row.purchase_id ? <RiRefreshLine className="animate-spin" size={14} /> : <RiCloseLine size={14} />}
+                        Reject
+                    </button>
+                </>
             )}
-            {(row.status === 'pending' || row.status === 'refunded') && (
+            {(row.status === 'approved' || row.status === 'completed' || row.status === 'suspended') && (
+                <>
+                    <button
+                        onClick={() => handleRefund(row.purchase_id)}
+                        disabled={processing === row.purchase_id}
+                        className="flex items-center gap-2 px-3 py-2 bg-purple-50 text-purple-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-purple-600 hover:text-white transition-all disabled:opacity-50"
+                    >
+                        Refund
+                    </button>
+                    <button
+                        onClick={() => handleSuspend(row.purchase_id, row.status)}
+                        disabled={processing === row.purchase_id}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-50
+                            ${row.status === 'suspended' ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white' : 'bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white'}`}
+                    >
+                        {row.status === 'suspended' ? 'Unsuspend' : 'Suspend'}
+                    </button>
+                </>
+            )}
+            {(row.status === 'pending' || row.status === 'rejected' || row.status === 'refunded' || row.status === 'suspended') && (
                 <button
                     onClick={() => handleDelete(row.purchase_id)}
                     disabled={processing === row.purchase_id}
@@ -121,7 +202,11 @@ const ManagerPurchases = () => {
                     Delete
                 </button>
             )}
-            <button className="p-2 hover:bg-slate-100 text-slate-400 rounded-lg transition-all" title="View Details">
+            <button 
+                onClick={() => router.push(`/dashboard/manager/subscriptions/${row.purchase_id}`)} // Assuming search or direct link
+                className="p-2 hover:bg-slate-100 text-slate-400 rounded-lg transition-all" 
+                title="View Details"
+            >
                 <RiInformationLine size={18} />
             </button>
         </div>
