@@ -11,17 +11,17 @@ const Topbar = ({ collapsed, setCollapsed }) => {
     return (
         <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-100 flex items-center justify-between px-8 sticky top-0 z-40 transition-all duration-300">
             <div className="flex items-center gap-6">
-                <button 
+                <button
                     onClick={() => setCollapsed(!collapsed)}
                     className="p-2.5 bg-slate-50 hover:bg-primary/5 text-slate-500 hover:text-emerald-600 rounded-xl transition-colors"
                 >
                     {collapsed ? <RiMenuUnfoldLine size={24} /> : <RiMenuFoldLine size={24} />}
                 </button>
-                
+
                 <div className="hidden lg:flex items-center gap-3 px-4 py-2.5 bg-slate-50/50 hover:bg-slate-50 rounded-2xl border border-slate-100 text-slate-400 w-80 transition-all focus-within:bg-white focus-within:border-primary/20 focus-within:shadow-sm focus-within:shadow-primary/10">
                     <RiSearchLine size={20} className="text-slate-400" />
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         className="bg-transparent border-none outline-none text-sm text-slate-700 font-medium w-full placeholder:text-slate-400"
                     />
                 </div>

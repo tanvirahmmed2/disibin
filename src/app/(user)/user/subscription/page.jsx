@@ -63,94 +63,92 @@ const ClientSubscription = () => {
 
     if (loading) return (
         <div className="flex items-center justify-center min-h-[60vh]">
-            <div className="w-10 h-10 border-4 border-slate-100 border-t-emerald-500 rounded-full animate-spin"></div>
+            <div className="w-6 h-6 border-2 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
         </div>
     )
 
     return (
-        <div className="max-w-6xl mx-auto py-8 px-4 space-y-10 relative">
-            <div className="flex flex-col gap-1">
-                <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Active Memberships</h1>
-                <p className="text-slate-500 text-sm font-medium">Monitor your current services and renewal status.</p>
+        <div className="space-y-4 relative">
+            <div className="border-b border-slate-200 pb-4">
+                <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Memberships</h1>
+                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Monitor your current services and renewal status.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {subs.length === 0 ? (
-                    <div className="md:col-span-2 p-16 border-2 border-dashed border-slate-100 rounded-2xl text-center space-y-4">
-                        <RiShieldFlashLine size={48} className="mx-auto text-slate-200" />
-                        <p className="text-slate-400 font-bold uppercase tracking-widest text-sm">No Active Memberships</p>
+                    <div className="md:col-span-2 p-16 border border-slate-200 text-center">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">No Active Memberships</p>
                     </div>
                 ) : subs.map((sub, i) => {
-                    // Check if expiring within 7 days
                     const endDate = new Date(sub.current_period_end)
                     const diffDays = Math.ceil((endDate - new Date()) / (1000 * 60 * 60 * 24))
                     const needsRenewal = diffDays <= 7 && diffDays > 0
                     const isExpired = diffDays <= 0
 
                     return (
-                        <div key={i} className={`bg-white border rounded-2xl p-8 flex flex-col gap-6 transition-all ${needsRenewal ? 'border-amber-400 shadow-md shadow-amber-500/10' : isExpired ? 'border-red-400 opacity-70' : 'border-slate-200 shadow-sm'}`}>
-                            
+                        <div key={i} className={`bg-white border p-6 flex flex-col gap-5 transition-all ${needsRenewal ? 'border-amber-300' : isExpired ? 'border-red-300 opacity-75' : 'border-slate-200'}`}>
+
                             {needsRenewal && (
-                                <div className="px-4 py-2 bg-amber-50 text-amber-600 rounded-lg text-xs font-bold flex items-center gap-2 uppercase tracking-widest border border-amber-100 -mt-2 -mx-2 mb-2">
-                                    <RiAlertLine size={16} /> Renew within {diffDays} days to avoid service interruption
+                                <div className="border border-amber-200 bg-amber-50 px-3 py-2 text-[9px] font-bold flex items-center gap-2 uppercase tracking-widest text-amber-700">
+                                    <RiAlertLine size={14} /> Renew within {diffDays} days
                                 </div>
                             )}
 
                             {isExpired && (
-                                <div className="px-4 py-2 bg-red-50 text-red-500 rounded-lg text-xs font-bold flex items-center gap-2 uppercase tracking-widest border border-red-100 -mt-2 -mx-2 mb-2">
-                                    <RiAlertLine size={16} /> Subscription Expired
+                                <div className="border border-red-200 bg-red-50 px-3 py-2 text-[9px] font-bold flex items-center gap-2 uppercase tracking-widest text-red-600">
+                                    <RiAlertLine size={14} /> Subscription Expired
                                 </div>
                             )}
 
                             <div className="flex justify-between items-start">
-                                <div className="space-y-1">
-                                    <h2 className="text-2xl font-bold text-slate-800">{sub.package_name}</h2>
-                                    <p className={`text-xs font-bold uppercase tracking-widest ${isExpired ? 'text-red-500' : 'text-emerald-600'}`}>
+                                <div>
+                                    <h2 className="text-base font-bold text-slate-900 uppercase tracking-tight leading-none mb-1">{sub.package_name}</h2>
+                                    <p className={`text-[9px] font-bold uppercase tracking-widest ${isExpired ? 'text-red-500' : 'text-emerald-600'}`}>
                                         {isExpired ? 'Expired' : sub.status}
                                     </p>
                                 </div>
-                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isExpired ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'}`}>
-                                    <RiShieldFlashLine size={24} />
+                                <div className={`w-10 h-10 border flex items-center justify-center ${isExpired ? 'border-red-200 bg-red-50 text-red-500' : 'border-slate-200 bg-slate-50 text-slate-500'}`}>
+                                    <RiShieldFlashLine size={18} />
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="p-4 bg-slate-50 rounded-xl">
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Started On</p>
-                                    <p className="text-sm font-bold text-slate-700">{new Date(sub.current_period_start).toLocaleDateString()}</p>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="p-3 bg-slate-50 border border-slate-100">
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Started On</p>
+                                    <p className="text-xs font-bold text-slate-900 uppercase tracking-tight">{new Date(sub.current_period_start).toLocaleDateString()}</p>
                                 </div>
-                                <div className="p-4 bg-slate-50 rounded-xl">
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Expires On</p>
-                                    <p className={`text-sm font-bold ${needsRenewal ? 'text-amber-600' : isExpired ? 'text-red-500' : 'text-slate-700'}`}>
+                                <div className="p-3 bg-slate-50 border border-slate-100">
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Expires On</p>
+                                    <p className={`text-xs font-bold uppercase tracking-tight ${needsRenewal ? 'text-amber-600' : isExpired ? 'text-red-500' : 'text-slate-900'}`}>
                                         {new Date(sub.current_period_end).toLocaleDateString()}
                                     </p>
                                 </div>
                             </div>
 
-                            <div className="space-y-3">
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Plan Entitlements</p>
-                                <div className="grid grid-cols-1 gap-2">
+                            <div className="space-y-2">
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Plan Entitlements</p>
+                                <div className="grid grid-cols-1 gap-1">
                                     {sub.features?.slice(0, 4).map((feature, idx) => (
-                                        <div key={idx} className="flex items-center gap-2 text-sm text-slate-600 font-medium">
-                                            <RiCheckLine className="text-emerald-500" />
+                                        <div key={idx} className="flex items-center gap-2 text-[10px] text-slate-700 font-bold uppercase tracking-tight">
+                                            <RiCheckLine size={12} className="text-emerald-500 shrink-0" />
                                             <span>{feature}</span>
                                         </div>
                                     ))}
                                 </div>
                             </div>
 
-                            <div className="flex gap-3 mt-auto">
-                                <button 
+                            <div className="flex gap-2 mt-auto pt-2 border-t border-slate-100">
+                                <button
                                     onClick={() => router.push(`/user/subscription/${sub.subscription_id}`)}
-                                    className="flex-1 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm uppercase tracking-widest rounded-xl transition-all"
+                                    className="flex-1 py-2.5 border border-slate-200 text-slate-600 font-bold text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all"
                                 >
-                                    View Details
+                                    Details
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => setRenewingSub(sub)}
-                                    className={`flex-1 py-4 text-white font-bold text-sm uppercase tracking-widest rounded-xl transition-all ${needsRenewal ? 'bg-amber-500 hover:bg-amber-600' : 'bg-slate-900 hover:bg-emerald-600'}`}
+                                    className={`flex-1 py-2.5 text-white font-bold text-[10px] uppercase tracking-widest transition-all ${needsRenewal ? 'bg-amber-500 hover:bg-amber-600' : 'bg-slate-900 hover:bg-slate-800'}`}
                                 >
-                                    Renew (৳{sub.price})
+                                    Renew ৳{sub.price}
                                 </button>
                             </div>
                         </div>
@@ -160,33 +158,30 @@ const ClientSubscription = () => {
 
             {/* Renewal Modal */}
             {renewingSub && (
-                <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm z-[100] p-4">
-                    <div className="bg-white p-8 rounded-2xl w-full max-w-md shadow-2xl border border-slate-100">
-                        <h2 className="text-xl font-bold mb-6 text-slate-900">Renew Subscription</h2>
-                        
-                        <div className="bg-slate-50 p-5 rounded-xl mb-6 space-y-3 border border-slate-100">
+                <div className="fixed inset-0 flex items-center justify-center bg-slate-900/40 z-[100] p-4">
+                    <div className="bg-white p-6 w-full max-w-md border border-slate-200">
+                        <h2 className="text-[10px] font-bold text-slate-900 uppercase tracking-widest mb-5 border-b border-slate-100 pb-3">Renew Subscription</h2>
+
+                        <div className="bg-slate-50 border border-slate-200 p-4 mb-5 space-y-3">
                             <div className="flex justify-between items-center">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Plan Name</span>
-                                <span className="text-sm font-bold text-slate-800">{renewingSub.package_name}</span>
+                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Plan</span>
+                                <span className="text-xs font-bold text-slate-900 uppercase tracking-tight">{renewingSub.package_name}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Renewal Price</span>
-                                <span className="text-sm font-bold text-emerald-600 text-lg">৳{renewingSub.price}</span>
+                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Renewal Price</span>
+                                <span className="text-base font-bold text-slate-900">৳{renewingSub.price}</span>
                             </div>
                             <div className="flex justify-between items-center pt-2 border-t border-slate-200">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Current Expiry</span>
-                                <span className="text-[11px] font-bold text-slate-600">{new Date(renewingSub.current_period_end).toLocaleDateString()}</span>
+                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Current Expiry</span>
+                                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{new Date(renewingSub.current_period_end).toLocaleDateString()}</span>
                             </div>
-                            <p className="text-[9px] text-slate-400 font-medium italic mt-2">
-                                * Your new expiration date will be automatically calculated by adding the plan duration to your current expiry (or starting from today if already expired).
-                            </p>
                         </div>
 
-                        <form onSubmit={handleRenew} className="space-y-6">
+                        <form onSubmit={handleRenew} className="space-y-4">
                             <div>
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Payment Method</label>
+                                <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 block">Payment Method</label>
                                 <select
-                                    className="w-full p-4 bg-white border border-slate-200 rounded-xl font-medium focus:outline-none focus:border-emerald-500 transition-colors"
+                                    className="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 text-xs font-bold focus:outline-none focus:border-slate-400 transition-all"
                                     value={paymentMethod}
                                     onChange={(e) => setPaymentMethod(e.target.value)}
                                 >
@@ -196,35 +191,31 @@ const ClientSubscription = () => {
                                 </select>
                             </div>
 
-                            {/* Send money instruction */}
-                            <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-                                <span className="text-amber-500 text-lg mt-0.5">📲</span>
-                                <div>
-                                    <p className="text-[10px] font-black text-amber-700 uppercase tracking-widest mb-1">Send Payment To</p>
-                                    <p className="text-base font-black text-amber-800 tracking-widest font-mono">01987131369</p>
-                                    <p className="text-[10px] text-amber-600 font-medium mt-1 capitalize">
-                                        Send via <strong>{paymentMethod}</strong> — exact amount of <strong>৳{renewingSub?.price}</strong>
-                                    </p>
-                                </div>
+                            <div className="border border-amber-200 bg-amber-50 px-4 py-3">
+                                <p className="text-[9px] font-bold text-amber-700 uppercase tracking-widest mb-1">Send Payment To</p>
+                                <p className="text-base font-bold text-amber-800 font-mono tracking-widest">01987131369</p>
+                                <p className="text-[9px] text-amber-600 font-bold uppercase tracking-widest mt-1">
+                                    via {paymentMethod} — exact amount ৳{renewingSub?.price}
+                                </p>
                             </div>
 
                             <div>
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Transaction ID / Reference</label>
+                                <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 block">Transaction ID / Reference</label>
                                 <input
                                     type="text"
                                     required
                                     value={transactionId}
                                     onChange={(e) => setTransactionId(e.target.value)}
                                     placeholder="Enter transaction ID"
-                                    className="w-full p-4 bg-white border border-slate-200 rounded-xl font-medium focus:outline-none focus:border-emerald-500 transition-colors"
+                                    className="w-full bg-slate-50 border border-slate-200 px-4 py-2.5 text-xs font-bold focus:outline-none focus:border-slate-400 transition-all"
                                 />
                             </div>
 
-                            <div className="flex gap-3">
-                                <button type="button" onClick={() => setRenewingSub(null)} className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold p-4 rounded-xl transition-colors">
+                            <div className="flex gap-2">
+                                <button type="button" onClick={() => setRenewingSub(null)} className="flex-1 border border-slate-200 text-slate-500 font-bold py-2.5 text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all">
                                     Cancel
                                 </button>
-                                <button type="submit" disabled={renewing} className="flex-1 bg-slate-900 text-white font-semibold p-4 rounded-xl hover:bg-emerald-600 transition-colors disabled:opacity-50 shadow-md">
+                                <button type="submit" disabled={renewing} className="flex-1 bg-slate-900 text-white font-bold py-2.5 text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all disabled:opacity-50">
                                     {renewing ? 'Processing...' : 'Confirm Renewal'}
                                 </button>
                             </div>

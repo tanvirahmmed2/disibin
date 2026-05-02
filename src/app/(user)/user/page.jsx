@@ -51,30 +51,31 @@ const DashboardHome = () => {
     const recent = stats?.recent || { tickets: [], subscriptions: [] }
 
     return (
-        <div className="max-w-6xl mx-auto py-8 px-4 space-y-10">
-            
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-6">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-                        {role === 'user' ? `Hello, ${userData?.name?.split(' ')[0]}!` : 'System Dashboard'}
+                    <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight">
+                        {role === 'user' ? `Hello, ${userData?.name?.split(' ')[0]}` : 'System Dashboard'}
                     </h1>
-                    <p className="text-slate-500 text-sm mt-1">
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">
                         {role === 'user' ? 'Manage your services and support tickets.' : 'Global system metrics and administrative control.'}
                     </p>
                 </div>
                 {role === 'user' && (
-                    <div className="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg text-xs font-semibold border border-emerald-100">
+                    <span className="border border-emerald-200 bg-emerald-50 text-emerald-700 px-3 py-1 text-[9px] font-bold uppercase tracking-widest">
                         {recent.subscriptions.length} Active Services
-                    </div>
+                    </span>
                 )}
             </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            {/* Stat Cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 {overview.map((stat, index) => (
-                    <StatCard 
+                    <StatCard
                         key={index}
-                        title={stat.title} 
-                        value={stat.value} 
+                        title={stat.title}
+                        value={stat.value}
                         icon={
                             stat.type === 'users' ? RiUserFollowLine :
                             stat.type === 'packages' ? RiPriceTag3Line :
@@ -88,57 +89,57 @@ const DashboardHome = () => {
                     />
                 ))}
             </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 space-y-8">
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-6">
+                    {/* Quick Access */}
                     {role === 'user' && (
-                        <div className="space-y-4">
-                            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-1">Quick Access</h2>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="space-y-3">
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Quick Access</p>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                                 {[
                                     { label: 'Support', href: '/user/tickets', icon: RiTicketLine },
                                     { label: 'Orders', href: '/user/purchases', icon: RiPriceTag3Line },
                                     { label: 'Status', href: '/user/subscription', icon: RiShieldFlashLine },
                                     { label: 'Reviews', href: '/user/reviews', icon: RiUserFollowLine },
                                 ].map((link, i) => (
-                                    <button 
-                                        key={i} 
+                                    <button
+                                        key={i}
                                         onClick={() => router.push(link.href)}
-                                        className="flex flex-col items-center justify-center p-6 bg-white border border-slate-200 rounded-2xl hover:border-emerald-500 hover:shadow-md transition-all group"
+                                        className="flex flex-col items-center justify-center py-6 px-4 bg-white border border-slate-200 hover:border-slate-900 hover:bg-slate-50 transition-all group"
                                     >
-                                        <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center mb-3 group-hover:bg-emerald-500 group-hover:text-white transition-all">
-                                            <link.icon size={24} />
-                                        </div>
-                                        <span className="text-xs font-semibold text-slate-600 group-hover:text-emerald-600 transition-colors">{link.label}</span>
+                                        <link.icon size={20} className="text-slate-400 group-hover:text-slate-900 mb-2 transition-colors" />
+                                        <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-slate-900 transition-colors">{link.label}</span>
                                     </button>
                                 ))}
                             </div>
                         </div>
                     )}
 
+                    {/* Active Services */}
                     {role === 'user' && (
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between px-1">
-                                <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Services</h2>
-                                <button onClick={() => router.push('/user/subscription')} className="text-xs font-semibold text-emerald-600 hover:underline">View All</button>
+                        <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Active Services</p>
+                                <button onClick={() => router.push('/user/subscription')} className="text-[9px] font-bold text-slate-900 uppercase tracking-widest hover:underline">View All</button>
                             </div>
-                            <div className="space-y-3">
+                            <div className="space-y-2">
                                 {recent.subscriptions.length === 0 ? (
-                                    <div className="p-10 border border-dashed border-slate-200 rounded-2xl text-center">
-                                        <p className="text-slate-400 text-sm">No active services found</p>
+                                    <div className="p-10 border border-slate-200 text-center">
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">No active services</p>
                                     </div>
                                 ) : recent.subscriptions.map((sub, i) => (
-                                    <div key={i} className="bg-white p-5 rounded-2xl border border-slate-100 flex items-center justify-between hover:border-emerald-200 transition-all shadow-sm">
+                                    <div key={i} className="bg-white border border-slate-200 px-5 py-4 flex items-center justify-between hover:border-slate-400 transition-all">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-slate-50 text-slate-400 rounded-lg flex items-center justify-center font-semibold">
+                                            <div className="w-8 h-8 bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs uppercase">
                                                 {sub.package_name.charAt(0)}
                                             </div>
                                             <div>
-                                                <h4 className="font-semibold text-slate-800">{sub.package_name}</h4>
-                                                <p className="text-[10px] text-slate-400 font-medium">Expires {new Date(sub.end_date).toLocaleDateString()}</p>
+                                                <p className="font-bold text-slate-900 text-xs uppercase tracking-tight leading-none mb-1">{sub.package_name}</p>
+                                                <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Expires {new Date(sub.end_date).toLocaleDateString()}</p>
                                             </div>
                                         </div>
-                                        <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-semibold border border-emerald-100">Active</span>
+                                        <span className="border border-emerald-200 bg-emerald-50 text-emerald-700 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest">Active</span>
                                     </div>
                                 ))}
                             </div>
@@ -146,34 +147,32 @@ const DashboardHome = () => {
                     )}
                 </div>
 
-                <div className="space-y-8">
-                    <div className="p-8 bg-slate-900 text-white rounded-2xl relative overflow-hidden group">
-                       <RiCustomerService2Line size={80} className="absolute top-0 right-0 p-4 text-white/5 pointer-events-none" />
-                       <div className="relative z-10 space-y-4">
-                          <h3 className="text-xl font-bold tracking-tight">Need Support?</h3>
-                          <p className="text-slate-400 text-sm leading-relaxed">Our team is here to assist you with any technical needs.</p>
-                          <button onClick={() => router.push('/user/tickets')} className="w-full py-3 bg-emerald-500 text-white font-semibold text-sm rounded-xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-2">
-                              Open Ticket
-                          </button>
-                       </div>
+                {/* Sidebar widgets */}
+                <div className="space-y-4">
+                    <div className="bg-slate-900 text-white p-6 border border-slate-800">
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-white mb-1">Need Support?</h3>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed mb-4">Our team is here to help.</p>
+                        <button onClick={() => router.push('/user/tickets')} className="w-full py-2.5 bg-white text-slate-900 font-bold text-[10px] uppercase tracking-widest hover:bg-slate-100 transition-all">
+                            Open Ticket
+                        </button>
                     </div>
 
                     {role === 'user' && recent.tickets.length > 0 && (
-                        <div className="space-y-4">
-                             <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-1">Latest Tickets</h2>
-                             <div className="space-y-3">
+                        <div className="space-y-2">
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Latest Tickets</p>
+                            <div className="space-y-2">
                                 {recent.tickets.map((ticket, i) => (
-                                    <div key={i} onClick={() => router.push(`/user/tickets`)} className="bg-white p-4 rounded-xl border border-slate-100 hover:shadow-sm cursor-pointer transition-all">
-                                        <div className="flex justify-between items-start mb-1">
-                                            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${ticket.status === 'open' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-500'}`}>
+                                    <div key={i} onClick={() => router.push(`/user/tickets`)} className="bg-white border border-slate-200 p-4 hover:border-slate-400 cursor-pointer transition-all">
+                                        <div className="flex justify-between items-center mb-1">
+                                            <span className={`text-[9px] font-bold uppercase tracking-widest border px-2 py-0.5 ${ticket.status === 'open' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-50 text-slate-500 border-slate-200'}`}>
                                                 {ticket.status}
                                             </span>
-                                            <span className="text-[10px] text-slate-400">{new Date(ticket.created_at).toLocaleDateString()}</span>
+                                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{new Date(ticket.created_at).toLocaleDateString()}</span>
                                         </div>
-                                        <h5 className="text-sm font-semibold text-slate-700 truncate">{ticket.subject}</h5>
+                                        <p className="text-xs font-bold text-slate-700 truncate uppercase tracking-tight mt-2">{ticket.subject}</p>
                                     </div>
                                 ))}
-                             </div>
+                            </div>
                         </div>
                     )}
                 </div>

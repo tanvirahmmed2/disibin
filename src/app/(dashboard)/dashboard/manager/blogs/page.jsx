@@ -43,51 +43,53 @@ const EditorBlogs = () => {
 
     const columns = [
         { label: 'Article', key: 'title', render: (row) => (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
                 {row.image && (
-                    <img src={row.image} alt="" className="w-12 h-12 rounded-lg object-cover border border-slate-100" />
+                    <img src={row.image} alt="" className="w-8 h-8 border border-slate-200 object-cover" />
                 )}
                 <div>
-                    <p className="font-bold text-slate-800">{row.title}</p>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{new Date(row.created_at).toLocaleDateString()}</p>
+                    <p className="font-bold text-slate-900 uppercase tracking-tight text-xs leading-none mb-1">{row.title}</p>
+                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none">{new Date(row.created_at).toLocaleDateString()}</p>
                 </div>
             </div>
         )},
         { label: 'Slug', key: 'slug', render: (row) => (
-            <span className="text-xs font-mono text-slate-500 bg-slate-50 px-2 py-1 rounded">{row.slug}</span>
+            <span className="text-[9px] font-bold uppercase tracking-widest text-slate-500 bg-slate-50 border border-slate-200 px-2 py-0.5">{row.slug}</span>
         )},
     ]
 
     const actions = (row) => (
-        <div className="flex gap-2">
+        <div className="flex gap-1">
             <Link 
                 href={`/dashboard/manager/blogs/${row.slug}`}
-                className="p-2 hover:bg-primary/10 text-primary rounded-lg transition-all"
+                className="p-2 border border-slate-200 text-slate-400 hover:text-slate-800 transition-all"
+                title="Edit"
             >
-                <RiEdit2Line size={18} />
+                <RiEdit2Line size={16} />
             </Link>
             <button 
                 onClick={() => handleDelete(row.blog_id)}
-                className="p-2 hover:bg-slate-100 text-slate-400 hover:text-red-500 rounded-lg transition-all"
+                className="p-2 border border-slate-200 text-slate-400 hover:text-red-500 transition-all"
+                title="Delete"
             >
-                <RiDeleteBin6Line size={18} />
+                <RiDeleteBin6Line size={16} />
             </button>
         </div>
     )
 
     return (
-        <div className="space-y-6 py-6 px-4">
-            <div className="flex items-center justify-between">
+        <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div className="space-y-1">
-                    <h1 className="text-2xl font-bold text-slate-800">Blog Repository</h1>
-                    <p className="text-sm text-slate-500">Manage and publish high-quality platform articles.</p>
+                    <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Blogs</h1>
+                    <p className="text-xs text-slate-500">Manage and publish platform articles.</p>
                 </div>
-                <Link href="/dashboard/manager/blogs/new" className="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-emerald-500 transition-all shadow-lg shadow-slate-900/10 flex items-center gap-2">
-                    <RiAddLine size={18} /> New Article
+                <Link href="/dashboard/manager/blogs/new" className="bg-slate-900 text-white px-4 py-2 font-bold text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-2">
+                    <RiAddLine size={16} /> New Article
                 </Link>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200 overflow-hidden">
                 <DataTable columns={columns} data={blogs} loading={loading} actions={actions} />
             </div>
         </div>

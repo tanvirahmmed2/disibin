@@ -45,52 +45,51 @@ const ManagerUsers = () => {
     const columns = [
         { label: 'Name', key: 'name', render: (row) => (
             <div className="flex flex-col">
-                <span className="font-bold text-slate-700">{row.name}</span>
-                <span className="text-xs text-slate-400">{row.email}</span>
+                <span className="font-bold text-slate-900 uppercase tracking-tight text-xs">{row.name}</span>
+                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{row.email}</span>
             </div>
         )},
         { label: 'Role', key: 'role', render: (row) => (
-            <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider
-                ${row.role === 'user' ? 'bg-slate-100 text-slate-500' : 'bg-primary/10 text-primary'}`}>
+            <span className="px-2 py-0.5 border border-slate-100 text-[9px] font-bold uppercase tracking-widest text-slate-400">
                 {row.role}
             </span>
         )},
         { label: 'Status', key: 'is_active', render: (row) => (
-            <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider
-                ${row.is_active ? 'bg-primary/10 text-primary-dark' : 'bg-primary text-primary'}`}>
+            <span className={`px-2 py-0.5 border text-[9px] font-bold uppercase tracking-widest
+                ${row.is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-red-50 text-red-700 border-red-100'}`}>
                 {row.is_active ? 'Active' : 'Inactive'}
             </span>
         )},
     ]
 
     const actions = (row) => (
-        <div className="flex gap-2">
+        <div className="flex gap-1">
             <button 
                 onClick={() => toggleStatus(row.user_id, row.is_active)}
-                className={`p-2 rounded-lg transition-all ${row.is_active ? 'hover:bg-white text-white' : 'hover:bg-primary/5 text-primary'}`}
-                title={row.is_active ? 'Suspend Access' : 'Restore Access'}
+                className="p-2 border border-slate-200 text-slate-400 hover:text-slate-800 transition-all"
+                title={row.is_active ? 'Suspend' : 'Restore'}
             >
-                <RiToggleLine size={18} />
+                <RiToggleLine size={16} />
             </button>
             <button 
                 disabled={row.role === 'admin'}
                 onClick={() => handleDelete(row.user_id)}
-                className="p-2 hover:bg-primary rounded-lg text-primary transition-all disabled:opacity-20"
-                title="Delete User"
+                className="p-2 border border-slate-200 text-slate-400 hover:text-red-500 transition-all disabled:opacity-20"
+                title="Delete"
             >
-                <RiDeleteBinLine size={18} />
+                <RiDeleteBinLine size={16} />
             </button>
         </div>
     )
 
     return (
-        <div className="space-y-8">
-            <div className="flex flex-col gap-1">
-                <h1 className="text-3xl font-black text-slate-800 tracking-tight">User Oversight</h1>
-                <p className="text-slate-500 font-medium">Manage platform accounts and session privileges.</p>
+        <div className="space-y-4">
+            <div className="flex flex-col border-b border-slate-200 pb-4">
+                <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Users</h1>
+                <p className="text-xs text-slate-500">Manage platform accounts and session privileges.</p>
             </div>
 
-            <div className="bg-white p-2 rounded-[2.5rem] border border-slate-50 shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200 overflow-hidden">
                 <DataTable columns={columns} data={users} loading={loading} actions={actions} />
             </div>
         </div>

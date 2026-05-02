@@ -49,17 +49,17 @@ const DashboardHome = () => {
     const overview = stats?.overview || []
 
     return (
-        <div className="max-w-7xl mx-auto py-8">
-            <div className="mb-10">
-                <h1 className="text-4xl font-bold text-slate-900 tracking-tight">
-                    {role === 'user' ? `Welcome back, ${userData?.name?.split(' ')[0]}!` : 'System Overview'}
+        <div className="max-w-6xl mx-auto space-y-8">
+            <div className="border-b border-slate-200 pb-6">
+                <h1 className="text-2xl font-bold text-slate-900 uppercase tracking-tight">
+                    {role === 'user' ? `Welcome, ${userData?.name?.split(' ')[0]}` : 'System Console'}
                 </h1>
-                <p className="text-slate-500 mt-2 font-medium">
+                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">
                     {role === 'user' ? 'Manage your services, tickets, and professional profile.' : 'Track platform activity and manage system operations.'}
                 </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {overview.map((stat, index) => (
                     <StatCard 
                         key={index}
@@ -79,24 +79,24 @@ const DashboardHome = () => {
             </div>
             
             {role !== 'user' && (
-                <div className="mt-12 p-10 bg-slate-900 rounded-2xl text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-lg border border-slate-800">
-                    <div className="space-y-2 text-center md:text-left">
-                        <h2 className="text-3xl font-bold tracking-tight uppercase">Management Console</h2>
-                        <p className="text-slate-400 font-medium">Navigate to your specialized role-based tools.</p>
+                <div className="p-8 bg-slate-900 border border-slate-900 text-white flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="space-y-1 text-center md:text-left">
+                        <h2 className="text-sm font-bold tracking-wider uppercase">Management Console</h2>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Navigate to your specialized role-based tools.</p>
                     </div>
                     <button 
                         onClick={() => router.push(`/dashboard/${role.replace('_', '-')}`)}
-                        className="px-10 py-5 bg-emerald-500 text-white font-semibold uppercase tracking-widest text-[11px] rounded-xl hover:bg-emerald-600 transition-all flex items-center gap-3 active:scale-95 shadow-lg shadow-emerald-500/20"
+                        className="px-6 py-3 bg-white text-slate-900 font-bold uppercase tracking-widest text-[10px] border border-white hover:bg-slate-100 transition-all"
                     >
-                        Access Panel <RiDashboardLine size={18} />
+                        Access Panel
                     </button>
                 </div>
             )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
-                <div className="lg:col-span-2 space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-6">
                     {role === 'user' && (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {[
                                 { label: 'Support', href: '/dashboard/tickets', icon: RiTicketLine },
                                 { label: 'Orders', href: '/dashboard/purchases', icon: RiPriceTag3Line },
@@ -106,40 +106,37 @@ const DashboardHome = () => {
                                 <button 
                                     key={i} 
                                     onClick={() => router.push(link.href)}
-                                    className="flex flex-col items-center justify-center p-6 bg-white border border-slate-100 rounded-2xl hover:border-emerald-500/20 hover:shadow-sm transition-all group"
+                                    className="flex flex-col items-center justify-center p-6 bg-white border border-slate-200 hover:border-slate-400 transition-all group"
                                 >
-                                    <div className="w-12 h-12 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center mb-3 group-hover:bg-emerald-500 group-hover:text-white transition-all">
-                                        <link.icon size={24} />
+                                    <div className="p-2 bg-slate-50 border border-slate-200 text-slate-400 mb-3 group-hover:text-slate-900 transition-all">
+                                        <link.icon size={20} />
                                     </div>
-                                    <span className="text-[10px] uppercase font-semibold text-slate-400 tracking-widest group-hover:text-emerald-500 transition-colors">{link.label}</span>
+                                    <span className="text-[9px] uppercase font-bold text-slate-400 tracking-widest group-hover:text-slate-900 transition-colors">{link.label}</span>
                                 </button>
                             ))}
                         </div>
                     )}
                 </div>
 
-                <div className="space-y-8">
-                    <div className="p-10 bg-slate-50 border border-slate-100 rounded-2xl relative overflow-hidden group">
-                       <div className="absolute top-0 right-0 p-8 text-slate-200 pointer-events-none">
-                          <RiCustomerService2Line size={100} />
-                       </div>
+                <div className="space-y-6">
+                    <div className="p-8 bg-slate-50 border border-slate-200 relative overflow-hidden group">
                        <div className="relative z-10 space-y-6">
                           <div>
-                            <h3 className="text-2xl font-bold text-slate-900 tracking-tight mb-2">Need Help?</h3>
-                            <p className="text-slate-500 text-sm font-medium leading-relaxed">Our specialized support team is ready to assist you.</p>
+                            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Need Help?</h3>
+                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest leading-relaxed">Our specialized support team is ready to assist you.</p>
                           </div>
-                          <button onClick={() => router.push('/dashboard/tickets')} className="w-full py-4 bg-slate-900 text-white font-semibold uppercase tracking-widest text-[11px] rounded-xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 shadow-sm">
+                          <button onClick={() => router.push('/dashboard/tickets')} className="w-full py-3 bg-slate-900 text-white font-bold uppercase tracking-widest text-[10px] border border-slate-900 hover:bg-slate-800 transition-all">
                               Open Ticket
                           </button>
                        </div>
                     </div>
 
-                    <div className="p-8 flex flex-col items-center text-center bg-white border border-slate-100 rounded-2xl shadow-sm">
-                        <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mb-4">
-                            <RiCheckDoubleLine size={24} />
+                    <div className="p-6 flex flex-col items-center text-center bg-white border border-slate-200">
+                        <div className="w-8 h-8 bg-slate-50 border border-slate-200 text-slate-400 flex items-center justify-center mb-3">
+                            <RiCheckDoubleLine size={16} />
                         </div>
-                        <h3 className="font-semibold text-slate-900">System Integrity</h3>
-                        <p className="text-[10px] text-emerald-600 font-semibold mt-1 uppercase tracking-widest">Optimized</p>
+                        <h3 className="text-[10px] font-bold text-slate-900 uppercase tracking-widest">System Integrity</h3>
+                        <p className="text-[9px] text-emerald-600 font-bold mt-1 uppercase tracking-widest">Status: Optimized</p>
                     </div>
                 </div>
             </div>

@@ -109,66 +109,64 @@ const ManagerPurchases = () => {
     }
 
     const columns = [
-        { label: 'Purchase ID', key: 'purchase_id', render: (row) => (
+        { label: 'ID', key: 'purchase_id', render: (row) => (
             <div className="flex flex-col">
-                <span className="font-mono text-[10px] font-bold text-slate-400">#{row.purchase_id}</span>
-                {row.transaction_id && <span className="text-[9px] font-black uppercase tracking-widest text-emerald-500">TXN: {row.transaction_id}</span>}
+                <span className="font-bold text-slate-400 text-[10px] uppercase tracking-widest">#{row.purchase_id}</span>
+                {row.transaction_id && <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-600">TXN: {row.transaction_id}</span>}
             </div>
         )},
         { label: 'User', key: 'user', render: (row) => (
             <div className="flex flex-col">
-                <span className="font-bold text-slate-700">{row.user_name || 'User'}</span>
-                <span className="text-xs text-slate-400">{row.user_email}</span>
+                <span className="font-bold text-slate-900 uppercase tracking-tight text-xs">{row.user_name || 'User'}</span>
+                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{row.user_email}</span>
             </div>
         )},
         { label: 'Package', key: 'package', render: (row) => (
             <div className="flex flex-col">
-                <span className="font-bold text-emerald-600">{row.package_name || 'Unknown Package'}</span>
-                <span className="text-[9px] font-black uppercase tracking-widest text-slate-300">Package ID: {row.package_id}</span>
+                <span className="font-bold text-emerald-600 uppercase tracking-tight text-xs">{row.package_name || 'Unknown Package'}</span>
+                <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">PKID: {row.package_id}</span>
             </div>
         )},
         { label: 'Amount', key: 'final_amount', render: (row) => (
             <div className="flex flex-col">
-                <div className="flex items-center gap-1 font-black text-slate-900 text-base">
-                    <span className="text-emerald-500/50">৳</span>{row.final_amount}
+                <div className="font-bold text-slate-900 text-sm uppercase tracking-tighter">
+                    ৳{row.final_amount}
                 </div>
                 {row.discount_amount > 0 && (
-                    <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-tighter">Saved ৳{row.discount_amount}</span>
+                    <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">SAVE ৳{row.discount_amount}</span>
                 )}
             </div>
         )},
         { label: 'Status', key: 'status', render: (row) => (
-            <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest inline-block
-                ${row.status === 'pending' ? 'bg-amber-100 text-amber-700' : 
-                  row.status === 'approved' || row.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 
-                  row.status === 'suspended' ? 'bg-red-50 text-red-500' :
-                  'bg-slate-100 text-slate-500'}`}>
+            <span className={`px-2 py-0.5 border text-[9px] font-bold uppercase tracking-widest inline-block
+                ${row.status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-100' : 
+                  row.status === 'approved' || row.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 
+                  row.status === 'suspended' ? 'bg-red-50 text-red-700 border-red-100' :
+                  'bg-slate-50 text-slate-700 border-slate-200'}`}>
                 {row.status}
             </span>
         )},
         { label: 'Date', key: 'created_at', render: (row) => (
-            <span className="text-[10px] text-slate-400 font-bold">{new Date(row.created_at).toLocaleString()}</span>
+            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{new Date(row.created_at).toLocaleDateString()}</span>
         )},
     ]
 
     const actions = (row) => (
-        <div className="flex gap-2">
+        <div className="flex gap-1 items-center">
             {row.status === 'pending' && (
                 <>
                     <button
                         onClick={() => handleConfirm(row.purchase_id)}
                         disabled={processing === row.purchase_id}
-                        className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 transition-all disabled:opacity-50 shadow-lg shadow-emerald-500/20"
+                        className="px-3 py-1.5 bg-slate-900 text-white text-[9px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all disabled:opacity-50"
                     >
-                        {processing === row.purchase_id ? <RiRefreshLine className="animate-spin" size={14} /> : <RiCheckLine size={14} />}
                         Accept
                     </button>
                     <button
                         onClick={() => handleReject(row.purchase_id)}
                         disabled={processing === row.purchase_id}
-                        className="flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-600 border border-amber-100 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-500 hover:text-white transition-all disabled:opacity-50"
+                        className="px-3 py-1.5 border border-slate-200 text-slate-600 text-[9px] font-bold uppercase tracking-widest hover:bg-slate-50 transition-all disabled:opacity-50"
                     >
-                        {processing === row.purchase_id ? <RiRefreshLine className="animate-spin" size={14} /> : <RiCloseLine size={14} />}
                         Reject
                     </button>
                 </>
@@ -178,15 +176,15 @@ const ManagerPurchases = () => {
                     <button
                         onClick={() => handleRefund(row.purchase_id)}
                         disabled={processing === row.purchase_id}
-                        className="flex items-center gap-2 px-3 py-2 bg-purple-50 text-purple-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-purple-600 hover:text-white transition-all disabled:opacity-50"
+                        className="px-3 py-1.5 border border-slate-200 text-slate-600 text-[9px] font-bold uppercase tracking-widest hover:bg-slate-50 transition-all disabled:opacity-50"
                     >
                         Refund
                     </button>
                     <button
                         onClick={() => handleSuspend(row.purchase_id, row.status)}
                         disabled={processing === row.purchase_id}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-50
-                            ${row.status === 'suspended' ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white' : 'bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white'}`}
+                        className={`px-3 py-1.5 border text-[9px] font-bold uppercase tracking-widest transition-all disabled:opacity-50
+                            ${row.status === 'suspended' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'}`}
                     >
                         {row.status === 'suspended' ? 'Unsuspend' : 'Suspend'}
                     </button>
@@ -196,35 +194,38 @@ const ManagerPurchases = () => {
                 <button
                     onClick={() => handleDelete(row.purchase_id)}
                     disabled={processing === row.purchase_id}
-                    className="flex items-center gap-2 px-3 py-2 bg-red-50 text-red-500 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all disabled:opacity-50"
+                    className="p-1.5 border border-slate-200 text-slate-400 hover:text-red-500 transition-all disabled:opacity-50"
+                    title="Delete"
                 >
-                    {processing === row.purchase_id ? <RiRefreshLine className="animate-spin" size={14} /> : <RiCloseLine size={14} />}
-                    Delete
+                    <RiCloseLine size={16} />
                 </button>
             )}
             <button 
-                onClick={() => router.push(`/dashboard/manager/subscriptions/${row.purchase_id}`)} // Assuming search or direct link
-                className="p-2 hover:bg-slate-100 text-slate-400 rounded-lg transition-all" 
-                title="View Details"
+                onClick={() => router.push(`/dashboard/manager/subscriptions/${row.purchase_id}`)}
+                className="p-1.5 border border-slate-200 text-slate-400 hover:text-slate-800 transition-all" 
+                title="Details"
             >
-                <RiInformationLine size={18} />
+                <RiInformationLine size={16} />
             </button>
         </div>
     )
 
     return (
-        <div className="space-y-8">
-            <div className="flex items-center justify-between">
-                <div className="flex flex-col gap-1">
-                    <h1 className="text-3xl font-black text-slate-800 tracking-tight">Purchase Management</h1>
-                    <p className="text-slate-500 font-medium">Review pending orders and activate subscriptions for users.</p>
+        <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+                <div className="flex flex-col">
+                    <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Purchases</h1>
+                    <p className="text-xs text-slate-500">Review pending orders and activate subscriptions.</p>
                 </div>
-                <button onClick={fetchData} className="p-3 bg-white border border-slate-100 rounded-2xl text-slate-400 hover:text-emerald-500 hover:border-emerald-500/10 transition-all shadow-sm">
-                    <RiRefreshLine size={20} className={loading ? 'animate-spin' : ''} />
+                <button 
+                    onClick={fetchData} 
+                    className="p-2 border border-slate-200 text-slate-500 hover:text-slate-800 transition-all"
+                >
+                    <RiRefreshLine size={18} className={loading ? 'animate-spin' : ''} />
                 </button>
             </div>
 
-            <div className="bg-white p-2 rounded-[2.5rem] border border-slate-50 shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200 overflow-hidden">
                 <DataTable columns={columns} data={data} loading={loading} actions={actions} />
             </div>
         </div>

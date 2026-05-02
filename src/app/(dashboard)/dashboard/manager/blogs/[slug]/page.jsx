@@ -34,21 +34,21 @@ const EditBlogPage = () => {
     if (!blog) return <div className="p-10 text-center font-bold text-slate-400 uppercase tracking-widest">Article Not Found</div>
 
     return (
-        <div className="space-y-6 py-6 px-4">
-            <div className="flex flex-col gap-4">
+        <div className="space-y-4 max-w-4xl mx-auto">
+            <div className="flex flex-col gap-4 border-b border-slate-200 pb-4">
                 <Link 
                     href="/dashboard/manager/blogs" 
-                    className="flex items-center gap-2 text-slate-400 hover:text-emerald-500 transition-colors font-bold text-xs uppercase tracking-widest"
+                    className="flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-colors font-bold text-[10px] uppercase tracking-widest"
                 >
-                    <RiArrowLeftLine size={16} /> Back to Repository
+                    <RiArrowLeftLine size={14} /> Back to Blogs
                 </Link>
-                <div className="flex flex-col gap-1">
-                    <h1 className="text-2xl font-bold text-slate-800">Modify Article</h1>
-                    <p className="text-sm text-slate-500">Update the content, category or visual of your published material.</p>
+                <div className="flex flex-col">
+                    <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Edit Blog</h1>
+                    <p className="text-xs text-slate-500">Update the content, category or visual of your published material.</p>
                 </div>
             </div>
 
-            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm max-w-3xl">
+            <div className="bg-white p-6 border border-slate-200">
                 <UpdateBlogForm blogData={blog} />
             </div>
         </div>

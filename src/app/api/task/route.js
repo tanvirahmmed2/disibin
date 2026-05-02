@@ -103,8 +103,6 @@ export async function PATCH(req) {
             }
             if (description !== undefined) {
                 params.push(description);
-                updateFields.push(`description = $${updateParams?.length || params.length}`); // Fixed typo from previous logic if any
-                updateFields.pop(); // Remove above and redo correctly
                 updateFields.push(`description = $${params.length}`);
             }
             if (assignedTo !== undefined) {

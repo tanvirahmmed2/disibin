@@ -18,15 +18,15 @@ import {
 /* ─── Step Indicator ─────────────────────────────────────────────────── */
 const StepBadge = ({ n, label, active, done }) => (
     <div className="flex items-center gap-2">
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-black transition-colors
-            ${done ? 'bg-emerald-500 text-white' : active ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-400'}`}>
-            {done ? <RiCheckLine size={16} /> : n}
+        <div className={`w-6 h-6 flex items-center justify-center text-[10px] font-bold border transition-colors
+            ${done ? 'bg-emerald-500 border-emerald-500 text-white' : active ? 'bg-slate-900 border-slate-900 text-white' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
+            {done ? <RiCheckLine size={12} /> : n}
         </div>
-        <span className={`text-sm font-bold hidden sm:block ${active ? 'text-slate-800' : 'text-slate-400'}`}>{label}</span>
+        <span className={`text-[10px] font-bold uppercase tracking-wider hidden sm:block ${active ? 'text-slate-900' : 'text-slate-400'}`}>{label}</span>
     </div>
 )
 
-const StepDivider = () => <div className="flex-1 h-px bg-slate-200 mx-2" />
+const StepDivider = () => <div className="flex-1 h-px bg-slate-200" />
 
 /* ─── Pro-rated balance calculator ──────────────────────────────────── */
 const calcProrated = (sub) => {
@@ -114,45 +114,41 @@ const RefundPage = () => {
     }
 
     return (
-        <div className="max-w-3xl mx-auto space-y-8">
-            {/* Header */}
+        <div className="max-w-3xl mx-auto space-y-6">
             <div>
-                <h1 className="text-3xl font-black text-slate-800 tracking-tight">Process Refund</h1>
-                <p className="text-slate-500 font-medium mt-1">Cancel a subscription and issue a refund. This will delete all workspace data.</p>
+                <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Process Refund</h1>
+                <p className="text-xs text-slate-500 mt-1">Cancel a subscription and issue a refund. This will delete all workspace data.</p>
             </div>
 
-            {/* Step Indicator */}
             {!done && (
-                <div className="flex items-center bg-white p-5 rounded-[1.75rem] border border-slate-100 shadow-sm">
+                <div className="flex items-center gap-4 bg-white p-4 border border-slate-200">
                     <StepBadge n={1} label="Find User"  active={step === 1} done={step > 1} />
                     <StepDivider />
-                    <StepBadge n={2} label="Select Subscription" active={step === 2} done={step > 2} />
+                    <StepBadge n={2} label="Subscription" active={step === 2} done={step > 2} />
                     <StepDivider />
-                    <StepBadge n={3} label="Confirm Refund" active={step === 3} done={false} />
+                    <StepBadge n={3} label="Confirm" active={step === 3} done={false} />
                 </div>
             )}
 
             {/* ── Step 1: Email Search ─────────────────────────────────── */}
             {!done && step === 1 && (
-                <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm space-y-6">
+                <div className="bg-white p-8 border border-slate-200 space-y-6">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center">
-                            <RiSearch2Line size={20} />
-                        </div>
-                        <h2 className="text-xl font-bold text-slate-800">Find Customer</h2>
+                        <RiSearch2Line size={18} className="text-slate-400" />
+                        <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Find Customer</h2>
                     </div>
-                    <form onSubmit={handleSearch} className="flex gap-3">
+                    <form onSubmit={handleSearch} className="flex gap-2">
                         <input
                             type="email"
                             required
                             value={email}
                             onChange={e => setEmail(e.target.value)}
                             placeholder="customer@example.com"
-                            className="flex-1 bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:border-emerald-400 focus:bg-white transition-colors placeholder:text-slate-300"
+                            className="flex-1 bg-slate-50 border border-slate-200 px-4 py-2 text-xs font-bold focus:outline-none focus:border-slate-400 transition-all"
                         />
                         <button type="submit" disabled={loading}
-                            className="px-8 py-4 bg-slate-900 text-white font-bold text-sm rounded-2xl hover:bg-emerald-500 transition-all disabled:opacity-50 flex items-center gap-2">
-                            {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <RiSearch2Line size={18} />}
+                            className="px-6 py-2 bg-slate-900 text-white font-bold text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all disabled:opacity-50 flex items-center gap-2">
+                            {loading ? <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <RiSearch2Line size={14} />}
                             Search
                         </button>
                     </form>
@@ -161,73 +157,58 @@ const RefundPage = () => {
 
             {/* ── Step 2: Pick Subscription ────────────────────────────── */}
             {!done && step === 2 && searchResult && (
-                <div className="space-y-6">
-                    {/* User Card */}
-                    <div className="bg-slate-900 p-6 rounded-[2rem] text-white flex items-center gap-5">
-                        <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center shrink-0">
-                            <RiUserLine size={28} />
+                <div className="space-y-4">
+                    <div className="bg-slate-900 p-4 text-white flex items-center gap-4">
+                        <div className="w-10 h-10 bg-white/10 flex items-center justify-center shrink-0">
+                            <RiUserLine size={20} />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-xl font-black">{searchResult.user.name}</p>
-                            <p className="text-slate-400 text-sm font-medium">{searchResult.user.email}</p>
+                            <p className="font-bold text-sm uppercase tracking-tight">{searchResult.user.name}</p>
+                            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">{searchResult.user.email}</p>
                         </div>
-                        <button onClick={() => setStep(1)} className="p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors">
-                            <RiArrowLeftLine size={18} />
+                        <button onClick={() => setStep(1)} className="p-2 border border-white/10 hover:bg-white/10 transition-all">
+                            <RiArrowLeftLine size={14} />
                         </button>
                     </div>
 
-                    {/* Subscriptions */}
-                    <div className="space-y-4">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">
-                            {searchResult.subscriptions.length} Active Subscription{searchResult.subscriptions.length !== 1 ? 's' : ''} — Select one to refund
+                    <div className="space-y-3">
+                        <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 px-1">
+                            {searchResult.subscriptions.length} Active Subscription{searchResult.subscriptions.length !== 1 ? 's' : ''}
                         </p>
-                        {searchResult.subscriptions.length === 0 && (
-                            <div className="bg-white border border-slate-100 rounded-[2rem] p-12 text-center shadow-sm">
-                                <RiShieldFlashLine size={40} className="text-slate-200 mx-auto mb-3" />
-                                <p className="text-slate-400 font-semibold">No active subscriptions to refund.</p>
-                            </div>
-                        )}
                         {searchResult.subscriptions.map(sub => {
                             const prorated = calcProrated(sub)
-                            const isExpiring = sub.current_period_end && new Date(sub.current_period_end) < new Date(Date.now() + 7 * 86400000)
                             return (
                                 <div key={sub.subscription_id}
-                                    className="bg-white border border-slate-100 rounded-[2rem] p-6 shadow-sm hover:border-emerald-200 hover:shadow-md transition-all cursor-pointer group"
+                                    className="bg-white border border-slate-200 p-6 hover:border-slate-400 transition-all cursor-pointer group"
                                     onClick={() => handleSelectSub(sub)}>
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0">
-                                                <RiShieldFlashLine size={24} />
+                                            <div className="w-10 h-10 border border-slate-200 bg-slate-50 text-slate-400 flex items-center justify-center shrink-0">
+                                                <RiShieldFlashLine size={18} />
                                             </div>
                                             <div>
-                                                <p className="font-black text-slate-800 text-lg">{sub.package_name || 'Package'}</p>
-                                                <p className="text-sm text-slate-400 font-medium">Sub #{sub.subscription_id}</p>
+                                                <p className="font-bold text-slate-900 text-sm uppercase tracking-tight">{sub.package_name || 'Package'}</p>
+                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">ID: #{sub.subscription_id}</p>
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-2xl font-black text-emerald-600">৳{prorated.toFixed(2)}</p>
-                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Est. Refund</p>
+                                            <p className="text-xl font-bold text-emerald-600">৳{prorated.toFixed(2)}</p>
+                                            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Est. Refund</p>
                                         </div>
                                     </div>
-                                    <div className="mt-5 pt-5 border-t border-slate-50 grid grid-cols-3 gap-4">
+                                    <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-3 gap-4">
                                         <div>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Paid</p>
-                                            <p className="text-sm font-bold text-slate-700">৳{Number(sub.paid_amount || 0).toFixed(2)}</p>
+                                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Paid</p>
+                                            <p className="text-xs font-bold text-slate-800">৳{Number(sub.paid_amount || 0).toFixed(2)}</p>
                                         </div>
                                         <div>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Expires</p>
-                                            <p className={`text-sm font-bold ${isExpiring ? 'text-amber-500' : 'text-slate-700'}`}>
-                                                {sub.current_period_end ? new Date(sub.current_period_end).toLocaleDateString() : 'Lifetime'}
-                                            </p>
+                                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Expires</p>
+                                            <p className="text-xs font-bold text-slate-800">{sub.current_period_end ? new Date(sub.current_period_end).toLocaleDateString() : 'Lifetime'}</p>
                                         </div>
                                         <div>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Workspace</p>
-                                            <p className="text-sm font-bold text-slate-700 truncate">{sub.tenant_name || 'None'}</p>
+                                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Workspace</p>
+                                            <p className="text-xs font-bold text-slate-800 truncate">{sub.tenant_name || 'N/A'}</p>
                                         </div>
-                                    </div>
-                                    <div className="mt-4 flex items-center justify-end gap-2 text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <span className="text-xs font-bold">Select for Refund</span>
-                                        <RiArrowRightLine size={16} />
                                     </div>
                                 </div>
                             )
@@ -238,92 +219,73 @@ const RefundPage = () => {
 
             {/* ── Step 3: Confirm ──────────────────────────────────────── */}
             {!done && step === 3 && selectedSub && (
-                <div className="space-y-6">
-                    <button onClick={() => setStep(2)} className="flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-slate-700 transition-colors">
-                        <RiArrowLeftLine size={16} /> Back to subscriptions
+                <div className="space-y-4">
+                    <button onClick={() => setStep(2)} className="flex items-center gap-2 text-[10px] font-bold text-slate-400 hover:text-slate-800 transition-all uppercase tracking-widest">
+                        <RiArrowLeftLine size={12} /> Back to subscriptions
                     </button>
 
-                    {/* Warning banner */}
-                    <div className="flex items-start gap-4 p-5 bg-red-50 border border-red-100 rounded-2xl">
-                        <RiAlertLine size={22} className="text-red-500 shrink-0 mt-0.5" />
-                        <div>
-                            <p className="font-black text-red-700 text-sm">Destructive Action</p>
-                            <p className="text-red-500 text-xs font-medium mt-1 leading-relaxed">
-                                Confirming will cancel subscription #{selectedSub.subscription_id}, mark the payment as refunded, 
-                                and <strong>permanently delete the workspace "{selectedSub.tenant_name || 'N/A'}"</strong> along with all its websites and users.
+                    <div className="flex items-start gap-4 p-4 bg-red-50 border border-red-100">
+                        <RiAlertLine size={18} className="text-red-500 shrink-0 mt-0.5" />
+                        <div className="space-y-1">
+                            <p className="font-bold text-red-700 text-xs uppercase tracking-tight">Destructive Action</p>
+                            <p className="text-red-600 text-[10px] font-bold leading-relaxed uppercase tracking-tighter">
+                                Cancellation will permanently delete workspace "{selectedSub.tenant_name || 'N/A'}" and all data.
                             </p>
                         </div>
                     </div>
 
-                    {/* Summary */}
-                    <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm space-y-6">
-                        <div className="flex items-center gap-3 border-b border-slate-50 pb-4">
-                            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-500 flex items-center justify-center">
-                                <RiMoneyDollarCircleLine size={20} />
-                            </div>
-                            <h2 className="text-xl font-bold text-slate-800">Refund Details</h2>
+                    <div className="bg-white p-8 border border-slate-200 space-y-6">
+                        <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                            <RiMoneyDollarCircleLine size={18} className="text-slate-400" />
+                            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Refund Summary</h2>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div className="grid grid-cols-2 gap-2">
                             {[
                                 ['Customer', searchResult.user.name],
                                 ['Package', selectedSub.package_name || 'N/A'],
                                 ['Total Paid', `৳${Number(selectedSub.paid_amount || 0).toFixed(2)}`],
-                                ['Payment Method', (selectedSub.payment_method || 'N/A').toUpperCase()],
-                                ['Transaction ID', selectedSub.transaction_id || 'N/A'],
-                                ['Workspace', selectedSub.tenant_name || 'None'],
+                                ['Method', (selectedSub.payment_method || 'N/A').toUpperCase()],
+                                ['Transaction', selectedSub.transaction_id || 'N/A'],
+                                ['Workspace', selectedSub.tenant_name || 'N/A'],
                             ].map(([label, val]) => (
-                                <div key={label} className="bg-slate-50 rounded-xl p-4">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{label}</p>
-                                    <p className="font-bold text-slate-800 truncate">{val}</p>
+                                <div key={label} className="bg-slate-50 p-3 border border-slate-100">
+                                    <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">{label}</p>
+                                    <p className="text-xs font-bold text-slate-800 truncate uppercase tracking-tight">{val}</p>
                                 </div>
                             ))}
                         </div>
 
-                        {/* Refund Amount */}
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                Refund Amount (৳) — pre-filled with pro-rated balance
-                            </label>
+                            <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Refund Amount (৳)</label>
                             <input
                                 type="number"
                                 value={refundAmount}
                                 onChange={e => setRefundAmount(e.target.value)}
-                                min="0.01"
-                                step="0.01"
-                                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-2xl font-black text-emerald-600 focus:outline-none focus:border-emerald-400 focus:bg-white transition-colors"
+                                className="w-full bg-slate-50 border border-slate-200 px-4 py-3 text-xl font-bold text-emerald-600 focus:outline-none focus:border-slate-400 transition-all"
                             />
-                            <p className="text-xs text-slate-400 font-medium">
-                                Remaining pro-rated value: ৳{calcProrated(selectedSub).toFixed(2)} 
-                                {' '}(based on days left in billing period)
-                            </p>
                         </div>
 
-                        {/* Reason */}
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Refund Reason</label>
+                            <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Reason</label>
                             <textarea
                                 value={reason}
                                 onChange={e => setReason(e.target.value)}
-                                placeholder="e.g. Customer requested cancellation within cooling-off period..."
-                                rows={3}
-                                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:border-emerald-400 focus:bg-white transition-colors resize-none placeholder:text-slate-300"
+                                rows={2}
+                                className="w-full bg-slate-50 border border-slate-200 px-4 py-2 text-xs font-bold focus:outline-none focus:border-slate-400 transition-all resize-none"
                             />
                         </div>
 
-                        <div className="flex gap-3">
+                        <div className="flex gap-2">
                             <button
                                 onClick={handleRefund}
                                 disabled={processing}
-                                className="flex-1 flex items-center justify-center gap-2 py-4 bg-red-500 text-white font-black text-sm rounded-2xl hover:bg-red-600 transition-all disabled:opacity-50 uppercase tracking-widest shadow-lg shadow-red-500/20"
+                                className="flex-1 py-3 bg-red-600 text-white font-bold text-[10px] uppercase tracking-widest hover:bg-red-700 transition-all disabled:opacity-50"
                             >
-                                {processing
-                                    ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Processing...</>
-                                    : <><RiRefundLine size={18} /> Confirm Refund & Cancel</>
-                                }
+                                {processing ? 'Processing...' : 'Confirm Refund & Cancel'}
                             </button>
                             <button onClick={() => setStep(2)} disabled={processing}
-                                className="px-8 py-4 bg-slate-100 text-slate-500 font-bold text-sm rounded-2xl hover:bg-slate-200 transition-all disabled:opacity-50">
+                                className="px-6 py-3 border border-slate-200 text-slate-500 font-bold text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all">
                                 Cancel
                             </button>
                         </div>
@@ -333,19 +295,17 @@ const RefundPage = () => {
 
             {/* ── Done ─────────────────────────────────────────────────── */}
             {done && (
-                <div className="bg-white p-12 rounded-[2rem] border border-slate-100 shadow-sm text-center space-y-6">
-                    <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto">
-                        <RiCheckLine size={40} className="text-emerald-500" />
+                <div className="bg-white p-12 border border-slate-200 text-center space-y-4">
+                    <div className="w-12 h-12 bg-emerald-50 text-emerald-500 flex items-center justify-center mx-auto border border-emerald-100">
+                        <RiCheckLine size={24} />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-black text-slate-800">Refund Processed</h2>
-                        <p className="text-slate-500 font-medium mt-2">
-                            ৳{refundAmount} refunded · Subscription cancelled · Workspace deleted.
-                        </p>
+                        <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Refund Processed</h2>
+                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter mt-1">৳{refundAmount} Refunded · Subscription Cancelled</p>
                     </div>
                     <button onClick={handleReset}
-                        className="px-8 py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-emerald-500 transition-all uppercase tracking-widest text-sm">
-                        Process Another Refund
+                        className="px-6 py-2 bg-slate-900 text-white font-bold uppercase tracking-widest text-[10px] hover:bg-slate-800 transition-all">
+                        Process Another
                     </button>
                 </div>
             )}

@@ -3,15 +3,15 @@ import React, { useContext } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Context } from '@/component/helper/Context'
-import { 
-    RiDashboardLine, 
-    RiUserLine, 
-    RiArticleLine, 
-    RiInboxLine, 
-    RiSettingsLine, 
-    RiTeamLine, 
-    RiProjectorLine, 
-    RiStackLine, 
+import {
+    RiDashboardLine,
+    RiUserLine,
+    RiArticleLine,
+    RiInboxLine,
+    RiSettingsLine,
+    RiTeamLine,
+    RiProjectorLine,
+    RiStackLine,
     RiShieldUserLine,
     RiCustomerService2Line,
     RiMailSendLine,
@@ -31,7 +31,7 @@ const SidebarItem = ({ item, collapsed }) => {
     const isActive = pathname === item.href
 
     return (
-        <Link 
+        <Link
             href={item.href}
             className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-300 group
                 ${isActive ? 'bg-emerald-500 text-white shadow-md' : 'text-slate-500 hover:bg-emerald-500/5 hover:text-emerald-600'}`}
@@ -106,15 +106,15 @@ const Sidebar = ({ collapsed }) => {
             </div>
 
             <nav className="flex flex-col gap-1.5 flex-1 overflow-y-auto no-scrollbar">
-                <SidebarItem 
-                    item={{ label: 'User Portal', href: '/user', icon: RiUserLine }} 
-                    collapsed={collapsed} 
+                <SidebarItem
+                    item={{ label: 'User Portal', href: '/user', icon: RiUserLine }}
+                    collapsed={collapsed}
                 />
-                
+
                 {role !== 'user' && (
-                    <SidebarItem 
-                        item={{ label: 'Internal Chat', href: '/dashboard/mail', icon: RiMailSendLine }} 
-                        collapsed={collapsed} 
+                    <SidebarItem
+                        item={{ label: 'Internal Chat', href: '/dashboard/mail', icon: RiMailSendLine }}
+                        collapsed={collapsed}
                     />
                 )}
 
@@ -131,9 +131,9 @@ const Sidebar = ({ collapsed }) => {
             </nav>
 
             <div className="flex flex-col gap-1.5 border-t border-slate-100 pt-4">
-                <button 
-                  onClick={() => handleLogout()}
-                  className={`flex items-center gap-3 px-3 py-3 rounded-xl text-emerald-600 hover:bg-emerald-50 transition-all duration-300 group
+                <button
+                    onClick={() => handleLogout()}
+                    className={`flex items-center gap-3 px-3 py-3 rounded-xl text-emerald-600 hover:bg-emerald-50 transition-all duration-300 group
                     ${collapsed ? 'lg:justify-center' : ''}`}>
                     <RiLogoutBoxRLine className="text-xl text-emerald-600 transition-colors" />
                     {(!collapsed || typeof window !== 'undefined' && window.innerWidth < 1024) && (

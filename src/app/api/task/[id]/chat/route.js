@@ -7,7 +7,7 @@ export async function GET(req, { params }) {
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
-        const taskId = params.id;
+        const { id: taskId } = await params;
         const user = auth.data;
 
         // Verify task access
@@ -24,7 +24,7 @@ export async function GET(req, { params }) {
         const res = await dbQuery(`
             SELECT m.*, u.name as sender_name, u.role as sender_role 
             FROM task_messages m
-            JOIN users u ON m.user_id = u.user_id
+            JOIN users u ON m.sender_id = u.user_id
             WHERE m.task_id = $1
             ORDER BY m.created_at ASC
         `, [taskId]);
@@ -41,7 +41,7 @@ export async function POST(req, { params }) {
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
 
-        const taskId = params.id;
+        const { id: taskId } = await params;
         const { message } = await req.json();
         if (!message) return NextResponse.json({ success: false, message: "Message is required" }, { status: 400 });
 
@@ -59,7 +59,7 @@ export async function POST(req, { params }) {
         }
 
         const res = await dbQuery(`
-            INSERT INTO task_messages (task_id, user_id, message)
+            INSERT INTO task_messages (task_id, sender_id, message)
             VALUES ($1, $2, $3)
             RETURNING *
         `, [taskId, user.id, message]);

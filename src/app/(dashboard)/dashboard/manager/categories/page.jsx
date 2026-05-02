@@ -64,47 +64,49 @@ const CategoryManagement = () => {
     const columns = [
         { label: 'Category', key: 'name', render: (row) => (
             <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-lg shadow-slate-200">
-                    <RiPriceTag3Line size={16} />
+                <div className="w-8 h-8 border border-slate-200 bg-slate-50 text-slate-400 flex items-center justify-center font-bold text-xs">
+                    <RiPriceTag3Line size={12} />
                 </div>
                 <div>
-                    <p className="font-bold text-slate-800">{row.name}</p>
-                    <p className="text-[9px] text-slate-400 font-black uppercase tracking-tighter">Slug: {row.slug}</p>
+                    <p className="font-bold text-slate-900 uppercase tracking-tight text-xs leading-none mb-1">{row.name}</p>
+                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none">Slug: {row.slug}</p>
                 </div>
             </div>
         )},
         { label: 'Description', key: 'description', render: (row) => (
-            <span className="text-xs text-slate-500 line-clamp-1 max-w-[300px]">{row.description || 'No description'}</span>
+            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest line-clamp-1 max-w-[300px]">{row.description || 'N/A'}</span>
         )},
     ]
 
     const actions = (row) => (
-        <div className="flex gap-2">
+        <div className="flex gap-1">
             <button 
                 onClick={() => {
                     setCurrentCategory(row)
                     setFormData({ name: row.name, description: row.description || '' })
                     setIsModalOpen(true)
                 }}
-                className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
+                className="p-2 border border-slate-200 text-slate-400 hover:text-slate-800 transition-all"
+                title="Edit"
             >
-                <RiEdit2Line size={18} />
+                <RiEdit2Line size={16} />
             </button>
             <button 
                 onClick={() => handleDelete(row.category_id)}
-                className="p-2 hover:bg-slate-100 text-slate-400 hover:text-red-500 rounded-lg transition-all"
+                className="p-2 border border-slate-200 text-slate-400 hover:text-red-500 transition-all"
+                title="Delete"
             >
-                <RiDeleteBin6Line size={18} />
+                <RiDeleteBin6Line size={16} />
             </button>
         </div>
     )
 
     return (
-        <div className="space-y-6 py-6 px-4">
-            <div className="flex items-center justify-between">
+        <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div className="space-y-1">
-                    <h1 className="text-2xl font-bold text-slate-800">Category Repository</h1>
-                    <p className="text-sm text-slate-500">Organize and classify platform content and services.</p>
+                    <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Categories</h1>
+                    <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">Classify platform content.</p>
                 </div>
                 <button 
                     onClick={() => {
@@ -112,55 +114,55 @@ const CategoryManagement = () => {
                         setFormData({ name: '', description: '' })
                         setIsModalOpen(true)
                     }}
-                    className="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-emerald-500 transition-all shadow-lg shadow-slate-900/10 flex items-center gap-2"
+                    className="bg-slate-900 text-white px-4 py-2 font-bold text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-2"
                 >
-                    <RiAddLine size={18} /> New Category
+                    <RiAddLine size={16} /> New Category
                 </button>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200 overflow-hidden">
                 <DataTable columns={columns} data={categories} loading={loading} actions={actions} />
             </div>
 
             {isModalOpen && (
-                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-[2.5rem] w-full max-w-lg p-8 shadow-2xl animate-in fade-in zoom-in duration-300">
-                        <h2 className="text-xl font-bold text-slate-800 mb-6">{currentCategory ? 'Edit Category' : 'New Category'}</h2>
+                <div className="fixed inset-0 bg-slate-900/40 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white w-full max-w-lg p-8 border border-slate-200">
+                        <h2 className="text-[10px] font-bold text-slate-900 uppercase tracking-widest mb-6 border-b border-slate-100 pb-2">
+                            {currentCategory ? 'Edit Category' : 'New Category'}
+                        </h2>
                         <form onSubmit={handleSubmit} className="space-y-5">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Category Name</label>
+                                <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Name</label>
                                 <input 
                                     type="text" 
                                     value={formData.name}
                                     onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                    placeholder="e.g. Web Development"
-                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
+                                    className="w-full bg-slate-50 border border-slate-200 px-4 py-2 text-xs font-bold focus:outline-none focus:border-slate-400 transition-all"
                                     required
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Description</label>
+                                <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Description</label>
                                 <textarea 
                                     value={formData.description}
                                     onChange={(e) => setFormData({...formData, description: e.target.value})}
-                                    placeholder="Brief description of this category..."
                                     rows={4}
-                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
+                                    className="w-full bg-slate-50 border border-slate-200 px-4 py-2 text-xs font-bold focus:outline-none focus:border-slate-400 transition-all resize-none"
                                 />
                             </div>
-                            <div className="flex gap-3 pt-2">
+                            <div className="flex gap-2 pt-2">
                                 <button 
                                     type="button" 
                                     onClick={() => setIsModalOpen(false)}
-                                    className="flex-1 py-4 bg-slate-50 text-slate-400 font-bold uppercase tracking-widest text-[11px] rounded-2xl hover:bg-slate-100 transition-all"
+                                    className="flex-1 py-2 border border-slate-200 text-slate-500 font-bold uppercase tracking-widest text-[10px] hover:bg-slate-50 transition-all"
                                 >
                                     Cancel
                                 </button>
                                 <button 
                                     type="submit"
-                                    className="flex-1 py-4 bg-slate-900 text-white font-bold uppercase tracking-widest text-[11px] rounded-2xl hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-500/10"
+                                    className="flex-1 py-2 bg-slate-900 text-white font-bold uppercase tracking-widest text-[10px] hover:bg-slate-800 transition-all"
                                 >
-                                    {currentCategory ? 'Update' : 'Create'}
+                                    {currentCategory ? 'Save Changes' : 'Create'}
                                 </button>
                             </div>
                         </form>

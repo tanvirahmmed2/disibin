@@ -39,73 +39,70 @@ const ManagerTickets = () => {
     }
 
     const columns = [
-        { label: 'Ticket Info', key: 'ticket_id', render: (row) => (
+        { label: 'Ticket', key: 'ticket_id', render: (row) => (
             <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100 font-bold text-xs">
+                <div className="p-2 border border-slate-200 text-slate-400 font-bold text-[10px] uppercase">
                     #{row.ticket_id}
                 </div>
                 <div>
-                    <p className="font-bold text-slate-700">{row.subject}</p>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{row.category || 'General'}</p>
+                    <p className="font-bold text-slate-900 uppercase tracking-tight text-xs">{row.subject}</p>
+                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">{row.category || 'General'}</p>
                 </div>
             </div>
         )},
         { label: 'Client', key: 'sender_name', render: (row) => (
             <div className="flex flex-col">
-                <span className="font-bold text-slate-600">{row.sender_name}</span>
-                <span className="text-[10px] text-slate-400 font-bold uppercase">{row.sender_email}</span>
+                <span className="font-bold text-slate-700 uppercase tracking-tight text-xs">{row.sender_name}</span>
+                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{row.sender_email}</span>
             </div>
         )},
         { label: 'Priority', key: 'priority', render: (row) => (
-            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest
-                ${row.priority === 'urgent' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-600'}`}>
+            <span className={`px-2 py-0.5 border text-[9px] font-bold uppercase tracking-widest
+                ${row.priority === 'urgent' ? 'bg-red-50 text-red-700 border-red-100' : 'bg-slate-50 text-slate-700 border-slate-200'}`}>
                 {row.priority}
             </span>
         )},
         { label: 'Status', key: 'status', render: (row) => (
-            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest
-                ${row.status === 'open' ? 'bg-emerald-100 text-emerald-700' : 
-                  row.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 
-                  'bg-slate-50 text-slate-400'}`}>
+            <span className={`px-2 py-0.5 border text-[9px] font-bold uppercase tracking-widest
+                ${row.status === 'open' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 
+                  row.status === 'in_progress' ? 'bg-blue-50 text-blue-700 border-blue-100' : 
+                  'bg-slate-50 text-slate-500 border-slate-200'}`}>
                 {row.status}
             </span>
         )},
     ]
 
     const actions = (row) => (
-        <div className="flex gap-2">
+        <div className="flex gap-1">
             <button 
                 onClick={() => router.push(`/dashboard/manager/tickets/${row.ticket_id}`)}
-                className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
-                title="Open Chat"
+                className="p-2 border border-slate-200 text-slate-400 hover:text-slate-900 transition-all"
+                title="Chat"
             >
-                <RiMessage2Line size={18} />
+                <RiMessage2Line size={16} />
             </button>
             {row.status !== 'closed' && (
                 <button 
                     onClick={() => updateTicketStatus(row.ticket_id, 'closed')}
-                    className="p-2 hover:bg-slate-100 text-slate-400 hover:text-red-500 rounded-lg transition-all"
-                    title="Close Ticket"
+                    className="p-2 border border-slate-200 text-slate-400 hover:text-red-500 transition-all"
+                    title="Close"
                 >
-                    <RiCheckboxCircleLine size={18} />
+                    <RiCheckboxCircleLine size={16} />
                 </button>
             )}
         </div>
     )
 
     return (
-        <div className="space-y-6 py-6 px-4">
-            <div className="flex items-center justify-between">
+        <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div className="space-y-1">
-                    <h1 className="text-2xl font-bold text-slate-800">My Assigned Tickets</h1>
-                    <p className="text-sm text-slate-500">Manage support tickets assigned specifically to you.</p>
-                </div>
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                    <RiInformationLine size={20} />
+                    <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Tickets</h1>
+                    <p className="text-xs text-slate-500">Manage support tickets assigned specifically to you.</p>
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200 overflow-hidden">
                 <DataTable columns={columns} data={data} loading={loading} actions={actions} />
             </div>
         </div>

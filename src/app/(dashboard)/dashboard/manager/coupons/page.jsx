@@ -105,20 +105,20 @@ const CouponManagement = () => {
 
     const columns = [
         { label: 'Preview', key: 'image', render: (row) => (
-            <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+            <div className="relative w-10 h-10 overflow-hidden bg-slate-50 border border-slate-200">
                 {row.image ? (
                     <Image src={row.image} alt={row.code} fill className="object-cover" />
                 ) : (
                     <div className="flex items-center justify-center h-full text-slate-300">
-                        <RiTicketLine size={20} />
+                        <RiTicketLine size={16} />
                     </div>
                 )}
             </div>
         )},
         { label: 'Code', key: 'code', render: (row) => (
             <div className="flex flex-col">
-                <p className="font-bold text-slate-800">{row.code}</p>
-                <p className="text-[9px] text-slate-400 font-black uppercase tracking-tighter">
+                <p className="font-bold text-slate-800 uppercase tracking-tight">{row.code}</p>
+                <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">
                     {row.package_name || 'Site-wide'}
                 </p>
             </div>
@@ -129,14 +129,14 @@ const CouponManagement = () => {
             </span>
         )},
         { label: 'Duration', key: 'start_date', render: (row) => (
-            <div className="flex flex-col text-[10px] text-slate-500 font-medium">
+            <div className="flex flex-col text-[10px] text-slate-500 font-bold uppercase tracking-tighter">
                 <span>Starts: {row.start_date ? new Date(row.start_date).toLocaleDateString() : 'Now'}</span>
                 <span>Ends: {row.end_date ? new Date(row.end_date).toLocaleDateString() : 'Never'}</span>
             </div>
         )},
         { label: 'Status', key: 'status', render: (row) => (
-            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest
-                ${row.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+            <span className={`px-2 py-0.5 border text-[9px] font-bold uppercase tracking-widest
+                ${row.status === 'active' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-red-50 text-red-700 border-red-100'}`}>
                 {row.status}
             </span>
         )},
@@ -162,25 +162,25 @@ const CouponManagement = () => {
                     })
                     setIsModalOpen(true)
                 }}
-                className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
+                className="p-2 border border-slate-200 text-slate-400 hover:text-slate-800 transition-all"
             >
-                <RiEdit2Line size={18} />
+                <RiEdit2Line size={16} />
             </button>
             <button 
                 onClick={() => handleDelete(row.coupon_id)}
-                className="p-2 hover:bg-slate-100 text-slate-400 hover:text-red-500 rounded-lg transition-all"
+                className="p-2 border border-slate-200 text-slate-400 hover:text-red-500 transition-all"
             >
-                <RiDeleteBin6Line size={18} />
+                <RiDeleteBin6Line size={16} />
             </button>
         </div>
     )
 
     return (
-        <div className="space-y-6 py-6 px-4">
-            <div className="flex items-center justify-between">
+        <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div className="space-y-1">
-                    <h1 className="text-2xl font-bold text-slate-800">Coupon Management</h1>
-                    <p className="text-sm text-slate-500">Create and manage promotional discounts and offers with custom visuals.</p>
+                    <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Coupons</h1>
+                    <p className="text-xs text-slate-500">Create and manage promotional discounts and offers.</p>
                 </div>
                 <button 
                     onClick={() => {
@@ -189,20 +189,22 @@ const CouponManagement = () => {
                         setFormData({ package_id: '', code: '', discount: '', is_percentage: true, start_date: '', end_date: '', status: 'active', usage_limit: '', max_discount: '', image: null })
                         setIsModalOpen(true)
                     }}
-                    className="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-emerald-500 transition-all shadow-lg shadow-slate-900/10 flex items-center gap-2"
+                    className="bg-slate-900 text-white px-4 py-2 font-bold text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-2"
                 >
-                    <RiAddLine size={18} /> New Coupon
+                    <RiAddLine size={16} /> New Coupon
                 </button>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200 overflow-hidden">
                 <DataTable columns={columns} data={coupons} loading={loading} actions={actions} />
             </div>
 
             {isModalOpen && (
-                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-[2.5rem] w-full max-w-xl p-8 shadow-2xl animate-in fade-in zoom-in duration-300 overflow-y-auto max-h-[90vh] no-scrollbar">
-                        <h2 className="text-xl font-bold text-slate-800 mb-6">{currentCoupon ? 'Edit Coupon' : 'New Coupon'}</h2>
+                <div className="fixed inset-0 bg-slate-900/40 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white w-full max-w-xl p-8 border border-slate-200 shadow-xl overflow-y-auto max-h-[90vh] no-scrollbar">
+                        <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-6 border-b border-slate-100 pb-2">
+                            {currentCoupon ? 'Edit Coupon' : 'New Coupon'}
+                        </h2>
                         <form onSubmit={handleSubmit} className="space-y-6">
                             
                             <div className="relative group cursor-pointer">
@@ -212,16 +214,16 @@ const CouponManagement = () => {
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                     accept="image/*"
                                 />
-                                <div className={`aspect-video rounded-3xl border-2 border-dashed transition-all flex flex-col items-center justify-center overflow-hidden
-                                    ${imagePreview ? 'border-emerald-500/20 bg-emerald-50/10' : 'border-slate-200 bg-slate-50 hover:border-emerald-500/40'}`}>
+                                <div className={`aspect-video border border-dashed transition-all flex flex-col items-center justify-center overflow-hidden
+                                    ${imagePreview ? 'border-emerald-500/20 bg-emerald-50/10' : 'border-slate-200 bg-slate-50 hover:border-slate-300'}`}>
                                     {imagePreview ? (
                                         <Image src={imagePreview} alt="Preview" fill className="object-cover" />
                                     ) : (
                                         <>
-                                            <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-slate-400 mb-3 group-hover:text-emerald-500 group-hover:scale-110 transition-all">
-                                                <RiImageAddLine size={24} />
+                                            <div className="w-10 h-10 border border-slate-200 bg-white flex items-center justify-center text-slate-400 mb-3 transition-all">
+                                                <RiImageAddLine size={18} />
                                             </div>
-                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Upload Promotional Visual</p>
+                                            <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Promotional Visual</p>
                                         </>
                                     )}
                                 </div>
@@ -229,22 +231,21 @@ const CouponManagement = () => {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Coupon Code</label>
+                                    <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Code</label>
                                     <input 
                                         type="text" 
                                         value={formData.code}
                                         onChange={(e) => setFormData({...formData, code: e.target.value})}
-                                        placeholder="e.g. SAVE20"
-                                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
+                                        className="w-full bg-slate-50 border border-slate-200 px-4 py-2 text-xs font-bold focus:outline-none focus:border-slate-400 transition-all"
                                         required
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Target Package</label>
+                                    <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Package</label>
                                     <select 
                                         value={formData.package_id}
                                         onChange={(e) => setFormData({...formData, package_id: e.target.value})}
-                                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
+                                        className="w-full bg-slate-50 border border-slate-200 px-4 py-2 text-xs font-bold focus:outline-none focus:border-slate-400 transition-all"
                                     >
                                         <option value="">All Packages</option>
                                         {packages.map(pkg => (
@@ -256,101 +257,86 @@ const CouponManagement = () => {
                             
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Discount Value</label>
+                                    <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Discount</label>
                                     <input 
                                         type="number" 
                                         value={formData.discount}
                                         onChange={(e) => setFormData({...formData, discount: e.target.value})}
-                                        placeholder="e.g. 20"
-                                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
+                                        className="w-full bg-slate-50 border border-slate-200 px-4 py-2 text-xs font-bold focus:outline-none focus:border-slate-400 transition-all"
                                         required
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Type</label>
-                                    <div className="flex items-center gap-3 bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4">
+                                    <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Type</label>
+                                    <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 px-4 py-2">
                                         <input 
                                             type="checkbox" 
                                             checked={formData.is_percentage}
                                             onChange={(e) => setFormData({...formData, is_percentage: e.target.checked})}
-                                            className="w-5 h-5 rounded accent-emerald-500"
+                                            className="w-4 h-4 accent-slate-900"
                                         />
-                                        <span className="text-sm font-medium text-slate-600">{formData.is_percentage ? 'Percentage (%)' : 'Fixed (৳)'}</span>
+                                        <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">{formData.is_percentage ? 'Percentage (%)' : 'Fixed (৳)'}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Start Date</label>
+                                    <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Start Date</label>
                                     <input 
                                         type="date" 
                                         value={formData.start_date}
                                         onChange={(e) => setFormData({...formData, start_date: e.target.value})}
-                                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
+                                        className="w-full bg-slate-50 border border-slate-200 px-4 py-2 text-xs font-bold focus:outline-none focus:border-slate-400 transition-all"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">End Date</label>
+                                    <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400">End Date</label>
                                     <input 
                                         type="date" 
                                         value={formData.end_date}
                                         onChange={(e) => setFormData({...formData, end_date: e.target.value})}
-                                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
+                                        className="w-full bg-slate-50 border border-slate-200 px-4 py-2 text-xs font-bold focus:outline-none focus:border-slate-400 transition-all"
                                     />
                                 </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Coupon Status</label>
-                                <select 
-                                    value={formData.status}
-                                    onChange={(e) => setFormData({...formData, status: e.target.value})}
-                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
-                                >
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Usage Limit</label>
+                                    <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Usage Limit</label>
                                     <input 
                                         type="number" 
                                         value={formData.usage_limit}
                                         onChange={(e) => setFormData({...formData, usage_limit: e.target.value})}
-                                        placeholder="0 = unlimited"
                                         min="0"
-                                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
+                                        className="w-full bg-slate-50 border border-slate-200 px-4 py-2 text-xs font-bold focus:outline-none focus:border-slate-400 transition-all"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Max Discount (৳)</label>
+                                    <label className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Max Discount (৳)</label>
                                     <input 
                                         type="number" 
                                         value={formData.max_discount}
                                         onChange={(e) => setFormData({...formData, max_discount: e.target.value})}
-                                        placeholder="Cap for % discounts"
                                         min="0"
-                                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-sm font-medium focus:bg-white focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all"
+                                        className="w-full bg-slate-50 border border-slate-200 px-4 py-2 text-xs font-bold focus:outline-none focus:border-slate-400 transition-all"
                                     />
                                 </div>
                             </div>
 
-                            <div className="flex gap-3 pt-4">
+                            <div className="flex gap-2 pt-4">
                                 <button 
                                     type="button" 
                                     onClick={() => setIsModalOpen(false)}
-                                    className="flex-1 py-4 bg-slate-50 text-slate-400 font-bold uppercase tracking-widest text-[11px] rounded-2xl hover:bg-slate-100 transition-all"
+                                    className="flex-1 py-2 border border-slate-200 text-slate-500 font-bold uppercase tracking-widest text-[10px] hover:bg-slate-50 transition-all"
                                 >
                                     Cancel
                                 </button>
                                 <button 
                                     type="submit"
-                                    className="flex-1 py-4 bg-slate-900 text-white font-bold uppercase tracking-widest text-[11px] rounded-2xl hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-500/10"
+                                    className="flex-1 py-2 bg-slate-900 text-white font-bold uppercase tracking-widest text-[10px] hover:bg-slate-800 transition-all"
                                 >
-                                    {currentCoupon ? 'Update Coupon' : 'Create Coupon'}
+                                    {currentCoupon ? 'Save Changes' : 'Create Coupon'}
                                 </button>
                             </div>
                         </form>

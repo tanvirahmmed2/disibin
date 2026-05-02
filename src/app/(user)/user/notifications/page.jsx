@@ -42,7 +42,7 @@ const UserNotifications = () => {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="w-8 h-8 border-4 border-slate-100 border-t-emerald-500 rounded-full animate-spin"></div>
+                <div className="w-6 h-6 border-2 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
             </div>
         )
     }
@@ -50,65 +50,62 @@ const UserNotifications = () => {
     const unreadCount = notifications.filter(n => !n.is_read).length
 
     return (
-        <div className="max-w-4xl mx-auto py-8">
-            <div className="flex items-center justify-between mb-8">
+        <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Notifications</h1>
-                    <p className="text-slate-500 mt-1 font-medium">You have {unreadCount} unread messages.</p>
+                    <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Notifications</h1>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">{unreadCount} unread message{unreadCount !== 1 ? 's' : ''}.</p>
                 </div>
                 {unreadCount > 0 && (
-                    <button 
+                    <button
                         onClick={() => markAsRead()}
-                        className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-600 hover:text-emerald-600 rounded-xl text-sm font-semibold transition-all"
+                        className="flex items-center gap-1.5 px-3 py-2 border border-slate-200 text-slate-500 hover:text-slate-900 hover:border-slate-400 text-[9px] font-bold uppercase tracking-widest transition-all"
                     >
-                        <RiCheckDoubleLine size={18} />
-                        Mark all as read
+                        <RiCheckDoubleLine size={14} />
+                        Mark All Read
                     </button>
                 )}
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-2">
                 {notifications.length === 0 ? (
-                    <div className="p-16 bg-white border border-slate-100 rounded-3xl text-center shadow-sm">
-                        <div className="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <RiNotification3Line size={32} />
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900 mb-1">All Caught Up</h3>
-                        <p className="text-slate-500 font-medium">You have no new notifications.</p>
+                    <div className="p-16 bg-white border border-slate-200 text-center">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">No Notifications</p>
+                        <p className="text-[9px] text-slate-300 font-bold uppercase tracking-widest mt-1">You&apos;re all caught up.</p>
                     </div>
                 ) : (
                     notifications.map((notif) => (
-                        <div 
-                            key={notif.notification_id} 
-                            className={`p-6 bg-white border rounded-2xl transition-all flex gap-4 ${notif.is_read ? 'border-slate-100 opacity-70' : 'border-emerald-100 shadow-sm'}`}
+                        <div
+                            key={notif.notification_id}
+                            className={`p-5 bg-white border flex gap-4 transition-all ${notif.is_read ? 'border-slate-100 opacity-60' : 'border-slate-300'}`}
                         >
-                            <div className={`w-12 h-12 shrink-0 rounded-full flex items-center justify-center ${notif.is_read ? 'bg-slate-50 text-slate-400' : 'bg-emerald-50 text-emerald-500'}`}>
-                                <RiNotification3Line size={24} />
+                            <div className={`w-8 h-8 shrink-0 border flex items-center justify-center ${notif.is_read ? 'border-slate-200 bg-slate-50 text-slate-400' : 'border-slate-900 bg-slate-900 text-white'}`}>
+                                <RiNotification3Line size={16} />
                             </div>
-                            <div className="flex-1">
+                            <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between gap-4 mb-1">
-                                    <h3 className={`text-lg font-bold ${notif.is_read ? 'text-slate-700' : 'text-slate-900'}`}>
+                                    <h3 className={`text-xs font-bold uppercase tracking-tight leading-none ${notif.is_read ? 'text-slate-500' : 'text-slate-900'}`}>
                                         {notif.title}
                                     </h3>
-                                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 shrink-0">
+                                    <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400 shrink-0">
                                         {new Date(notif.created_at).toLocaleDateString()}
                                     </span>
                                 </div>
-                                <p className="text-slate-500 font-medium leading-relaxed mb-3">
+                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-tight leading-relaxed mt-1 mb-3">
                                     {notif.message}
                                 </p>
                                 <div className="flex items-center gap-4">
                                     {!notif.is_read && (
-                                        <button 
+                                        <button
                                             onClick={() => markAsRead(notif.notification_id)}
-                                            className="text-xs font-bold text-emerald-600 hover:text-emerald-700 uppercase tracking-widest"
+                                            className="text-[9px] font-bold text-slate-900 uppercase tracking-widest hover:underline"
                                         >
                                             Mark Read
                                         </button>
                                     )}
                                     {notif.link && (
-                                        <Link href={notif.link} className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 uppercase tracking-widest transition-colors">
-                                            View Details <RiExternalLinkLine size={14} />
+                                        <Link href={notif.link} className="flex items-center gap-1 text-[9px] font-bold text-slate-400 hover:text-slate-900 uppercase tracking-widest transition-colors">
+                                            View Details <RiExternalLinkLine size={12} />
                                         </Link>
                                     )}
                                 </div>

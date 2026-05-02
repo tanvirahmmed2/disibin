@@ -69,110 +69,120 @@ const ClientReviews = () => {
 
     const columns = [
         { label: 'Rating', key: 'rate', render: (row) => (
-            <div className="flex gap-1">
+            <div className="flex gap-0.5">
                 {[...Array(5)].map((_, i) => (
-                    <RiStarFill key={i} className={i < row.rate ? 'text-yellow-400' : 'text-slate-100'} size={14} />
+                    <RiStarFill key={i} className={i < row.rate ? 'text-slate-800' : 'text-slate-200'} size={12} />
                 ))}
             </div>
         )},
         { label: 'Comment', key: 'comment', render: (row) => (
-            <p className="text-slate-600 text-sm italic max-w-xs truncate">&quot;{row.comment}&quot;</p>
+            <p className="text-[10px] text-slate-600 font-bold uppercase tracking-tight max-w-xs truncate">&quot;{row.comment}&quot;</p>
         )},
         { label: 'Status', key: 'isApproved', render: (row) => (
-            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase
-                ${row.is_approved ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400'}`}>
+            <span className={`px-2 py-0.5 border text-[9px] font-bold uppercase tracking-widest
+                ${row.is_approved ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-200'}`}>
                 {row.is_approved ? 'Visible' : 'Pending'}
             </span>
         )},
         { label: 'Date', key: 'created_at', render: (row) => (
-            <span className="text-slate-500 text-xs font-medium">{new Date(row.created_at).toLocaleDateString()}</span>
+            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{new Date(row.created_at).toLocaleDateString()}</span>
         )},
     ]
 
     const actions = (row) => (
-        <button 
+        <button
             onClick={() => handleDelete(row.review_id)}
-            className="p-2 hover:bg-red-50 rounded-lg text-slate-300 hover:text-red-500 transition-all"
+            className="p-1.5 border border-slate-200 text-slate-400 hover:text-red-500 transition-all"
+            title="Delete"
         >
-            <RiDeleteBin6Line size={18} />
+            <RiDeleteBin6Line size={16} />
         </button>
     )
 
     return (
-        <div className="max-w-6xl mx-auto py-8 px-4 space-y-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">System Feedback</h1>
-                    <p className="text-slate-500 text-sm">Manage your testimonials and platform experience reviews.</p>
+                    <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Reviews</h1>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Manage your platform testimonials.</p>
                 </div>
                 {reviews.length === 0 ? (
-                    <button 
+                    <button
                         onClick={() => setIsModalOpen(true)}
-                        className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-slate-900/10 hover:bg-emerald-500 transition-all"
+                        className="bg-slate-900 text-white px-4 py-2 font-bold text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all"
                     >
                         Post Review
                     </button>
                 ) : (
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider bg-slate-50 border border-slate-200 px-4 py-3 rounded-xl">
-                        Delete your review to post a new one
+                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest border border-slate-200 bg-slate-50 px-3 py-2">
+                        Delete review to post a new one
                     </span>
                 )}
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-                <DataTable 
-                    columns={columns} 
-                    data={reviews} 
-                    loading={loading} 
-                    actions={actions} 
+            <div className="bg-white border border-slate-200 overflow-hidden">
+                <DataTable
+                    columns={columns}
+                    data={reviews}
+                    loading={loading}
+                    actions={actions}
                 />
             </div>
 
-
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-                    <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-100 overflow-hidden">
-                        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-                            <h3 className="text-lg font-bold text-slate-800">Submit Testimonial</h3>
-                            <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600">
-                                <RiCloseLine size={24} />
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40">
+                    <div className="bg-white w-full max-w-md border border-slate-200 overflow-hidden">
+                        <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+                            <h3 className="text-[10px] font-bold text-slate-900 uppercase tracking-widest">Submit Testimonial</h3>
+                            <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-800 transition-colors">
+                                <RiCloseLine size={20} />
                             </button>
                         </div>
-                        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                            <div className="space-y-3">
-                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Experience Rating</label>
+                        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+                            <div className="space-y-2">
+                                <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Experience Rating</label>
                                 <div className="flex gap-2">
                                     {[1, 2, 3, 4, 5].map((num) => (
-                                        <button 
+                                        <button
                                             key={num}
                                             type="button"
                                             onClick={() => setFormData({...formData, rating: num})}
                                             className="transition-all active:scale-90"
                                         >
-                                            <RiStarFill size={32} className={num <= formData.rating ? 'text-yellow-400' : 'text-slate-100'} />
+                                            <RiStarFill size={28} className={num <= formData.rating ? 'text-slate-800' : 'text-slate-200'} />
                                         </button>
                                     ))}
                                 </div>
                             </div>
 
-                            <div className="space-y-3">
-                                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Your Comments</label>
-                                <textarea 
-                                    placeholder="Describe your experience with our services..."
+                            <div className="space-y-2">
+                                <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Your Comments</label>
+                                <textarea
+                                    placeholder="Describe your experience..."
                                     value={formData.comment}
                                     onChange={(e) => setFormData({...formData, comment: e.target.value})}
                                     required
-                                    className="input-standard h-32 resize-none"
+                                    rows={4}
+                                    className="w-full bg-slate-50 border border-slate-200 px-4 py-3 text-xs font-bold focus:outline-none focus:border-slate-400 transition-all resize-none"
                                 />
                             </div>
 
-                            <button 
-                                type="submit" disabled={submitting}
-                                className="w-full py-4 bg-emerald-500 text-white font-bold rounded-xl hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-70 flex items-center justify-center gap-2"
-                            >
-                                {submitting ? 'Submitting...' : 'Post Testimonial'}
-                                <RiChatQuoteLine size={18} />
-                            </button>
+                            <div className="flex gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="flex-1 py-2.5 border border-slate-200 text-slate-500 font-bold text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={submitting}
+                                    className="flex-1 py-2.5 bg-slate-900 text-white font-bold text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all disabled:opacity-50"
+                                >
+                                    {submitting ? 'Submitting...' : 'Post Review'}
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>

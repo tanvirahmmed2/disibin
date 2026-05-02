@@ -71,31 +71,30 @@ const ManagerTicketChat = ({ params }) => {
 
     if (loading) return (
         <div className="h-[60vh] flex items-center justify-center">
-            <div className="w-12 h-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin"></div>
+            <div className="w-6 h-6 border-2 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
         </div>
     )
 
     if (!ticket) return (
         <div className="h-[60vh] flex flex-col items-center justify-center gap-4">
-            <h2 className="text-xl font-bold text-slate-800">Ticket Not Found</h2>
-            <button onClick={() => router.back()} className="text-primary font-bold">Go Back</button>
+            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-tight">Ticket Not Found</h2>
+            <button onClick={() => router.back()} className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-slate-900 transition-all">Go Back</button>
         </div>
     )
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6 py-6">
-            <div className="flex items-center justify-between px-4">
+        <div className="max-w-4xl mx-auto space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <button 
                     onClick={() => router.back()}
-                    className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors font-medium text-sm"
+                    className="p-2 border border-slate-200 text-slate-400 hover:text-slate-900 transition-all"
                 >
-                    <RiArrowLeftLine size={18} /> Back
+                    <RiArrowLeftLine size={16} />
                 </button>
-                <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 bg-white px-3 py-1.5 border border-slate-200 rounded-lg shadow-sm">
-                        <RiSettings4Line className="text-slate-400" size={16} />
+                <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 bg-white px-2 py-1 border border-slate-200">
                         <select 
-                            className="bg-transparent text-[10px] font-bold text-slate-700 outline-none cursor-pointer uppercase tracking-widest"
+                            className="bg-transparent text-[9px] font-bold text-slate-700 outline-none cursor-pointer uppercase tracking-widest"
                             value={ticket.status}
                             onChange={(e) => updateTicketStatus(e.target.value)}
                             disabled={updating}
@@ -108,49 +107,45 @@ const ManagerTicketChat = ({ params }) => {
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+            <div className="bg-white border border-slate-200 flex flex-col overflow-hidden">
                 <div className="p-6 border-b border-slate-100 bg-slate-50/30">
                     <div className="flex items-start justify-between mb-4">
                         <div>
-                            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                                <RiInformationLine /> Ticket #{ticket.ticket_id}
-                            </div>
-                            <h1 className="text-xl font-bold text-slate-800">{ticket.subject}</h1>
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+                                Ticket #{ticket.ticket_id}
+                            </p>
+                            <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight leading-none">{ticket.subject}</h1>
                         </div>
-                        <span className={`px-3 py-1 rounded text-[10px] font-bold uppercase tracking-widest
-                            ${ticket.status === 'open' ? 'bg-emerald-100 text-emerald-700' : 
-                              ticket.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 
-                              'bg-slate-100 text-slate-400'}`}>
+                        <span className={`px-2 py-0.5 border text-[9px] font-bold uppercase tracking-widest
+                            ${ticket.status === 'open' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 
+                              ticket.status === 'in_progress' ? 'bg-blue-50 text-blue-700 border-blue-100' : 
+                              'bg-slate-50 text-slate-700 border-slate-200'}`}>
                             {ticket.status}
                         </span>
                     </div>
-                    <div className="flex gap-6 text-xs">
+                    <div className="flex flex-wrap gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-400">
                         <div className="flex items-center gap-2">
-                            <RiHistoryLine className="text-slate-400" size={14} />
-                            <span className="text-slate-500">Opened: {new Date(ticket.created_at).toLocaleDateString()}</span>
+                            <span>Date: {new Date(ticket.created_at).toLocaleDateString()}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 bg-primary/10 text-primary rounded-full flex items-center justify-center text-[10px] font-bold">
-                                {ticket.sender_name?.charAt(0)}
-                            </div>
-                            <span className="text-slate-500">Client: {ticket.sender_name}</span>
+                            <span>Client: <span className="text-slate-600">{ticket.sender_name}</span></span>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex-1 min-h-[400px] max-h-[500px] overflow-y-auto p-6 space-y-4 no-scrollbar">
+                <div className="flex-1 min-h-[400px] max-h-[500px] overflow-y-auto p-6 space-y-4 bg-slate-50/10 no-scrollbar">
                     {ticket.messages?.map((msg, index) => {
                         const isMe = String(msg.senderId) === String(userData?.user_id);
                         
                         return (
                             <div key={index} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
-                                <div className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed
+                                <div className={`max-w-[85%] px-4 py-2 border text-[11px] font-bold uppercase tracking-tight leading-relaxed
                                     ${isMe 
-                                        ? 'bg-primary text-white rounded-tr-none shadow-sm shadow-primary/10' 
-                                        : 'bg-slate-100 text-slate-700 rounded-tl-none'}`}>
+                                        ? 'bg-slate-900 border-slate-900 text-white' 
+                                        : 'bg-white border-slate-200 text-slate-700'}`}>
                                     {msg.message}
                                 </div>
-                                <span className="text-[9px] text-slate-400 mt-1 font-bold uppercase tracking-tight">
+                                <span className="text-[9px] text-slate-400 mt-1 font-bold uppercase tracking-widest">
                                     {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </span>
                             </div>
@@ -159,25 +154,27 @@ const ManagerTicketChat = ({ params }) => {
                 </div>
 
                 {ticket.status !== 'closed' ? (
-                    <div className="p-4 border-t border-slate-100 bg-white">
-                        <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200 focus-within:bg-white focus-within:ring-2 focus-within:ring-primary/10 transition-all">
-                             <textarea 
+                    <div className="p-4 border-t border-slate-200 bg-white">
+                        <div className="flex items-center gap-2">
+                             <input 
+                                 type="text"
                                  value={message}
                                  onChange={(e) => setMessage(e.target.value)}
-                                 placeholder="Type a message..."
-                                 className="w-full bg-transparent p-2 text-sm outline-none resize-none h-10" 
+                                 placeholder="Type message..."
+                                 className="flex-1 bg-slate-50 border border-slate-200 px-4 py-2 text-xs font-bold focus:outline-none focus:border-slate-400 transition-all" 
+                                 onKeyDown={e => e.key === 'Enter' && sendMessage()}
                              />
                             <button 
                                 onClick={sendMessage}
                                 disabled={!message.trim()}
-                                className="p-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-all disabled:opacity-50 shadow-md shadow-primary/20"
+                                className="p-2 bg-slate-900 text-white hover:bg-slate-800 transition-all disabled:opacity-50"
                             >
                                 <RiSendPlane2Line size={18} />
                             </button>
                         </div>
                     </div>
                 ) : (
-                    <div className="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-center text-slate-400 font-bold text-xs">
+                    <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-center text-slate-400 font-bold text-[10px] uppercase tracking-widest">
                         Ticket is closed
                     </div>
                 )}

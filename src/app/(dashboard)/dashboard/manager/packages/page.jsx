@@ -42,50 +42,52 @@ const EditorPackages = () => {
     }, [])
 
     const columns = [
-        { label: 'Package Name', key: 'name', render: (row) => (
+        { label: 'Package', key: 'name', render: (row) => (
             <div className="flex flex-col">
-                <span className="font-bold text-slate-800">{row.name}</span>
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{row.category_name || 'General'}</span>
+                <span className="font-bold text-slate-900 uppercase tracking-tight text-xs leading-none mb-1">{row.name}</span>
+                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none">{row.category_name || 'General'}</span>
             </div>
         )},
-        { label: 'Investment', key: 'price', render: (row) => (
-            <span className="font-bold text-slate-600">৳{row.price}</span>
+        { label: 'Price', key: 'price', render: (row) => (
+            <span className="font-bold text-slate-700 text-sm uppercase tracking-tighter">৳{row.price}</span>
         )},
         { label: 'Duration', key: 'duration_days', render: (row) => (
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{row.duration_days} Days</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{row.duration_days} Days</span>
         )},
     ]
 
     const actions = (row) => (
-        <div className="flex gap-2">
+        <div className="flex gap-1">
             <Link 
                 href={`/dashboard/manager/packages/${row.slug}`}
-                className="p-2 hover:bg-primary/10 text-primary rounded-lg transition-all"
+                className="p-2 border border-slate-200 text-slate-400 hover:text-slate-800 transition-all"
+                title="Edit"
             >
-                <MdEditDocument size={20} />
+                <MdEditDocument size={16} />
             </Link>
             <button 
                 onClick={() => handleDelete(row.package_id)}
-                className="p-2 hover:bg-slate-100 text-slate-400 hover:text-red-500 rounded-lg transition-all"
+                className="p-2 border border-slate-200 text-slate-400 hover:text-red-500 transition-all"
+                title="Delete"
             >
-                <MdDeleteOutline size={20} />
+                <MdDeleteOutline size={16} />
             </button>
         </div>
     )
 
     return (
-        <div className="space-y-6 py-6 px-4">
-            <div className="flex items-center justify-between">
+        <div className="space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div className="space-y-1">
-                    <h1 className="text-2xl font-bold text-slate-800">Catalog Packages</h1>
-                    <p className="text-sm text-slate-500">Manage and refine the list of commercial offerings.</p>
+                    <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Packages</h1>
+                    <p className="text-xs text-slate-500">Manage and refine the list of commercial offerings.</p>
                 </div>
-                <Link href="/dashboard/manager/packages/new" className="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-emerald-500 transition-all shadow-lg shadow-slate-900/10 flex items-center gap-2">
-                    <RiAddLine size={18} /> Create Package
+                <Link href="/dashboard/manager/packages/new" className="bg-slate-900 text-white px-4 py-2 font-bold text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-2">
+                    <RiAddLine size={16} /> New Package
                 </Link>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200 overflow-hidden">
                 <DataTable columns={columns} data={packages} loading={loading} actions={actions} />
             </div>
         </div>

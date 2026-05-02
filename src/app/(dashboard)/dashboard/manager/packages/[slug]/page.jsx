@@ -41,21 +41,21 @@ const EditPackagePage = () => {
     )
 
     return (
-        <div className="space-y-6 py-6 px-4">
-            <div className="flex flex-col gap-4">
+        <div className="space-y-4 max-w-4xl mx-auto">
+            <div className="flex flex-col gap-4 border-b border-slate-200 pb-4">
                 <Link 
                     href="/dashboard/manager/packages" 
-                    className="flex items-center gap-2 text-slate-400 hover:text-emerald-500 transition-colors font-bold text-xs uppercase tracking-widest"
+                    className="flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-colors font-bold text-[10px] uppercase tracking-widest"
                 >
-                    <RiArrowLeftLine size={16} /> Back to Packages
+                    <RiArrowLeftLine size={14} /> Back to Packages
                 </Link>
-                <div className="flex flex-col gap-1">
-                    <h1 className="text-2xl font-bold text-slate-800">Modify Package</h1>
-                    <p className="text-sm text-slate-500">Update the details of this service package.</p>
+                <div className="flex flex-col">
+                    <h1 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Edit Package</h1>
+                    <p className="text-xs text-slate-500">Update the details of this service package.</p>
                 </div>
             </div>
 
-            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm w-full">
+            <div className="bg-white p-6 border border-slate-200">
                 <UpdatePackageForm packageData={Package} />
             </div>
         </div>
