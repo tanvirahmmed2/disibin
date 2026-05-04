@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useContext } from 'react'
-import { RiArrowRightLine, RiHeartLine } from 'react-icons/ri'
+import { RiArrowRightLine, RiHeartLine, RiCheckLine } from 'react-icons/ri'
 import { Context } from '@/component/helper/Context'
 
 const PackageCard = ({ pack }) => {
@@ -38,6 +38,21 @@ const PackageCard = ({ pack }) => {
                         {pack.description}
                     </p>
                 </div>
+
+                {pack.features?.length > 0 && (
+                    <div className="space-y-3 mb-8">
+                        {pack.features.slice(0, 10).map((feature, index) => (
+                            <div key={index} className="flex items-start gap-2.5 group/feat">
+                                <div className="mt-0.5 w-4 h-4 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0 group-hover/feat:bg-emerald-500 group-hover/feat:text-white transition-colors">
+                                    <RiCheckLine size={10} />
+                                </div>
+                                <span className="text-slate-600 text-xs font-medium leading-tight">
+                                    {typeof feature === 'object' ? feature.name : feature}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                )}
 
                 <div className="flex items-center justify-between mt-auto pt-6 border-t border-slate-50">
                     <div className="flex flex-col">
