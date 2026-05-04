@@ -18,7 +18,8 @@ const Footer = () => {
             </p>
             <div className='flex items-center gap-3'>
                 <Link href="https://www.facebook.com/disibin" className='w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-emerald-500 hover:border-emerald-500 transition-all text-slate-300 hover:text-white'><FaFacebook size={18} /></Link>
-                <Link href="https://www.instagram.com/user.disibin/" className='w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-emerald-500 hover:border-emerald-500 transition-all text-slate-300 hover:text-white'><FaInstagram size={18} /></Link>
+                <Link href="https://www.instagram.com/disibin_ltd/" className='w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-emerald-500 hover:border-emerald-500 transition-all text-slate-300 hover:text-white'><FaInstagram size={18} /></Link>
+                <Link href="https://www.youtube.com/@Disibin" className='w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-emerald-500 hover:border-emerald-500 transition-all text-slate-300 hover:text-white'><FaYoutube size={18} /></Link>
                 <Link href="https://t.me/disibin" className='w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-emerald-500 hover:border-emerald-500 transition-all text-slate-300 hover:text-white'><FaTelegram size={18} /></Link>
             </div>
           </div>
