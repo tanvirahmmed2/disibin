@@ -5,10 +5,6 @@ const RegisterPage = () => {
   return (
     <div className='w-full min-h-screen flex items-center justify-center bg-slate-50 relative overflow-hidden'>
       
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/10 rounded-full blur-3xl opacity-50"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-500 rounded-full blur-3xl opacity-50"></div>
-      </div>
 
       <div className='w-full max-w-250 bg-white rounded-[2.5rem] shadow-premium flex flex-col md:flex-row overflow-hidden relative z-10 m-4'>
         

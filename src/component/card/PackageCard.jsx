@@ -15,12 +15,12 @@ const PackageCard = ({ pack }) => {
 
     return (
         <div className="group flex flex-col bg-white w-full rounded-2xl border border-slate-100 hover:border-emerald-500/10 transition-all duration-300 hover:shadow-md">
-            <div className='relative w-full aspect-[16/9] overflow-hidden rounded-t-2xl'>
+            <div className='relative w-full aspect-video overflow-hidden rounded-t-2xl'>
                 <Image 
                     src={pack.image} 
                     alt={pack.name} 
                     fill
-                    className='object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700' 
+                    className='object-cover group-hover:scale-105 transition-all duration-700' 
                 />
                 <div className="absolute top-4 left-4">
                     <span className="px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-[9px] font-semibold uppercase tracking-widest text-slate-800 border border-white/20">
@@ -43,7 +43,7 @@ const PackageCard = ({ pack }) => {
                     <div className="space-y-3 mb-8">
                         {pack.features.slice(0, 10).map((feature, index) => (
                             <div key={index} className="flex items-start gap-2.5 group/feat">
-                                <div className="mt-0.5 w-4 h-4 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0 group-hover/feat:bg-emerald-500 group-hover/feat:text-white transition-colors">
+                                <div className="mt-0.5 w-4 h-4 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover/feat:bg-emerald-500 group-hover/feat:text-white transition-colors">
                                     <RiCheckLine size={10} />
                                 </div>
                                 <span className="text-slate-600 text-xs font-medium leading-tight">

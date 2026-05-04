@@ -39,7 +39,7 @@ const Bio = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5 }}
                             viewport={{ once: true }}
-                            className='p-10 bg-slate-50/50 border border-slate-100 rounded-2xl flex flex-col items-center text-center space-y-4 hover:border-emerald-500/10 transition-all group'
+                            className='p-10 bg-slate-200 border border-slate-100 rounded-2xl flex flex-col items-center text-center space-y-4 hover:border-emerald-500/10 transition-all group'
                         >
                             <div className='text-2xl text-slate-300 group-hover:text-emerald-500/50 transition-colors'>
                                 {stat.icon}

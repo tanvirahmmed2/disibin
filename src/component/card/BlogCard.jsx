@@ -10,7 +10,7 @@ const BlogCard = ({ blog }) => {
                     src={blog.image} 
                     alt={blog.title} 
                     fill 
-                    className='object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000' 
+                    className='object-cover group-hover:scale-105 transition-all duration-1000' 
                 />
             </div>
             <div className='p-4 w-full flex flex-col flex-1 space-y-6'>
@@ -19,10 +19,10 @@ const BlogCard = ({ blog }) => {
                         <span className='w-1 h-1 rounded-full bg-primary/50' />
                         <span className='text-[10px] font-black uppercase tracking-[0.2em] text-slate-400'>Insight</span>
                     </div>
-                    <h3 className='text-3xl font-black text-slate-900 tracking-tighter leading-[1.1] group-hover:text-primary transition-colors line-clamp-2'>
+                    <h3 className='text-2xl font-semibold text-slate-900 tracking-tighter leading-[1.1] group-hover:text-primary transition-colors line-clamp-2'>
                         {blog.title}
                     </h3>
-                    <p className='text-slate-500 text-sm font-medium leading-relaxed line-clamp-3'>
+                    <p className='text-slate-500 text-xs font-medium leading-relaxed line-clamp-3'>
                         {blog.description}
                     </p>
                 </div>

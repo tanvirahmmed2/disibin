@@ -55,15 +55,13 @@ const CouponCard = ({ coupon }) => {
                     )}
                 </div>
 
-                {/* Big discount pill – top right */}
                 <div className="absolute top-4 right-4">
-                    <div className="flex flex-col items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-xl shadow-emerald-500/40 border border-emerald-300/30">
+                    <div className="flex flex-col items-center justify-center p-3 rounded-2xl bg-linear-to-br from-emerald-400 to-emerald-600 shadow-xl shadow-emerald-500/40 border border-emerald-300/30">
                         <span className="text-white font-black text-xl leading-none tracking-tight">{discountLabel}</span>
                         <span className="text-emerald-100/80 text-[9px] font-bold uppercase tracking-widest mt-0.5">OFF</span>
                     </div>
                 </div>
 
-                {/* Bottom: title over image */}
                 <div className="absolute bottom-4 left-4 right-4">
                     <h3 className="text-white font-black text-lg leading-tight tracking-tight drop-shadow">
                         Save {discountLabel} on{' '}
@@ -72,20 +70,18 @@ const CouponCard = ({ coupon }) => {
                 </div>
             </div>
 
-            {/* ── Torn-edge divider ── */}
-            <div className="relative h-5 bg-white flex-shrink-0 overflow-visible z-10">
-                {/* left notch */}
+            <div className="relative h-5 bg-white shrink-0 overflow-visible z-10">
+                
                 <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-slate-50 border border-slate-100" />
-                {/* right notch */}
+                
                 <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-slate-50 border border-slate-100" />
-                {/* dashed line */}
+            
                 <div className="absolute inset-y-1/2 left-4 right-4 border-t-2 border-dashed border-slate-100" />
             </div>
 
-            {/* ── Bottom Section: Details ── */}
             <div className="flex flex-col flex-1 bg-white px-6 pb-6 pt-2 gap-5">
 
-                {/* Code copy row */}
+               
                 <div className="flex items-center justify-between gap-3 bg-slate-50 rounded-xl px-4 py-3 border border-slate-100">
                     <div>
                         <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 mb-0.5">Promo Code</p>
