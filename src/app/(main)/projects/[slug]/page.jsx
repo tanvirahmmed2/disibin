@@ -28,9 +28,9 @@ const Project = async ({ params }) => {
     </div>
 
     return (
-        <div className='w-full max-w-4xl mx-auto flex flex-col items-center gap-4 p-4 min-h-screen'>
+        <div className='w-full max-w-4xl mx-auto flex flex-col items-center gap-4 p-4 min-h-screen py-20'>
             <div className='w-full overflow-hidden relative'>
-                <Image src={project.image} alt='project cover' width={1000} height={1000} className='w-full aspect-video object-cover border border-black/30 shadow rounded-xl' />
+                <Image src={project.image} alt='project cover' width={1000} height={1000} className='w-full  object-cover border border-black/30 shadow rounded-xl' />
             </div>
             <h1 className='text-2xl font-semibold'>{project.title}</h1>
             <p className="text-emerald-600 font-bold uppercase tracking-widest text-xs">{project.category_name}</p>

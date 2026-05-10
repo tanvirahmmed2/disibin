@@ -14,7 +14,7 @@ const LatestProjects = () => {
         const fetchProjects = async () => {
             try {
                 const res = await axios.get('/api/project')
-                setProjects(res.data.data?.slice(0, 3) || [])
+                setProjects(res.data.data?.slice(0, 4) || [])
             } catch (error) {
                 console.error('Failed to fetch latest projects', error)
             } finally {
@@ -79,7 +79,7 @@ const LatestProjects = () => {
                     </motion.div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
                     {projects.map((project) => (
                          <ProjectCard 
                             project={{ ...project, id: project.project_id }} 

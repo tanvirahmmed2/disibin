@@ -14,7 +14,7 @@ const LatestPackages = () => {
         const fetchPackages = async () => {
             try {
                 const res = await axios.get('/api/package')
-                setPackages(res.data.data?.slice(0, 3) || [])
+                setPackages(res.data.data?.slice(0, 4) || [])
             } catch (error) {
                 console.error('Failed to fetch latest packages', error)
             } finally {
@@ -79,7 +79,7 @@ const LatestPackages = () => {
                     </motion.div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
                     {packages.map((pkg, index) => (
                          <PackageCard pack={{ ...pkg, id: pkg.package_id }} 
                             key={pkg.package_id}/>
