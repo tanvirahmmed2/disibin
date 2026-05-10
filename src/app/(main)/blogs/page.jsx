@@ -1,19 +1,13 @@
+import { getAllBlogs } from '@/lib/data/blogs'
 import BlogCard from '@/component/card/BlogCard'
-import { BASE_URL } from '@/lib/database/secret'
 import React from 'react'
 
 const blogsPage = async () => {
   let blogs = []
   try {
-    const res = await fetch(`${BASE_URL}/api/blog`, {
-      method: 'GET',
-      cache: 'no-store'
-    })
-    const data = await res.json()
-    if (!data.success) throw new Error(data.message)
-    blogs = data.data || []
+    blogs = await getAllBlogs()
   } catch (error) {
-    console.error('Blogs fetch error:', error)
+    console.error('Blogs data error:', error)
   }
 
   return (
@@ -47,6 +41,5 @@ const blogsPage = async () => {
     </main>
   )
 }
-
 
 export default blogsPage

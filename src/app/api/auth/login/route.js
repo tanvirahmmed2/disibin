@@ -20,6 +20,10 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "Invalid credentials" }, { status: 401 });
         }
 
+        if (!user.is_active) {
+            return NextResponse.json({ success: false, message: "Account is disabled. Contact support." }, { status: 403 });
+        }
+
         if (!user.is_verified) {
             return NextResponse.json({ 
                 success: false, 
@@ -44,7 +48,7 @@ export async function POST(req) {
             tenantId: tenantId
         };
 
-        const token = jwt.sign(tokenData, JWT_SECRET, { expiresIn: '1d' });
+        const token = jwt.sign(tokenData, JWT_SECRET, { expiresIn: '7d' });
         
         const cookieStore = await cookies();
         cookieStore.set('disibin', token, {
@@ -52,6 +56,7 @@ export async function POST(req) {
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
             path: '/',
+            maxAge: 604800 // 7 days in seconds
         });
 
         return NextResponse.json({

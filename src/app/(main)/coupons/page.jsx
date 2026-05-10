@@ -1,19 +1,14 @@
+import { getActiveCoupons } from '@/lib/data/coupons'
 import CouponCard from '@/component/card/CouponCard'
-import { BASE_URL } from '@/lib/database/secret'
 import React from 'react'
 import { RiTicketLine, RiArrowRightLine } from 'react-icons/ri'
 
 const CouponsPage = async () => {
     let coupons = [];
     try {
-        const res = await fetch(`${BASE_URL}/api/coupon`, {
-            method: 'GET',
-            cache: 'no-store'
-        })
-        const data = await res.json()
-        coupons = data.data || []
+        coupons = await getActiveCoupons();
     } catch (error) {
-        console.error("Coupons Fetch Error:", error);
+        console.error("Coupons data error:", error);
     }
 
     return (
@@ -38,7 +33,6 @@ const CouponsPage = async () => {
                         </div>
                     </div>
                 </div>
-
 
                 <div className="w-full px-4">
                     {coupons.length === 0 ? (

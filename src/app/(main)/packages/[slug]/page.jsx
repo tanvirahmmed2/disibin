@@ -1,5 +1,5 @@
+import { getPackageBySlug } from '@/lib/data/packages'
 import AddToWishlist from '@/component/button/AddToWishlist'
-import { BASE_URL } from '@/lib/database/secret'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
@@ -10,16 +10,11 @@ const Package = async ({ params }) => {
     const { slug } = await params
     let pack = null
     try {
-        const res = await fetch(`${BASE_URL}/api/package/${slug}`, {
-            method: 'GET',
-            cache: 'no-store'
-        })
-        const data = await res.json()
-        if (!data.success) throw new Error(data.message)
-        pack = data.data
+        pack = await getPackageBySlug(slug)
     } catch (error) {
-        console.error('Package fetch error:', error)
+        console.error('Package data error:', error)
     }
+
     if (!pack) return (
         <div className='w-full min-h-screen flex items-center justify-center bg-slate-50'>
             <div className="text-center space-y-4">

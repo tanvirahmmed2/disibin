@@ -16,13 +16,20 @@ export async function POST(req) {
 
         const userId = auth.data.id;
 
+        // Fetch package details
+        const pkgRes = await dbQuery("SELECT name, duration_days FROM packages WHERE package_id = $1", [packageId]);
+        if (pkgRes.rows.length === 0) {
+            return NextResponse.json({ success: false, message: "Package not found" }, { status: 404 });
+        }
+        const pkg = pkgRes.rows[0];
+
         const result = await transaction(async (client) => {
             // 1. Create Tenant
             const tenantRes = await client.query(`
-                INSERT INTO tenants (name, subdomain, status)
-                VALUES ($1, $2, 'active')
+                INSERT INTO tenants (name, owner_id, subdomain, status)
+                VALUES ($1, $2, $3, 'active')
                 RETURNING *
-            `, [tenantName, subdomain || tenantName.toLowerCase().replace(/ /g, '-')]);
+            `, [tenantName, userId, subdomain || tenantName.toLowerCase().replace(/ /g, '-')]);
             const tenant = tenantRes.rows[0];
  
             // 2. Create Tenant User (Owner)
@@ -33,10 +40,10 @@ export async function POST(req) {
  
             // 3. Create Purchase
             const purchaseRes = await client.query(`
-                INSERT INTO purchases (user_id, package_id, original_amount, final_amount, status)
-                VALUES ($1, $2, $3, $4, 'completed')
+                INSERT INTO purchases (user_id, package_id, package_name, duration_days, original_amount, final_amount, status)
+                VALUES ($1, $2, $3, $4, $5, $6, 'completed')
                 RETURNING *
-            `, [userId, packageId, amount, amount]);
+            `, [userId, packageId, pkg.name, pkg.duration_days, amount, amount]);
             const purchase = purchaseRes.rows[0];
  
             // 4. Create Subscription

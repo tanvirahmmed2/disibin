@@ -22,8 +22,8 @@ export async function POST(req) {
         const tempPassword = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
 
         await dbQuery(`
-            INSERT INTO users (name, email, phone, password, role, is_active, is_verified, reset_token, token_expires_at)
-            VALUES ($1, $2, 'PENDING', $3, 'developer', true, false, $4, $5)
+            INSERT INTO users (name, email, password, role, is_active, is_verified, reset_token, token_expires_at)
+            VALUES ($1, $2, $3, 'developer', true, false, $4, $5)
         `, [name, email, tempPassword, activationToken, tokenExpiresAt]);
 
         const activationUrl = `${BASE_URL}/complete-setup?token=${activationToken}&email=${email}`;
