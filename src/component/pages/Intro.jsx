@@ -6,7 +6,7 @@ import { Typewriter } from 'react-simple-typewriter'
 
 const Intro = () => {
   return (
-    <section className='relative w-full min-h-screen flex items-center justify-center py-20 bg-emerald-500 overflow-hidden'>
+    <section className='relative w-full flex items-center justify-center py-32 bg-emerald-500 overflow-hidden'>
       
       <div className='absolute top-0 left-0 w-full h-full opacity-10'>
         <div className='absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-white rounded-full blur-[150px]' />
@@ -16,7 +16,7 @@ const Intro = () => {
       <div className='container-custom flex flex-col items-center text-center space-y-10 relative z-10'>
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className='space-y-4'
         >
@@ -24,13 +24,13 @@ const Intro = () => {
             Design • Build • Inspire
           </span>
           <h1 className='text-6xl md:text-[8rem] font-bold text-white tracking-tighter leading-[0.9] uppercase'>
-            Disibin<span className='text-white/30'>.</span>
+            Disibin
           </h1>
         </motion.div>
 
         <motion.div 
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          whileInView={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 1 }}
           className='max-w-3xl'
         >
@@ -56,9 +56,9 @@ const Intro = () => {
         </motion.div>
 
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.8, duration: 0.8 }}
+          initial={{ opacity: 0, scale: 0.7 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
           className='flex flex-wrap items-center justify-center gap-4 pt-4'
         >
           <Link href='/packages' className='px-10 py-5 bg-white text-emerald-600 font-semibold uppercase tracking-widest text-xs rounded-xl hover:bg-slate-50 transition-all active:scale-95'>
@@ -72,7 +72,7 @@ const Intro = () => {
 
       
       <motion.div 
-        animate={{ y: [0, 10, 0] }}
+        whileInView={{ y: [0, 10, 0] }}
         transition={{ repeat: Infinity, duration: 2 }}
         className='absolute bottom-12 left-1/2 -translate-x-1/2'
       >

@@ -7,13 +7,13 @@ const LoginPage = () => {
       
      
 
-      <div className='w-full max-w-4xl bg-white rounded-[2.5rem] shadow-premium flex flex-col md:flex-row overflow-hidden relative z-10 m-4'>
+      <div className='w-full max-w-4xl bg-white rounded-md shadow-premium flex flex-col md:flex-row overflow-hidden relative z-10 m-4'>
         
-        <div className='flex-1 bg-emerald-500 p-12 text-white  flex-col justify-center relative overflow-hidden hidden md:flex'>
+        <div className='w-full bg-emerald-500 p-12 text-white  flex-col justify-center items-center relative overflow-hidden flex'>
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-2xl -mr-20 -mt-20"></div>
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-2xl -ml-20 -mb-20"></div>
           
-          <div className="relative z-10">
+          <div className="relative z-10 flex flex-col items-center">
             <h1 className="text-5xl font-black tracking-tight mb-4">Disibin</h1>
             <p className="text-emerald-500/5 text-xl font-medium mb-8">Your ultimate digital assistant.</p>
             <div className="space-y-4 text-white">
@@ -25,7 +25,7 @@ const LoginPage = () => {
         </div>
 
         
-        <div className='flex-1 p-8 md:p-16 flex flex-col justify-center bg-white'>
+        <div className='w-full p-8 md:p-16 flex flex-col justify-center bg-white'>
           <div className="mb-8 text-center md:text-left">
             <h2 className='text-3xl font-black text-slate-900 mb-2'>Welcome Back</h2>
             <p className='text-slate-500 font-medium'>Please sign in to your account to continue.</p>

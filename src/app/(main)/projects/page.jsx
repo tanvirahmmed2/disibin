@@ -1,5 +1,6 @@
 'use client'
 import ProjectCard from '@/component/card/ProjectCard'
+import { motion } from 'framer-motion'
 import React, { useState, useEffect, useMemo } from 'react'
 import axios from 'axios'
 
@@ -41,7 +42,6 @@ const ProjectsPage = () => {
   return (
     <main className='w-full min-h-screen bg-slate-50 pt-24 pb-20'>
 
-      {/* Hero */}
       <section className='mb-12'>
         <div className="container-custom px-4">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
@@ -49,9 +49,13 @@ const ProjectsPage = () => {
               <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-semibold uppercase tracking-[0.2em] border border-emerald-100">
                 Portfolio Gallery
               </div>
-              <h1 className="text-6xl md:text-8xl font-bold text-slate-900 tracking-tighter leading-[0.85]">
+              <motion.h1
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 1 }}
+                className="text-4xl md:text-6xl font-bold text-slate-900 tracking-tighter leading-[0.85]">
                 Selected <span className="text-emerald-500">Works.</span>
-              </h1>
+              </motion.h1>
               <p className="text-xl text-slate-500 font-medium leading-relaxed max-w-2xl">
                 A curated collection of digital products, brand experiences, and technical solutions crafted with precision and purpose.
               </p>
@@ -66,9 +70,8 @@ const ProjectsPage = () => {
         </div>
       </section>
 
-      {/* Category Filter Select */}
       {categories.length > 0 && (
-        <section className="sticky top-[72px] z-20 bg-white/80 backdrop-blur-xl border-y border-slate-100 py-4 mb-12">
+        <section className="sticky top-18 z-20 bg-white/80 backdrop-blur-xl border-y border-slate-100 py-4 mb-12">
           <div className="container-custom px-4 flex items-center gap-4">
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 whitespace-nowrap">Filter By</span>
             <div className="relative w-full max-w-xs">
@@ -85,14 +88,13 @@ const ProjectsPage = () => {
                 ))}
               </select>
               <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
               </div>
             </div>
           </div>
         </section>
       )}
 
-      {/* Projects Grid */}
       <section className='py-4 w-full'>
         <div className='container-custom px-4'>
           {filteredProjects.length === 0 ? (
@@ -111,7 +113,7 @@ const ProjectsPage = () => {
               </p>
               <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
                 {filteredProjects.map((project) => (
-                  <ProjectCard key={project.project_id} project={{...project, id: project.project_id}}/>
+                  <ProjectCard key={project.project_id} project={{ ...project, id: project.project_id }} />
                 ))}
               </div>
             </>

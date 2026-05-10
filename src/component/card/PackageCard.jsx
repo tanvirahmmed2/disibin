@@ -1,6 +1,7 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import React, { useContext } from 'react'
 import { RiArrowRightLine, RiHeartLine, RiCheckLine } from 'react-icons/ri'
 import { Context } from '@/component/helper/Context'
@@ -14,7 +15,10 @@ const PackageCard = ({ pack }) => {
     }
 
     return (
-        <div className="group flex flex-col bg-white w-full rounded-2xl border border-slate-100 hover:border-emerald-500/10 transition-all duration-300 hover:shadow-md">
+        <motion.div
+                    initial={{ opacity: 0, }}
+                    whileInView={{ opacity: 1, }}
+                    transition={{ duration: 1 }} className="group flex flex-col bg-white w-full rounded-2xl border border-slate-100 hover:border-emerald-500/10 transition-all duration-300 hover:shadow-md">
             <div className='relative w-full aspect-video overflow-hidden rounded-t-2xl'>
                 <Image 
                     src={pack.image} 
@@ -79,7 +83,7 @@ const PackageCard = ({ pack }) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     )
 }
 

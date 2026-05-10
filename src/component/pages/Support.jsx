@@ -38,7 +38,11 @@ const Support = () => {
       <div className='container-custom grid grid-cols-1 lg:grid-cols-2 gap-16 items-start'>
         
         <div className='space-y-12'>
-            <div className='space-y-6'>
+            <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1 }}
+            className='space-y-6'>
                 <span className='text-emerald-600 font-semibold tracking-[0.4em] uppercase text-[10px]'>Contact</span>
                 <h2 className='text-5xl md:text-6xl font-bold text-slate-900 tracking-tighter leading-tight'>
                     Let’s Connect<br/><span className='text-slate-400'>Your Vision.</span>
@@ -46,7 +50,7 @@ const Support = () => {
                 <p className='text-slate-600 font-medium leading-relaxed max-w-md'>
                     Ready to scale your digital infrastructure? Drop us a line and our engineering team will get back to you within 24 hours.
                 </p>
-            </div>
+            </motion.div>
 
             <div className='space-y-6 pt-4'>
                 <div className='flex items-center gap-4 group'>
@@ -55,7 +59,7 @@ const Support = () => {
                     </div>
                     <div>
                         <p className='text-[10px] font-semibold uppercase tracking-widest text-slate-400'>Location</p>
-                        <p className='text-sm font-semibold text-slate-900'>Dhaka, Bangladesh</p>
+                        <p className='text-sm font-semibold text-slate-900'>Mymensingh, Bangladesh</p>
                     </div>
                 </div>
                 <div className='flex items-center gap-4 group'>
@@ -64,7 +68,7 @@ const Support = () => {
                     </div>
                     <div>
                         <p className='text-[10px] font-semibold uppercase tracking-widest text-slate-400'>Email</p>
-                        <p className='text-sm font-semibold text-slate-900'>contact@disibin.com</p>
+                        <p className='text-sm font-semibold text-slate-900'>disibin@gmail.com</p>
                     </div>
                 </div>
             </div>

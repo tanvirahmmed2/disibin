@@ -89,7 +89,7 @@ const LoginForm = () => {
             <button 
                 type='submit' 
                 disabled={isLoading}
-                className='w-full mt-4 py-4 bg-slate-900 text-white rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none'
+                className='w-full mt-4 py-3 cursor-pointer bg-slate-900 text-white rounded-md font-semibold flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none'
             >
                 {isLoading ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

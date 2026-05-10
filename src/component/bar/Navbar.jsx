@@ -26,7 +26,7 @@ const Navbar = () => {
  
 
   return (
-    <nav className='w-full fixed top-0 left-0 h-20 bg-white backdrop-blur-xl border-b border-slate-50 z-50 flex items-center'>
+    <nav className='w-full fixed top-0 left-0 h-16 bg-white backdrop-blur-xl border-b border-slate-50 z-50 flex items-center shadow-xl'>
       <div className='max-w-7xl mx-auto px-6 w-full flex flex-row items-center justify-between'>
         <Link href={'/'} className='text-3xl font-bold text-slate-900 tracking-tighter hover:text-emerald-500 transition-all duration-500'>
           Disibin
@@ -37,10 +37,10 @@ const Navbar = () => {
             <Link 
               key={link.href}
               href={link.href} 
-              className={`px-5 py-2.5 rounded-full text-[10px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 ${
+              className={`px-3 py-2.5 rounded-full text-[10px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 ${
                 isActive(link.href) 
                 ? 'text-emerald-600 bg-emerald-500/10' 
-                : 'text-slate-400 hover:text-slate-900'
+                : 'text-slate-500 hover:text-slate-900'
               }`}
             >
               {link.name}
@@ -90,7 +90,7 @@ const Navbar = () => {
           ) : (
             <Link 
               href={'/login'} 
-              className='ml-6 btn-primary'
+              className='ml-2 btn-primary h-10'
             >
               Sign In
             </Link>

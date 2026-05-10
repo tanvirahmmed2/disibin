@@ -1,6 +1,7 @@
 'use client'
 import PackageCard from '@/component/card/PackageCard'
 import React, { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import axios from 'axios'
 import { RiListCheck2, RiFilter2Line } from 'react-icons/ri'
 
@@ -34,8 +35,8 @@ const PackagesPage = () => {
         </div>
     )
 
-    const filteredCategories = selectedCategory === 'all' 
-        ? categories 
+    const filteredCategories = selectedCategory === 'all'
+        ? categories
         : categories.filter(cat => cat.category_id.toString() === selectedCategory)
 
     const uncategorizedPackages = packages.filter(p => !p.category_id)
@@ -49,9 +50,12 @@ const PackagesPage = () => {
                             <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-semibold uppercase tracking-[0.2em] border border-emerald-100">
                                 <RiListCheck2 size={14} /> Solutions Architecture
                             </div>
-                            <h1 className="text-6xl md:text-8xl font-bold text-slate-900 tracking-tighter leading-[0.85]">
+                            <motion.h1
+                                initial={{ opacity: 0, x: 50 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 1 }} className="text-4xl md:text-6xl font-bold text-slate-900 tracking-tighter leading-[0.85]">
                                 Service <span className="text-emerald-500">Plans.</span>
-                            </h1>
+                            </motion.h1>
                             <p className="text-xl text-slate-500 font-medium leading-relaxed max-w-2xl">
                                 Strategic technical models engineered for enterprise-grade scalability, performance, and future-proof digital transformation.
                             </p>
@@ -82,7 +86,7 @@ const PackagesPage = () => {
                                 </div>
                                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
                                     {catPackages.map((pack) => (
-                                        <PackageCard key={pack.package_id} pack={{...pack, id: pack.package_id}}/>
+                                        <PackageCard key={pack.package_id} pack={{ ...pack, id: pack.package_id }} />
                                     ))}
                                 </div>
                             </div>
@@ -107,7 +111,7 @@ const PackagesPage = () => {
                             </div>
                             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
                                 {uncategorizedPackages.map((pack) => (
-                                    <PackageCard key={pack.package_id} pack={{...pack, id: pack.package_id}}/>
+                                    <PackageCard key={pack.package_id} pack={{ ...pack, id: pack.package_id }} />
                                 ))}
                             </div>
                         </div>

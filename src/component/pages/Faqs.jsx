@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 
 const Faqs = () => {
-    const { faqs } = useContext(Context)
+    const { faqs, } = useContext(Context)
     const [openId, setOpenId] = useState(null)
 
     const toggleFaq = (id) => {
@@ -15,7 +15,6 @@ const Faqs = () => {
 
     return (
         <section className='w-full py-20 bg-white relative overflow-hidden'>
-            {/* Background Decor */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none -z-10">
                 <div className="absolute top-10 left-10 w-72 h-72 bg-emerald-500/5 rounded-full blur-[80px]"></div>
                 <div className="absolute bottom-10 right-10 w-72 h-72 bg-blue-500/5 rounded-full blur-[80px]"></div>
@@ -38,7 +37,6 @@ const Faqs = () => {
                     </p>
                 </motion.div>
 
-                {/* FAQ Grid */}
                 <div className='w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start'>
                     {faqs && faqs.length > 0 && faqs.map((faq, idx) => (
                         <motion.div 

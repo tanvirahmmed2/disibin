@@ -47,7 +47,6 @@ const AboutPage = () => {
   return (
     <main className="w-full min-h-screen bg-slate-50 pt-24 pb-20">
       
-      {/* Hero Section */}
       <section className="mb-24">
         <div className="container-custom px-4 text-center max-w-4xl mx-auto space-y-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-semibold uppercase tracking-widest border border-emerald-100">

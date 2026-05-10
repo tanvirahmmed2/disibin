@@ -20,7 +20,7 @@ const CouponsPage = async () => {
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-emerald-500/10">
                             <RiTicketLine /> Exclusive Savings
                         </div>
-                        <h1 className="text-6xl font-black text-slate-900 tracking-tighter leading-none">
+                        <h1 className="text-4xl md:text-6xl font-bold text-slate-900 tracking-tighter leading-none">
                             Active <span className="text-emerald-500">Coupons.</span>
                         </h1>
                         <p className="text-lg text-slate-500 font-medium leading-relaxed">

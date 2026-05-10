@@ -1,5 +1,6 @@
 'use client'
 import React, { useState } from 'react'
+import { motion } from 'framer-motion'
 import { RiTicketLine, RiCheckLine, RiFlashlightLine, RiFileCopyLine, RiCheckDoubleLine, RiTimeLine, RiPercentLine, RiPriceTag3Line } from 'react-icons/ri'
 import Image from 'next/image'
 import toast from 'react-hot-toast'
@@ -18,11 +19,15 @@ const CouponCard = ({ coupon }) => {
     const discountLabel = isPercentage ? `${coupon.discount}%` : `৳${coupon.discount}`
 
     return (
-        <div className="group relative flex flex-col w-full rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_24px_60px_-10px_rgba(16,185,129,0.18)]"
+        <motion.div
+            initial={{ opacity: 0, }}
+            whileInView={{ opacity: 1, }}
+            transition={{ duration: 1 }}
+            className="group relative flex flex-col w-full rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_24px_60px_-10px_rgba(16,185,129,0.18)]"
             style={{ boxShadow: '0 4px 24px 0 rgba(16,185,129,0.08), 0 1.5px 6px 0 rgba(0,0,0,0.06)' }}
         >
-            {/* ── Top Section: Image / Hero ── */}
-            <div className="relative w-full aspect-[16/9] overflow-hidden bg-gradient-to-br from-emerald-950 via-slate-900 to-slate-800 flex-shrink-0">
+
+            <div className="relative w-full aspect-video overflow-hidden bg-linear-to-br from-emerald-950 via-slate-900 to-slate-800 shrink-0">
                 {coupon.image ? (
                     <Image
                         src={coupon.image}
@@ -31,7 +36,6 @@ const CouponCard = ({ coupon }) => {
                         className="object-cover opacity-60 group-hover:opacity-70 group-hover:scale-105 transition-all duration-700"
                     />
                 ) : (
-                    /* decorative background pattern */
                     <div className="absolute inset-0 overflow-hidden">
                         <div className="absolute -top-10 -left-10 w-48 h-48 rounded-full bg-emerald-500/10 blur-3xl" />
                         <div className="absolute bottom-0 right-0 w-64 h-40 rounded-full bg-emerald-400/10 blur-2xl" />
@@ -39,12 +43,9 @@ const CouponCard = ({ coupon }) => {
                     </div>
                 )}
 
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent" />
 
-                {/* Top-left badge */}
                 <div className="absolute top-4 left-4 flex flex-col gap-2">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-widest text-white border border-white/15">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1  backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-widest text-white border border-white/15">
                         <RiPriceTag3Line size={10} />
                         {coupon.package_id ? 'Package Deal' : 'General Discount'}
                     </span>
@@ -56,7 +57,7 @@ const CouponCard = ({ coupon }) => {
                 </div>
 
                 <div className="absolute top-4 right-4">
-                    <div className="flex flex-col items-center justify-center p-3 rounded-2xl bg-linear-to-br from-emerald-400 to-emerald-600 shadow-xl shadow-emerald-500/40 border border-emerald-300/30">
+                    <div className="flex flex-col items-center justify-center p-3 rounded-2xl bg-linear-to-br from-emerald-400 to-emerald-600 border border-emerald-300/30">
                         <span className="text-white font-black text-xl leading-none tracking-tight">{discountLabel}</span>
                         <span className="text-emerald-100/80 text-[9px] font-bold uppercase tracking-widest mt-0.5">OFF</span>
                     </div>
@@ -71,17 +72,17 @@ const CouponCard = ({ coupon }) => {
             </div>
 
             <div className="relative h-5 bg-white shrink-0 overflow-visible z-10">
-                
+
                 <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-slate-50 border border-slate-100" />
-                
+
                 <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-slate-50 border border-slate-100" />
-            
+
                 <div className="absolute inset-y-1/2 left-4 right-4 border-t-2 border-dashed border-slate-100" />
             </div>
 
             <div className="flex flex-col flex-1 bg-white px-6 pb-6 pt-2 gap-5">
 
-               
+
                 <div className="flex items-center justify-between gap-3 bg-slate-50 rounded-xl px-4 py-3 border border-slate-100">
                     <div>
                         <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 mb-0.5">Promo Code</p>
@@ -106,7 +107,7 @@ const CouponCard = ({ coupon }) => {
                     <div className="flex flex-col gap-2">
                         {coupon.features.map((feature, i) => (
                             <div key={i} className="flex items-center gap-2.5 text-slate-600 text-xs font-semibold">
-                                <div className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                                <div className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
                                     <RiCheckLine size={10} />
                                 </div>
                                 {feature}
@@ -154,7 +155,7 @@ const CouponCard = ({ coupon }) => {
                     )}
                 </div>
             </div>
-        </div>
+        </motion.div>
     )
 }
 
