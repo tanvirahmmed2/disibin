@@ -52,7 +52,7 @@ const CouponsPage = async () => {
                     ) : (
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
                             {coupons.map((coupon) => (
-                                <CouponCard key={coupon.coupon_id} coupon={coupon}/>
+                                <CouponCard key={coupon.coupon_id} coupon={coupon} />
                             ))}
                         </div>
                     )}

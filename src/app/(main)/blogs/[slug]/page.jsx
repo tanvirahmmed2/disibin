@@ -23,7 +23,7 @@ const blog = async ({ params }) => {
             </div>
             <h1 className='text-2xl font-semibold'>{blog.title}</h1>
             <p className='w-full text-slate-600 leading-relaxed'>{blog.description}</p>
-            
+
         </div>
     )
 }

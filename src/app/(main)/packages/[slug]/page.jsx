@@ -30,15 +30,15 @@ const Package = async ({ params }) => {
         <div className='w-full min-h-screen bg-white'>
             {/* Hero Section */}
             <section className="relative w-full h-[60vh] min-h-100 flex items-end">
-                <Image 
-                    src={pack.image} 
-                    alt={pack.name} 
-                    fill 
+                <Image
+                    src={pack.image}
+                    alt={pack.name}
+                    fill
                     className="object-cover"
                     priority
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
-                
+
                 <div className="container-custom relative px-4 pb-12 w-full">
                     <div className="max-w-4xl space-y-4">
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500 text-white rounded-full text-[9px] font-black uppercase tracking-[0.2em]">
@@ -112,8 +112,8 @@ const Package = async ({ params }) => {
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-4">
                                         <AddToWishlist pack={pack} />
-                                        <Link 
-                                            className='flex-1 bg-emerald-500 text-white py-4 font-black uppercase tracking-widest text-[11px] text-center rounded-2xl shadow-lg shadow-emerald-500/20 hover:bg-white hover:text-slate-900 transition-all active:scale-95' 
+                                        <Link
+                                            className='flex-1 bg-emerald-500 text-white py-4 font-black uppercase tracking-widest text-[11px] text-center rounded-2xl shadow-lg shadow-emerald-500/20 hover:bg-white hover:text-slate-900 transition-all active:scale-95'
                                             href="https://api.whatsapp.com/send/?phone=8801805003886&text&type=phone_number&app_absent=0"
                                         >
                                             <div className="flex items-center justify-center gap-2">
