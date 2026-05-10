@@ -5,16 +5,21 @@ import React from 'react'
 
 const blog = async ({ params }) => {
     const { slug } = await params
-    const res = await fetch(`${BASE_URL}/api/blog/${slug}`, {
-        method: 'GET',
-        cache: 'no-store'
-    })
-
-    const data = await res.json()
-    if (!data.success) return <div className='w-full flex items-center justify-center'>
+    let blog = null
+    try {
+        const res = await fetch(`${BASE_URL}/api/blog/${slug}`, {
+            method: 'GET',
+            cache: 'no-store'
+        })
+        const data = await res.json()
+        if (!data.success) throw new Error(data.message)
+        blog = data.data
+    } catch (error) {
+        console.error('Blog fetch error:', error)
+    }
+    if (!blog) return <div className='w-full flex items-center justify-center'>
         <p>No Data Found!</p>
     </div>
-    const blog = data.data
     return (
         <div className='w-full max-w-4xl mx-auto flex flex-col items-center gap-4 p-4 min-h-screen'>
             <div className='w-full overflow-hidden relative'>

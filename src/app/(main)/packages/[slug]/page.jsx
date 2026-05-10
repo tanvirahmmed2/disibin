@@ -8,13 +8,19 @@ import { RiSecurePaymentLine, RiCustomerService2Line, RiRocketLine } from 'react
 
 const Package = async ({ params }) => {
     const { slug } = await params
-    const res = await fetch(`${BASE_URL}/api/package/${slug}`, {
-        method: 'GET',
-        cache: 'no-store'
-    })
-
-    const data = await res.json()
-    if (!data.success) return (
+    let pack = null
+    try {
+        const res = await fetch(`${BASE_URL}/api/package/${slug}`, {
+            method: 'GET',
+            cache: 'no-store'
+        })
+        const data = await res.json()
+        if (!data.success) throw new Error(data.message)
+        pack = data.data
+    } catch (error) {
+        console.error('Package fetch error:', error)
+    }
+    if (!pack) return (
         <div className='w-full min-h-screen flex items-center justify-center bg-slate-50'>
             <div className="text-center space-y-4">
                 <div className="text-6xl font-black text-slate-200">404</div>
@@ -23,8 +29,6 @@ const Package = async ({ params }) => {
             </div>
         </div>
     )
-
-    const pack = data.data
 
     return (
         <div className='w-full min-h-screen bg-white'>

@@ -5,16 +5,21 @@ import React from 'react'
 
 const Project = async ({ params }) => {
     const { slug } = await params
-    const res = await fetch(`${BASE_URL}/api/project/${slug}`, {
-        method: 'GET',
-        cache: 'no-store'
-    })
-
-    const data = await res.json()
-    if (!data.success) return <div className='w-full flex items-center justify-center'>
+    let project = null
+    try {
+        const res = await fetch(`${BASE_URL}/api/project/${slug}`, {
+            method: 'GET',
+            cache: 'no-store'
+        })
+        const data = await res.json()
+        if (!data.success) throw new Error(data.message)
+        project = data.data
+    } catch (error) {
+        console.error('Project fetch error:', error)
+    }
+    if (!project) return <div className='w-full flex items-center justify-center'>
         <p>No Data Found!</p>
     </div>
-    const project = data.data
     return (
         <div className='w-full max-w-4xl mx-auto flex flex-col items-center gap-4 p-4 min-h-screen'>
             <div className='w-full overflow-hidden relative'>

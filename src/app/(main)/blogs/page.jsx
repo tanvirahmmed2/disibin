@@ -3,21 +3,18 @@ import { BASE_URL } from '@/lib/database/secret'
 import React from 'react'
 
 const blogsPage = async () => {
-  const res = await fetch(`${BASE_URL}/api/blog`, {
-    method: 'GET',
-    cache: 'no-store'
-  })
-
-  const data = await res.json()
-
-  if (!data.success) return (
-    <div className='w-full min-h-[60vh] flex items-center justify-center bg-slate-50'>
-      <div className="card-premium p-12 text-center text-slate-500 font-medium">
-        Failed to load blogs.
-      </div>
-    </div>
-  )
-  const blogs = data.data || []
+  let blogs = []
+  try {
+    const res = await fetch(`${BASE_URL}/api/blog`, {
+      method: 'GET',
+      cache: 'no-store'
+    })
+    const data = await res.json()
+    if (!data.success) throw new Error(data.message)
+    blogs = data.data || []
+  } catch (error) {
+    console.error('Blogs fetch error:', error)
+  }
 
   return (
     <main className='w-full min-h-screen bg-white pt-20'>
