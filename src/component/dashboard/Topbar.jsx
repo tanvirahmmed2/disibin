@@ -4,6 +4,7 @@ import { Context } from '@/component/helper/Context'
 import { RiSearchLine, RiNotification3Line, RiMenuFoldLine, RiMenuUnfoldLine } from 'react-icons/ri'
 import Image from 'next/image'
 import Link from 'next/link'
+import { CgMenuBoxed, CgMenuMotion } from 'react-icons/cg'
 
 const Topbar = ({ collapsed, setCollapsed }) => {
     const { userData } = useContext(Context)
@@ -15,7 +16,7 @@ const Topbar = ({ collapsed, setCollapsed }) => {
                     onClick={() => setCollapsed(!collapsed)}
                     className="p-2.5 bg-slate-50 hover:bg-primary/5 text-slate-500 hover:text-emerald-600 rounded-xl transition-colors"
                 >
-                    {collapsed ? <RiMenuUnfoldLine size={24} /> : <RiMenuFoldLine size={24} />}
+                    {collapsed ? <CgMenuBoxed size={24} /> : <CgMenuMotion size={24} />}
                 </button>
 
                 <div className="hidden lg:flex items-center gap-3 px-4 py-2.5 bg-slate-50/50 hover:bg-slate-50 rounded-2xl border border-slate-100 text-slate-400 w-80 transition-all focus-within:bg-white focus-within:border-primary/20 focus-within:shadow-sm focus-within:shadow-primary/10">

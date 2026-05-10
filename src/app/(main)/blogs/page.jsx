@@ -16,7 +16,7 @@ const blogsPage = async () => {
         <div className="container-custom">
           <div className="max-w-3xl">
             <span className='px-4 py-1.5 bg-emerald-500/5 text-emerald-500 text-[10px] font-black uppercase tracking-[0.3em] rounded-full inline-block mb-6'>Knowledge Base</span>
-            <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none mb-8">Latest Insights<span className='text-emerald-500/50'>.</span></h1>
+            <h1 className="text-4xl md:text-6xl font-bold text-slate-900 tracking-tighter leading-none mb-8">Latest Insights<span className='text-emerald-500/50'>.</span></h1>
             <p className="text-xl text-slate-500 font-medium leading-relaxed">Perspectives on software engineering, product design, and the evolving digital landscape.</p>
           </div>
         </div>

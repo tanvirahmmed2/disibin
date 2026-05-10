@@ -97,9 +97,7 @@ const Sidebar = ({ collapsed }) => {
             flex flex-col p-4 gap-8 shadow-sm font-sans
         `}>
             <div className={`flex items-center ${collapsed ? 'lg:justify-center' : 'px-2'} gap-3 mt-2`}>
-                <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-slate-900/10">
-                    D
-                </div>
+               
                 {(!collapsed || typeof window !== 'undefined' && window.innerWidth < 1024) && (
                     <Link href={'/'} className="text-2xl font-bold text-slate-900 tracking-tight">Disibin</Link>
                 )}
