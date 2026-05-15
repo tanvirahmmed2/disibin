@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { dbQuery } from "@/lib/database/pg";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
-import { JWT_SECRET } from "@/lib/database/secret";
+import { getUserByEmail } from "@/lib/data/users";
+import { JWT_SECRET, NODE_ENV } from "@/lib/database/secret";
 
 export async function POST(req) {
     try {
@@ -13,60 +13,44 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "Email and password are required" }, { status: 400 });
         }
 
-        const res = await dbQuery("SELECT * FROM users WHERE email = $1", [email]);
-        const user = res.rows[0];
-
+        const user = await getUserByEmail(email);
         if (!user) {
-            return NextResponse.json({ success: false, message: "Invalid credentials" }, { status: 401 });
+            return NextResponse.json({ success: false, message: "Invalid email or password" }, { status: 401 });
         }
 
         if (!user.is_active) {
-            return NextResponse.json({ success: false, message: "Account is disabled. Contact support." }, { status: 403 });
-        }
-
-        if (!user.is_verified) {
-            return NextResponse.json({ success: false, message: "Email not verified. Please check your inbox.", isUnverified: true }, { status: 403 });
+            return NextResponse.json({ success: false, message: "Account is deactivated" }, { status: 403 });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return NextResponse.json({ success: false, message: "Invalid credentials" }, { status: 401 });
+            return NextResponse.json({ success: false, message: "Invalid email or password" }, { status: 401 });
         }
 
-        // Fetch user's primary tenant for the token
-        const tenantRes = await dbQuery("SELECT tenant_id FROM tenant_users WHERE user_id = $1 LIMIT 1", [user.user_id]);
-        const tenantId = tenantRes.rows[0]?.tenant_id;
+        // Generate Token
+        const token = jwt.sign(
+            { id: user.user_id, email: user.email, role: user.role },
+            JWT_SECRET,
+            { expiresIn: "7d" }
+        );
 
-        const tokenData = {
-            id: user.user_id,
-            _id: user.user_id, // Backward compatibility
-            email: user.email,
-            role: user.role,
-            tenantId: tenantId
-        };
-
-        const token = jwt.sign(tokenData, JWT_SECRET, { expiresIn: '7d' });
-        
+        // Set Cookie
         const cookieStore = await cookies();
-        cookieStore.set('disibin', token, {
+        cookieStore.set("disibin", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            path: '/',
-            maxAge: 604800 // 7 days in seconds
+            secure: NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60, // 7 days
+            path: "/",
         });
+
+        // Remove password from response
+        const { password: _, ...userData } = user;
 
         return NextResponse.json({
             success: true,
-            message: `Welcome back, ${user.name}!`,
-            data: {
-                id: user.user_id,
-                _id: user.user_id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                tenantId: tenantId
-            }
+            message: "Login successful",
+            data: userData
         });
 
     } catch (error) {

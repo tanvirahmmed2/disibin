@@ -1,8 +1,8 @@
 export const metadata = {
-    title: 'Admin Console | Dashboard',
-    description: 'System administration and management portal for Disibin administrators.',
+  title: 'Admin Dashboard | Disibin',
+  description: 'Manage your admin panel on Disibin.',
 }
 
-export default function AdminLayout({ children }) {
-    return <>{children}</>
+export default function Layout({ children }) {
+  return <section className="w-full animate-in fade-in duration-700">{children}</section>
 }

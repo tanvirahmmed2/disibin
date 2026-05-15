@@ -1,86 +1,53 @@
-'use client'
 import React from 'react'
-import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { Typewriter } from 'react-simple-typewriter'
 
 const Intro = () => {
   return (
-    <section className='relative w-full flex items-center justify-center py-32 bg-emerald-500 overflow-hidden'>
-      
-      <div className='absolute top-0 left-0 w-full h-full opacity-10'>
-        <div className='absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-white rounded-full blur-[150px]' />
-        <div className='absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-white rounded-full blur-[150px]' />
+    <section className='w-full relative flex flex-col gap-12 items-start justify-center py-28 min-h-[90vh] px-2 overflow-hidden'>
+
+
+
+     
+
+      <div className='w-full flex flex-col gap-4 animate-fade-up delay-100'>
+        <p className='font-poppins text-lg sm:text-xl tracking-wide'>
+          We build technology
+        </p>
+        <h1 className='font-poppins text-5xl sm:text-7xl lg:text-8xl font-semibold leading-[1.08] tracking-tight text-slate-900'>
+          that{' '}
+          <span className='gradient-text'>works,</span>
+          <br />
+          scales, and{' '}
+          <span className='gradient-text'>performs</span>
+        </h1>
       </div>
-      
-      <div className='container-custom flex flex-col items-center text-center space-y-10 relative z-10'>
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className='space-y-4'
-        >
-          <span className='px-6 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] font-semibold uppercase tracking-[0.4em] rounded-full inline-block'>
-            Design • Build • Inspire
-          </span>
-          <h1 className='text-6xl md:text-[8rem] font-bold text-white tracking-tighter leading-[0.9] uppercase'>
-            Disibin
-          </h1>
-        </motion.div>
 
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 1 }}
-          className='max-w-3xl'
-        >
-          <h2 className='text-xl md:text-3xl font-semibold text-white mb-6 leading-tight'>
-            We 
-            <span className='text-white px-3 relative italic'>
-              <Typewriter
-                words={['Architect', 'Implement', 'Scale', 'Innovate']}
-                loop={0}
-                cursor
-                cursorStyle='_'
-                typeSpeed={80}
-                deleteSpeed={50}
-                delaySpeed={2000}
-              />
-              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white/30"></span>
-            </span>
-            Future-Proof Software.
-          </h2>
-          <p className='text-white/80 font-medium leading-relaxed text-base md:text-lg max-w-2xl mx-auto'>
-            Crafting high-performance digital solutions that help modern businesses grow, adapt, and stand out in a global landscape.
-          </p>
-        </motion.div>
+      <div className='w-full flex flex-col sm:flex-row items-start sm:items-end justify-between gap-8 animate-fade-up delay-300'>
+        <p className='max-w-md font-poppins text-sm sm:text-base text-slate-500 leading-relaxed'>
+          From concept to premium digital solutions — crafting fast, scalable web
+          applications that seamlessly combine design, development, and automation
+          into one powerful ecosystem. Long-term partnerships, continuous growth.
+        </p>
 
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.7 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className='flex flex-wrap items-center justify-center gap-4 pt-4'
-        >
-          <Link href='/packages' className='px-10 py-5 bg-white text-emerald-600 font-semibold uppercase tracking-widest text-xs rounded-xl hover:bg-slate-50 transition-all active:scale-95'>
+        <div className='flex flex-row items-center gap-3 shrink-0'>
+          <Link
+            href='/products'
+            className='px-6 py-3 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-sky-600 transition-all duration-300 shadow-md shadow-slate-200 animate-pulse-glow'
+          >
             Get Started
           </Link>
-          <Link href='/projects' className='px-10 py-5 bg-transparent text-white border border-white/30 font-semibold uppercase tracking-widest text-xs rounded-xl hover:bg-white/10 transition-all active:scale-95'>
-            View Work
+          <Link
+            href='/projects'
+            className='px-6 py-3 rounded-xl border border-slate-200 text-slate-700 text-sm font-semibold hover:border-sky-300 hover:text-sky-600 hover:bg-sky-50 transition-all duration-300'
+          >
+            View Work →
           </Link>
-        </motion.div>
+        </div>
       </div>
 
-      
-      <motion.div 
-        whileInView={{ y: [0, 10, 0] }}
-        transition={{ repeat: Infinity, duration: 2 }}
-        className='absolute bottom-12 left-1/2 -translate-x-1/2'
-      >
-        <div className='w-px h-16 bg-white/20' />
-      </motion.div>
+     
     </section>
   )
 }
 
 export default Intro
-

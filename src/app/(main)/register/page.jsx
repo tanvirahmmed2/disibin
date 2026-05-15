@@ -1,36 +1,32 @@
-import RegisterForm from '@/component/forms/RegisterForm'
 import React from 'react'
+import Link from 'next/link'
 
 const RegisterPage = () => {
   return (
-    <div className='w-full min-h-screen flex items-center justify-center bg-slate-50 relative overflow-hidden'>
-      
-
-      <div className='w-full max-w-250 bg-white rounded-[2.5rem] shadow-premium flex flex-col md:flex-row overflow-hidden relative z-10 m-4'>
+    <div className="flex flex-col items-center justify-center min-h-[80vh] py-20 px-4">
+      <div className="w-full max-w-md bg-white p-10 rounded-[32px] border border-slate-100 shadow-2xl shadow-slate-200/50">
+        <h1 className="text-3xl font-bold mb-2 tracking-tight text-slate-900">Get Started</h1>
+        <p className="text-slate-500 text-sm mb-10 font-medium">Join the network and start building today.</p>
         
-        <div className='flex-1 bg-emerald-500 p-12 text-white flex-col justify-center relative overflow-hidden hidden md:flex'>
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-2xl -mr-20 -mt-20"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-2xl -ml-20 -mb-20"></div>
-          
-          <div className="relative z-10">
-            <h1 className="text-5xl font-black tracking-tight mb-4">Disibin</h1>
-            <p className="text-emerald-500/5 text-xl font-medium mb-8">Join the platform that grows your business.</p>
-            <div className="space-y-4 text-white">
-              <p className="flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-white"></span> Get instant access to powerful tools.</p>
-              <p className="flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-white"></span> 24/7 dedicated support team.</p>
-              <p className="flex items-center gap-3"><span className="w-2 h-2 rounded-full bg-white"></span> Exclusive premium content.</p>
-            </div>
-          </div>
-        </div>
+        <form className="space-y-5">
+           <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Full Name</label>
+              <input type="text" placeholder="John Doe" className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-sky-500 transition-all outline-none" />
+           </div>
+           <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Email Address</label>
+              <input type="email" placeholder="name@company.com" className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-sky-500 transition-all outline-none" />
+           </div>
+           <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Password</label>
+              <input type="password" placeholder="••••••••" className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-sky-500 transition-all outline-none" />
+           </div>
+           <button className="w-full py-4 rounded-2xl bg-slate-900 text-white font-bold hover:bg-sky-600 transition-all duration-300 mt-4 shadow-xl shadow-slate-900/10">Create Account</button>
+        </form>
 
-        
-        <div className='flex-1 p-8 md:p-16 flex flex-col justify-center bg-white'>
-          <div className="mb-8 text-center md:text-left">
-            <h2 className='text-3xl font-black text-slate-900 mb-2'>Create Account</h2>
-            <p className='text-slate-500 font-medium'>Sign up to get started.</p>
-          </div>
-          <RegisterForm />
-        </div>
+        <p className="mt-8 text-center text-sm text-slate-500 font-medium">
+          Already a member? <Link href="/login" className="text-sky-500 font-bold hover:underline">Sign In</Link>
+        </p>
       </div>
     </div>
   )

@@ -1,8 +1,8 @@
 export const metadata = {
-    title: 'Account Settings | User Center',
-    description: 'Update your personal information, security settings, and preferences.',
+  title: 'User Settings | Disibin',
+  description: 'Manage your settings Disibin.',
 }
 
-export default function SettingsLayout({ children }) {
-    return <>{children}</>
+export default function Layout({ children }) {
+  return <section className="w-full animate-in fade-in duration-700">{children}</section>
 }

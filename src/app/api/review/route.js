@@ -1,87 +1,130 @@
-import { NextResponse } from 'next/server';
-import { dbQuery } from '@/lib/database/pg';
-import { isLogin, isManager } from '@/lib/middleware';
+import { NextResponse } from "next/server";
+import { isLogin, hasRole } from "@/lib/middleware";
+import { 
+    createReview, 
+    getPublicReviews, 
+    getAllReviews, 
+    approveReview, 
+    replyToReview, 
+    deleteReview 
+} from "@/lib/data/reviews";
 
-export async function GET() {
+// GET reviews
+export async function GET(req) {
     try {
-        const auth = await isManager();
-        
-        let sql = `
-            SELECT r.review_id, r.rating, r.comment, r.is_approved, r.created_at, u.name as user_name 
-            FROM reviews r
-            JOIN users u ON r.user_id = u.user_id
-        `;
-        
-        if (auth.success) {
-            // Manager gets all reviews
-            sql += " ORDER BY r.created_at DESC";
-            const res = await dbQuery(sql, []);
-            return NextResponse.json({ success: true, message: 'All reviews fetched', data: res.rows });
-        } else {
-            // Public/User gets only approved reviews
-            sql += " WHERE r.is_approved = true ORDER BY r.created_at DESC";
-            const res = await dbQuery(sql, []);
-            return NextResponse.json({ success: true, message: 'Approved reviews fetched', data: res.rows });
+        const { searchParams } = new URL(req.url);
+        const productId = searchParams.get('productId');
+        const showAll = searchParams.get('all') === 'true';
+
+        // Only staff can see unapproved reviews
+        if (showAll) {
+            const auth = await hasRole(['admin', 'support', 'manager']);
+            if (auth.success) {
+                const reviews = await getAllReviews();
+                return NextResponse.json({ success: true, data: reviews });
+            }
         }
+
+        // Public approved reviews
+        const reviews = await getPublicReviews(productId);
+        return NextResponse.json({ success: true, data: reviews });
+
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
+// POST submit review
 export async function POST(req) {
     try {
         const auth = await isLogin();
-        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+        if (!auth.success) return NextResponse.json(auth, { status: 401 });
 
-        const { rate, comment } = await req.json();
-        if (!rate || !comment) return NextResponse.json({ success: false, message: 'Rate and comment are required' }, { status: 400 });
+        const body = await req.json();
+        const { product_id, rating, comment } = body;
 
-        const res = await dbQuery(`
-            INSERT INTO reviews (user_id, rating, comment, is_approved)
-            VALUES ($1, $2, $3, false)
-            RETURNING *
-        `, [auth.data.id, Number(rate), comment]);
+        if (!product_id || !rating) {
+            return NextResponse.json({ success: false, message: "Product ID and Rating are required" }, { status: 400 });
+        }
+
+        const review = await createReview({
+            user_id: auth.data.id,
+            product_id,
+            rating,
+            comment
+        });
 
         return NextResponse.json({
             success: true,
-            message: 'Review submitted successfully! It will appear after approval.',
-            data: res.rows[0]
+            message: "Review submitted and awaiting approval",
+            data: review
         }, { status: 201 });
 
     } catch (error) {
+        if (error.code === '23505') {
+            return NextResponse.json({ success: false, message: "You have already submitted a review" }, { status: 400 });
+        }
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
+// PATCH update/approve/reply
 export async function PATCH(req) {
     try {
-        const auth = await isManager();
-        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+        const auth = await hasRole(['admin', 'support', 'manager']);
+        if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
-        const { id, isApproved } = await req.json();
-        const res = await dbQuery(`
-            UPDATE reviews SET is_approved = $1, updated_at = NOW() WHERE review_id = $2 RETURNING *
-        `, [isApproved, id]);
+        const { reviewId, is_approved } = await req.json();
 
-        if (res.rows.length === 0) return NextResponse.json({ success: false, message: 'Review not found' }, { status: 404 });
+        if (!reviewId) {
+            return NextResponse.json({ success: false, message: "Review ID is required" }, { status: 400 });
+        }
 
-        return NextResponse.json({ success: true, message: 'Review status updated', data: res.rows[0] });
+        let updatedReview = null;
+
+        if (is_approved !== undefined) {
+            updatedReview = await approveReview(reviewId, is_approved);
+        }
+
+        if (!updatedReview) {
+            return NextResponse.json({ success: false, message: "No action performed" }, { status: 400 });
+        }
+
+        return NextResponse.json({
+            success: true,
+            message: "Review updated successfully",
+            data: updatedReview
+        });
+
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
+// DELETE review
 export async function DELETE(req) {
     try {
-        const auth = await isManager();
-        if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+        const auth = await hasRole(['admin', 'manager']);
+        if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
-        const { id } = await req.json();
-        const res = await dbQuery("DELETE FROM reviews WHERE review_id = $1 RETURNING *", [id]);
+        const { searchParams } = new URL(req.url);
+        const reviewId = searchParams.get('id');
 
-        if (res.rows.length === 0) return NextResponse.json({ success: false, message: 'Review not found' }, { status: 404 });
+        if (!reviewId) {
+            return NextResponse.json({ success: false, message: "Review ID is required" }, { status: 400 });
+        }
 
-        return NextResponse.json({ success: true, message: 'Review deleted successfully' });
+        const deletedReview = await deleteReview(reviewId);
+
+        if (!deletedReview) {
+            return NextResponse.json({ success: false, message: "Review not found" }, { status: 404 });
+        }
+
+        return NextResponse.json({
+            success: true,
+            message: "Review deleted successfully"
+        });
+
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

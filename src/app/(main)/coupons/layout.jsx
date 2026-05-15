@@ -1,8 +1,8 @@
 export const metadata = {
-    title: 'Save Money , Save Coupon',
-    description: 'Save money, use coupon for specialized development and design packages tailored to help your business grow.',
+  title: 'Coupons & Offers | Disibin',
+  description: 'View active promotional codes and exclusive offers for Disibin products and services.',
 }
 
-export default function PackagesLayout({ children }) {
-    return <section className="w-full">{children}</section>
+export default function Layout({ children }) {
+  return <section className="w-full animate-in fade-in duration-700">{children}</section>
 }

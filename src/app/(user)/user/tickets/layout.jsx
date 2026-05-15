@@ -1,8 +1,8 @@
 export const metadata = {
-    title: 'My Support Tickets | User Center',
-    description: 'Track and manage your active support requests and technical inquiries.',
+  title: 'My Ticket | Disibin',
+  description: 'Manage your ticket about interactions, orders, and projects on Disibin.',
 }
 
-export default function TicketsLayout({ children }) {
-    return <>{children}</>
+export default function Layout({ children }) {
+  return <section className="w-full animate-in fade-in duration-700">{children}</section>
 }

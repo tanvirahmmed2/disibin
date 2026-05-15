@@ -1,8 +1,8 @@
 export const metadata = {
-    title: 'My Purchases | User Center',
-    description: 'View and manage your service orders and project history with Disibin.',
+  title: 'My purchases | Disibin',
+  description: 'Manage your purchases on Disibin.',
 }
 
-export default function PurchasesLayout({ children }) {
-    return <>{children}</>
+export default function Layout({ children }) {
+  return <section className="w-full animate-in fade-in duration-700">{children}</section>
 }

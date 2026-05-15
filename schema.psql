@@ -76,9 +76,7 @@ CREATE TABLE product_features (
   UNIQUE(product_id, feature_id)
 );
 
--- =====================================================
--- 4. SALES & LOGISTICS
--- =====================================================
+
 CREATE TABLE coupons (
   coupon_id SERIAL PRIMARY KEY,
   product_id INT REFERENCES products(product_id),
@@ -117,14 +115,6 @@ CREATE TABLE purchases (
   updated_at TIMESTAMP DEFAULT now()
 );
 
-CREATE TABLE wishlists (
-  wishlist_id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
-  product_id INT REFERENCES products(product_id) ON DELETE CASCADE,
-  quantity INT DEFAULT 1,
-  created_at TIMESTAMP DEFAULT now(),
-  UNIQUE(user_id, product_id)
-);
 
 -- =====================================================
 -- 5. FINANCIALS
@@ -289,8 +279,6 @@ CREATE TABLE reviews (
   rating INT CHECK (rating BETWEEN 1 AND 5),
   comment TEXT,
   is_approved BOOLEAN DEFAULT FALSE,
-  reply TEXT,
-  replied_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT now()
 );
 

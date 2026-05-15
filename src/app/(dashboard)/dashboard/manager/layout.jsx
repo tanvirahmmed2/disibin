@@ -1,8 +1,8 @@
 export const metadata = {
-    title: 'Manager Dashboard',
-    description: 'Project oversight and team coordination portal for Disibin managers.',
+  title: 'Manager Dashboard | Disibin',
+  description: 'Manage your panel on Disibin.',
 }
 
-export default function ManagerLayout({ children }) {
-    return <>{children}</>
+export default function Layout({ children }) {
+  return <section className="w-full animate-in fade-in duration-700">{children}</section>
 }

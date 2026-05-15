@@ -1,8 +1,16 @@
-export const metadata = {
-    title: 'Expert Software Solutions & Design',
-    description: 'Learn about Disibin, our mission to build high-performance digital solutions, and how we help businesses scale with modern technology.',
+import React from 'react'
+
+export const metadata={
+    title:'About | Disibin',
+    description:'About disibin'
 }
 
-export default function AboutLayout({ children }) {
-    return <section className="w-full">{children}</section>
+const layout = ({children}) => {
+  return (
+    <div className='w-full'>
+      {children}
+    </div>
+  )
 }
+
+export default layout

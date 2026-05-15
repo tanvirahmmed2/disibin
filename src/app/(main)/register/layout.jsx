@@ -1,8 +1,8 @@
 export const metadata = {
-    title: 'Join Disibin - Create an Account',
-    description: 'Sign up for a Disibin account today to start building and managing your digital future with us.',
+  title: 'Create Account | Disibin',
+  description: 'Join the Disibin network and start architecting your digital future.',
 }
 
-export default function RegisterLayout({ children }) {
-    return <section className="w-full">{children}</section>
+export default function Layout({ children }) {
+  return <section className="w-full animate-in fade-in duration-700">{children}</section>
 }

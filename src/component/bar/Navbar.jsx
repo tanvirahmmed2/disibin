@@ -1,112 +1,90 @@
 'use client'
 import Link from 'next/link'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Context } from '../helper/Context'
-import { usePathname } from 'next/navigation'
-import { MdOutlineMenu, MdClose } from "react-icons/md";
-import { CgProfile } from 'react-icons/cg';
-import { RiLogoutBoxRLine, RiDashboardLine, RiUserLine, RiHeartLine } from 'react-icons/ri';
+import { CiMenuBurger, CiMenuFries } from 'react-icons/ci'
 
 const Navbar = () => {
-  const { sidebar, setSidebar, isLoggedIn, userData, handleLogout } = useContext(Context)
-  const pathname = usePathname()
+  const { sidebar, setSidebar, isLoggedIn, userData } = useContext(Context)
 
-  const navLinks = [
-    { name: 'Services', href: '/services' },
-    { name: 'Coupons', href: '/coupons' },
-    { name: 'Plans', href: '/packages' },
-    { name: 'Projects', href: '/projects' },
-    { name: 'Reviews', href: '/reviews' },
-    { name: 'Blogs', href: '/blogs' },
-    { name: 'About', href: '/about' },
+  const [showTopbar, setShowTopbar] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      setScrolled(currentScrollY > 20)
+      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        setShowTopbar(false)
+      } else {
+        setShowTopbar(true)
+      }
+      setLastScrollY(currentScrollY)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lastScrollY])
+
+  const links = [
+    { label: 'Products', href: '/products' },
+    { label: 'Projects', href: '/projects' },
+    { label: 'About',    href: '/about' },
   ]
 
-  const isActive = (href) => pathname === href
-
- 
-
   return (
-    <nav className='w-full fixed top-0 left-0 h-16 bg-white backdrop-blur-xl border-b border-slate-50 z-50 flex items-center shadow-xl'>
-      <div className='max-w-7xl mx-auto px-6 w-full flex flex-row items-center justify-between'>
-        <Link href={'/'} className='text-3xl font-bold text-slate-900 tracking-tighter hover:text-emerald-500 transition-all duration-500'>
+    <div className='w-full fixed top-0 px-3 sm:px-4 z-50 pt-3'>
+      <nav
+        className={`w-full bg-white flex items-center justify-between h-14 px-5 rounded-2xl transition-all duration-500 ${
+          showTopbar ? 'translate-y-0 opacity-100' : '-translate-y-[120%] opacity-0'  } `}
+      >
+        <Link
+          href='/'
+          className='text-2xl font-poppins font-semibold tracking-tight text-slate-900 hover:text-sky-500 transition-colors duration-300'
+        >
           Disibin
         </Link>
 
-        <div className='hidden lg:flex items-center gap-1'>
-          {navLinks.map((link) => (
-            <Link 
-              key={link.href}
-              href={link.href} 
-              className={`px-3 py-2.5 rounded-full text-[10px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 ${
-                isActive(link.href) 
-                ? 'text-emerald-600 bg-emerald-500/10' 
-                : 'text-slate-500 hover:text-slate-900'
-              }`}
+        <div className='hidden sm:flex flex-row items-center gap-1'>
+          {links.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className='px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-sky-600 hover:bg-sky-50 transition-all duration-200'
             >
-              {link.name}
+              {l.label}
             </Link>
           ))}
-          
-          <div className='ml-4 h-4 w-px bg-slate-100'></div>
+
+          <div className='ml-3 h-5 w-px bg-slate-200' />
 
           {isLoggedIn ? (
-            <div className='relative ml-4 group'>
-              <button className='flex items-center gap-3 p-1 rounded-full group-hover:bg-slate-50 transition-colors'>
-                <div className='w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white font-semibold text-sm transition-transform active:scale-95'>
-                  {userData?.name?.charAt(0) || <CgProfile />}
-                </div>
-              </button>
-              
-              <div className='absolute right-0 top-full mt-4 w-60 bg-white border border-slate-100 rounded-xl shadow-premium p-3 invisible group-hover:visible opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300'>
-                <div className='px-4 py-3 mb-2'>
-                    <p className='text-[10px] font-semibold uppercase tracking-widest text-slate-400'>Authorized User</p>
-                    <p className='text-sm font-semibold text-slate-900 truncate'>{userData?.name}</p>
-                </div>
-                <div className='space-y-1'>
-                    <Link href='/user' className='flex items-center gap-3 px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-emerald-500 rounded-xl transition-all'>
-                      <RiUserLine className='text-lg' /> User Portal
-                    </Link>
-                    {userData?.role !== 'user' && (
-                        <Link href='/dashboard' className='flex items-center gap-3 px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-emerald-500 rounded-xl transition-all'>
-                          <RiDashboardLine className='text-lg' /> Management Console
-                        </Link>
-                    )}
-                    <Link href='/profile' className='flex items-center gap-3 px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-emerald-500 rounded-xl transition-all'>
-                    <RiUserLine className='text-lg' /> Profile
-                    </Link>
-                    <Link href='/wishlist' className='flex items-center gap-3 px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500 hover:bg-slate-50 hover:text-emerald-500 rounded-xl transition-all'>
-                    <RiHeartLine className='text-lg' /> Wishlist
-                    </Link>
-                </div>
-                <div className='my-2 border-t border-slate-50'></div>
-                <button 
-                  onClick={() => handleLogout()}
-                  className='w-full flex items-center gap-3 px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-emerald-500 hover:bg-emerald-500 hover:text-white rounded-xl transition-colors'
-                >
-                  <RiLogoutBoxRLine className='text-lg' /> Log out
-                </button>
-              </div>
-            </div>
-          ) : (
-            <Link 
-              href={'/login'} 
-              className='ml-2 btn-primary h-10'
+            <Link
+              href={userData?.role === 'user' ? '/user' : '/dashboard'}
+              className='ml-3 px-5 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-sky-600 transition-all duration-300 shadow-sm'
             >
-              Sign In
+              Dashboard
+            </Link>
+          ) : (
+            <Link
+              href='/login'
+              className='ml-3 px-5 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-sky-600 transition-all duration-300 shadow-sm'
+            >
+              Login
             </Link>
           )}
         </div>
 
-        <button 
-          onClick={() => setSidebar(!sidebar)} 
-          className='lg:hidden p-2.5 rounded-xl text-slate-900 bg-slate-50 hover:bg-slate-100 transition-colors'
+        <button
+          onClick={() => setSidebar(!sidebar)}
+          className='sm:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors'
+          aria-label='Toggle menu'
         >
-          {sidebar ? <MdClose size={24} /> : <MdOutlineMenu size={24} />}
+          {sidebar ? <CiMenuFries size={20} /> : <CiMenuBurger size={20} />}
         </button>
-      </div>
-    </nav>
+      </nav>
+    </div>
   )
 }
 
 export default Navbar
-

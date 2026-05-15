@@ -1,8 +1,8 @@
 export const metadata = {
-    title: 'My Reviews | User Center',
-    description: 'Manage and view the feedback you have provided for Disibin services.',
+  title: 'My Reviews | Disibin',
+  description: 'Manage your review details and studio preferences.',
 }
 
-export default function ReviewsLayout({ children }) {
-    return <>{children}</>
+export default function Layout({ children }) {
+  return <section className="w-full animate-in fade-in duration-700">{children}</section>
 }

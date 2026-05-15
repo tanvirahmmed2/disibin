@@ -1,8 +1,8 @@
 export const metadata = {
-    title: 'Support Center | Dashboard',
-    description: 'Customer support management and ticket resolution portal.',
+  title: 'Support Dashboard | Disibin',
+  description: 'Manage your panel on Disibin.',
 }
 
-export default function SupportLayout({ children }) {
-    return <>{children}</>
+export default function Layout({ children }) {
+  return <section className="w-full animate-in fade-in duration-700">{children}</section>
 }

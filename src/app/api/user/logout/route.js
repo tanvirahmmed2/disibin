@@ -1,26 +1,22 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
-export async function GET() {
+export async function POST() {
     try {
-        const res = NextResponse.json({
-            success: true,
-            message: "Logout successful",
-        });
-
-        res.cookies.set("disibin", "", {
+        const cookieStore = await cookies();
+        cookieStore.set("disibin", "", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            expires: new Date(0),
+            sameSite: "strict",
+            maxAge: 0,
             path: "/",
-            sameSite: "strict"
         });
 
-        return res;
-    } catch (error) {
         return NextResponse.json({
-            success: false,
-            message: "Failed to logout",
-            error: error.message
-        }, { status: 500 });
+            success: true,
+            message: "Logged out successfully"
+        });
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
