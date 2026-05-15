@@ -1,5 +1,5 @@
 -- =====================================================
--- USERS
+-- 1. USERS & ACCESS CONTROL
 -- =====================================================
 CREATE TABLE users (
   user_id SERIAL PRIMARY KEY,
@@ -7,32 +7,38 @@ CREATE TABLE users (
   email TEXT UNIQUE NOT NULL,
   phone TEXT UNIQUE,
   password TEXT NOT NULL,
-
-  role TEXT DEFAULT 'user'
-    CHECK (role IN ('admin','manager','support','developer','user')),
-
+  role TEXT DEFAULT 'user' CHECK (role IN ('admin','manager','support','developer','user')),
   is_active BOOLEAN DEFAULT TRUE,
   is_verified BOOLEAN DEFAULT FALSE,
-
   stripe_customer_id TEXT UNIQUE,
-
   reset_token TEXT,
   token_expires_at TIMESTAMP,
-
   city TEXT,
   country TEXT,
   address_line1 TEXT,
   address_line2 TEXT,
   state TEXT,
   postal_code TEXT,
-
   last_login TIMESTAMP,
   created_at TIMESTAMP DEFAULT now(),
   updated_at TIMESTAMP DEFAULT now()
 );
 
 -- =====================================================
--- CATEGORIES
+-- 2. MEDIA (MULTIPLE IMAGES SUPPORT)
+-- =====================================================
+CREATE TABLE images (
+  image_id SERIAL PRIMARY KEY,
+  url TEXT NOT NULL,
+  public_id TEXT NOT NULL, -- For Cloudinary/S3 references
+  entity_type TEXT NOT NULL, -- 'product', 'project', 'team', etc.
+  entity_id INT NOT NULL,
+  is_primary BOOLEAN DEFAULT FALSE, -- To set a "Main/Thumbnail" image
+  created_at TIMESTAMP DEFAULT now()
+);
+
+-- =====================================================
+-- 3. CATEGORIES & PRODUCTS
 -- =====================================================
 CREATE TABLE categories (
   category_id SERIAL PRIMARY KEY,
@@ -41,28 +47,17 @@ CREATE TABLE categories (
   created_at TIMESTAMP DEFAULT now()
 );
 
--- =====================================================
--- PACKAGES + FEATURES
--- =====================================================
-CREATE TABLE packages (
-  package_id SERIAL PRIMARY KEY,
+CREATE TABLE products (
+  product_id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
   category_id INT REFERENCES categories(category_id),
-
   description TEXT,
   price NUMERIC(10,2) NOT NULL,
-
   duration_days INT NOT NULL,
   is_lifetime BOOLEAN DEFAULT FALSE,
-
   is_active BOOLEAN DEFAULT TRUE,
-
-  image TEXT,
-  image_id TEXT,
-
   created_by INT REFERENCES users(user_id),
-
   created_at TIMESTAMP DEFAULT now(),
   updated_at TIMESTAMP DEFAULT now()
 );
@@ -73,371 +68,145 @@ CREATE TABLE features (
   description TEXT
 );
 
-CREATE TABLE package_features (
+CREATE TABLE product_features (
   id SERIAL PRIMARY KEY,
-  package_id INT REFERENCES packages(package_id) ON DELETE CASCADE,
+  product_id INT REFERENCES products(product_id) ON DELETE CASCADE,
   feature_id INT REFERENCES features(feature_id) ON DELETE CASCADE,
   value BOOLEAN DEFAULT TRUE,
-  UNIQUE(package_id, feature_id)
+  UNIQUE(product_id, feature_id)
 );
 
 -- =====================================================
--- WISHLIST
--- =====================================================
-CREATE TABLE wishlists (
-  wishlist_id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES users(user_id),
-  package_id INT REFERENCES packages(package_id),
-  quantity INT DEFAULT 1,
-  created_at TIMESTAMP DEFAULT now(),
-  UNIQUE(user_id, package_id)
-);
-
--- =====================================================
--- COUPONS
+-- 4. SALES & LOGISTICS
 -- =====================================================
 CREATE TABLE coupons (
   coupon_id SERIAL PRIMARY KEY,
-
-  package_id INT REFERENCES packages(package_id),
-
+  product_id INT REFERENCES products(product_id),
   code TEXT UNIQUE NOT NULL,
   discount NUMERIC(10,2) NOT NULL,
   is_percentage BOOLEAN DEFAULT TRUE,
-
   max_discount NUMERIC(10,2),
   usage_limit INT DEFAULT 0,
   used_count INT DEFAULT 0,
-
   start_date TIMESTAMP,
   end_date TIMESTAMP,
-
-  status TEXT DEFAULT 'active'
-    CHECK (status IN ('active','inactive')),
-
-  image TEXT,
-  image_id TEXT,
-
+  status TEXT DEFAULT 'active' CHECK (status IN ('active','inactive')),
   created_by INT REFERENCES users(user_id),
   created_at TIMESTAMP DEFAULT now()
 );
 
--- =====================================================
--- PURCHASES
-CREATE TABLE public.purchases (
-  -- Identity
-  purchase_id serial NOT NULL,
+CREATE TABLE purchases (
+  purchase_id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES users(user_id) ON DELETE SET NULL,
+  product_id INT REFERENCES products(product_id) ON DELETE SET NULL,
+  coupon_id INT REFERENCES coupons(coupon_id) ON DELETE SET NULL,
   
-  -- Foreign Keys
-  user_id integer NULL,
-  package_id integer NULL,
-  coupon_id integer NULL,
-  tenant_id integer NULL,
-  approved_by integer NULL,
+  -- Snapshots for data integrity
+  product_name TEXT NOT NULL,
+  product_price NUMERIC(10,2),
   
-  -- Package Snapshot (Data preservation if package is deleted/edited)
-  package_name text NOT NULL,
-  duration_days integer NULL,
-  package_price numeric(10, 2) NULL,
-  package_details jsonb NULL DEFAULT '{}'::jsonb,
+  original_amount NUMERIC(10,2),
+  discount_amount NUMERIC(10,2),
+  final_amount NUMERIC(10,2) NOT NULL,
   
-  -- Financials
-  original_amount numeric(10, 2) NULL,
-  discount_amount numeric(10, 2) NULL,
-  final_amount numeric(10, 2) NOT NULL,
-  
-  -- Status & Logistics
-  status text NULL DEFAULT 'pending'::text,
-  rejected_reason text NULL,
-  approved_at timestamp without time zone NULL,
-  
-  -- Audit Timestamps
-  created_at timestamp without time zone NULL DEFAULT now(),
-  updated_at timestamp without time zone NULL DEFAULT now(),
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'completed', 'failed', 'refunded')),
+  rejected_reason TEXT,
+  approved_by INT REFERENCES users(user_id),
+  approved_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);
 
-  -- Constraints
-  CONSTRAINT purchases_pkey PRIMARY KEY (purchase_id),
-  CONSTRAINT purchases_approved_by_fkey FOREIGN KEY (approved_by) REFERENCES public.users (user_id) ON DELETE SET NULL,
-  CONSTRAINT purchases_coupon_id_fkey FOREIGN KEY (coupon_id) REFERENCES public.coupons (coupon_id) ON DELETE SET NULL,
-  CONSTRAINT fk_purchases_tenant FOREIGN KEY (tenant_id) REFERENCES public.tenants (tenant_id) ON DELETE CASCADE,
-  CONSTRAINT purchases_package_id_fkey FOREIGN KEY (package_id) REFERENCES public.packages (package_id) ON DELETE SET NULL,
-  CONSTRAINT purchases_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (user_id) ON DELETE SET NULL,
-  
-  CONSTRAINT purchases_status_check CHECK (
-    status IN ('pending', 'approved', 'rejected', 'completed', 'failed', 'refunded')
-  )
-) TABLESPACE pg_default;
+CREATE TABLE wishlists (
+  wishlist_id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+  product_id INT REFERENCES products(product_id) ON DELETE CASCADE,
+  quantity INT DEFAULT 1,
+  created_at TIMESTAMP DEFAULT now(),
+  UNIQUE(user_id, product_id)
+);
 
--- Indices for performance (Essential for Foreign Keys)
-CREATE INDEX idx_purchases_user_id ON public.purchases(user_id);
-CREATE INDEX idx_purchases_tenant_id ON public.purchases(tenant_id);
-CREATE INDEX idx_purchases_status ON public.purchases(status);
 -- =====================================================
--- PAYMENTS
+-- 5. FINANCIALS
 -- =====================================================
 CREATE TABLE payments (
   payment_id SERIAL PRIMARY KEY,
   purchase_id INT REFERENCES purchases(purchase_id),
   user_id INT REFERENCES users(user_id),
-  tenant_id INT,
-
   amount NUMERIC(10,2) NOT NULL,
   currency TEXT DEFAULT 'USD',
-
   method TEXT,
   provider TEXT,
   transaction_id TEXT UNIQUE,
-
-  status TEXT DEFAULT 'pending'
-    CHECK (status IN ('pending','success','failed','refunded')),
-
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending','success','failed','refunded')),
   paid_at TIMESTAMP,
-
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
+  created_at TIMESTAMP DEFAULT now()
 );
 
--- =====================================================
--- 🔥 NEW: TRANSACTIONS (FINANCIAL HISTORY)
--- =====================================================
 CREATE TABLE transactions (
   transaction_id SERIAL PRIMARY KEY,
   user_id INT REFERENCES users(user_id),
-
   type TEXT CHECK (type IN ('payment','refund','adjustment')),
   amount NUMERIC(10,2) NOT NULL,
-
-  reference_id INT,
+  reference_id INT, -- Refers to payment_id or refund_id
   description TEXT,
+  created_at TIMESTAMP DEFAULT now()
+);
 
+CREATE TABLE refunds (
+  refund_id SERIAL PRIMARY KEY,
+  payment_id INT REFERENCES payments(payment_id),
+  amount NUMERIC(10,2) NOT NULL,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected')),
+  reason TEXT,
   created_at TIMESTAMP DEFAULT now()
 );
 
 -- =====================================================
--- INVOICES
--- =====================================================
-CREATE TABLE invoices (
-  invoice_id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES users(user_id),
-  purchase_id INT REFERENCES purchases(purchase_id),
-
-  amount NUMERIC(10,2) NOT NULL,
-
-  status TEXT DEFAULT 'unpaid'
-    CHECK (status IN ('paid','unpaid','failed','void')),
-
-  due_date TIMESTAMP,
-
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
-);
-
--- =====================================================
--- SUBSCRIPTIONS
--- =====================================================
-CREATE TABLE subscriptions (
-  subscription_id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES users(user_id),
-  package_id INT REFERENCES packages(package_id),
-  tenant_id INT,
-
-  purchase_id INT REFERENCES purchases(purchase_id),
-
-  stripe_subscription_id TEXT UNIQUE,
-
-  status TEXT DEFAULT 'active'
-    CHECK (status IN ('active','past_due','canceled','unpaid','trialing','expired','refunded','pending')),
-
-  current_period_start TIMESTAMP DEFAULT now(),
-  current_period_end TIMESTAMP,
-
-  cancel_at_period_end BOOLEAN DEFAULT FALSE,
-  is_lifetime BOOLEAN DEFAULT FALSE,
-
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
-);
-
--- =====================================================
--- TENANTS
--- =====================================================
-CREATE TABLE tenants (
-  tenant_id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL,
-
-  owner_id INT REFERENCES users(user_id),
-
-  domain TEXT UNIQUE,
-  subdomain TEXT UNIQUE,
-
-  status TEXT DEFAULT 'active'
-    CHECK (status IN ('active','suspended','expired')),
-
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
-);
-
-CREATE TABLE tenant_users (
-  id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES tenants(tenant_id),
-  user_id INT REFERENCES users(user_id),
-
-  role TEXT DEFAULT 'member'
-    CHECK (role IN ('owner','admin','member')),
-
-  created_at TIMESTAMP DEFAULT now(),
-  UNIQUE(tenant_id, user_id)
-);
-
--- =====================================================
--- WEBSITES
--- =====================================================
-CREATE TABLE public.websites (
-  website_id SERIAL PRIMARY KEY,
-
-  tenant_id INTEGER REFERENCES tenants(tenant_id),
-
-  name TEXT,
-  domain TEXT UNIQUE,
-  theme TEXT,
-
-  status TEXT DEFAULT 'development'
-    CHECK (status IN ('active','development','maintenance','suspended')),
-
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now(),
-
-  -- Business Info
-  business_name TEXT,
-  logo TEXT,
-  favicon TEXT,
-
-  -- Contact
-  email TEXT,
-  phone TEXT,
-  address TEXT,
-  city TEXT,
-  country TEXT,
-
-  -- SEO
-  meta_title TEXT,
-  meta_description TEXT,
-
-
-  -- Social
-  facebook TEXT,
-  instagram TEXT,
-  linkedin TEXT,
-  youtube TEXT,
-
-  -- UI
-  primary_color TEXT DEFAULT '#10b981',
-  secondary_color TEXT DEFAULT '#ffffff',
-
-  -- Flags
-  is_public BOOLEAN DEFAULT TRUE,
-  is_store_enabled BOOLEAN DEFAULT TRUE
-);
--- =====================================================
--- BLOGS
--- =====================================================
-CREATE TABLE blogs (
-  blog_id SERIAL PRIMARY KEY,
-  title TEXT NOT NULL,
-  description TEXT NOT NULL,
-  slug TEXT UNIQUE NOT NULL,
-
-  author_id INT REFERENCES users(user_id),
-
-  image TEXT,
-  image_id TEXT,
-
-  is_published BOOLEAN DEFAULT TRUE,
-
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
-);
-
--- =====================================================
--- PROJECTS
+-- 6. PROJECTS & TASKS
 -- =====================================================
 CREATE TABLE projects (
   project_id SERIAL PRIMARY KEY,
   title TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
-
   description TEXT,
   category_id INT REFERENCES categories(category_id),
-
-  image TEXT,
-  image_id TEXT,
   live_url TEXT,
-
   created_at TIMESTAMP DEFAULT now(),
   updated_at TIMESTAMP DEFAULT now()
 );
 
--- =====================================================
--- TASKS
--- =====================================================
 CREATE TABLE tasks (
   task_id SERIAL PRIMARY KEY,
   title TEXT NOT NULL,
   description TEXT,
-
   assigned_to INT REFERENCES users(user_id),
   created_by INT REFERENCES users(user_id),
-
   project_id INT REFERENCES projects(project_id),
-
-  status TEXT DEFAULT 'pending'
-    CHECK (status IN ('pending','in_progress','in_review','completed')),
-
-  priority TEXT DEFAULT 'medium'
-    CHECK (priority IN ('low','medium','high','urgent')),
-
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending','in_progress','in_review','completed')),
+  priority TEXT DEFAULT 'medium' CHECK (priority IN ('low','medium','high','urgent')),
   due_date TIMESTAMP,
-
   created_at TIMESTAMP DEFAULT now(),
   updated_at TIMESTAMP DEFAULT now()
 );
 
 -- =====================================================
--- 🔥 NEW: TASK CHAT SYSTEM
--- =====================================================
-CREATE TABLE task_messages (
-  message_id SERIAL PRIMARY KEY,
-  task_id INT REFERENCES tasks(task_id) ON DELETE CASCADE,
-  sender_id INT REFERENCES users(user_id),
-
-  message TEXT NOT NULL,
-  attachments JSONB DEFAULT '[]',
-
-  created_at TIMESTAMP DEFAULT now()
-);
-
--- =====================================================
--- CHAT SYSTEM
+-- 7. MESSAGING & TICKETS
 -- =====================================================
 CREATE TABLE conversations (
   conversation_id SERIAL PRIMARY KEY,
   title TEXT,
   is_group BOOLEAN DEFAULT FALSE,
-
   created_by INT REFERENCES users(user_id),
-
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
+  created_at TIMESTAMP DEFAULT now()
 );
 
 CREATE TABLE conversation_participants (
   id SERIAL PRIMARY KEY,
-  conversation_id INT REFERENCES conversations(conversation_id),
-  user_id INT REFERENCES users(user_id),
-
+  conversation_id INT REFERENCES conversations(conversation_id) ON DELETE CASCADE,
+  user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
   last_read_at TIMESTAMP,
   joined_at TIMESTAMP DEFAULT now(),
-
   UNIQUE(conversation_id, user_id)
 );
 
@@ -445,143 +214,107 @@ CREATE TABLE chat_messages (
   message_id SERIAL PRIMARY KEY,
   conversation_id INT REFERENCES conversations(conversation_id),
   sender_id INT REFERENCES users(user_id),
-
   content TEXT NOT NULL,
   attachments JSONB DEFAULT '[]',
-
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
-);
-
--- =====================================================
--- SUPPORT
--- =====================================================
-CREATE TABLE support (
-  support_id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  subject TEXT NOT NULL,
-  message TEXT NOT NULL,
-
-  status TEXT DEFAULT 'open'
-    CHECK (status IN ('open','in_progress','closed')),
-
-  replied_by INT REFERENCES users(user_id),
-  replied_at TIMESTAMP,
-
   created_at TIMESTAMP DEFAULT now()
 );
 
--- =====================================================
--- 🔥 NEW: EMAIL LOGS
--- =====================================================
-CREATE TABLE email_logs (
-  email_id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES users(user_id),
-
-  subject TEXT,
-  status TEXT,
-
-  sent_at TIMESTAMP DEFAULT now()
-);
-
--- =====================================================
--- TICKETS
--- =====================================================
 CREATE TABLE tickets (
   ticket_id SERIAL PRIMARY KEY,
   user_id INT REFERENCES users(user_id),
   assigned_to INT REFERENCES users(user_id),
-
   subject TEXT NOT NULL,
   message TEXT NOT NULL,
-
-  status TEXT DEFAULT 'open'
-    CHECK (status IN ('open','in_progress','resolved','closed')),
-
-  priority TEXT DEFAULT 'medium'
-    CHECK (priority IN ('low','medium','high','urgent')),
-
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
+  status TEXT DEFAULT 'open' CHECK (status IN ('open','in_progress','resolved','closed')),
+  priority TEXT DEFAULT 'medium' CHECK (priority IN ('low','medium','high','urgent')),
+  created_at TIMESTAMP DEFAULT now()
 );
 
 CREATE TABLE ticket_messages (
   message_id SERIAL PRIMARY KEY,
-  ticket_id INT REFERENCES tickets(ticket_id),
+  ticket_id INT REFERENCES tickets(ticket_id) ON DELETE CASCADE,
   user_id INT REFERENCES users(user_id),
-
   message TEXT NOT NULL,
   attachments JSONB DEFAULT '[]',
-
   created_at TIMESTAMP DEFAULT now()
 );
 
 -- =====================================================
--- REVIEWS
+-- 8. HRM, CAREERS & TEAM
+-- =====================================================
+CREATE TABLE teams (
+  member_id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  post TEXT NOT NULL, -- e.g., Senior Developer
+  email TEXT UNIQUE,
+  image TEXT,
+  image_id TEXT, -- Cloudinary Public ID
+  bio TEXT,
+  created_at TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE careers (
+  job_id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  location TEXT NOT NULL,
+  job_type TEXT NOT NULL, -- e.g., Full-time, Remote
+  level TEXT NOT NULL, -- e.g., Junior, Senior
+  compensation TEXT, -- Salary range
+  description TEXT NOT NULL,
+  responsibilities TEXT[], -- Array of strings
+  skills TEXT[], -- Array of strings
+  nice_to_have TEXT[], -- Array of strings
+  is_published BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE career_applications (
+  app_id SERIAL PRIMARY KEY,
+  job_id INT REFERENCES careers(job_id),
+  full_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  resume_url TEXT NOT NULL,
+  cover_letter TEXT,
+  status TEXT DEFAULT 'applied' CHECK (status IN ('applied', 'interviewing', 'rejected', 'hired')),
+  created_at TIMESTAMP DEFAULT now()
+);
+
+-- =====================================================
+-- 9. REVIEWS, LOGS & NOTIFICATIONS
 -- =====================================================
 CREATE TABLE reviews (
   review_id SERIAL PRIMARY KEY,
   user_id INT REFERENCES users(user_id) UNIQUE,
-
+  product_id INT REFERENCES products(product_id),
   rating INT CHECK (rating BETWEEN 1 AND 5),
   comment TEXT,
-
   is_approved BOOLEAN DEFAULT FALSE,
-
   reply TEXT,
   replied_at TIMESTAMP,
-
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
+  created_at TIMESTAMP DEFAULT now()
 );
 
--- =====================================================
--- REFUNDS
--- =====================================================
-CREATE TABLE refunds (
-  refund_id SERIAL PRIMARY KEY,
-  payment_id INT REFERENCES payments(payment_id),
-
-  amount NUMERIC(10,2) NOT NULL,
-
-  status TEXT DEFAULT 'pending'
-    CHECK (status IN ('pending','approved','rejected')),
-
-  reason TEXT,
-
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
-);
-
--- =====================================================
--- NOTIFICATIONS
--- =====================================================
 CREATE TABLE notifications (
   notification_id SERIAL PRIMARY KEY,
   user_id INT REFERENCES users(user_id),
-
   title TEXT NOT NULL,
   message TEXT NOT NULL,
   link TEXT,
-
   is_read BOOLEAN DEFAULT FALSE,
-
   created_at TIMESTAMP DEFAULT now()
 );
 
--- =====================================================
--- LOGS
--- =====================================================
 CREATE TABLE logs (
   log_id SERIAL PRIMARY KEY,
   user_id INT REFERENCES users(user_id),
-
   action TEXT NOT NULL,
   entity_type TEXT,
   entity_id INT,
-
   description TEXT,
-
   created_at TIMESTAMP DEFAULT now()
 );
+
+-- Indices for Performance
+CREATE INDEX idx_purchases_user ON purchases(user_id);
+CREATE INDEX idx_images_entity ON images(entity_type, entity_id);
+CREATE INDEX idx_products_slug ON products(slug);
