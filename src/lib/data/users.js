@@ -53,3 +53,66 @@ export async function toggleUserStatus(id, isActive) {
     return res.rows[0];
 }
 
+export async function setUserResetToken(email, token, expiresAt) {
+    const query = `
+        UPDATE users 
+        SET reset_token = $1, token_expires_at = $2 
+        WHERE email = $3 
+        RETURNING user_id
+    `;
+    const res = await dbQuery(query, [token, expiresAt, email]);
+    return res.rows[0] || null;
+}
+
+export async function getUserByResetToken(token) {
+    const query = `
+        SELECT user_id, email, token_expires_at 
+        FROM users 
+        WHERE reset_token = $1 AND token_expires_at > now()
+    `;
+    const res = await dbQuery(query, [token]);
+    return res.rows[0] || null;
+}
+
+export async function updateUserPassword(id, hashedPassword) {
+    const query = `
+        UPDATE users 
+        SET password = $1, reset_token = NULL, token_expires_at = NULL, updated_at = now() 
+        WHERE user_id = $2 
+        RETURNING user_id
+    `;
+    const res = await dbQuery(query, [hashedPassword, id]);
+    return res.rows[0] || null;
+}
+
+export async function setUserVerificationToken(id, token, expiresAt) {
+    const query = `
+        UPDATE users 
+        SET verification_token = $1, verification_expires_at = $2 
+        WHERE user_id = $3 
+        RETURNING user_id
+    `;
+    const res = await dbQuery(query, [token, expiresAt, id]);
+    return res.rows[0] || null;
+}
+
+export async function getUserByVerificationToken(token) {
+    const query = `
+        SELECT user_id, email, verification_expires_at 
+        FROM users 
+        WHERE verification_token = $1 AND verification_expires_at > now()
+    `;
+    const res = await dbQuery(query, [token]);
+    return res.rows[0] || null;
+}
+
+export async function verifyUserEmail(id) {
+    const query = `
+        UPDATE users 
+        SET is_verified = TRUE, verification_token = NULL, verification_expires_at = NULL, updated_at = now() 
+        WHERE user_id = $1 
+        RETURNING user_id, is_verified
+    `;
+    const res = await dbQuery(query, [id]);
+    return res.rows[0] || null;
+}

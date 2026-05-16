@@ -20,19 +20,12 @@ async function getAuthenticatedContext() {
 
         if (!user.is_active) return null;
 
-        let tenantId = decoded.tenantId;
-        if (!tenantId) {
-            const tenantRes = await dbQuery("SELECT tenant_id FROM tenant_users WHERE user_id = $1 LIMIT 1", [userId]);
-            tenantId = tenantRes.rows[0]?.tenant_id;
-        }
-
         return {
             id: user.user_id,
             _id: user.user_id,
             name: user.name,
             email: user.email,
-            role: user.role,
-            tenantId: tenantId
+            role: user.role
         };
     } catch (error) {
         return null;
@@ -81,6 +74,14 @@ export async function isUser() {
     const context = await getAuthenticatedContext();
     if (!context || context.role !== 'user') {
         return { success: false, message: 'Access denied: User access required' };
+    }
+    return { success: true, data: context };
+}
+
+export async function ManagementRole() {
+    const context = await getAuthenticatedContext();
+    if (!context || context.role === 'user') {
+        return { success: false, message: 'Access denied: Management access required' };
     }
     return { success: true, data: context };
 }

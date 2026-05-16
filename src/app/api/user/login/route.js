@@ -27,6 +27,10 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "Invalid email or password" }, { status: 401 });
         }
 
+        if (!user.is_verified) {
+            return NextResponse.json({ success: false, message: "Please verify your email address before logging in." }, { status: 403 });
+        }
+
         // Generate Token
         const token = jwt.sign(
             { id: user.user_id, email: user.email, role: user.role },

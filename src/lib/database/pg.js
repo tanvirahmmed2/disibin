@@ -15,3 +15,20 @@ export const pool = new Pool({
   connectionTimeoutMillis: 30000,
 });
 
+export const dbQuery = (text, params) => pool.query(text, params);
+
+export const transaction = async (callback) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const result = await callback(client);
+    await client.query('COMMIT');
+    return result;
+  } catch (e) {
+    await client.query('ROLLBACK');
+    throw e;
+  } finally {
+    client.release();
+  }
+};
+

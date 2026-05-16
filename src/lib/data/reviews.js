@@ -25,7 +25,7 @@ export async function getPublicReviews(productId = null) {
         params.push(productId);
     }
     query += " ORDER BY r.created_at DESC";
-    
+
     const res = await dbQuery(query, params);
     return res.rows;
 }
@@ -45,6 +45,13 @@ export async function approveReview(reviewId, isApproved = true) {
     const res = await dbQuery(
         "UPDATE reviews SET is_approved = $1 WHERE review_id = $2 RETURNING *",
         [isApproved, reviewId]
+    );
+    return res.rows[0];
+}
+export async function replyToReview(reviewId, reply) {
+    const res = await dbQuery(
+        "UPDATE reviews SET reply = $1 WHERE review_id = $2 RETURNING *",
+        [reply, reviewId]
     );
     return res.rows[0];
 }

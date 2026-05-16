@@ -1,23 +1,27 @@
 import { NextResponse } from "next/server";
-import { isLogin } from "@/lib/middleware";
-import { getUserById } from "@/lib/data/users";
+import { getUserByVerificationToken, verifyUserEmail } from "@/lib/data/users";
 
-export async function GET() {
+export async function POST(req) {
     try {
-        const auth = await isLogin();
-        if (!auth.success) {
-            return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+        const { token } = await req.json();
+
+        if (!token) {
+            return NextResponse.json({ success: false, message: "Verification token is required" }, { status: 400 });
         }
 
-        const user = await getUserById(auth.data.id);
+        const user = await getUserByVerificationToken(token);
+
         if (!user) {
-            return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+            return NextResponse.json({ success: false, message: "Invalid or expired verification token" }, { status: 400 });
         }
+
+        await verifyUserEmail(user.user_id);
 
         return NextResponse.json({
             success: true,
-            data: user
+            message: "Email verified successfully. You can now login."
         });
+
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
