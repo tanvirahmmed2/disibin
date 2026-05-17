@@ -5,7 +5,7 @@ import { Context } from '../helper/Context'
 import { CiMenuBurger, CiMenuFries } from 'react-icons/ci'
 
 const UserNavbar = () => {
-    const {userSidebar, setUserSidebar}=useContext(Context)
+    const {userSidebar, setUserSidebar, logout}=useContext(Context)
   return (
     <div className='w-full h-14 fixed top-0 px-4 sm:px-6 bg-white flex items-center justify-between z-50'>
         <div className='w-auto flex flex-row items-center justify-center gap-3'>
@@ -16,7 +16,7 @@ const UserNavbar = () => {
                 </button>
         <Link href={'/'} className='text-xl'>Home</Link>
         </div>
-        <button className='px-6 p-2 rounded-2xl cursor-pointer bg-sky-500 text-white'>Logout</button>
+        <button className='px-6 p-2 rounded-2xl cursor-pointer bg-sky-500 text-white' onClick={()=>logout()}>Logout</button>
         
       
     </div>

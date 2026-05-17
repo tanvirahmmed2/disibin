@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { FiUploadCloud, FiX, FiCheckCircle, FiLoader } from 'react-icons/fi';
+import Image from 'next/image';
 
 const ImageUpload = ({ onUpload, label = "Upload Image" }) => {
   const [uploading, setUploading] = useState(false);
@@ -11,7 +12,6 @@ const ImageUpload = ({ onUpload, label = "Upload Image" }) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Show local preview
     const reader = new FileReader();
     reader.onloadend = () => setPreview(reader.result);
     reader.readAsDataURL(file);
@@ -46,7 +46,7 @@ const ImageUpload = ({ onUpload, label = "Upload Image" }) => {
           ${preview ? 'border-sky-500' : 'border-slate-200 hover:border-sky-400 bg-slate-50/50'}
         `}>
           {preview ? (
-            <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+            <Image width={500} height={500} src={preview} alt="Preview" className="w-full h-full object-cover" />
           ) : (
             <>
               <FiUploadCloud className="w-8 h-8 text-slate-400 group-hover:text-sky-500 transition-colors mb-2" />

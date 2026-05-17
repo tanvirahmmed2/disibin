@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isManager } from "@/lib/middleware";
-import { removeImage, setPrimaryImage } from "@/lib/data/images";
+import { dbQuery } from "@/lib/database/pg";
 import cloudinary from "@/lib/database/cloudinary";
 
 // POST upload image to Cloudinary
@@ -57,7 +57,13 @@ export async function PATCH(req) {
             return NextResponse.json({ success: false, message: "Missing required fields" }, { status: 400 });
         }
 
-        const image = await setPrimaryImage(imageId, entityType, entityId);
+        await dbQuery(
+            "UPDATE images SET is_primary = FALSE WHERE entity_type = $1 AND entity_id = $2",
+            [entityType, entityId]
+        );
+        const res = await dbQuery("UPDATE images SET is_primary = TRUE WHERE image_id = $1 RETURNING *", [imageId]);
+        const image = res.rows[0];
+
         return NextResponse.json({ success: true, data: image });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -72,13 +78,30 @@ export async function DELETE(req) {
 
         const { searchParams } = new URL(req.url);
         const imageId = searchParams.get('id');
+        const publicId = searchParams.get('public_id');
 
-        if (!imageId) {
-            return NextResponse.json({ success: false, message: "Image ID is required" }, { status: 400 });
+        if (!imageId && !publicId) {
+            return NextResponse.json({ success: false, message: "Image ID or Public ID is required" }, { status: 400 });
         }
 
-        const deletedImage = await removeImage(imageId);
-        return NextResponse.json({ success: true, message: "Image removed", data: deletedImage });
+        let image = null;
+
+        if (imageId) {
+            const res = await dbQuery("DELETE FROM images WHERE image_id = $1 RETURNING *", [imageId]);
+            image = res.rows[0];
+        }
+
+        const targetPublicId = image ? image.public_id : publicId;
+
+        if (targetPublicId) {
+            try {
+                await cloudinary.uploader.destroy(targetPublicId);
+            } catch (error) {
+                console.error("Failed to delete image from Cloudinary:", error);
+            }
+        }
+
+        return NextResponse.json({ success: true, message: "Image removed", data: image });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

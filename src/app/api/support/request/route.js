@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isSupport } from "@/lib/middleware";
-import { createSupportRequest, getAllSupportRequests } from "@/lib/data/supports";
+import { dbQuery } from "@/lib/database/pg";
 
 // GET all support requests (Support role only)
 export async function GET(req) {
@@ -8,8 +8,14 @@ export async function GET(req) {
         const auth = await isSupport();
         if (!auth.success) return NextResponse.json(auth, { status: 401 });
 
-        const supports = await getAllSupportRequests();
-        return NextResponse.json({ success: true, data: supports });
+        const res = await dbQuery(`
+            SELECT s.*, u.name as responder_name
+            FROM supports s
+            LEFT JOIN users u ON s.responded_by = u.user_id
+            ORDER BY s.created_at DESC
+        `);
+
+        return NextResponse.json({ success: true, data: res.rows });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -26,12 +32,17 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "All fields are required" }, { status: 400 });
         }
 
-        const support = await createSupportRequest({ name, email, subject, description });
+        const query = `
+            INSERT INTO supports (name, email, subject, description)
+            VALUES ($1, $2, $3, $4)
+            RETURNING *
+        `;
+        const res = await dbQuery(query, [name, email, subject, description]);
 
         return NextResponse.json({
             success: true,
             message: "Support request submitted successfully",
-            data: support
+            data: res.rows[0]
         }, { status: 201 });
 
     } catch (error) {

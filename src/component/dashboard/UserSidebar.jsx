@@ -12,6 +12,7 @@ import {
   FiSettings,
   FiLogOut
 } from 'react-icons/fi'
+import { FaGlobe } from 'react-icons/fa'
 
 const UserSidebar = () => {
   const { userSidebar, setUserSidebar, userData, logout } = useContext(Context)
@@ -24,6 +25,7 @@ const UserSidebar = () => {
     { name: 'Tickets', href: '/user/tickets', icon: <FiLifeBuoy /> },
     { name: 'Reviews', href: '/user/reviews', icon: <FiStar /> },
     { name: 'Settings', href: '/user/settings', icon: <FiSettings /> },
+    { name: 'Web Home', href: '/', icon: <FaGlobe /> },
   ]
 
   const isActive = (href) => pathname === href

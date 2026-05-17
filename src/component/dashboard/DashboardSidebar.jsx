@@ -139,7 +139,7 @@ const DashboardSidebar = () => {
               href="/"
               onClick={() => setDashboardSidebar(false)}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
-                isActive('/dashboard/chat')
+                isActive('/')
                   ? 'bg-sky-50 text-sky-600'
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               }`}

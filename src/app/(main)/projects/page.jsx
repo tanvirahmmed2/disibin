@@ -1,11 +1,102 @@
-import React from 'react'
+'use client';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Link from 'next/link';
+import { FiArrowRight, FiExternalLink } from 'react-icons/fi';
 
-const Projects = () => {
+const ProjectsPage = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await axios.get('/api/project');
+        if (res.data.success) {
+          setProjects(res.data.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch projects', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center ">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-500"></div>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      
-    </div>
-  )
-}
+    <div className="min-h-screen bg-linear-to-b from-slate-50 to-white py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-extrabold  sm:text-5xl bg-clip-text text-transparent bg-linear-to-r from-emerald-600 to-teal-600">
+            Our Successful Projects
+          </h1>
+          <p className="mt-4 text-xl text-slate-600 max-w-2xl mx-auto">
+            Discover how we've helped businesses transform and grow.
+          </p>
+        </div>
 
-export default Projects
+        {/* Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {projects.map((project) => {
+            const primaryImage = project.images?.find(img => img.is_primary)?.url || project.images?.[0]?.url;
+            
+            return (
+              <div key={project.project_id} className="bg-white rounded-3xl shadow-xl shadow-slate-100 border border-slate-100 overflow-hidden hover:shadow-2xl hover:border-teal-200 transition-all duration-300 group flex flex-col">
+                {/* Image Header */}
+                <div className="h-56 bg-gradient-to-br from-emerald-400 to-teal-500 relative flex items-center justify-center overflow-hidden">
+                  {primaryImage ? (
+                    <img src={primaryImage} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  ) : (
+                    <div className="text-white text-2xl font-bold opacity-30">{project.title}</div>
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="p-6 flex-grow flex flex-col">
+                  <h2 className="text-2xl font-bold text-slate-900 group-hover:text-teal-600 transition-colors">
+                    {project.title}
+                  </h2>
+                  <p className="mt-2 text-slate-600 text-sm line-clamp-3 flex-grow">
+                    {project.description}
+                  </p>
+
+                  {/* Footer */}
+                  <div className="mt-6 pt-6 border-t border-slate-100 flex items-center justify-between">
+                    <Link href={`/projects/${project.slug}`} className="text-teal-600 font-bold hover:text-teal-700 flex items-center gap-1 group/link">
+                      View Case Study
+                      <FiArrowRight className="group-hover/link:translate-x-1 transition-transform" />
+                    </Link>
+                    
+                    {project.live_url && (
+                      <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-slate-600 transition-colors" title="Visit Live Site">
+                        <FiExternalLink size={18} />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {projects.length === 0 && (
+          <div className="text-center py-20 text-slate-500 border-2 border-dashed border-slate-200 rounded-3xl">
+            No projects available at the moment.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ProjectsPage;

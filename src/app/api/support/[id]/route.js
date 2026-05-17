@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { isLogin, isSupport, hasRole } from "@/lib/middleware";
-import { getTicketDetails, addTicketMessage, updateTicketStatus } from "@/lib/data/tickets";
+import { isLogin, hasRole } from "@/lib/middleware";
+import { dbQuery } from "@/lib/database/pg";
 
 // GET ticket details and messages
 export async function GET(req, { params }) {
@@ -9,11 +9,31 @@ export async function GET(req, { params }) {
         if (!auth.success) return NextResponse.json(auth, { status: 401 });
 
         const { id } = await params;
-        const ticket = await getTicketDetails(id);
+        
+        const ticketRes = await dbQuery(`
+            SELECT t.*, u.name as user_name, a.name as assigned_name
+            FROM tickets t
+            LEFT JOIN users u ON t.user_id = u.user_id
+            LEFT JOIN users a ON t.assigned_to = a.user_id
+            WHERE t.ticket_id = $1
+        `, [id]);
 
-        if (!ticket) {
+        if (ticketRes.rows.length === 0) {
             return NextResponse.json({ success: false, message: "Ticket not found" }, { status: 404 });
         }
+
+        const messagesRes = await dbQuery(`
+            SELECT tm.*, u.name as user_name, u.role as user_role
+            FROM ticket_messages tm
+            LEFT JOIN users u ON tm.user_id = u.user_id
+            WHERE tm.ticket_id = $1
+            ORDER BY tm.created_at ASC
+        `, [id]);
+
+        const ticket = {
+            ...ticketRes.rows[0],
+            messages: messagesRes.rows
+        };
 
         // Security: Check if user owns the ticket or is staff
         const user = auth.data;
@@ -43,8 +63,9 @@ export async function POST(req, { params }) {
         }
 
         // Verify access (owner or staff)
-        const ticket = await getTicketDetails(id);
-        if (!ticket) return NextResponse.json({ success: false, message: "Ticket not found" }, { status: 404 });
+        const ticketRes = await dbQuery("SELECT user_id FROM tickets WHERE ticket_id = $1", [id]);
+        if (ticketRes.rows.length === 0) return NextResponse.json({ success: false, message: "Ticket not found" }, { status: 404 });
+        const ticket = ticketRes.rows[0];
 
         const user = auth.data;
         const isStaff = ['admin', 'support', 'manager'].includes(user.role);
@@ -52,12 +73,13 @@ export async function POST(req, { params }) {
             return NextResponse.json({ success: false, message: "Access denied" }, { status: 403 });
         }
 
-        const newMessage = await addTicketMessage({
-            ticket_id: id,
-            user_id: user.id,
-            message,
-            attachments
-        });
+        const query = `
+            INSERT INTO ticket_messages (ticket_id, user_id, message, attachments)
+            VALUES ($1, $2, $3, $4)
+            RETURNING *
+        `;
+        const res = await dbQuery(query, [id, user.id, message, JSON.stringify(attachments || [])]);
+        const newMessage = res.rows[0];
 
         return NextResponse.json({
             success: true,
@@ -77,13 +99,20 @@ export async function PATCH(req, { params }) {
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
         const { id } = await params;
-        const { status, assigned_to } = await req.json();
+        const { status } = await req.json();
 
         if (!status) {
             return NextResponse.json({ success: false, message: "Status is required" }, { status: 400 });
         }
 
-        const updatedTicket = await updateTicketStatus(id, status, assigned_to);
+        const query = `
+            UPDATE tickets 
+            SET status = $1 
+            WHERE ticket_id = $2 
+            RETURNING *
+        `;
+        const res = await dbQuery(query, [status, id]);
+        const updatedTicket = res.rows[0];
         
         return NextResponse.json({
             success: true,

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isLogin, hasRole } from "@/lib/middleware";
-import { getTicketDetails, updateTicketStatus, assignTicket } from "@/lib/data/tickets";
+import { dbQuery } from "@/lib/database/pg";
 
 const STAFF_ROLES = ['admin', 'manager', 'support'];
 
@@ -10,12 +10,32 @@ export async function GET(req, { params }) {
         const auth = await isLogin();
         if (!auth.success) return NextResponse.json(auth, { status: 401 });
 
-        const ticketId = params.id;
-        const ticket = await getTicketDetails(ticketId);
+        const { id: ticketId } = await params;
+        
+        const ticketRes = await dbQuery(`
+            SELECT t.*, u.name as user_name, a.name as assigned_name
+            FROM tickets t
+            LEFT JOIN users u ON t.user_id = u.user_id
+            LEFT JOIN users a ON t.assigned_to = a.user_id
+            WHERE t.ticket_id = $1
+        `, [ticketId]);
 
-        if (!ticket) {
+        if (ticketRes.rows.length === 0) {
             return NextResponse.json({ success: false, message: "Ticket not found" }, { status: 404 });
         }
+
+        const messagesRes = await dbQuery(`
+            SELECT tm.*, u.name as user_name, u.role as user_role
+            FROM ticket_messages tm
+            LEFT JOIN users u ON tm.user_id = u.user_id
+            WHERE tm.ticket_id = $1
+            ORDER BY tm.created_at ASC
+        `, [ticketId]);
+
+        const ticket = {
+            ...ticketRes.rows[0],
+            messages: messagesRes.rows
+        };
 
         // Regular users can only view their own ticket
         if (auth.data.role === 'user' && ticket.user_id !== auth.data.id) {
@@ -35,15 +55,29 @@ export async function PATCH(req, { params }) {
         const auth = await hasRole(STAFF_ROLES);
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
-        const ticketId = params.id;
+        const { id: ticketId } = await params;
         const { status, assigned_to } = await req.json();
 
         let result;
 
         if (assigned_to !== undefined) {
-            result = await assignTicket(ticketId, assigned_to);
+            const query = `
+                UPDATE tickets 
+                SET assigned_to = $1, status = 'in_progress'
+                WHERE ticket_id = $2 
+                RETURNING *
+            `;
+            const res = await dbQuery(query, [assigned_to, ticketId]);
+            result = res.rows[0];
         } else if (status) {
-            result = await updateTicketStatus(ticketId, status);
+            const query = `
+                UPDATE tickets 
+                SET status = $1 
+                WHERE ticket_id = $2 
+                RETURNING *
+            `;
+            const res = await dbQuery(query, [status, ticketId]);
+            result = res.rows[0];
         } else {
             return NextResponse.json({ success: false, message: "No update data provided" }, { status: 400 });
         }

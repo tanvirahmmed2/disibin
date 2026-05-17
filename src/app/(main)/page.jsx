@@ -2,6 +2,7 @@
 import About from '@/component/pages/About'
 import Bio from '@/component/pages/Bio'
 import Intro from '@/component/pages/Intro'
+import Reviews from '@/component/pages/Reviews'
 import React from 'react'
 
 
@@ -12,6 +13,7 @@ const MainPage = () => {
       <Intro />
       <Bio />
       <About />
+      <Reviews />
     </main>
   )
 }

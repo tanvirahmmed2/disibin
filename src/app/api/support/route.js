@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { isLogin, isSupport, isAdmin } from "@/lib/middleware";
-import { createTicket, getAllTickets, getTicketsByUser } from "@/lib/data/tickets";
-import { createSupportRequest, getAllSupportRequests } from "@/lib/data/supports";
+import { isLogin } from "@/lib/middleware";
+import { dbQuery } from "@/lib/database/pg";
 
 // GET tickets and support requests
 export async function GET(req) {
@@ -13,20 +12,38 @@ export async function GET(req) {
         
         // Admin and Support can see all tickets and support requests
         if (user.role === 'admin' || user.role === 'support' || user.role === 'manager') {
-            const tickets = await getAllTickets();
-            const supportRequests = await getAllSupportRequests();
+            const ticketsRes = await dbQuery(`
+                SELECT t.*, u.name as user_name, u.email as user_email, a.name as assigned_name
+                FROM tickets t
+                LEFT JOIN users u ON t.user_id = u.user_id
+                LEFT JOIN users a ON t.assigned_to = a.user_id
+                ORDER BY t.created_at DESC
+            `);
+            
+            const supportsRes = await dbQuery(`
+                SELECT s.*, u.name as responder_name
+                FROM supports s
+                LEFT JOIN users u ON s.responded_by = u.user_id
+                ORDER BY s.created_at DESC
+            `);
+
             return NextResponse.json({ 
                 success: true, 
                 data: {
-                    tickets,
-                    supportRequests
+                    tickets: ticketsRes.rows,
+                    supportRequests: supportsRes.rows
                 } 
             });
         }
 
         // Regular users see only their own tickets
-        const tickets = await getTicketsByUser(user.id);
-        return NextResponse.json({ success: true, data: { tickets } });
+        const res = await dbQuery(`
+            SELECT * FROM tickets 
+            WHERE user_id = $1 
+            ORDER BY created_at DESC
+        `, [user.id]);
+
+        return NextResponse.json({ success: true, data: { tickets: res.rows } });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -47,12 +64,13 @@ export async function POST(req) {
                 return NextResponse.json({ success: false, message: "Subject and message are required" }, { status: 400 });
             }
 
-            const ticket = await createTicket({
-                user_id: auth.data.id,
-                subject,
-                message,
-                priority: priority || 'medium'
-            });
+            const query = `
+                INSERT INTO tickets (user_id, subject, message, priority)
+                VALUES ($1, $2, $3, $4)
+                RETURNING *
+            `;
+            const res = await dbQuery(query, [auth.data.id, subject, message, priority || 'medium']);
+            const ticket = res.rows[0];
 
             return NextResponse.json({
                 success: true,
@@ -74,12 +92,13 @@ export async function POST(req) {
             }, { status: 400 });
         }
 
-        const supportRequest = await createSupportRequest({
-            name,
-            email,
-            subject: subject || "General Contact Inquiry",
-            description: finalDescription
-        });
+        const query = `
+            INSERT INTO supports (name, email, subject, description)
+            VALUES ($1, $2, $3, $4)
+            RETURNING *
+        `;
+        const res = await dbQuery(query, [name, email, subject || "General Contact Inquiry", finalDescription]);
+        const supportRequest = res.rows[0];
 
         return NextResponse.json({
             success: true,

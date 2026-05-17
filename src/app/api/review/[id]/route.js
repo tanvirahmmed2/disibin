@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isLogin, isManager } from "@/lib/middleware";
-import { approveReview, deleteReview, getReviewByUser } from "@/lib/data/reviews";
+import { dbQuery } from "@/lib/database/pg";
 
 // PATCH - Approve or reject a review (Manager only)
 export async function PATCH(req, { params }) {
@@ -15,7 +15,22 @@ export async function PATCH(req, { params }) {
             return NextResponse.json({ success: false, message: "Approval status is required" }, { status: 400 });
         }
 
-        const review = await approveReview(id, is_approved, auth.data.id);
+        const res = await dbQuery(`
+            UPDATE reviews
+            SET is_approved = $1
+            WHERE review_id = $2
+            RETURNING *
+        `, [is_approved, id]);
+
+        const review = res.rows[0];
+
+        if (review && auth.data.id) {
+            const logQuery = `
+                INSERT INTO logs (user_id, action, entity_type, entity_id, description)
+                VALUES ($1, $2, $3, $4, $5)
+            `;
+            await dbQuery(logQuery, [auth.data.id, is_approved ? 'APPROVE' : 'REJECT', 'review', id, JSON.stringify({ review_id: id })]);
+        }
         
         if (!review) {
             return NextResponse.json({ success: false, message: "Review not found" }, { status: 404 });
@@ -46,13 +61,29 @@ export async function DELETE(req, { params }) {
 
         if (!isUserManager) {
             // If just a regular user, verify this is THEIR review
-            const userReview = await getReviewByUser(auth.data.id);
+            const res = await dbQuery(`
+                SELECT r.*
+                FROM reviews r
+                WHERE r.user_id = $1
+            `, [auth.data.id]);
+            
+            const userReview = res.rows.length > 0 ? res.rows[0] : null;
+            
             if (!userReview || userReview.review_id.toString() !== id) {
                 return NextResponse.json({ success: false, message: "Unauthorized to delete this review" }, { status: 403 });
             }
         }
 
-        const deletedReview = await deleteReview(id, auth.data.id);
+        const res = await dbQuery("DELETE FROM reviews WHERE review_id = $1 RETURNING *", [id]);
+        const deletedReview = res.rows[0];
+
+        if (deletedReview && auth.data.id) {
+            const logQuery = `
+                INSERT INTO logs (user_id, action, entity_type, entity_id, description)
+                VALUES ($1, $2, $3, $4, $5)
+            `;
+            await dbQuery(logQuery, [auth.data.id, 'DELETE', 'review', id, JSON.stringify({ review_id: id })]);
+        }
 
         if (!deletedReview) {
             return NextResponse.json({ success: false, message: "Review not found" }, { status: 404 });

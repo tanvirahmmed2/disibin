@@ -58,20 +58,12 @@ CREATE TABLE images (
 );
 
 -- =====================================================
--- 3. CATEGORIES & PRODUCTS
+-- 3. PRODUCTS
 -- =====================================================
-CREATE TABLE categories (
-  category_id SERIAL PRIMARY KEY,
-  name TEXT UNIQUE NOT NULL,
-  slug TEXT UNIQUE NOT NULL,
-  created_at TIMESTAMP DEFAULT now()
-);
-
 CREATE TABLE products (
   product_id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
-  category_id INT REFERENCES categories(category_id) ON DELETE SET NULL,
   description TEXT,
   price NUMERIC(10,2) NOT NULL,
   duration_days INT NOT NULL,
@@ -189,7 +181,6 @@ CREATE TABLE projects (
   title TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
   description TEXT,
-  category_id INT REFERENCES categories(category_id) ON DELETE SET NULL,
   live_url TEXT,
   created_at TIMESTAMP DEFAULT now(),
   updated_at TIMESTAMP DEFAULT now()

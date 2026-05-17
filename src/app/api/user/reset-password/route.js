@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { getUserByResetToken, updateUserPassword } from "@/lib/data/users";
+import { dbQuery } from "@/lib/database/pg";
 
 export async function POST(req) {
     try {
@@ -14,13 +14,25 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "Password must be at least 6 characters" }, { status: 400 });
         }
 
-        const user = await getUserByResetToken(token);
+        const query = `
+            SELECT user_id, email, token_expires_at 
+            FROM users 
+            WHERE reset_token = $1 AND token_expires_at > now()
+        `;
+        const res = await dbQuery(query, [token]);
+        const user = res.rows[0];
+
         if (!user) {
             return NextResponse.json({ success: false, message: "Invalid or expired token" }, { status: 400 });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        await updateUserPassword(user.user_id, hashedPassword);
+        
+        await dbQuery(`
+            UPDATE users 
+            SET password = $1, reset_token = NULL, token_expires_at = NULL, updated_at = now() 
+            WHERE user_id = $2 
+        `, [hashedPassword, user.user_id]);
 
         return NextResponse.json({ 
             success: true, 

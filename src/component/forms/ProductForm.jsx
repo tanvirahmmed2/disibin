@@ -10,38 +10,53 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
   const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
-    slug: '',
     price: '',
     duration_days: '',
     description: '',
-    category_id: '',
+    demo_url: '',
     is_lifetime: false,
     is_active: true,
     ...initialData
   });
   const [features, setFeatures] = useState(initialData?.features || []);
-  const [newFeature, setNewFeature] = useState({ name: '', description: '', value: true });
-  const [images, setImages] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [newFeature, setNewFeature] = useState({ name: '', value: true });
+  const [images, setImages] = useState(initialData?.images || []);
+  const [durationOption, setDurationOption] = useState('custom');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchCategories();
+    if (formData.duration_days == 30) setDurationOption('1m');
+    else if (formData.duration_days == 90) setDurationOption('3m');
+    else if (formData.duration_days == 180) setDurationOption('6m');
+    else if (formData.duration_days == 365) setDurationOption('1y');
+    else setDurationOption('custom');
   }, []);
 
-  const fetchCategories = async () => {
-    try {
-      const res = await axios.get('/api/category');
-      if (res.data.success) {
-        setCategories(res.data.data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch categories', error);
-    }
-  };
 
   const handleImageUpload = (imageData) => {
     setImages([...images, { ...imageData, is_primary: images.length === 0 }]);
+  };
+
+  const handleSetPrimary = (index) => {
+    setImages(images.map((img, i) => ({
+      ...img,
+      is_primary: i === index
+    })));
+  };
+
+  const handleRemoveImage = async (index) => {
+    const imgToRemove = images[index];
+    
+    // If it's a newly uploaded image (not in DB), delete from Cloudinary
+    if (!imgToRemove.id && imgToRemove.public_id) {
+      try {
+        await axios.delete(`/api/image?public_id=${imgToRemove.public_id}`);
+      } catch (error) {
+        console.error("Failed to delete orphaned image from Cloudinary:", error);
+      }
+    }
+    
+    setImages(images.filter((_, i) => i !== index));
   };
 
   const handleChange = (e) => {
@@ -55,7 +70,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
   const addFeature = () => {
     if (!newFeature.name.trim()) return;
     setFeatures([...features, newFeature]);
-    setNewFeature({ name: '', description: '', value: true });
+    setNewFeature({ name: '', value: true });
   };
 
   const removeFeature = (index) => {
@@ -68,10 +83,16 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
     try {
       const url = initialData ? `/api/product/${initialData.product_id}` : '/api/product';
       const method = initialData ? 'patch' : 'post';
-      
-      const payload = { ...formData, images, features };
+
+      const payload = { 
+        ...formData, 
+        images, 
+        features,
+        price: parseFloat(formData.price) || 0,
+        duration_days: formData.is_lifetime ? 0 : (parseInt(formData.duration_days) || 0)
+      };
       const res = await axios[method](url, payload);
-      
+
       if (res.data.success) {
         toast.success(res.data.message || 'Product saved successfully');
         if (onSuccess) {
@@ -105,18 +126,19 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
               placeholder="E.g. Enterprise Bundle"
             />
           </div>
+
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-700">Slug</label>
+            <label className="text-sm font-bold text-slate-700">Demo URL</label>
             <input
-              type="text"
-              name="slug"
-              value={formData.slug}
+              type="url"
+              name="demo_url"
+              value={formData.demo_url}
               onChange={handleChange}
-              required
               className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all"
-              placeholder="enterprise-bundle"
+              placeholder="https://demo.example.com"
             />
           </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-700">Price (USD)</label>
@@ -132,42 +154,97 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700">Category</label>
+              <label className="text-sm font-bold text-slate-700">Duration</label>
               <select
-                name="category_id"
-                value={formData.category_id}
-                onChange={handleChange}
-                className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all"
+                value={durationOption}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setDurationOption(val);
+                  if (val === '1m') setFormData({ ...formData, duration_days: 30 });
+                  else if (val === '3m') setFormData({ ...formData, duration_days: 90 });
+                  else if (val === '6m') setFormData({ ...formData, duration_days: 180 });
+                  else if (val === '1y') setFormData({ ...formData, duration_days: 365 });
+                }}
+                disabled={formData.is_lifetime}
+                className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all disabled:opacity-50"
               >
-                <option value="">Select Category</option>
-                {categories.map((cat) => (
-                  <option key={cat.category_id} value={cat.category_id}>
-                    {cat.name}
-                  </option>
-                ))}
+                <option value="1m">1 Month (30 Days)</option>
+                <option value="3m">3 Months (90 Days)</option>
+                <option value="6m">6 Months (180 Days)</option>
+                <option value="1y">1 Year (365 Days)</option>
+                <option value="custom">Custom</option>
               </select>
+              
+              {durationOption === 'custom' && (
+                <input
+                  type="number"
+                  name="duration_days"
+                  value={formData.duration_days}
+                  onChange={handleChange}
+                  required={!formData.is_lifetime}
+                  disabled={formData.is_lifetime}
+                  className="w-full px-5 py-3 mt-2 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all disabled:opacity-50"
+                  placeholder="Enter days"
+                />
+              )}
             </div>
+
           </div>
         </div>
 
         <div className="space-y-6">
-           <ImageUpload onUpload={handleImageUpload} label="Showcase Thumbnail" />
-           <div className="flex items-center gap-6 p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
-              <label className="flex items-center gap-2 cursor-pointer group">
-                <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${formData.is_lifetime ? 'bg-sky-500 border-sky-500' : 'border-slate-300'}`}>
-                  {formData.is_lifetime && <FiCheck className="text-white" />}
+          <ImageUpload onUpload={handleImageUpload} label="Upload Product Images" />
+          
+          {/* Image List */}
+          {images.length > 0 && (
+            <div className="grid grid-cols-2 gap-4 mt-2">
+              {images.map((img, index) => (
+                <div key={index} className="relative group rounded-xl overflow-hidden border border-slate-200">
+                  <img src={img.url} alt="Product" className="w-full h-24 object-cover" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleSetPrimary(index)}
+                      className={`p-1.5 rounded-full ${img.is_primary ? 'bg-emerald-500 text-white' : 'bg-white text-slate-700 hover:bg-emerald-500 hover:text-white'} transition-colors`}
+                      title={img.is_primary ? "Primary Image" : "Set as Primary"}
+                    >
+                      <FiCheck size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(index)}
+                      className="p-1.5 rounded-full bg-white text-slate-700 hover:bg-rose-500 hover:text-white transition-colors"
+                      title="Remove Image"
+                    >
+                      <FiTrash2 size={14} />
+                    </button>
+                  </div>
+                  {img.is_primary && (
+                    <div className="absolute top-1 left-1 bg-emerald-500 text-white text-xs px-1.5 py-0.5 rounded-full font-bold">
+                      Primary
+                    </div>
+                  )}
                 </div>
-                <input type="checkbox" name="is_lifetime" checked={formData.is_lifetime} onChange={handleChange} className="hidden" />
-                <span className="text-sm font-bold text-slate-700 group-hover:text-sky-600 transition-colors">Lifetime</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer group">
-                <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${formData.is_active ? 'bg-emerald-500 border-emerald-500' : 'border-slate-300'}`}>
-                  {formData.is_active && <FiCheck className="text-white" />}
-                </div>
-                <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleChange} className="hidden" />
-                <span className="text-sm font-bold text-slate-700 group-hover:text-emerald-600 transition-colors">Active</span>
-              </label>
-           </div>
+              ))}
+            </div>
+          )}
+
+          <div className="flex items-center gap-6 p-6 bg-slate-50 rounded-xl border border-slate-100">
+            <label className="flex items-center gap-2 cursor-pointer group">
+              <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${formData.is_lifetime ? 'bg-sky-500 border-sky-500' : 'border-slate-300'}`}>
+                {formData.is_lifetime && <FiCheck className="text-white" />}
+              </div>
+              <input type="checkbox" name="is_lifetime" checked={formData.is_lifetime} onChange={handleChange} className="hidden" />
+              <span className="text-sm font-bold text-slate-700 group-hover:text-sky-600 transition-colors">Lifetime</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer group">
+              <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${formData.is_active ? 'bg-emerald-500 border-emerald-500' : 'border-slate-300'}`}>
+                {formData.is_active && <FiCheck className="text-white" />}
+              </div>
+              <input type="checkbox" name="is_active" checked={formData.is_active} onChange={handleChange} className="hidden" />
+              <span className="text-sm font-bold text-slate-700 group-hover:text-emerald-600 transition-colors">Active</span>
+            </label>
+          </div>
         </div>
       </div>
 
@@ -176,7 +253,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
         <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
           <FiCheck className="text-emerald-500" /> Product Features
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-6 rounded-[2.5rem] border border-slate-100">
           <input
             type="text"
@@ -185,13 +262,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
             value={newFeature.name}
             onChange={(e) => setNewFeature({ ...newFeature, name: e.target.value })}
           />
-          <input
-            type="text"
-            placeholder="Short description (optional)"
-            className="px-5 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-sky-500 transition-all text-sm"
-            value={newFeature.description}
-            onChange={(e) => setNewFeature({ ...newFeature, description: e.target.value })}
-          />
+
           <button
             type="button"
             onClick={addFeature}
@@ -206,7 +277,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
             <div key={index} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-all group">
               <div>
                 <p className="font-bold text-slate-900 text-sm">{feature.name}</p>
-                {feature.description && <p className="text-xs text-slate-400">{feature.description}</p>}
+
               </div>
               <button
                 type="button"

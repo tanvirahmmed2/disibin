@@ -78,20 +78,23 @@ const Sidebar = () => {
               </Link>
 
               <Link
-                href='/profile'
+                href='/user/profile'
                 onClick={closeSidebar}
                 className='w-full px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-sky-50 hover:text-sky-600 transition-all duration-300 text-center'
               >
                 Profile
               </Link>
 
+              {/* Wishlist is not implemented yet */}
+              {/* 
               <Link
                 href='/wishlist'
                 onClick={closeSidebar}
                 className='w-full px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-sky-50 hover:text-sky-600 transition-all duration-300 text-center'
               >
                 Wishlist
-              </Link>
+              </Link> 
+              */}
 
               <button
                 onClick={() => {

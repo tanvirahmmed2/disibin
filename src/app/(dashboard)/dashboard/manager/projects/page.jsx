@@ -84,7 +84,6 @@ const ProjectsManagement = () => {
             <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider font-bold">
               <tr>
                 <th className="px-6 py-4">Project Details</th>
-                <th className="px-6 py-4">Category</th>
                 <th className="px-6 py-4">Links</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
@@ -92,23 +91,20 @@ const ProjectsManagement = () => {
             <tbody className="divide-y divide-slate-50">
               {loading ? (
                 <tr>
-                  <td colSpan="4" className="px-6 py-10 text-center text-slate-400">Loading projects...</td>
+                  <td colSpan="3" className="px-6 py-10 text-center text-slate-400">Loading projects...</td>
                 </tr>
               ) : filteredProjects.length === 0 ? (
                 <tr>
-                  <td colSpan="4" className="px-6 py-10 text-center text-slate-400">No projects found</td>
+                  <td colSpan="3" className="px-6 py-10 text-center text-slate-400">No projects found</td>
                 </tr>
               ) : filteredProjects.map((project) => (
+
                 <tr key={project.project_id} className="hover:bg-slate-50/50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="font-bold text-slate-900">{project.title}</div>
                     <div className="text-xs text-slate-400">{project.slug}</div>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className="px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-bold">
-                      {project.category_name || 'General'}
-                    </span>
-                  </td>
+
                   <td className="px-6 py-4">
                     {project.live_url ? (
                       <a

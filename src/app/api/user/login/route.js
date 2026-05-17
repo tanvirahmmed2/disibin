@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
-import { getUserByEmail } from "@/lib/data/users";
+import { dbQuery } from "@/lib/database/pg";
 import { JWT_SECRET, NODE_ENV } from "@/lib/database/secret";
 
 export async function POST(req) {
@@ -13,7 +13,9 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "Email and password are required" }, { status: 400 });
         }
 
-        const user = await getUserByEmail(email);
+        const res = await dbQuery("SELECT * FROM users WHERE email = $1", [email]);
+        const user = res.rows[0];
+
         if (!user) {
             return NextResponse.json({ success: false, message: "Invalid email or password" }, { status: 401 });
         }

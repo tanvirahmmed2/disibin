@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { sendEmail } from "@/lib/utils/brevo";
 import { BASE_URL } from "@/lib/database/secret";
-import { createUser, getUserByEmail, getUserByPhone, updateUserProfile, setUserVerificationToken, getUserById } from "@/lib/data/users";
+import { dbQuery } from "@/lib/database/pg";
 import { isLogin } from "@/lib/middleware";
 
 // Register
@@ -17,14 +17,14 @@ export async function POST(req) {
         }
 
         // Check if email exists
-        const existingEmail = await getUserByEmail(email);
-        if (existingEmail) {
+        const emailRes = await dbQuery("SELECT user_id FROM users WHERE email = $1", [email]);
+        if (emailRes.rows.length > 0) {
             return NextResponse.json({ success: false, message: "Email already registered" }, { status: 400 });
         }
 
         // Check if phone exists
-        const existingPhone = await getUserByPhone(phone);
-        if (existingPhone) {
+        const phoneRes = await dbQuery("SELECT user_id FROM users WHERE phone = $1", [phone]);
+        if (phoneRes.rows.length > 0) {
             return NextResponse.json({ success: false, message: "Phone number already registered" }, { status: 400 });
         }
 
@@ -32,18 +32,23 @@ export async function POST(req) {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create user
-        const user = await createUser({
-            name,
-            email,
-            phone,
-            password: hashedPassword
-        });
+        const query = `
+            INSERT INTO users (name, email, phone, password, role) 
+            VALUES ($1, $2, $3, $4, $5) 
+            RETURNING user_id, name, email, role, created_at
+        `;
+        const userRes = await dbQuery(query, [name, email, phone, hashedPassword, 'user']);
+        const user = userRes.rows[0];
 
         // Generate Verification Token
         const verificationToken = crypto.randomBytes(32).toString("hex");
         const expiresAt = new Date(Date.now() + 24 * 3600000); // 24 hours
 
-        await setUserVerificationToken(user.user_id, verificationToken, expiresAt);
+        await dbQuery(`
+            UPDATE users 
+            SET verification_token = $1, verification_expires_at = $2 
+            WHERE user_id = $3 
+        `, [verificationToken, expiresAt, user.user_id]);
 
         // Send Verification Email
         const verifyLink = `${BASE_URL}/verify-email?token=${verificationToken}`;
@@ -91,7 +96,18 @@ export async function PATCH(req) {
             return NextResponse.json({ success: false, message: "No fields to update" }, { status: 400 });
         }
 
-        const updatedUser = await updateUserProfile(userId, updateData);
+        const keys = Object.keys(updateData);
+        const values = Object.values(updateData);
+        const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(", ");
+        
+        const query = `
+            UPDATE users 
+            SET ${setClause}, updated_at = now() 
+            WHERE user_id = $${keys.length + 1} 
+            RETURNING user_id, name, email, phone, role, city, country, address_line1, address_line2, state, postal_code
+        `;
+        const res = await dbQuery(query, [...values, userId]);
+        const updatedUser = res.rows[0];
 
         return NextResponse.json({
             success: true,
@@ -112,7 +128,12 @@ export async function GET(req) {
             return NextResponse.json(auth, { status: 401 });
         }
 
-        const user = await getUserById(auth.data.id);
+        const res = await dbQuery(`
+            SELECT user_id, name, email, phone, role, is_active, is_verified, city, country, address_line1, address_line2, state, postal_code, last_login, created_at, updated_at 
+            FROM users 
+            WHERE user_id = $1
+        `, [auth.data.id]);
+        const user = res.rows[0];
 
         if (!user) {
             return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });

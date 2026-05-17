@@ -1,5 +1,6 @@
+import { NextResponse } from "next/server";
 import { hasRole } from "@/lib/middleware";
-import { submitApplication, getApplications, updateApplicationStatus } from "@/lib/data/careers";
+import { dbQuery } from "@/lib/database/pg";
 import cloudinary from "@/lib/database/cloudinary";
 
 // POST submit application (Public - handles file upload)
@@ -45,18 +46,17 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "Failed to upload resume" }, { status: 500 });
         }
 
-        const application = await submitApplication({
-            job_id,
-            full_name,
-            email,
-            resume_url,
-            cover_letter
-        });
+        const query = `
+            INSERT INTO career_applications (job_id, full_name, email, resume_url, cover_letter)
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING *
+        `;
+        const res = await dbQuery(query, [job_id, full_name, email, resume_url, cover_letter]);
 
         return NextResponse.json({
             success: true,
             message: "Application submitted successfully with resume",
-            data: application
+            data: res.rows[0]
         }, { status: 201 });
 
     } catch (error) {
@@ -73,8 +73,20 @@ export async function GET(req) {
         const { searchParams } = new URL(req.url);
         const jobId = searchParams.get('jobId');
 
-        const applications = await getApplications(jobId);
-        return NextResponse.json({ success: true, data: applications });
+        let query = `
+            SELECT ca.*, c.title as job_title
+            FROM career_applications ca
+            LEFT JOIN careers c ON ca.job_id = c.job_id
+        `;
+        const params = [];
+        if (jobId) {
+            query += " WHERE ca.job_id = $1";
+            params.push(jobId);
+        }
+        query += " ORDER BY ca.created_at DESC";
+        const res = await dbQuery(query, params);
+
+        return NextResponse.json({ success: true, data: res.rows });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
@@ -92,11 +104,15 @@ export async function PATCH(req) {
             return NextResponse.json({ success: false, message: "App ID and Status are required" }, { status: 400 });
         }
 
-        const updatedApp = await updateApplicationStatus(appId, status);
+        const res = await dbQuery(
+            "UPDATE career_applications SET status = $1 WHERE app_id = $2 RETURNING *",
+            [status, appId]
+        );
+
         return NextResponse.json({
             success: true,
             message: "Application status updated",
-            data: updatedApp
+            data: res.rows[0]
         });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

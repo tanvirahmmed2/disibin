@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { hasRole } from "@/lib/middleware";
-import { getTaskMessages, addTaskMessage, getTaskById } from "@/lib/data/tasks";
+import { dbQuery } from "@/lib/database/pg";
 
 const MANAGEMENT_ROLES = ['admin', 'manager', 'support', 'developer'];
 
@@ -10,10 +10,13 @@ export async function GET(req, { params }) {
         const auth = await hasRole(MANAGEMENT_ROLES);
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
-        const taskId = params.id;
+        const { id: taskId } = await params;
         
         // Authorization check
-        const task = await getTaskById(taskId);
+        const query = `SELECT assigned_to, created_by FROM tasks WHERE task_id = $1`;
+        const res = await dbQuery(query, [taskId]);
+        const task = res.rows[0];
+
         if (!task) return NextResponse.json({ success: false, message: "Task not found" }, { status: 404 });
         
         if (auth.data.role === 'developer' || auth.data.role === 'support') {
@@ -22,8 +25,16 @@ export async function GET(req, { params }) {
             }
         }
 
-        const messages = await getTaskMessages(taskId);
-        return NextResponse.json({ success: true, data: messages });
+        const messagesQuery = `
+            SELECT tm.*, u.name as user_name, NULL as user_image, u.role as user_role
+            FROM task_messages tm
+            JOIN users u ON tm.user_id = u.user_id
+            WHERE tm.task_id = $1
+            ORDER BY tm.created_at ASC
+        `;
+        const messagesRes = await dbQuery(messagesQuery, [taskId]);
+
+        return NextResponse.json({ success: true, data: messagesRes.rows });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -36,7 +47,7 @@ export async function POST(req, { params }) {
         const auth = await hasRole(MANAGEMENT_ROLES);
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
-        const taskId = params.id;
+        const { id: taskId } = await params;
         const userId = auth.data.id;
         const { message } = await req.json();
 
@@ -45,7 +56,10 @@ export async function POST(req, { params }) {
         }
 
         // Authorization check
-        const task = await getTaskById(taskId);
+        const query = `SELECT assigned_to, created_by FROM tasks WHERE task_id = $1`;
+        const res = await dbQuery(query, [taskId]);
+        const task = res.rows[0];
+
         if (!task) return NextResponse.json({ success: false, message: "Task not found" }, { status: 404 });
 
         if (auth.data.role === 'developer' || auth.data.role === 'support') {
@@ -54,12 +68,26 @@ export async function POST(req, { params }) {
             }
         }
 
-        const newMessage = await addTaskMessage(taskId, userId, message);
+        const insertQuery = `
+            INSERT INTO task_messages (task_id, user_id, message)
+            VALUES ($1, $2, $3)
+            RETURNING *
+        `;
+        const insertRes = await dbQuery(insertQuery, [taskId, userId, message]);
         
+        // Fetch the inserted message with user details to return
+        const fetchQuery = `
+            SELECT tm.*, u.name as user_name, NULL as user_image, u.role as user_role
+            FROM task_messages tm
+            JOIN users u ON tm.user_id = u.user_id
+            WHERE tm.message_id = $1
+        `;
+        const fetchRes = await dbQuery(fetchQuery, [insertRes.rows[0].message_id]);
+
         return NextResponse.json({
             success: true,
             message: "Message sent",
-            data: newMessage
+            data: fetchRes.rows[0]
         });
 
     } catch (error) {

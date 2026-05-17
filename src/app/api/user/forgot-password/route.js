@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { getUserByEmail, setUserResetToken } from "@/lib/data/users";
+import { dbQuery } from "@/lib/database/pg";
 import { sendEmail } from "@/lib/utils/brevo";
 import { BASE_URL } from "@/lib/database/secret";
 
@@ -12,7 +12,9 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "Email is required" }, { status: 400 });
         }
 
-        const user = await getUserByEmail(email);
+        const res = await dbQuery("SELECT user_id FROM users WHERE email = $1", [email]);
+        const user = res.rows[0];
+
         if (!user) {
             // Return success even if user not found for security reasons
             return NextResponse.json({ 
@@ -25,7 +27,11 @@ export async function POST(req) {
         const token = crypto.randomBytes(32).toString("hex");
         const expiresAt = new Date(Date.now() + 3600000); // 1 hour
 
-        await setUserResetToken(email, token, expiresAt);
+        await dbQuery(`
+            UPDATE users 
+            SET reset_token = $1, token_expires_at = $2 
+            WHERE email = $3 
+        `, [token, expiresAt, email]);
 
         // Send email
         const resetLink = `${BASE_URL}/reset-password?token=${token}`;

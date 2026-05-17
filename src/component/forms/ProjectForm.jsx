@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import slugify from 'slugify';
 import ImageUpload from '@/component/helper/ImageUpload';
+import { FiCheck, FiTrash2 } from 'react-icons/fi';
 
 const ProjectForm = ({ initialData, onSuccess, onCancel }) => {
   const router = useRouter();
@@ -12,31 +13,37 @@ const ProjectForm = ({ initialData, onSuccess, onCancel }) => {
     title: '',
     slug: '',
     description: '',
-    category_id: '',
     live_url: '',
     ...initialData
   });
-  const [images, setImages] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [images, setImages] = useState(initialData?.images || []);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const res = await axios.get('/api/category');
-      if (res.data.success) {
-        setCategories(res.data.data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch categories', error);
-    }
-  };
 
   const handleImageUpload = (imageData) => {
     setImages([...images, { ...imageData, is_primary: images.length === 0 }]);
+  };
+
+  const handleSetPrimary = (index) => {
+    setImages(images.map((img, i) => ({
+      ...img,
+      is_primary: i === index
+    })));
+  };
+
+  const handleRemoveImage = async (index) => {
+    const imgToRemove = images[index];
+    
+    // If it's a newly uploaded image (not in DB), delete from Cloudinary
+    if (!imgToRemove.id && imgToRemove.public_id) {
+      try {
+        await axios.delete(`/api/image?public_id=${imgToRemove.public_id}`);
+      } catch (error) {
+        console.error("Failed to delete orphaned image from Cloudinary:", error);
+      }
+    }
+    
+    setImages(images.filter((_, i) => i !== index));
   };
 
   const handleChange = (e) => {
@@ -100,22 +107,7 @@ const ProjectForm = ({ initialData, onSuccess, onCancel }) => {
               placeholder="E.g. Disibin Platform"
             />
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700">Category</label>
-            <select
-              name="category_id"
-              value={formData.category_id}
-              onChange={handleChange}
-              className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all"
-            >
-              <option value="">Select Category</option>
-              {categories.map((cat) => (
-                <option key={cat.category_id} value={cat.category_id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-          </div>
+
           <div className="space-y-2">
             <label className="text-sm font-semibold text-slate-700">Live URL</label>
             <input
@@ -130,7 +122,42 @@ const ProjectForm = ({ initialData, onSuccess, onCancel }) => {
         </div>
 
         <div className="space-y-6">
-           <ImageUpload onUpload={handleImageUpload} label="Project Showcase Image" />
+           <ImageUpload onUpload={handleImageUpload} label="Upload Project Images" />
+           
+           {/* Image List */}
+           {images.length > 0 && (
+             <div className="grid grid-cols-2 gap-4 mt-2">
+               {images.map((img, index) => (
+                 <div key={index} className="relative group rounded-xl overflow-hidden border border-slate-200">
+                   <img src={img.url} alt="Project" className="w-full h-24 object-cover" />
+                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                     <button
+                       type="button"
+                       onClick={() => handleSetPrimary(index)}
+                       className={`p-1.5 rounded-full ${img.is_primary ? 'bg-emerald-500 text-white' : 'bg-white text-slate-700 hover:bg-emerald-500 hover:text-white'} transition-colors`}
+                       title={img.is_primary ? "Primary Image" : "Set as Primary"}
+                     >
+                       <FiCheck size={14} />
+                     </button>
+                     <button
+                       type="button"
+                       onClick={() => handleRemoveImage(index)}
+                       className="p-1.5 rounded-full bg-white text-slate-700 hover:bg-rose-500 hover:text-white transition-colors"
+                       title="Remove Image"
+                     >
+                       <FiTrash2 size={14} />
+                     </button>
+                   </div>
+                   {img.is_primary && (
+                     <div className="absolute top-1 left-1 bg-emerald-500 text-white text-xs px-1.5 py-0.5 rounded-full font-bold">
+                       Primary
+                     </div>
+                   )}
+                 </div>
+               ))}
+             </div>
+           )}
+
            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Generated Slug</label>
              <code className="text-sm text-sky-600 font-bold">{formData.slug || 'slug-will-appear-here'}</code>
