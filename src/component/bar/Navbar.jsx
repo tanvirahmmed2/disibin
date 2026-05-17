@@ -57,7 +57,7 @@ const Navbar = () => {
       >
         <Link
           href='/'
-          className='text-2xl font-poppins font-semibold tracking-tight text-slate-900 hover:text-gray-500 transition-colors duration-300'
+          className='text-3xl font-poppins font-semibold tracking-tight text-slate-900 hover:text-gray-500 transition-colors duration-300'
         >
           Disibin
         </Link>

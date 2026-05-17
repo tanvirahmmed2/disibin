@@ -46,9 +46,9 @@ const ProductsPage = () => {
           </p>
         </div>
 
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
           {products.map((product) => (
-            <div key={product.product_id} className="bg-white flex flex-col gap-4 even:flex-col-reverse overflow-hidden">
+            <div key={product.product_id} className="bg-white flex flex-col gap-4 md:even:flex-col-reverse overflow-hidden">
 
 
               <Link href={`/products/${product.slug}`} className="p-6 grow flex flex-col">
