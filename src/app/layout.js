@@ -35,7 +35,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${lora.variable}  ${jersey.variable} ${silkscreen.variable} ${poppins.variable} antialiased bg-sky-50 w-full`}>
+      <body className={`${lora.variable}  ${jersey.variable} ${silkscreen.variable} ${poppins.variable} antialiased bg-gray-100 w-full`}>
         <ContextProvider>
           <Toaster position="top-right" />
           <main>{children}</main>

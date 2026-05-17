@@ -71,7 +71,11 @@ export async function PATCH(req) {
         if (keys.length === 0) {
             return NextResponse.json({ success: false, message: "No fields to update" }, { status: 400 });
         }
-
+        for (const key of keys) {
+            if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) {
+                return NextResponse.json({ success: false, message: "Invalid field name" }, { status: 400 });
+            }
+        }
         const values = Object.values(updateData);
         const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(", ");
         

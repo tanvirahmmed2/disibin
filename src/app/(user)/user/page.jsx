@@ -7,7 +7,7 @@ const UserPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] py-20 px-4 text-center">
-      <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
+      <h1 className="text-4xl font-bold mb-4 bg-linear-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
         Welcome Back, {userData?.name || 'User'}!
       </h1>
       <p className="text-slate-500 max-w-md">

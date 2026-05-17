@@ -118,18 +118,16 @@ const CheckoutPage = () => {
   const finalTotal = calculateTotal();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Back Button */}
+    <div className="min-h-screen w-full py-16 px-2 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
         <Link href={`/products/${product.slug}`} className="inline-flex items-center gap-2 text-slate-600 hover:text-sky-600 font-bold mb-8 transition-colors">
           <FiArrowLeft /> Back to Product
         </Link>
 
-        <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-100 border border-slate-100 p-8">
+        <div className="bg-white rounded-md shadow-xl shadow-slate-100 border border-slate-100 p-8">
           <h1 className="text-3xl font-extrabold text-slate-900 mb-6">Checkout</h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Left: Bill Summary */}
             <div className="space-y-6">
               <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
                 <h3 className="text-lg font-bold text-slate-900 mb-4">Order Summary</h3>

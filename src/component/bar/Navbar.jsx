@@ -52,12 +52,12 @@ const Navbar = () => {
   return (
     <div className='w-full fixed top-0 px-3 sm:px-4 z-50 pt-3'>
       <nav
-        className={`w-full bg-sky-100 flex items-center justify-between h-14 px-5 rounded-2xl transition-all duration-500 ${
+        className={`w-full bg-gray-100 flex items-center justify-between h-14 px-5 rounded-2xl transition-all duration-500 ${
           showTopbar ? 'translate-y-0 opacity-100' : '-translate-y-[120%] opacity-0'  } `}
       >
         <Link
           href='/'
-          className='text-2xl font-poppins font-semibold tracking-tight text-slate-900 hover:text-sky-500 transition-colors duration-300'
+          className='text-2xl font-poppins font-semibold tracking-tight text-slate-900 hover:text-gray-500 transition-colors duration-300'
         >
           Disibin
         </Link>
@@ -67,7 +67,7 @@ const Navbar = () => {
             <Link
               key={l.href}
               href={l.href}
-              className='px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-sky-600 hover:bg-sky-50 transition-all duration-200'
+              className='px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-gray-600 hover:bg-gray-50 transition-all duration-200'
             >
               {l.label}
             </Link>
@@ -79,7 +79,7 @@ const Navbar = () => {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className='ml-3 px-5 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-sky-600 transition-all duration-300 shadow-sm flex items-center gap-2'
+                className='ml-3 px-5 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-gray-600 transition-all duration-300 shadow-sm flex items-center gap-2'
               >
                 Account
                 <span className={`transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`}>▾</span>
@@ -143,7 +143,7 @@ const Navbar = () => {
           ) : (
             <Link
               href='/login'
-              className='ml-3 px-5 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-sky-600 transition-all duration-300 shadow-sm'
+              className='ml-3 px-5 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-gray-600 transition-all duration-300 shadow-sm'
             >
               Login
             </Link>
