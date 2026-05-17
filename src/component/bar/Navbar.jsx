@@ -35,7 +35,7 @@ const Navbar = () => {
   return (
     <div className='w-full fixed top-0 px-3 sm:px-4 z-50 pt-3'>
       <nav
-        className={`w-full bg-white flex items-center justify-between h-14 px-5 rounded-2xl transition-all duration-500 ${
+        className={`w-full bg-sky-100 flex items-center justify-between h-14 px-5 rounded-2xl transition-all duration-500 ${
           showTopbar ? 'translate-y-0 opacity-100' : '-translate-y-[120%] opacity-0'  } `}
       >
         <Link

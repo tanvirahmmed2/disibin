@@ -13,7 +13,7 @@ export default async function Layout({ children }) {
   if(!auth.success)return redirect('/login')
 
   return (
-    <section className="w-full animate-in fade-in duration-700 relative overflow-x-hidden">
+    <section className="w-full animate-in fade-in duration-700 relative overflow-x-hidden pt-14">
       <UserNavbar/>
       <UserSidebar/>
       {children}

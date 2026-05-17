@@ -1,28 +1,16 @@
 import { NextResponse } from "next/server";
 import { hasRole } from "@/lib/middleware";
-import { getInbox, sendInternalMessage, getConversation, markAsRead } from "@/lib/data/chat";
+import { getInbox, createConversation, findExistingOneOnOne } from "@/lib/data/chat";
 
 const MANAGEMENT_ROLES = ['admin', 'manager', 'support', 'developer'];
 
-// GET Inbox or Conversation
+// GET Inbox (List of conversations)
 export async function GET(req) {
     try {
         const auth = await hasRole(MANAGEMENT_ROLES);
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
         const userId = auth.data.id;
-        const { searchParams } = new URL(req.url);
-        const recipientId = searchParams.get('recipientId');
-
-        // If recipientId is provided, get the specific conversation
-        if (recipientId) {
-            const messages = await getConversation(userId, recipientId);
-            // Mark as read when opening conversation
-            await markAsRead(userId, recipientId);
-            return NextResponse.json({ success: true, data: messages });
-        }
-
-        // Otherwise get the inbox (list of chats)
         const inbox = await getInbox(userId);
         return NextResponse.json({ success: true, data: inbox });
 
@@ -31,24 +19,39 @@ export async function GET(req) {
     }
 }
 
-// POST Send message
+// POST Create a new conversation (1-on-1 or group)
 export async function POST(req) {
     try {
         const auth = await hasRole(MANAGEMENT_ROLES);
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
-        const senderId = auth.data.id;
-        const { receiverId, message } = await req.json();
+        const createdBy = auth.data.id;
+        const { isGroup, title, participantIds } = await req.json();
 
-        if (!receiverId || !message) {
-            return NextResponse.json({ success: false, message: "Recipient and message are required" }, { status: 400 });
+        if (!participantIds || !Array.isArray(participantIds) || participantIds.length === 0) {
+            return NextResponse.json({ success: false, message: "Participants are required" }, { status: 400 });
         }
 
-        const newMessage = await sendInternalMessage(senderId, receiverId, message);
+        // Check if 1-on-1 already exists
+        if (!isGroup && participantIds.length === 1) {
+            const existing = await findExistingOneOnOne(createdBy, participantIds[0]);
+            if (existing) {
+                return NextResponse.json({
+                    success: true,
+                    message: "Conversation already exists",
+                    data: existing
+                });
+            }
+        }
+
+        // Create new conversation
+        const conversationTitle = isGroup ? title : null; // 1-on-1 doesn't need a specific title usually
+        const newConversation = await createConversation(isGroup, conversationTitle, createdBy, participantIds);
+        
         return NextResponse.json({
             success: true,
-            message: "Message sent",
-            data: newMessage
+            message: "Conversation created",
+            data: newConversation
         });
 
     } catch (error) {

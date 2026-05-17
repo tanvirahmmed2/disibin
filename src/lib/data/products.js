@@ -5,7 +5,7 @@ import { createLog } from "./logs";
 export async function getProductBySlug(slug) {
     const res = await dbQuery(`
         SELECT p.*, c.name as category_name,
-               (SELECT json_agg(json_build_object('name', f.name, 'description', f.description, 'value', pf.value))
+               (SELECT COALESCE(json_agg(json_build_object('name', f.name, 'description', f.description, 'value', pf.value)), '[]'::json)
                 FROM product_features pf
                 JOIN features f ON pf.feature_id = f.feature_id
                 WHERE pf.product_id = p.product_id) as features,
@@ -39,7 +39,7 @@ export async function getAllProducts(onlyActive = true) {
 
 export async function createProduct(data) {
     return await transaction(async (client) => {
-        const { name, slug, category_id, description, price, duration_days, is_lifetime, created_by, images } = data;
+        const { name, slug, category_id, description, price, duration_days, is_lifetime, created_by, images, features } = data;
         
         // Insert product
         const productRes = await client.query(`
@@ -60,6 +60,26 @@ export async function createProduct(data) {
             }
         }
 
+        // Handle features if provided
+        if (features && Array.isArray(features)) {
+            for (const feature of features) {
+                // Insert feature definition
+                const featureRes = await client.query(`
+                    INSERT INTO features (name, description)
+                    VALUES ($1, $2)
+                    RETURNING feature_id
+                `, [feature.name, feature.description || '']);
+                
+                const featureId = featureRes.rows[0].feature_id;
+
+                // Link to product
+                await client.query(`
+                    INSERT INTO product_features (product_id, feature_id, value)
+                    VALUES ($1, $2, $3)
+                `, [product.product_id, featureId, feature.value !== undefined ? feature.value : true]);
+            }
+        }
+
         // Log the action
         await createLog({
             user_id: created_by,
@@ -74,7 +94,7 @@ export async function createProduct(data) {
 }
 
 export async function updateProduct(id, data, userId) {
-    const { images, ...productData } = data;
+    const { images, features, ...productData } = data;
     let product = null;
 
     if (Object.keys(productData).length > 0) {
@@ -92,8 +112,40 @@ export async function updateProduct(id, data, userId) {
         product = res.rows[0];
     }
 
-    // If images are provided in the update, we add them (standard behavior)
-    // Complex image management (delete, set primary) is usually handled via specific image APIs
+    // Handle features
+    if (features && Array.isArray(features)) {
+        await transaction(async (client) => {
+            // Since features are now product-specific, delete old ones and recreate
+            // First, find existing feature IDs for this product to delete from features table
+            const existingFeaturesRes = await client.query("SELECT feature_id FROM product_features WHERE product_id = $1", [id]);
+            const existingFeatureIds = existingFeaturesRes.rows.map(r => r.feature_id);
+
+            // Delete associations
+            await client.query("DELETE FROM product_features WHERE product_id = $1", [id]);
+
+            // Delete orphaned features
+            if (existingFeatureIds.length > 0) {
+                await client.query("DELETE FROM features WHERE feature_id = ANY($1)", [existingFeatureIds]);
+            }
+
+            for (const feature of features) {
+                const featureRes = await client.query(`
+                    INSERT INTO features (name, description)
+                    VALUES ($1, $2)
+                    RETURNING feature_id
+                `, [feature.name, feature.description || '']);
+                
+                const featureId = featureRes.rows[0].feature_id;
+
+                await client.query(`
+                    INSERT INTO product_features (product_id, feature_id, value)
+                    VALUES ($1, $2, $3)
+                `, [id, featureId, feature.value !== undefined ? feature.value : true]);
+            }
+        });
+    }
+
+    // If images are provided in the update, we add them
     if (images && Array.isArray(images)) {
         for (const img of images) {
             await addImage({
@@ -102,7 +154,6 @@ export async function updateProduct(id, data, userId) {
                 entity_id: id
             });
         }
-        // Fetch product again if it wasn't updated just now, to include any changes if needed
         if (!product) {
             const res = await dbQuery("SELECT * FROM products WHERE product_id = $1", [id]);
             product = res.rows[0];
@@ -121,6 +172,7 @@ export async function updateProduct(id, data, userId) {
 
     return product;
 }
+
 
 export async function deleteProduct(id, userId) {
     const res = await dbQuery("DELETE FROM products WHERE product_id = $1 RETURNING *", [id]);

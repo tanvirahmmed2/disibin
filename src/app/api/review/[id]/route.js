@@ -1,36 +1,30 @@
 import { NextResponse } from "next/server";
-import { hasRole } from "@/lib/middleware";
-import { approveReview, replyToReview, deleteReview } from "@/lib/data/reviews";
+import { isLogin, isManager } from "@/lib/middleware";
+import { approveReview, deleteReview, getReviewByUser } from "@/lib/data/reviews";
 
-// Admin/Support actions on specific reviews
+// PATCH - Approve or reject a review (Manager only)
 export async function PATCH(req, { params }) {
     try {
-        const auth = await hasRole(['admin', 'support', 'manager']);
+        const auth = await isManager();
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
         const { id } = await params;
-        const { is_approved, reply } = await req.json();
+        const { is_approved } = await req.json();
 
-        let updatedReview = null;
-
-        // Approval toggle
-        if (is_approved !== undefined) {
-            updatedReview = await approveReview(id, is_approved);
+        if (is_approved === undefined) {
+            return NextResponse.json({ success: false, message: "Approval status is required" }, { status: 400 });
         }
 
-        // Reply addition
-        if (reply !== undefined) {
-            updatedReview = await replyToReview(id, reply);
-        }
-
-        if (!updatedReview) {
-            return NextResponse.json({ success: false, message: "No action performed" }, { status: 400 });
+        const review = await approveReview(id, is_approved, auth.data.id);
+        
+        if (!review) {
+            return NextResponse.json({ success: false, message: "Review not found" }, { status: 404 });
         }
 
         return NextResponse.json({
             success: true,
-            message: "Review updated successfully",
-            data: updatedReview
+            message: `Review ${is_approved ? 'approved' : 'rejected'} successfully`,
+            data: review
         });
 
     } catch (error) {
@@ -38,13 +32,27 @@ export async function PATCH(req, { params }) {
     }
 }
 
+// DELETE - Remove a review (User deletes their own, Manager can delete any)
 export async function DELETE(req, { params }) {
     try {
-        const auth = await hasRole(['admin', 'manager']);
-        if (!auth.success) return NextResponse.json(auth, { status: 403 });
+        const auth = await isLogin();
+        if (!auth.success) return NextResponse.json(auth, { status: 401 });
 
         const { id } = await params;
-        const deletedReview = await deleteReview(id);
+        
+        // Check if user is manager
+        const managerAuth = await isManager();
+        const isUserManager = managerAuth.success;
+
+        if (!isUserManager) {
+            // If just a regular user, verify this is THEIR review
+            const userReview = await getReviewByUser(auth.data.id);
+            if (!userReview || userReview.review_id.toString() !== id) {
+                return NextResponse.json({ success: false, message: "Unauthorized to delete this review" }, { status: 403 });
+            }
+        }
+
+        const deletedReview = await deleteReview(id, auth.data.id);
 
         if (!deletedReview) {
             return NextResponse.json({ success: false, message: "Review not found" }, { status: 404 });

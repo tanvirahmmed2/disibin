@@ -1,11 +1,10 @@
-import React from 'react'
+import TaskBoard from "@/component/dashboard/tasks/TaskBoard";
 
-const TasksManagement = () => {
-  return (
-    <div>
-      
-    </div>
-  )
+export const metadata = {
+    title: "My Tasks | Support Dashboard",
+    description: "View and manage tasks assigned to you."
+};
+
+export default function SupportTasksPage() {
+    return <TaskBoard role="support" />;
 }
-
-export default TasksManagement

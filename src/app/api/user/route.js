@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { sendEmail } from "@/lib/utils/brevo";
 import { BASE_URL } from "@/lib/database/secret";
-import { createUser, getUserByEmail, getUserByPhone, updateUserProfile, setUserVerificationToken } from "@/lib/data/users";
+import { createUser, getUserByEmail, getUserByPhone, updateUserProfile, setUserVerificationToken, getUserById } from "@/lib/data/users";
 import { isLogin } from "@/lib/middleware";
 
 // Register
@@ -97,6 +97,30 @@ export async function PATCH(req) {
             success: true,
             message: "Profile updated successfully",
             data: updatedUser
+        });
+
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}
+
+// Get Profile
+export async function GET(req) {
+    try {
+        const auth = await isLogin();
+        if (!auth.success) {
+            return NextResponse.json(auth, { status: 401 });
+        }
+
+        const user = await getUserById(auth.data.id);
+
+        if (!user) {
+            return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+        }
+
+        return NextResponse.json({
+            success: true,
+            data: user
         });
 
     } catch (error) {

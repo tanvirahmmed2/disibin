@@ -37,7 +37,7 @@ const ForgotPasswordPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] py-20 px-4">
-      <div className="w-full max-w-md bg-white p-10 rounded-[32px] border border-slate-100 shadow-2xl shadow-slate-200/50">
+      <div className="w-full max-w-md bg-white p-10 rounded-8 border border-slate-100 shadow-2xl shadow-slate-200/50">
         <h1 className="text-3xl font-bold mb-2 tracking-tight text-slate-900">Reset Password</h1>
         <p className="text-slate-500 text-sm mb-10 font-medium">
           {submitted 

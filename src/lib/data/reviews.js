@@ -1,62 +1,96 @@
 import { dbQuery } from "../database/pg";
+import { createLog } from "./logs";
 
+// Create a review
 export async function createReview(data) {
-    const { user_id, product_id, rating, comment } = data;
-    const query = `
-        INSERT INTO reviews (user_id, product_id, rating, comment)
-        VALUES ($1, $2, $3, $4)
-        RETURNING *
-    `;
-    const res = await dbQuery(query, [user_id, product_id, rating, comment]);
-    return res.rows[0];
-}
-
-export async function getPublicReviews(productId = null) {
-    let query = `
-        SELECT r.*, u.name as user_name, p.name as product_name
-        FROM reviews r
-        LEFT JOIN users u ON r.user_id = u.user_id
-        LEFT JOIN products p ON r.product_id = p.product_id
-        WHERE r.is_approved = true
-    `;
-    const params = [];
-    if (productId) {
-        query += " AND r.product_id = $1";
-        params.push(productId);
+    const { user_id, rating, comment } = data;
+    
+    // Schema enforces user_id is UNIQUE, so this will throw if they already have one.
+    // We can also check manually to provide a better error message.
+    const checkRes = await dbQuery("SELECT review_id FROM reviews WHERE user_id = $1", [user_id]);
+    if (checkRes.rows.length > 0) {
+        throw new Error("You have already submitted a review.");
     }
-    query += " ORDER BY r.created_at DESC";
 
-    const res = await dbQuery(query, params);
-    return res.rows;
+    const res = await dbQuery(`
+        INSERT INTO reviews (user_id, rating, comment)
+        VALUES ($1, $2, $3)
+        RETURNING *
+    `, [user_id, rating, comment]);
+
+    const review = res.rows[0];
+
+    await createLog({
+        user_id,
+        action: 'CREATE',
+        entity_type: 'review',
+        entity_id: review.review_id,
+        details: { rating, comment }
+    });
+
+    return review;
 }
 
+// Get review by user
+export async function getReviewByUser(userId) {
+    const res = await dbQuery(`
+        SELECT r.*
+        FROM reviews r
+        WHERE r.user_id = $1
+    `, [userId]);
+    return res.rows.length > 0 ? res.rows[0] : null;
+}
+
+// Get all reviews (for manager panel)
 export async function getAllReviews() {
     const res = await dbQuery(`
-        SELECT r.*, u.name as user_name, p.name as product_name
+        SELECT r.*, 
+               u.name as user_name, u.email as user_email
         FROM reviews r
-        LEFT JOIN users u ON r.user_id = u.user_id
-        LEFT JOIN products p ON r.product_id = p.product_id
+        JOIN users u ON r.user_id = u.user_id
         ORDER BY r.created_at DESC
     `, []);
     return res.rows;
 }
 
-export async function approveReview(reviewId, isApproved = true) {
-    const res = await dbQuery(
-        "UPDATE reviews SET is_approved = $1 WHERE review_id = $2 RETURNING *",
-        [isApproved, reviewId]
-    );
-    return res.rows[0];
-}
-export async function replyToReview(reviewId, reply) {
-    const res = await dbQuery(
-        "UPDATE reviews SET reply = $1 WHERE review_id = $2 RETURNING *",
-        [reply, reviewId]
-    );
-    return res.rows[0];
+// Approve or reject a review
+export async function approveReview(id, isApproved, managerId) {
+    const res = await dbQuery(`
+        UPDATE reviews
+        SET is_approved = $1
+        WHERE review_id = $2
+        RETURNING *
+    `, [isApproved, id]);
+
+    const review = res.rows[0];
+
+    if (review && managerId) {
+        await createLog({
+            user_id: managerId,
+            action: isApproved ? 'APPROVE' : 'REJECT',
+            entity_type: 'review',
+            entity_id: id,
+            details: { review_id: id }
+        });
+    }
+
+    return review;
 }
 
-export async function deleteReview(reviewId) {
-    const res = await dbQuery("DELETE FROM reviews WHERE review_id = $1 RETURNING *", [reviewId]);
-    return res.rows[0];
+// Delete a review
+export async function deleteReview(id, userId) {
+    const res = await dbQuery("DELETE FROM reviews WHERE review_id = $1 RETURNING *", [id]);
+    const review = res.rows[0];
+
+    if (review && userId) {
+        await createLog({
+            user_id: userId,
+            action: 'DELETE',
+            entity_type: 'review',
+            entity_id: id,
+            details: { review_id: id }
+        });
+    }
+
+    return review;
 }

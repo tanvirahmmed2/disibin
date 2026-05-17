@@ -67,18 +67,24 @@ export async function addTicketMessage(data) {
     return res.rows[0];
 }
 
-export async function updateTicketStatus(ticketId, status, assignedTo = null) {
-    let query = "UPDATE tickets SET status = $1";
-    let params = [status];
+export async function updateTicketStatus(ticketId, status) {
+    const query = `
+        UPDATE tickets 
+        SET status = $1 
+        WHERE ticket_id = $2 
+        RETURNING *
+    `;
+    const res = await dbQuery(query, [status, ticketId]);
+    return res.rows[0];
+}
 
-    if (assignedTo) {
-        query += ", assigned_to = $2";
-        params.push(assignedTo);
-    }
-
-    query += ", created_at = created_at WHERE ticket_id = $" + (params.length + 1) + " RETURNING *";
-    params.push(ticketId);
-
-    const res = await dbQuery(query, params);
+export async function assignTicket(ticketId, assignedTo) {
+    const query = `
+        UPDATE tickets 
+        SET assigned_to = $1, status = 'in_progress'
+        WHERE ticket_id = $2 
+        RETURNING *
+    `;
+    const res = await dbQuery(query, [assignedTo, ticketId]);
     return res.rows[0];
 }

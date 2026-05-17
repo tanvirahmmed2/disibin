@@ -217,6 +217,15 @@ CREATE TRIGGER update_tasks_modtime
 BEFORE UPDATE ON tasks 
 FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
 
+CREATE TABLE task_messages (
+  message_id SERIAL PRIMARY KEY,
+  task_id INT REFERENCES tasks(task_id) ON DELETE CASCADE,
+  user_id INT REFERENCES users(user_id) ON DELETE SET NULL,
+  message TEXT NOT NULL,
+  attachments JSONB DEFAULT '[]',
+  created_at TIMESTAMP DEFAULT now()
+);
+
 -- =====================================================
 -- 7. MESSAGING, TICKET & USER SUPPORT SYSTEMS
 -- =====================================================
@@ -254,8 +263,14 @@ CREATE TABLE supports (
   description TEXT NOT NULL,
   status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'replied')),
   responded_by INT REFERENCES users(user_id) ON DELETE SET NULL,
-  created_at TIMESTAMP DEFAULT now()
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
 );
+
+CREATE TRIGGER update_supports_modtime 
+BEFORE UPDATE ON supports 
+FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
+
 
 CREATE TABLE tickets (
   ticket_id SERIAL PRIMARY KEY,
@@ -323,7 +338,6 @@ CREATE TABLE career_applications (
 CREATE TABLE reviews (
   review_id SERIAL PRIMARY KEY,
   user_id INT REFERENCES users(user_id) ON DELETE CASCADE UNIQUE,
-  product_id INT REFERENCES products(product_id) ON DELETE CASCADE,
   rating INT CHECK (rating BETWEEN 1 AND 5),
   comment TEXT,
   reply TEXT,

@@ -1,11 +1,10 @@
-import React from 'react'
+import TaskBoard from "@/component/dashboard/tasks/TaskBoard";
 
-const TasksManagement = () => {
-  return (
-    <div>
-      
-    </div>
-  )
+export const metadata = {
+    title: "Task Management | Manager Dashboard",
+    description: "Create and manage tasks for your team."
+};
+
+export default function ManagerTasksPage() {
+    return <TaskBoard role="manager" />;
 }
-
-export default TasksManagement

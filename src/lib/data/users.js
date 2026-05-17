@@ -116,3 +116,14 @@ export async function verifyUserEmail(id) {
     const res = await dbQuery(query, [id]);
     return res.rows[0] || null;
 }
+
+export async function getManagementUsers() {
+    const query = `
+        SELECT user_id, name, email, phone, role, image 
+        FROM users 
+        WHERE role IN ('admin', 'manager', 'support', 'developer')
+        AND is_active = TRUE
+    `;
+    const res = await dbQuery(query);
+    return res.rows;
+}
