@@ -1,8 +1,23 @@
 import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/middleware";
-import { toggleUserStatus, updateUserRole } from "@/lib/data/users";
+import { toggleUserStatus, updateUserRole, getAllUsers } from "@/lib/data/users";
+
+export async function GET(req) {
+    try {
+        const auth = await isAdmin();
+        if (!auth.success) {
+            return NextResponse.json(auth, { status: 403 });
+        }
+
+        const users = await getAllUsers();
+        return NextResponse.json({ success: true, data: users });
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}
 
 export async function PATCH(req) {
+
     try {
         const auth = await isAdmin();
         if (!auth.success) {

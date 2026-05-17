@@ -21,6 +21,7 @@ import {
   FiShield,
   FiInbox
 } from 'react-icons/fi'
+import { FaGlobeAsia } from 'react-icons/fa'
 
 const DashboardSidebar = () => {
   const { dashboardSidebar, setDashboardSidebar, userData, logout } = useContext(Context)
@@ -134,6 +135,18 @@ const DashboardSidebar = () => {
               <FiMessageSquare className="text-lg" />
               <span>Internal Chat</span>
             </Link>
+            <Link
+              href="/"
+              onClick={() => setDashboardSidebar(false)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
+                isActive('/dashboard/chat')
+                  ? 'bg-sky-50 text-sky-600'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+              }`}
+            >
+              <FaGlobeAsia className="text-lg" />
+              <span>Web Home</span>
+            </Link>
           </div>
         </div>
 
@@ -147,7 +160,7 @@ const DashboardSidebar = () => {
              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-red-500 hover:bg-red-50 transition-all duration-200"
            >
              <FiActivity className="text-lg rotate-180" />
-             <span>Sign Out</span>
+             <span>Log out</span>
            </button>
         </div>
       </div>

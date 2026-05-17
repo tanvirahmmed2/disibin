@@ -127,3 +127,14 @@ export async function getManagementUsers() {
     const res = await dbQuery(query);
     return res.rows;
 }
+
+export async function getAllUsers() {
+    const query = `
+        SELECT user_id, name, email, phone, role, is_active, is_verified, created_at 
+        FROM users 
+        ORDER BY created_at DESC
+    `;
+    const res = await dbQuery(query);
+    return res.rows;
+}
+

@@ -3,22 +3,21 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
 import { FiStar, FiTrash2, FiCheckCircle, FiClock, FiXCircle } from 'react-icons/fi';
+import DeleteReviewModal from '@/component/forms/DeleteReviewModal';
 
 const ManagerReviewsPage = () => {
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [reviews,       setReviews]       = useState([]);
+  const [loading,       setLoading]       = useState(true);
+  const [deleteTarget,  setDeleteTarget]  = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
-  useEffect(() => {
-    fetchReviews();
-  }, []);
+  useEffect(() => { fetchReviews(); }, []);
 
   const fetchReviews = async () => {
     try {
       const res = await axios.get('/api/review?type=all');
-      if (res.data.success) {
-        setReviews(res.data.data);
-      }
-    } catch (error) {
+      if (res.data.success) setReviews(res.data.data);
+    } catch {
       toast.error('Failed to fetch reviews');
     } finally {
       setLoading(false);
@@ -30,31 +29,34 @@ const ManagerReviewsPage = () => {
       const res = await axios.patch(`/api/review/${id}`, { is_approved: !currentStatus });
       if (res.data.success) {
         toast.success(`Review ${!currentStatus ? 'approved' : 'hidden'} successfully`);
-        setReviews(reviews.map(r => r.review_id === id ? { ...r, is_approved: !currentStatus } : r));
+        setReviews(reviews.map((r) => r.review_id === id ? { ...r, is_approved: !currentStatus } : r));
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to update review status');
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this review completely?')) return;
-    
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleteLoading(true);
     try {
-      const res = await axios.delete(`/api/review/${id}`);
+      const res = await axios.delete(`/api/review/${deleteTarget.review_id}`);
       if (res.data.success) {
         toast.success('Review deleted successfully');
-        setReviews(reviews.filter(r => r.review_id !== id));
+        setReviews(reviews.filter((r) => r.review_id !== deleteTarget.review_id));
+        setDeleteTarget(null);
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete review');
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
   return (
     <div className="p-6 space-y-6">
       <Toaster position="top-center" />
-      
+
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
@@ -77,13 +79,9 @@ const ManagerReviewsPage = () => {
             </thead>
             <tbody className="divide-y divide-slate-50">
               {loading ? (
-                <tr>
-                  <td colSpan="4" className="px-6 py-10 text-center text-slate-400">Loading reviews...</td>
-                </tr>
+                <tr><td colSpan="4" className="px-6 py-10 text-center text-slate-400">Loading reviews...</td></tr>
               ) : reviews.length === 0 ? (
-                <tr>
-                  <td colSpan="4" className="px-6 py-10 text-center text-slate-400">No reviews found</td>
-                </tr>
+                <tr><td colSpan="4" className="px-6 py-10 text-center text-slate-400">No reviews found</td></tr>
               ) : reviews.map((review) => (
                 <tr key={review.review_id} className="hover:bg-slate-50/50 transition-colors">
                   <td className="px-6 py-4">
@@ -96,14 +94,10 @@ const ManagerReviewsPage = () => {
                         <FiStar key={i} className={`w-3 h-3 ${i < review.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
                       ))}
                     </div>
-                    <p className="text-sm text-slate-600 truncate" title={review.comment}>
-                      "{review.comment}"
-                    </p>
+                    <p className="text-sm text-slate-600 truncate" title={review.comment}>"{review.comment}"</p>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 w-max ${
-                      review.is_approved ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'
-                    }`}>
+                    <span className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 w-max ${review.is_approved ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
                       {review.is_approved ? <FiCheckCircle /> : <FiClock />}
                       {review.is_approved ? 'Approved' : 'Pending'}
                     </span>
@@ -111,17 +105,13 @@ const ManagerReviewsPage = () => {
                   <td className="px-6 py-4 text-right space-x-2">
                     <button
                       onClick={() => handleApproval(review.review_id, review.is_approved)}
-                      title={review.is_approved ? "Hide Review" : "Approve Review"}
-                      className={`p-2 rounded-lg transition-all ${
-                        review.is_approved 
-                          ? 'text-amber-500 hover:bg-amber-50' 
-                          : 'text-emerald-500 hover:bg-emerald-50'
-                      }`}
+                      title={review.is_approved ? 'Hide Review' : 'Approve Review'}
+                      className={`p-2 rounded-lg transition-all ${review.is_approved ? 'text-amber-500 hover:bg-amber-50' : 'text-emerald-500 hover:bg-emerald-50'}`}
                     >
                       {review.is_approved ? <FiXCircle size={18} /> : <FiCheckCircle size={18} />}
                     </button>
                     <button
-                      onClick={() => handleDelete(review.review_id)}
+                      onClick={() => setDeleteTarget(review)}
                       title="Delete Review"
                       className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
                     >
@@ -134,6 +124,15 @@ const ManagerReviewsPage = () => {
           </table>
         </div>
       </div>
+
+      {/* ── Delete modal (from component/forms) ── */}
+      <DeleteReviewModal
+        isOpen={!!deleteTarget}
+        review={deleteTarget}
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+        loading={deleteLoading}
+      />
     </div>
   );
 };

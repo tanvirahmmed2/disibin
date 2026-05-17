@@ -2,18 +2,36 @@ import { dbQuery } from "../database/pg";
 import { createLog } from "./logs";
 
 export async function createCoupon(data) {
-    const { code, discount_type, discount_value, min_purchase_amount, max_discount_amount, valid_from, valid_until, usage_limit } = data;
+    const {
+        code, discount, is_percentage, max_discount,
+        usage_limit, start_date, end_date, status, product_id, userId
+    } = data;
+
     const query = `
-        INSERT INTO coupons (code, discount_type, discount_value, min_purchase_amount, max_discount_amount, valid_from, valid_until, usage_limit)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        INSERT INTO coupons (
+            code, discount, is_percentage, max_discount,
+            usage_limit, start_date, end_date, status, product_id, created_by
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING *
     `;
-    const res = await dbQuery(query, [code, discount_type, discount_value, min_purchase_amount, max_discount_amount, valid_from, valid_until, usage_limit]);
+    const res = await dbQuery(query, [
+        code,
+        discount,
+        is_percentage ?? true,
+        max_discount || null,
+        usage_limit || 0,
+        start_date || null,
+        end_date || null,
+        status || 'active',
+        product_id || null,
+        userId || null
+    ]);
     const coupon = res.rows[0];
 
-    if (coupon && data.userId) {
+    if (coupon && userId) {
         await createLog({
-            user_id: data.userId,
+            user_id: userId,
             action: 'CREATE',
             entity_type: 'coupon',
             entity_id: coupon.coupon_id,
@@ -25,18 +43,36 @@ export async function createCoupon(data) {
 }
 
 export async function getAllCoupons() {
-    const res = await dbQuery("SELECT * FROM coupons ORDER BY created_at DESC");
+    const query = `
+        SELECT c.*, p.name AS product_name
+        FROM coupons c
+        LEFT JOIN products p ON c.product_id = p.product_id
+        ORDER BY c.created_at DESC
+    `;
+    const res = await dbQuery(query);
     return res.rows;
 }
 
 export async function getCouponByCode(code) {
-    const res = await dbQuery("SELECT * FROM coupons WHERE code = $1 AND is_active = TRUE", [code]);
+    const res = await dbQuery(
+        "SELECT * FROM coupons WHERE code = $1 AND status = 'active'",
+        [code]
+    );
     return res.rows[0] || null;
 }
 
 export async function updateCoupon(id, data, userId) {
-    const keys = Object.keys(data);
-    const values = Object.values(data);
+    const allowedFields = [
+        'code', 'discount', 'is_percentage', 'max_discount',
+        'usage_limit', 'start_date', 'end_date', 'status', 'product_id'
+    ];
+    const filteredData = Object.fromEntries(
+        Object.entries(data).filter(([k]) => allowedFields.includes(k))
+    );
+    const keys = Object.keys(filteredData);
+    const values = Object.values(filteredData);
+    if (keys.length === 0) return null;
+
     const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(", ");
     const query = `UPDATE coupons SET ${setClause} WHERE coupon_id = $${keys.length + 1} RETURNING *`;
     const res = await dbQuery(query, [...values, id]);
@@ -48,7 +84,7 @@ export async function updateCoupon(id, data, userId) {
             action: 'UPDATE',
             entity_type: 'coupon',
             entity_id: id,
-            details: data
+            details: filteredData
         });
     }
 
@@ -71,6 +107,9 @@ export async function deleteCoupon(id, userId) {
     return coupon;
 }
 
-export async function incrementUsage(id) {
-    await dbQuery("UPDATE coupons SET usage_count = usage_count + 1 WHERE coupon_id = $1", [id]);
+export async function incrementUsedCount(id) {
+    await dbQuery(
+        "UPDATE coupons SET used_count = used_count + 1 WHERE coupon_id = $1",
+        [id]
+    );
 }

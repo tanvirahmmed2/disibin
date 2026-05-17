@@ -1,53 +1,42 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { FaPlus, FaTimes, FaPaperPlane, FaTicketAlt, FaExclamationCircle, FaCheckCircle, FaClock, FaSpinner } from "react-icons/fa";
+import { FaPlus, FaTicketAlt, FaClock, FaSpinner, FaCheckCircle } from "react-icons/fa";
 import toast from "react-hot-toast";
+import NewTicketModal  from "@/component/forms/NewTicketModal";
+import TicketReplyForm from "@/component/forms/TicketReplyForm";
 
+// ── pure data helpers ──────────────────────────────────────────────────────
 const STATUS_STYLES = {
-    open: { label: "Open", bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200", icon: <FaClock size={11} /> },
-    in_progress: { label: "In Progress", bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200", icon: <FaSpinner size={11} /> },
-    resolved: { label: "Resolved", bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200", icon: <FaCheckCircle size={11} /> },
-    closed: { label: "Closed", bg: "bg-gray-100", text: "text-gray-500", border: "border-gray-200", icon: <FaCheckCircle size={11} /> },
+    open:        { label: "Open",        bg: "bg-blue-50",   text: "text-blue-700",   border: "border-blue-200",  icon: <FaClock size={11} /> },
+    in_progress: { label: "In Progress", bg: "bg-amber-50",  text: "text-amber-700",  border: "border-amber-200", icon: <FaSpinner size={11} /> },
+    resolved:    { label: "Resolved",    bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200", icon: <FaCheckCircle size={11} /> },
+    closed:      { label: "Closed",      bg: "bg-gray-100",  text: "text-gray-500",   border: "border-gray-200",  icon: <FaCheckCircle size={11} /> },
 };
 const PRIORITY_STYLES = {
-    low: "text-gray-400",
-    medium: "text-blue-500",
-    high: "text-orange-500",
-    urgent: "text-red-600",
+    low: "text-gray-400", medium: "text-blue-500", high: "text-orange-500", urgent: "text-red-600",
 };
+const formatDate = (d) =>
+    d ? new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "";
 
+// ── page ───────────────────────────────────────────────────────────────────
 export default function UserTicketsPage() {
-    const [tickets, setTickets] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [activeTicket, setActiveTicket] = useState(null);
-    const [messages, setMessages] = useState([]);
+    const [tickets,       setTickets]       = useState([]);
+    const [loading,       setLoading]       = useState(true);
+    const [activeTicket,  setActiveTicket]  = useState(null);
+    const [messages,      setMessages]      = useState([]);
     const [loadingThread, setLoadingThread] = useState(false);
-    const [reply, setReply] = useState("");
     const [currentUserId, setCurrentUserId] = useState(null);
+    const [showModal,     setShowModal]     = useState(false);
     const messagesEndRef = useRef(null);
 
-    // New ticket modal
-    const [showModal, setShowModal] = useState(false);
-    const [form, setForm] = useState({ subject: "", message: "", priority: "medium" });
-    const [submitting, setSubmitting] = useState(false);
-
-    useEffect(() => {
-        fetchMe();
-        fetchTickets();
-    }, []);
-
-    useEffect(() => {
-        if (activeTicket) fetchThread(activeTicket.ticket_id);
-    }, [activeTicket]);
-
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
+    useEffect(() => { fetchMe(); fetchTickets(); }, []);
+    useEffect(() => { if (activeTicket) fetchThread(activeTicket.ticket_id); }, [activeTicket]);
+    useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
     const fetchMe = async () => {
         try {
-            const res = await fetch("/api/user/me");
+            const res  = await fetch("/api/user/me");
             const data = await res.json();
             if (data.success) setCurrentUserId(data.data.id);
         } catch {}
@@ -56,7 +45,7 @@ export default function UserTicketsPage() {
     const fetchTickets = async () => {
         setLoading(true);
         try {
-            const res = await fetch("/api/ticket");
+            const res  = await fetch("/api/ticket");
             const data = await res.json();
             if (data.success) setTickets(data.data);
             else toast.error(data.message);
@@ -70,7 +59,7 @@ export default function UserTicketsPage() {
     const fetchThread = async (ticketId) => {
         setLoadingThread(true);
         try {
-            const res = await fetch(`/api/ticket/${ticketId}`);
+            const res  = await fetch(`/api/ticket/${ticketId}`);
             const data = await res.json();
             if (data.success) setMessages(data.data.messages || []);
             else toast.error(data.message);
@@ -81,59 +70,12 @@ export default function UserTicketsPage() {
         }
     };
 
-    const sendReply = async (e) => {
-        e.preventDefault();
-        if (!reply.trim() || !activeTicket) return;
-        try {
-            const res = await fetch(`/api/ticket/${activeTicket.ticket_id}/message`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: reply }),
-            });
-            const data = await res.json();
-            if (data.success) {
-                setMessages((prev) => [...prev, { ...data.data, user_name: "You", user_role: "user" }]);
-                setReply("");
-            } else {
-                toast.error(data.message);
-            }
-        } catch {
-            toast.error("Failed to send reply");
-        }
-    };
-
-    const submitTicket = async (e) => {
-        e.preventDefault();
-        if (!form.subject || !form.message) return;
-        setSubmitting(true);
-        try {
-            const res = await fetch("/api/ticket", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form),
-            });
-            const data = await res.json();
-            if (data.success) {
-                toast.success("Ticket submitted!");
-                setShowModal(false);
-                setForm({ subject: "", message: "", priority: "medium" });
-                fetchTickets();
-            } else {
-                toast.error(data.message);
-            }
-        } catch {
-            toast.error("Failed to submit ticket");
-        } finally {
-            setSubmitting(false);
-        }
-    };
-
-    const formatDate = (d) =>
-        d ? new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "";
+    const handleReplySent = (newMsg) => setMessages((prev) => [...prev, newMsg]);
 
     return (
         <div className="min-h-screen bg-gray-50">
             <div className="max-w-6xl mx-auto px-4 py-8">
+
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <div>
@@ -149,7 +91,8 @@ export default function UserTicketsPage() {
                 </div>
 
                 <div className="flex gap-4 h-[calc(100vh-12rem)]">
-                    {/* Ticket List */}
+
+                    {/* ── Ticket List ── */}
                     <div className="w-full max-w-sm flex-shrink-0 flex flex-col bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                         <div className="p-3 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wide">
                             {tickets.length} Ticket{tickets.length !== 1 ? "s" : ""}
@@ -166,7 +109,7 @@ export default function UserTicketsPage() {
                                 </div>
                             ) : (
                                 tickets.map((t) => {
-                                    const s = STATUS_STYLES[t.status] || STATUS_STYLES.open;
+                                    const s        = STATUS_STYLES[t.status] || STATUS_STYLES.open;
                                     const isActive = activeTicket?.ticket_id === t.ticket_id;
                                     return (
                                         <div
@@ -193,7 +136,7 @@ export default function UserTicketsPage() {
                         </div>
                     </div>
 
-                    {/* Thread Viewer */}
+                    {/* ── Thread Viewer ── */}
                     <div className="flex-1 flex flex-col bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                         {activeTicket ? (
                             <>
@@ -259,27 +202,12 @@ export default function UserTicketsPage() {
                                     <div ref={messagesEndRef} />
                                 </div>
 
-                                {/* Reply */}
-                                {activeTicket.status !== "closed" && activeTicket.status !== "resolved" && (
-                                    <div className="p-4 border-t border-gray-100 bg-white">
-                                        <form onSubmit={sendReply} className="flex gap-2">
-                                            <input
-                                                type="text"
-                                                value={reply}
-                                                onChange={(e) => setReply(e.target.value)}
-                                                placeholder="Add a reply..."
-                                                className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                            />
-                                            <button
-                                                type="submit"
-                                                disabled={!reply.trim()}
-                                                className="p-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors disabled:bg-gray-200 disabled:cursor-not-allowed"
-                                            >
-                                                <FaPaperPlane size={14} />
-                                            </button>
-                                        </form>
-                                    </div>
-                                )}
+                                {/* ── Reply form (from component/forms) ── */}
+                                <TicketReplyForm
+                                    ticket={activeTicket}
+                                    onSent={handleReplySent}
+                                    currentUserId={currentUserId}
+                                />
                             </>
                         ) : (
                             <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
@@ -292,68 +220,12 @@ export default function UserTicketsPage() {
                 </div>
             </div>
 
-            {/* New Ticket Modal */}
-            {showModal && (
-                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-                        <div className="p-4 border-b border-gray-100 flex justify-between items-center">
-                            <h3 className="font-bold text-gray-800">Submit a New Ticket</h3>
-                            <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
-                                <FaTimes size={20} />
-                            </button>
-                        </div>
-                        <form onSubmit={submitTicket} className="p-4 space-y-4">
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Subject *</label>
-                                <input
-                                    type="text"
-                                    value={form.subject}
-                                    onChange={(e) => setForm((p) => ({ ...p, subject: e.target.value }))}
-                                    placeholder="Briefly describe your issue"
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Message *</label>
-                                <textarea
-                                    value={form.message}
-                                    onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
-                                    placeholder="Describe your issue in detail..."
-                                    rows={4}
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Priority</label>
-                                <select
-                                    value={form.priority}
-                                    onChange={(e) => setForm((p) => ({ ...p, priority: e.target.value }))}
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                    <option value="urgent">Urgent</option>
-                                </select>
-                            </div>
-                            <div className="flex justify-end gap-2 pt-1">
-                                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg">
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={submitting}
-                                    className="px-5 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 shadow-sm"
-                                >
-                                    {submitting ? "Submitting..." : "Submit Ticket"}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+            {/* ── New ticket modal (from component/forms) ── */}
+            <NewTicketModal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                onSuccess={fetchTickets}
+            />
         </div>
     );
 }

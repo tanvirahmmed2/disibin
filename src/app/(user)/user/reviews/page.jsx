@@ -3,73 +3,47 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
 import { FiStar, FiTrash2, FiMessageSquare, FiCheckCircle, FiClock } from 'react-icons/fi';
+import ReviewForm from '@/component/forms/ReviewForm';
 
 const UserReviewPage = () => {
-  const [review, setReview] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
+  const [review,     setReview]     = useState(null);
+  const [loading,    setLoading]    = useState(true);
+  const [deleteLoad, setDeleteLoad] = useState(false);
 
-  const [formData, setFormData] = useState({
-    rating: 5,
-    comment: ''
-  });
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  useEffect(() => { fetchData(); }, []);
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      // Fetch user's existing review
-      const reviewRes = await axios.get('/api/review');
-      if (reviewRes.data.success && reviewRes.data.data) {
-        setReview(reviewRes.data.data);
-      }
-    } catch (error) {
+      const res = await axios.get('/api/review');
+      if (res.data.success && res.data.data) setReview(res.data.data);
+    } catch {
       toast.error('Failed to load data');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.comment.trim()) return toast.error('Please write a comment');
-
-    setSubmitting(true);
-    try {
-      const res = await axios.post('/api/review', formData);
-      if (res.data.success) {
-        toast.success('Review submitted successfully!');
-        setReview(res.data.data);
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to submit review');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
   const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete your review?')) return;
-    
+    if (!window.confirm('Delete your review?')) return;
+    setDeleteLoad(true);
     try {
       const res = await axios.delete(`/api/review/${review.review_id}`);
       if (res.data.success) {
         toast.success('Review deleted');
         setReview(null);
-        setFormData({ rating: 5, comment: '' });
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete review');
+    } finally {
+      setDeleteLoad(false);
     }
   };
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-500"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-500" />
       </div>
     );
   }
@@ -77,7 +51,7 @@ const UserReviewPage = () => {
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       <Toaster position="top-center" />
-      
+
       <div>
         <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
           <FiStar className="text-amber-400" /> My Feedback
@@ -86,21 +60,16 @@ const UserReviewPage = () => {
       </div>
 
       {review ? (
+        /* Existing review display */
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-6">
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <span className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 ${
-                  review.is_approved 
-                    ? 'bg-emerald-50 text-emerald-600' 
-                    : 'bg-amber-50 text-amber-600'
-                }`}>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 ${review.is_approved ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
                   {review.is_approved ? <FiCheckCircle /> : <FiClock />}
                   {review.is_approved ? 'Approved & Published' : 'Pending Approval'}
                 </span>
-                <span className="text-sm font-bold text-slate-700 bg-slate-50 px-3 py-1 rounded-full">
-                  General Platform
-                </span>
+                <span className="text-sm font-bold text-slate-700 bg-slate-50 px-3 py-1 rounded-full">General Platform</span>
               </div>
               <div className="flex items-center gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
@@ -110,16 +79,17 @@ const UserReviewPage = () => {
             </div>
             <button
               onClick={handleDelete}
-              className="flex items-center gap-2 px-4 py-2 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors font-medium text-sm"
+              disabled={deleteLoad}
+              className="flex items-center gap-2 px-4 py-2 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors font-medium text-sm disabled:opacity-50"
             >
-              <FiTrash2 /> Delete
+              <FiTrash2 /> {deleteLoad ? 'Deleting...' : 'Delete'}
             </button>
           </div>
-          
+
           <div className="p-4 bg-slate-50 rounded-xl">
             <p className="text-slate-700 italic">"{review.comment}"</p>
           </div>
-          
+
           {review.reply && (
             <div className="p-4 bg-sky-50 rounded-xl border border-sky-100 flex gap-3">
               <FiMessageSquare className="text-sky-500 mt-1 shrink-0" />
@@ -131,45 +101,8 @@ const UserReviewPage = () => {
           )}
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-700">Your Rating</label>
-            <div className="flex items-center gap-2">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  type="button"
-                  key={star}
-                  onClick={() => setFormData({...formData, rating: star})}
-                  className="focus:outline-none transform hover:scale-110 transition-transform"
-                >
-                  <FiStar className={`w-8 h-8 ${star <= formData.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-700">Your Comment</label>
-            <textarea
-              required
-              rows={4}
-              value={formData.comment}
-              onChange={(e) => setFormData({...formData, comment: e.target.value})}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all resize-none"
-              placeholder="Tell us what you think..."
-            />
-          </div>
-
-          <div className="flex justify-end pt-2">
-            <button
-              type="submit"
-              disabled={submitting}
-              className="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-sky-600 transition-all shadow-lg shadow-slate-200 disabled:opacity-50"
-            >
-              {submitting ? 'Submitting...' : 'Submit Review'}
-            </button>
-          </div>
-        </form>
+        /* ReviewForm from component/forms */
+        <ReviewForm onSuccess={(data) => setReview(data)} />
       )}
     </div>
   );
