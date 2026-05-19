@@ -1,6 +1,7 @@
 'use client'
 import About from '@/component/pages/About'
 import Bio from '@/component/pages/Bio'
+import ContactRedirect from '@/component/pages/ContactRedirect'
 import Intro from '@/component/pages/Intro'
 import Reviews from '@/component/pages/Reviews'
 import React from 'react'
@@ -14,6 +15,7 @@ const MainPage = () => {
       <Bio />
       <About />
       <Reviews />
+      <ContactRedirect/>
     </main>
   )
 }
