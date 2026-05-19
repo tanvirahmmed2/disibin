@@ -54,7 +54,7 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex items-center justify-center px-4 py-24">
+    <div className="w-full min-h-screen flex items-center justify-center p-4 ">
 
       <Toaster position="top-center" />
 
@@ -63,11 +63,9 @@ const ContactPage = () => {
         <div className="flex flex-col gap-8">
 
           <div className="flex flex-col gap-4">
-            <p className="uppercase tracking-[0.3em] text-xs text-sky-600 font-semibold">
-              Contact & Support
-            </p>
+            
 
-            <h1 className="text-5xl sm:text-7xl font-jersey leading-none text-slate-900">
+            <h1 className="text-6xl sm:text-8xl font-poppins leading-none text-slate-900">
               Let’s build something exceptional.
             </h1>
 
