@@ -35,23 +35,23 @@ const ForgotPasswordForm = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] py-20 px-4">
-      <div className="w-full max-w-md bg-white p-10 rounded-[32px] border border-slate-100 shadow-2xl shadow-slate-200/50">
-        <h1 className="text-3xl font-bold mb-2 tracking-tight text-slate-900">Reset Password</h1>
-        <p className="text-slate-500 text-sm mb-10 font-medium">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4">
+      <div className="w-full max-w-3xl flex flex-col items-center justify-center gap-5 bg-white p-4 rounded-lg">
+        <h1 className="text-3xl font-bold  tracking-tight text-slate-900">Reset Password</h1>
+        <p className="text-slate-500 text-sm  font-medium">
           {submitted
             ? 'Check your inbox for a reset link.'
             : "Enter your email and we'll send you a link to reset your password."}
         </p>
 
         {!submitted ? (
-          <form className="space-y-5" onSubmit={handleSubmit}>
-            <div className="space-y-1.5">
+          <form className="w-full flex flex-col gap-3" onSubmit={handleSubmit}>
+            <div className="w-full flex flex-col gap-2">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Email Address</label>
               <input
                 type="email"
                 placeholder="name@company.com"
-                className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-sky-500 transition-all outline-none"
+                className="w-full px-4 p-2 border border-black/20 rounded-lg outline-none"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -59,18 +59,18 @@ const ForgotPasswordForm = () => {
             </div>
             <button
               disabled={loading}
-              className="w-full py-4 rounded-2xl bg-slate-900 text-white font-bold hover:bg-sky-600 transition-all duration-300 mt-4 shadow-xl shadow-slate-900/10 disabled:bg-slate-400"
+              className="w-full py-2 rounded-lg cursor-pointer bg-slate-900 text-white font-bold hover:bg-sky-600 transition-all duration-300 mt-4 shadow-xl shadow-slate-900/10 disabled:bg-slate-400"
             >
               {loading ? 'Sending Link...' : 'Send Reset Link'}
             </button>
           </form>
         ) : (
-          <div className="text-center mt-6">
+          <div className="text-center ">
             <button
               onClick={() => setSubmitted(false)}
               className="text-sky-500 font-bold hover:underline"
             >
-              Didn't receive the email? Try again
+              Didn&apos;t receive the email? Try again
             </button>
           </div>
         )}
