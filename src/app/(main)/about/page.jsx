@@ -30,9 +30,8 @@ const AboutPage = () => {
   ];
 
   return (
-    <div className="bg-white text-slate-900 w-full">
+    <div className=" text-slate-900 w-full">
 
-      {/* ── Hero ─────────────────────────────────────────── */}
       <section className="w-full max-w-7xl mx-auto px-6 pt-16 pb-24 md:pt-24 md:pb-32">
         <motion.div
           initial="hidden"

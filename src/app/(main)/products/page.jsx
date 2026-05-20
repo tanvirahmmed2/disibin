@@ -34,7 +34,7 @@ const ProductsPage = () => {
   }
 
   return (
-    <div className="min-h-screen  py-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen w-full py-16 px-4 sm:px-6 lg:px-8">
       <div className="w-full mx-auto">
 
         <div className="text-center mb-16">
@@ -46,7 +46,7 @@ const ProductsPage = () => {
           </p>
         </div>
 
-        <div className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="w-full mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
           {products.map((product) => (
             <div key={product.product_id} className="bg-white flex flex-col gap-4 md:even:flex-col-reverse overflow-hidden">
 
