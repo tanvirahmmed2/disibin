@@ -1,10 +1,10 @@
 'use client'
 import About from '@/component/pages/About'
 import Bio from '@/component/pages/Bio'
-import ContactRedirect from '@/component/pages/ContactRedirect'
 import Intro from '@/component/pages/Intro'
 import Reviews from '@/component/pages/Reviews'
 import React from 'react'
+import ProductsPage from './products/page'
 
 
 const MainPage = () => {
@@ -14,8 +14,8 @@ const MainPage = () => {
       <Intro />
       <Bio />
       <About />
+      <ProductsPage/>
       <Reviews />
-      <ContactRedirect/>
     </main>
   )
 }

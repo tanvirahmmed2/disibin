@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
-import { FiArrowRight, FiCheck } from 'react-icons/fi';
+import { FiCheck } from 'react-icons/fi';
 import Image from 'next/image';
 
 const ProductsPage = () => {

@@ -6,8 +6,8 @@ import { FiStar, FiTrash2, FiMessageSquare, FiCheckCircle, FiClock } from 'react
 import ReviewForm from '@/component/forms/ReviewForm';
 
 const UserReviewPage = () => {
-  const [review,     setReview]     = useState(null);
-  const [loading,    setLoading]    = useState(true);
+  const [review, setReview] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [deleteLoad, setDeleteLoad] = useState(false);
 
   useEffect(() => { fetchData(); }, []);
@@ -15,7 +15,7 @@ const UserReviewPage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('/api/review');
+      const res = await axios.get('/api/review?type=user');
       if (res.data.success && res.data.data) setReview(res.data.data);
     } catch {
       toast.error('Failed to load data');

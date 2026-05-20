@@ -40,9 +40,17 @@ export async function POST(req) {
             { expiresIn: "7d" }
         );
 
+        // Remove password from response
+        const { password: _, ...userData } = user;
+
+        const response = NextResponse.json({
+            success: true,
+            message: "Login successful",
+            data: userData
+        });
+
         // Set Cookie
-        const cookieStore = await cookies();
-        cookieStore.set("disibin", token, {
+        response.cookies.set("disibin", token, {
             httpOnly: true,
             secure: NODE_ENV === "production",
             sameSite: "strict",
@@ -50,14 +58,7 @@ export async function POST(req) {
             path: "/",
         });
 
-        // Remove password from response
-        const { password: _, ...userData } = user;
-
-        return NextResponse.json({
-            success: true,
-            message: "Login successful",
-            data: userData
-        });
+        return response;
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

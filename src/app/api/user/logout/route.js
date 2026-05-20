@@ -3,8 +3,12 @@ import { cookies } from "next/headers";
 
 export async function POST() {
     try {
-        const cookieStore = await cookies();
-        cookieStore.set("disibin", "", {
+        const response = NextResponse.json({
+            success: true,
+            message: "Logged out successfully"
+        });
+
+        response.cookies.set("disibin", "", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
@@ -12,10 +16,7 @@ export async function POST() {
             path: "/",
         });
 
-        return NextResponse.json({
-            success: true,
-            message: "Logged out successfully"
-        });
+        return response;
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

@@ -15,19 +15,30 @@ const ContextProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('disibin_user');
-    if (savedUser) {
-      setUserData(JSON.parse(savedUser));
-      setIsLoggedIn(true);
-    }
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('/api/user');
+        const data = await response.json();
+        
+        if (data.success && data.data) {
+          setUserData(data.data);
+          setIsLoggedIn(true);
+        } else {
+          setUserData(null);
+          setIsLoggedIn(false);
+        }
+      } catch (error) {
+        console.error("Session verification failed:", error);
+      }
+    };
+
+    fetchUser();
   }, []);
 
   useEffect(() => {
     if (userData) {
-      localStorage.setItem('disibin_user', JSON.stringify(userData));
       setIsLoggedIn(true);
     } else {
-      localStorage.removeItem('disibin_user');
       setIsLoggedIn(false);
     }
   }, [userData]);

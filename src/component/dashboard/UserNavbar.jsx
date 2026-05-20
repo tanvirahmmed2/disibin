@@ -16,7 +16,7 @@ const UserNavbar = () => {
                 </button>
         <Link href={'/'} className='text-xl'>Home</Link>
         </div>
-        <button className='px-6 p-2 rounded-2xl cursor-pointer bg-sky-500 text-white' onClick={()=>logout()}>Logout</button>
+        <button className='px-6 p-1 rounded-2xl cursor-pointer bg-sky-500 text-white' onClick={()=>logout()}>Logout</button>
         
       
     </div>

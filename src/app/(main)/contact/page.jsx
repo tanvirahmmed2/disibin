@@ -1,6 +1,7 @@
 
 'use client';
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { toast, Toaster } from 'react-hot-toast';
 
 const ContactPage = () => {
@@ -54,7 +55,7 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex items-center justify-center p-4 ">
+    <div className="w-full min-h-screen flex items-center justify-center p-4 py-10 ">
 
       <Toaster position="top-center" />
 
@@ -109,11 +110,11 @@ const ContactPage = () => {
           </div>
         </div>
 
-        <div className="w-full">
+        <motion.div initial={{opacity:0, x:20}} whileInView={{opacity:1, x:0}} transition={{duration:0.6}} className="w-full">
 
           <form
             onSubmit={handleSubmit}
-            className="w-full bg-white backdrop-blur-xl border border-slate-900 shadow rounded-3xl p-6 sm:p-10 flex flex-col gap-5"
+            className="w-full bg-white backdrop-blur-xl  shadow rounded-lg p-6 sm:p-10 flex flex-col gap-5"
           >
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -125,7 +126,7 @@ const ContactPage = () => {
                 onChange={handleChange}
                 placeholder="Full Name"
                 required
-                className="w-full px-5 py-4 rounded-2xl  bg-slate-50 border border-slate-900 outline-none focus:border-sky-400 transition-all duration-300"
+                className="w-full px-5 py-4 rounded-2xl  bg-slate-100 outline-none focus:border-sky-400 transition-all duration-300"
               />
 
               <input
@@ -135,7 +136,7 @@ const ContactPage = () => {
                 onChange={handleChange}
                 placeholder="Email Address"
                 required
-                className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-900 outline-none focus:border-sky-400 transition-all duration-300"
+                className="w-full px-5 py-4 rounded-2xl bg-slate-100 outline-none focus:border-sky-400 transition-all duration-300"
               />
 
             </div>
@@ -146,7 +147,7 @@ const ContactPage = () => {
               value={formData.subject}
               onChange={handleChange}
               placeholder="Subject"
-              className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-900 outline-none focus:border-sky-400 transition-all duration-300"
+              className="w-full px-5 py-4 rounded-2xl bg-slate-100 outline-none focus:border-sky-400 transition-all duration-300"
             />
 
             <textarea
@@ -156,7 +157,7 @@ const ContactPage = () => {
               placeholder="Tell us about your project, business goals, or technical requirements..."
               rows={6}
               required
-              className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-900 outline-none resize-none focus:border-sky-400 transition-all duration-300"
+              className="w-full px-5 py-4 rounded-2xl bg-slate-100 outline-none resize-none focus:border-sky-400 transition-all duration-300"
             />
 
             <button
@@ -202,7 +203,7 @@ const ContactPage = () => {
             </button>
 
           </form>
-        </div>
+        </motion.div>
 
 
       </div>

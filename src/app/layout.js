@@ -2,6 +2,7 @@ import { Lora, Jersey_10, Silkscreen, Poppins } from 'next/font/google';
 import ContextProvider from "@/component/helper/Context";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
+import SmoothScroll from '@/component/pages/SmoothScroll';
 
 const lora = Lora({
   subsets: ['latin'],
@@ -35,11 +36,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${lora.variable}  ${jersey.variable} ${silkscreen.variable} ${poppins.variable} antialiased bg-gray-100 w-full`}>
-        <ContextProvider>
+      <body className={`${lora.variable}  ${jersey.variable} ${silkscreen.variable} ${poppins.variable} scroll-smooth antialiased bg-gray-100 w-full`}>
+        <SmoothScroll>
+          <ContextProvider>
           <Toaster position="top-right" />
           <main>{children}</main>
         </ContextProvider>
+        </SmoothScroll>
       </body>
     </html>
   );
