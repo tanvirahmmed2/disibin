@@ -1,7 +1,9 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import axios from 'axios';
 import { FiStar } from 'react-icons/fi';
+import { MdVerifiedUser } from "react-icons/md";
 
 const Reviews = () => {
   const [reviews, setReviews] = useState([]);
@@ -27,27 +29,26 @@ const Reviews = () => {
   if (reviews.length === 0) return null;
 
   return (
-    <section className="w-full py-16 bg-white rounded-[2.5rem] shadow-xl shadow-slate-100 border border-slate-100 p-8 my-8">
-      <div className="max-w-4xl mx-auto text-center mb-10">
-        <h2 className="text-3xl font-extrabold text-slate-900 mb-2">What Our Users Say</h2>
-        <p className="text-slate-500">Real feedback from real users of Disibin.</p>
-      </div>
+    <section className="w-full py-16  rounded-[2.5rem] shadow-xl shadow-slate-100  p-4 my-8 flex flex-col items-center justify-center gap-8">
+      
+        <h2 className="text-3xl md:text-5xl font-poppins text-slate-900">What Our Clients Say</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 w-full">
         {reviews.map((r) => (
-          <div key={r.review_id} className="p-6 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col justify-between">
-            <div>
-              <div className="flex gap-1 mb-3 text-amber-400">
+          <div key={r.review_id} className="p-4 bg-white rounded-md even:py-10 border border-slate-100 flex flex-col justify-between">
+            <div className='flex flex-col gap-3'>
+              <p className="text-slate-600 text-sm italic">&quot;{r.comment}&quot;</p>
+              <div className="flex gap-1  text-amber-400">
                 {[...Array(5)].map((_, i) => (
                   <FiStar key={i} fill={i < r.rating ? "currentColor" : "none"} />
                 ))}
               </div>
-              <p className="text-slate-600 text-sm italic">"{r.comment}"</p>
+              <div className='flex flex-row items-center gap-4'>
+                <MdVerifiedUser className='text-sky-400'/>
+                <p className="font-bold text-slate-900 text-sm">{r.user_name}</p>
+              </div>
             </div>
-            <div className="mt-4 border-t border-slate-200 pt-3">
-              <div className="font-bold text-slate-900 text-sm">{r.user_name}</div>
-              <div className="text-xs text-slate-400">{new Date(r.created_at).toLocaleDateString()}</div>
-            </div>
+            
           </div>
         ))}
       </div>

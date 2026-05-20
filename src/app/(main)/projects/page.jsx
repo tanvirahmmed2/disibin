@@ -36,7 +36,7 @@ const ProjectsPage = () => {
     <div className="min-h-screen bg-linear-to-b from-slate-50 to-white py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h1 className="text-4xl sm:text-7xl bg-clip-text font-jersey">
+          <h1 className="text-4xl sm:text-7xl bg-clip-text font-poppins">
             Our Successful Projects
           </h1>
           <p className="mt-4 text-xl text-slate-600 max-w-2xl mx-auto">

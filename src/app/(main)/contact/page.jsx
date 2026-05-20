@@ -63,44 +63,45 @@ const ContactPage = () => {
         <div className="flex flex-col gap-8">
 
           <div className="flex flex-col gap-4">
-            
+
 
             <h1 className="text-6xl sm:text-8xl font-poppins leading-none text-slate-900">
               Let’s build something exceptional.
             </h1>
 
-            <p className="font-poppins text-slate-600 text-lg leading-relaxed max-w-xl">
+            <p className="font-poppins text-slate-600 text-lg leading-relaxed ">
               Have a complex challenge, innovative startup, or enterprise-scale
               project? Our strategy, development, and support teams are ready
               to collaborate with you.
             </p>
           </div>
 
-          <div className="flex flex-col gap-4 font-poppins">
+          <div className="flex flex-col gap-4 font-poppins items-center justify-center w-full max-w-xl">
+            
 
-            <div className="flex flex-col gap-1">
-              <span className="text-sm uppercase tracking-widest text-slate-400">
+            <div className="w-full grid grid-cols-3 sm:grid-cols-5 py-4 border-b border-slate-200">
+              <span className="text-slate-800 ">
                 Email
               </span>
-              <p className="text-slate-800 text-lg">
+              <p className="text-slate-800 ">
                 disibin@gmail.com
               </p>
             </div>
 
-            <div className="flex flex-col gap-1">
-              <span className="text-sm uppercase tracking-widest text-slate-400">
+            <div className="w-full grid grid-cols-3 sm:grid-cols-5 py-4 border-b border-slate-200">
+              <span className="text-slate-800 ">
                 Phone
               </span>
-              <p className="text-slate-800 text-lg">
+              <p className="text-slate-800 ">
                 +8801805003886
               </p>
             </div>
 
-            <div className="flex flex-col gap-1">
-              <span className="text-sm uppercase tracking-widest text-slate-400">
-                Address
+            <div className="w-full grid grid-cols-3 sm:grid-cols-5 py-4 border-b border-slate-200">
+              <span className="text-slate-800 ">
+                Office
               </span>
-              <p className="text-slate-800 text-lg">
+              <p className="text-slate-800 ">
                 Mymensingh, Bangladesh
               </p>
             </div>
@@ -112,7 +113,7 @@ const ContactPage = () => {
 
           <form
             onSubmit={handleSubmit}
-            className="w-full bg-white/80 backdrop-blur-xl border border-white/50 shadow rounded-3xl p-6 sm:p-10 flex flex-col gap-5"
+            className="w-full bg-white backdrop-blur-xl border border-slate-900 shadow rounded-3xl p-6 sm:p-10 flex flex-col gap-5"
           >
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -124,7 +125,7 @@ const ContactPage = () => {
                 onChange={handleChange}
                 placeholder="Full Name"
                 required
-                className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:border-sky-400 transition-all duration-300"
+                className="w-full px-5 py-4 rounded-2xl  bg-slate-50 border border-slate-900 outline-none focus:border-sky-400 transition-all duration-300"
               />
 
               <input
@@ -134,7 +135,7 @@ const ContactPage = () => {
                 onChange={handleChange}
                 placeholder="Email Address"
                 required
-                className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:border-sky-400 transition-all duration-300"
+                className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-900 outline-none focus:border-sky-400 transition-all duration-300"
               />
 
             </div>
@@ -144,8 +145,8 @@ const ContactPage = () => {
               name="subject"
               value={formData.subject}
               onChange={handleChange}
-              placeholder="Project Subject"
-              className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:border-sky-400 transition-all duration-300"
+              placeholder="Subject"
+              className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-900 outline-none focus:border-sky-400 transition-all duration-300"
             />
 
             <textarea
@@ -155,17 +156,16 @@ const ContactPage = () => {
               placeholder="Tell us about your project, business goals, or technical requirements..."
               rows={6}
               required
-              className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none resize-none focus:border-sky-400 transition-all duration-300"
+              className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-900 outline-none resize-none focus:border-sky-400 transition-all duration-300"
             />
 
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-4 rounded-2xl bg-slate-900 text-white font-semibold hover:bg-sky-600 transition-all duration-300 flex items-center justify-center gap-3 ${
-                loading
-                  ? 'opacity-70 cursor-not-allowed'
-                  : 'cursor-pointer'
-              }`}
+              className={`w-full py-4 rounded-2xl bg-slate-900 text-white font-semibold hover:bg-sky-600 transition-all duration-300 flex items-center justify-center gap-3 ${loading
+                ? 'opacity-70 cursor-not-allowed'
+                : 'cursor-pointer'
+                }`}
             >
               {loading ? (
                 <>
@@ -203,6 +203,8 @@ const ContactPage = () => {
 
           </form>
         </div>
+
+
       </div>
     </div>
   );

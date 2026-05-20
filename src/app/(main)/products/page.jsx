@@ -38,7 +38,7 @@ const ProductsPage = () => {
       <div className="w-full mx-auto">
 
         <div className="text-center mb-16">
-          <h1 className="text-4xl text-slate-900 sm:text-7xl bg-clip-text  font-jersey">
+          <h1 className="text-4xl text-slate-900 sm:text-7xl bg-clip-text  font-poppins">
             Our Premium Products
           </h1>
           <p className="mt-4 text-xl text-slate-600 max-w-2xl mx-auto font-poppins">
