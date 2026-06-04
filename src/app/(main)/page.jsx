@@ -20,8 +20,8 @@ const MainPage = () => {
       <About />
       <Services/>
       <CaseStudies/>
-      <Team/>
       <FAQ/>
+      <Team/>
       <Reviews />
       <Partners />
     </main>
