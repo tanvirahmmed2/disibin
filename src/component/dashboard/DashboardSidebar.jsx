@@ -13,9 +13,10 @@ import {
   FiStar,
   FiShield,
   FiInbox,
-  FiBox
+  FiBox,
+  FiCheckSquare
 } from 'react-icons/fi'
-import { FaGlobeAsia } from 'react-icons/fa'
+import { FaGlobeAsia, FaHandshake } from 'react-icons/fa'
 
 const DashboardSidebar = () => {
   const { dashboardSidebar, setDashboardSidebar, userData, logout } = useContext(Context)
@@ -23,31 +24,36 @@ const DashboardSidebar = () => {
 
   const role = userData?.role || ''
 
+  // ── Canonical link map ── keep in sync with DashboardOverview.jsx ──
   const links = {
     admin: [
-      { name: 'Analytics', href: '/dashboard/admin/analytics', icon: <FiPieChart /> },
-      { name: 'Activity Logs', href: '/dashboard/admin/activity', icon: <FiActivity /> },
-      { name: 'People', href: '/dashboard/admin/people', icon: <FiUser /> },
-      { name: 'Team', href: '/dashboard/admin/team', icon: <FiShield /> },
-      { name: 'Careers', href: '/dashboard/admin/career', icon: <FiBriefcase /> },
+      { name: 'Analytics',     href: '/dashboard/admin/analytics', icon: <FiPieChart /> },
+      { name: 'Activity Logs', href: '/dashboard/admin/activity',  icon: <FiActivity /> },
+      { name: 'People',        href: '/dashboard/admin/people',    icon: <FiUser />     },
+      { name: 'Team',          href: '/dashboard/admin/team',      icon: <FiShield />   },
+      { name: 'Careers',       href: '/dashboard/admin/career',    icon: <FiBriefcase /> },
+      { name: 'Broadcast',     href: '/dashboard/manager/broadcast', icon: <FiInbox /> },
     ],
     manager: [
-      { name: 'Analytics', href: '/dashboard/manager/analytics', icon: <FiPieChart /> },
-      { name: 'Projects', href: '/dashboard/manager/projects', icon: <FiBriefcase /> },
-      { name: 'Products', href: '/dashboard/manager/products', icon: <FiBox /> },
-      { name: 'Reviews', href: '/dashboard/manager/reviews', icon: <FiStar /> },
-      { name: 'Tickets', href: '/dashboard/manager/tickets', icon: <FiLifeBuoy /> },
-      { name: 'Activity', href: '/dashboard/manager/activity', icon: <FiActivity /> },
+      { name: 'Analytics',  href: '/dashboard/manager/analytics', icon: <FiPieChart />   },
+      { name: 'Projects',   href: '/dashboard/manager/projects',  icon: <FiBriefcase />  },
+      { name: 'Products',   href: '/dashboard/manager/products',  icon: <FiBox />        },
+      { name: 'Reviews',    href: '/dashboard/manager/reviews',   icon: <FiStar />       },
+      { name: 'Tickets',    href: '/dashboard/manager/tickets',   icon: <FiLifeBuoy />   },
+      { name: 'Partners',   href: '/dashboard/manager/partners',  icon: <FaHandshake />  },
+      { name: 'Broadcast',  href: '/dashboard/manager/broadcast', icon: <FiInbox />      },
+      { name: 'Activity',   href: '/dashboard/manager/activity',  icon: <FiActivity />   },
     ],
     support: [
-      { name: 'Support Inbox', href: '/dashboard/support/support', icon: <FiInbox /> },
-      { name: 'Tickets', href: '/dashboard/support/tickets', icon: <FiLifeBuoy /> },
+      { name: 'Support Inbox', href: '/dashboard/support/support', icon: <FiInbox />    },
+      { name: 'Tickets',       href: '/dashboard/support/tickets', icon: <FiLifeBuoy /> },
     ],
     developer: [
-      { name: 'My Projects', href: '/dashboard/developer/projects', icon: <FiBriefcase /> },
-      { name: 'My Tasks', href: '/dashboard/developer/tasks', icon: <FiActivity /> },
-    ]
+      { name: 'My Projects', href: '/dashboard/developer/projects', icon: <FiBriefcase />   },
+      { name: 'My Tasks',    href: '/dashboard/developer/tasks',    icon: <FiCheckSquare /> },
+    ],
   }
+
 
   const roleLinks = links[role] || []
 
@@ -63,7 +69,7 @@ const DashboardSidebar = () => {
       )}
 
       <div
-        className={`fixed top-14 left-0 z-50 h-[calc(100vh-3.5rem)] w-64 bg-white border-r border-slate-100 flex flex-col justify-between py-6 transition-transform duration-300 ease-in-out ${
+        className={`fixed top-14 left-0 z-50 h-[calc(100vh-3.5rem)] w-64 bg-white border-r border-slate-100 flex flex-col justify-between py-6 transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           dashboardSidebar ? 'translate-x-0' : '-translate-x-full'
         }`}
       >

@@ -1,113 +1,62 @@
 import { NextResponse } from "next/server";
-import { isLogin } from "@/lib/middleware";
+import { isLogin, isSupport } from "@/lib/middleware";
 import { dbQuery } from "@/lib/database/pg";
 
-// GET tickets and support requests
+// ── SUPPORT INBOX (supports table) ─────────────────────────────────────────
+// This route handles the "Contact Form" / "Support Inbox" system.
+// - Submissions come from GUESTS (no login required) via the public contact form.
+// - Staff (support / manager / admin) can read all requests.
+// - NOT the same as tickets (which are for registered users with threaded replies).
+
+// GET /api/support — fetch all support/contact requests (staff only)
 export async function GET(req) {
     try {
-        const auth = await isLogin();
-        if (!auth.success) return NextResponse.json(auth, { status: 401 });
+        const auth = await isSupport(); // support | manager | admin
+        if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
-        const user = auth.data;
-        
-        // Admin and Support can see all tickets and support requests
-        if (user.role === 'admin' || user.role === 'support' || user.role === 'manager') {
-            const ticketsRes = await dbQuery(`
-                SELECT t.*, u.name as user_name, u.email as user_email, a.name as assigned_name
-                FROM tickets t
-                LEFT JOIN users u ON t.user_id = u.user_id
-                LEFT JOIN users a ON t.assigned_to = a.user_id
-                ORDER BY t.created_at DESC
-            `);
-            
-            const supportsRes = await dbQuery(`
-                SELECT s.*, u.name as responder_name
-                FROM supports s
-                LEFT JOIN users u ON s.responded_by = u.user_id
-                ORDER BY s.created_at DESC
-            `);
-
-            return NextResponse.json({ 
-                success: true, 
-                data: {
-                    tickets: ticketsRes.rows,
-                    supportRequests: supportsRes.rows
-                } 
-            });
-        }
-
-        // Regular users see only their own tickets
         const res = await dbQuery(`
-            SELECT * FROM tickets 
-            WHERE user_id = $1 
-            ORDER BY created_at DESC
-        `, [user.id]);
+            SELECT s.*, u.name as responder_name
+            FROM supports s
+            LEFT JOIN users u ON s.responded_by = u.user_id
+            ORDER BY s.created_at DESC
+        `);
 
-        return NextResponse.json({ success: true, data: { tickets: res.rows } });
+        return NextResponse.json({ success: true, data: res.rows });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
-// POST create ticket or support request
+// POST /api/support — create a new support/contact request (PUBLIC, no auth required)
 export async function POST(req) {
     try {
-        const auth = await isLogin();
         const body = await req.json();
+        const { name, email, subject, description, message } = body;
 
-        // If user is logged in, create a ticket
-        if (auth.success) {
-            const { subject, message, priority } = body;
+        // Accept either 'description' or 'message' for flexibility
+        const content = description || message;
 
-            if (!subject || !message) {
-                return NextResponse.json({ success: false, message: "Subject and message are required" }, { status: 400 });
-            }
-
-            const query = `
-                INSERT INTO tickets (user_id, subject, message, priority)
-                VALUES ($1, $2, $3, $4)
-                RETURNING *
-            `;
-            const res = await dbQuery(query, [auth.data.id, subject, message, priority || 'medium']);
-            const ticket = res.rows[0];
-
+        if (!name || !email || !subject || !content) {
             return NextResponse.json({
-                success: true,
-                message: "Ticket created successfully",
-                data: ticket
-            }, { status: 201 });
-        }
-
-        // If user is NOT logged in (guest), create a support request
-        const { name, email, subject, message, description } = body;
-        
-        // Handle both 'message' and 'description' fields for flexibility
-        const finalDescription = description || message;
-
-        if (!name || !email || !finalDescription) {
-            return NextResponse.json({ 
-                success: false, 
-                message: "Name, email, and message are required for guest support requests" 
+                success: false,
+                message: "Name, email, subject, and message are required"
             }, { status: 400 });
         }
 
-        const query = `
+        const res = await dbQuery(`
             INSERT INTO supports (name, email, subject, description)
             VALUES ($1, $2, $3, $4)
             RETURNING *
-        `;
-        const res = await dbQuery(query, [name, email, subject || "General Contact Inquiry", finalDescription]);
-        const supportRequest = res.rows[0];
+        `, [name, email, subject, content]);
 
         return NextResponse.json({
             success: true,
-            message: "Your message has been sent successfully. We will get back to you soon.",
-            data: supportRequest
+            message: "Your message has been sent. We will get back to you soon.",
+            data: res.rows[0]
         }, { status: 201 });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
-

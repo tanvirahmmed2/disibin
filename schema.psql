@@ -92,6 +92,10 @@ CREATE TABLE product_features (
 -- =====================================================
 -- 7. MESSAGING, TICKET & USER SUPPORT SYSTEMS
 -- =====================================================
+-- INTERNAL CHAT: conversations, participants, messages (staff only)
+-- SUPPORT INBOX:  supports + support_messages (guest contact form → staff reply)
+-- TICKET SYSTEM:  tickets + ticket_messages (registered users, threaded)
+-- =====================================================
 CREATE TABLE conversations (
   conversation_id SERIAL PRIMARY KEY,
   title TEXT,
@@ -119,40 +123,58 @@ CREATE TABLE chat_messages (
 );
 
 CREATE TABLE supports (
-  support_id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  subject TEXT NOT NULL,
-  description TEXT NOT NULL,
-  status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'replied')),
-  responded_by INT REFERENCES users(user_id) ON DELETE SET NULL,
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
+  support_id    SERIAL PRIMARY KEY,
+  name          TEXT NOT NULL,
+  email         TEXT NOT NULL,
+  subject       TEXT NOT NULL,
+  description   TEXT NOT NULL,         -- Original message from the guest
+  reply         TEXT,                  -- Staff reply text (stored when replied)
+  status        TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'replied')),
+  responded_by  INT REFERENCES users(user_id) ON DELETE SET NULL,
+  created_at    TIMESTAMP DEFAULT now(),
+  updated_at    TIMESTAMP DEFAULT now()
 );
 
 CREATE TRIGGER update_supports_modtime 
 BEFORE UPDATE ON supports 
 FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
 
-
-CREATE TABLE tickets (
-  ticket_id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
-  assigned_to INT REFERENCES users(user_id) ON DELETE SET NULL,
-  subject TEXT NOT NULL,
-  message TEXT NOT NULL,
-  status TEXT DEFAULT 'open' CHECK (status IN ('open','in_progress','resolved','closed')),
-  priority TEXT DEFAULT 'medium' CHECK (priority IN ('low','medium','high','urgent')),
-  created_at TIMESTAMP DEFAULT now()
+-- Thread of internal staff messages on a support request (optional back-and-forth)
+CREATE TABLE support_messages (
+  message_id    SERIAL PRIMARY KEY,
+  support_id    INT REFERENCES supports(support_id) ON DELETE CASCADE,
+  user_id       INT REFERENCES users(user_id) ON DELETE SET NULL,
+  message       TEXT NOT NULL,
+  created_at    TIMESTAMP DEFAULT now()
 );
 
+CREATE INDEX idx_support_messages_support_id ON support_messages(support_id);
+
+
+-- Support Tickets: registered users open a ticket and get threaded replies from staff
+CREATE TABLE tickets (
+  ticket_id   SERIAL PRIMARY KEY,
+  user_id     INT REFERENCES users(user_id) ON DELETE CASCADE,
+  assigned_to INT REFERENCES users(user_id) ON DELETE SET NULL,
+  subject     TEXT NOT NULL,
+  message     TEXT NOT NULL,            -- Initial message body
+  status      TEXT DEFAULT 'open' CHECK (status IN ('open','in_progress','resolved','closed')),
+  priority    TEXT DEFAULT 'medium' CHECK (priority IN ('low','medium','high','urgent')),
+  created_at  TIMESTAMP DEFAULT now(),
+  updated_at  TIMESTAMP DEFAULT now()
+);
+
+CREATE TRIGGER update_tickets_modtime
+BEFORE UPDATE ON tickets
+FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
+
 CREATE TABLE ticket_messages (
-  message_id SERIAL PRIMARY KEY,
-  ticket_id INT REFERENCES tickets(ticket_id) ON DELETE CASCADE,
-  user_id INT REFERENCES users(user_id) ON DELETE SET NULL,
-  message TEXT NOT NULL,
+  message_id  SERIAL PRIMARY KEY,
+  ticket_id   INT REFERENCES tickets(ticket_id) ON DELETE CASCADE,
+  user_id     INT REFERENCES users(user_id) ON DELETE SET NULL,
+  message     TEXT NOT NULL,
   attachments JSONB DEFAULT '[]',
-  created_at TIMESTAMP DEFAULT now()
+  created_at  TIMESTAMP DEFAULT now()
 );
 
 -- =====================================================
@@ -288,5 +310,19 @@ CREATE TABLE task_comments (
   created_at TIMESTAMP DEFAULT now()
 );
 
+CREATE TABLE partners (
+  partner_id   SERIAL PRIMARY KEY,
+  name         TEXT NOT NULL,
+  logo         TEXT,                -- Cloudinary secure_url
+  logo_id      TEXT,                -- Cloudinary public_id (for deletion)
+  description  TEXT,                -- Short description of the collaboration
+  created_at   TIMESTAMP DEFAULT now(),
+  updated_at   TIMESTAMP DEFAULT now()
+);
+
+CREATE TRIGGER update_partners_modtime
+BEFORE UPDATE ON partners
+FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
+
 CREATE INDEX idx_internal_tasks_proj_id ON internal_tasks(project_id);
-CREATE INDEX idx_task_comments_task_id ON task_comments(task_id);
+CREATE INDEX idx_task_comments_task_id ON task_comments(task_id);

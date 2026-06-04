@@ -13,11 +13,12 @@ export default async function Layout({ children }) {
   if (!auth.success) return redirect('/login')
   
   return (
-    <section className="w-full animate-in fade-in duration-700 relative pt-14">
+    <section className="w-full relative pt-14 bg-slate-50 min-h-screen">
       <DashboardNavbar/>
       <DashboardSidebar/>
-      {children}
-      
-      </section>
+      <main className="lg:ml-64 transition-all duration-300 animate-in fade-in duration-700">
+        {children}
+      </main>
+    </section>
   )
 }

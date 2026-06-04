@@ -1,152 +1,158 @@
 'use client'
-import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiChevronDown, FiHelpCircle, FiGlobe, FiSettings, FiLayers } from 'react-icons/fi';
+import React, { useState, useMemo } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { FiChevronDown, FiHelpCircle, FiGlobe, FiSettings, FiLayers, FiArrowRight } from 'react-icons/fi'
+import Link from 'next/link'
 
 const faqData = [
-  // --- GENERAL CATEGORY ---
   {
-    id: 1,
-    category: 'General',
-    question: 'What types of digital platforms do you specialize in engineering?',
-    answer: 'We specialize in building complex, data-driven web platforms that require stable backend logic, secure workflows, and smooth scaling. This includes high-performance SaaS applications, custom multi-branch enterprise software, B2B portals, and advanced headless e-commerce operations.'
+    id: 1, category: 'General',
+    question: 'What types of digital platforms do you specialise in engineering?',
+    answer: 'We specialise in building complex, data-driven web platforms that require stable backend logic, secure workflows, and smooth scaling. This includes high-performance SaaS applications, custom multi-branch enterprise software, B2B portals, and advanced headless e-commerce operations.'
   },
   {
-    id: 2,
-    category: 'General',
+    id: 2, category: 'General',
     question: 'How does your operational timeline and delivery structure look?',
     answer: 'Our software engineering lifecycles follow 5 strict phases: (1) Discovery & Relational Database Mapping, (2) UI/UX Component Design & Clickable Prototyping, (3) Agile Development Sprints with concurrent front/backend building, (4) Automated Performance & QA Stress-Testing, and (5) Monitored Production Deployment via isolated CI/CD pipelines.'
   },
-
-  // --- WEB DEVELOPMENT CATEGORY ---
   {
-    id: 3,
-    category: 'Web Development',
+    id: 3, category: 'Web Development',
     question: 'Which tech stacks do you use for your web applications?',
-    answer: 'Our core architectural backbones are built on PERN (PostgreSQL, Express, React, Node) and MERN (MongoDB, Express, React, Node) environments. For the client facing layer, we build exclusively with Next.js using the App Router framework paired with Tailwind CSS to guarantee server-side rendering execution, fast load times, and clean styling.'
+    answer: 'Our core architectural backbones are built on PERN (PostgreSQL, Express, React, Node) and MERN environments. For the client-facing layer we build exclusively with Next.js App Router paired with Tailwind CSS — guaranteeing server-side rendering, fast load times, and clean styling.'
   },
   {
-    id: 4,
-    category: 'Web Development',
+    id: 4, category: 'Web Development',
     question: 'How do you handle separate inventory and isolated views across multiple business branches?',
-    answer: 'We architect our database models using relational boundaries, such as strict PostgreSQL schemas or multi-tenant database filtering logic. This ensures data views, inventory mutations, and analytics logs are isolated safely by branch ID, while allowing your team to control the system from a single unified global administration layout.'
+    answer: 'We architect database models using relational boundaries — strict PostgreSQL schemas or multi-tenant filtering logic — ensuring data views, inventory mutations, and analytics logs are isolated by branch ID while allowing unified global administration.'
   },
   {
-    id: 5,
-    category: 'Web Development',
-    question: 'Are the web platforms you build fully optimized for Core Web Vitals and SEO?',
-    answer: 'Yes. By utilizing Next.js Server Components and advanced Static Site Generation (SSG) or Incremental Static Regeneration (ISR), search engine web crawlers can scan your complete textual structure instantly without waiting for slow client-side JavaScript bundles to process. This ensures maximum indexation rates and high search performance scores.'
+    id: 5, category: 'Web Development',
+    question: 'Are the web platforms you build fully optimised for Core Web Vitals and SEO?',
+    answer: 'Yes. By utilising Next.js Server Components and advanced Static Site Generation (SSG) or Incremental Static Regeneration (ISR), search engine web crawlers can scan your complete textual structure instantly — ensuring maximum indexation rates and high search performance scores.'
   },
   {
-    id: 6,
-    category: 'Web Development',
+    id: 6, category: 'Web Development',
     question: 'How do you ensure web application security and prevent injection attacks?',
-    answer: 'We enforce absolute security protocols right at the database layer. All incoming data vectors are scrubbed using parameterized queries and Object-Relational Mapping (ORM) sanitize rules to eliminate SQL injection risks. Furthermore, we establish strict Content Security Policies (CSP), secure HTTP cookies, and multi-factor authentication (MFA) mechanisms.'
+    answer: 'We enforce security at the database layer using parameterised queries and ORM sanitise rules to eliminate SQL injection. We also establish strict Content Security Policies (CSP), secure HTTP cookies, and multi-factor authentication (MFA) mechanisms.'
   },
-
-  // --- WEB MANAGEMENT CATEGORY ---
   {
-    id: 7,
-    category: 'Web Management',
+    id: 7, category: 'Web Management',
     question: 'What is included in your full-service web management system?',
-    answer: 'Our web management goes beyond basic hosting. It includes proactive cloud infrastructure scaling, monthly database indexing tuning to prevent query slowdowns, real-time security scanning, scheduled zero-downtime updates of packages, automated SSL renewals, and continual layout adjustments to adapt to shifting web standards.'
+    answer: 'Our web management goes beyond basic hosting — proactive cloud infrastructure scaling, monthly database indexing tuning, real-time security scanning, zero-downtime package updates, automated SSL renewals, and continual layout adjustments to shifting web standards.'
   },
   {
-    id: 8,
-    category: 'Web Management',
+    id: 8, category: 'Web Management',
     question: 'How do you handle server monitoring, error tracking, and backups?',
-    answer: 'We provision continuous observability tools across your server architecture. If an API endpoint throws an unhandled runtime exception or spikes in response latency, our team is instantly notified. Your database states are captured using isolated point-in-time snapshots every 24 hours, ensuring reliable disaster recovery with near-zero data loss.'
+    answer: 'We provision continuous observability tools across your server architecture. If an API endpoint throws an unhandled exception or spikes in latency, our team is instantly notified. Database states are captured in point-in-time snapshots every 24 hours for reliable disaster recovery.'
   },
   {
-    id: 9,
-    category: 'Web Management',
+    id: 9, category: 'Web Management',
     question: 'How do you handle cloud scaling when traffic spikes unexpectedly?',
-    answer: 'We configure server environments with automated scaling rules using cloud infrastructures like AWS or edge-optimized runtimes like Vercel. When concurrent API request metrics surge, the platform dynamically spawns isolated container instances to absorb the transactional load, shedding the compute power automatically when the traffic subsides.'
+    answer: 'We configure server environments with automated scaling rules using AWS or edge-optimised runtimes like Vercel. When API request metrics surge, the platform dynamically spawns isolated container instances to absorb the load, shedding compute power automatically when traffic subsides.'
   },
   {
-    id: 10,
-    category: 'Web Management',
+    id: 10, category: 'Web Management',
     question: 'Do you offer technical support SLAs for enterprise level applications?',
-    answer: 'Yes, we provide structured Service Level Agreements (SLAs) tailored to your operational demands. This gives you a dedicated engineering line for emergency patch deployments, swift server environmental optimization, and continuous priority code maintenance to ensure maximum operational uptime.'
-  }
-];
+    answer: 'Yes. We provide structured Service Level Agreements (SLAs) tailored to your operational demands — including a dedicated engineering line for emergency patch deployments, server environmental optimisation, and continuous priority code maintenance.'
+  },
+]
 
 const categories = [
-  { name: 'All', icon: <FiHelpCircle className="w-4 h-4" /> },
-  { name: 'General', icon: <FiLayers className="w-4 h-4" /> },
-  { name: 'Web Development', icon: <FiGlobe className="w-4 h-4" /> },
-  { name: 'Web Management', icon: <FiSettings className="w-4 h-4" /> }
-];
+  { name: 'All', icon: FiHelpCircle },
+  { name: 'General', icon: FiLayers },
+  { name: 'Web Development', icon: FiGlobe },
+  { name: 'Web Management', icon: FiSettings },
+]
 
-export default function FAQPage() {
-  const [activeCategory, setActiveCategory] = useState('All');
-  const [expandedId, setExpandedId] = useState(null);
+export default function FAQ() {
+  const [activeCategory, setActiveCategory] = useState('All')
+  const [expandedId, setExpandedId] = useState(null)
 
-  // Filters questions based solely on the selected category tab
-  const filteredFaqs = useMemo(() => {
-    return faqData.filter(faq => activeCategory === 'All' || faq.category === activeCategory);
-  }, [activeCategory]);
+  const filteredFaqs = useMemo(() =>
+    faqData.filter(faq => activeCategory === 'All' || faq.category === activeCategory),
+    [activeCategory]
+  )
 
-  const toggleAccordion = (id) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
+  const toggle = (id) => setExpandedId(expandedId === id ? null : id)
 
   return (
-    <div className="w-full min-h-screen text-slate-800 antialiased py-20 px-4">
-      <div className="w-full mx-auto">
-        
-        <div className="text-center mb-16">
-          <span className="text-indigo-600 font-semibold tracking-wider uppercase text-xs block mb-3">Support Ecosystem</span>
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900">Frequently Asked Questions</h1>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto">
-            Have questions about server architecture, database safety, code design, web development strategies, or long-term system management? We have compiled responses to our most common operational inquiries.
+    <section className="w-full py-20 px-4 antialiased">
+      <div className="w-full max-w-4xl mx-auto">
+
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-14"
+        >
+          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500 font-poppins block mb-3">
+            Support Ecosystem
+          </span>
+          <h2 className="font-poppins text-3xl sm:text-5xl font-semibold text-slate-900 tracking-tight mb-4">
+            Frequently Asked{' '}
+            <span className="gradient-text">Questions</span>
+          </h2>
+          <p className="text-slate-500 font-poppins text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+            Questions about server architecture, database safety, web development strategies, or system management? We have compiled answers to our most common inquiries.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="w-full flex justify-center mb-10 pb-6 border-b border-slate-200">
-          <div className="flex flex-wrap gap-2 justify-center">
-            {categories.map((cat) => (
-              <button
-                key={cat.name}
-                onClick={() => { setActiveCategory(cat.name); setExpandedId(null); }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                  activeCategory === cat.name 
-                    ? 'bg-indigo-600 text-white shadow-sm' 
-                    : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-                }`}
-              >
-                {cat.icon}
-                {cat.name}
-              </button>
-            ))}
-          </div>
-        </div>
+        {/* Category filters */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="flex flex-wrap gap-2 justify-center mb-10"
+        >
+          {categories.map(cat => (
+            <button
+              key={cat.name}
+              onClick={() => { setActiveCategory(cat.name); setExpandedId(null) }}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold font-poppins transition-all duration-200 ${
+                activeCategory === cat.name
+                  ? 'bg-slate-900 text-white shadow-md shadow-slate-200'
+                  : 'bg-white border border-slate-200 text-slate-600 hover:border-sky-300 hover:text-sky-600 hover:bg-sky-50'
+              }`}
+            >
+              <cat.icon className="w-3.5 h-3.5" />
+              {cat.name}
+            </button>
+          ))}
+        </motion.div>
 
-        <div className="space-y-4 w-full mx-auto">
+        {/* Accordion list */}
+        <div className="space-y-3">
           <AnimatePresence mode="popLayout">
-            {filteredFaqs.map((faq) => {
-              const isExpanded = expandedId === faq.id;
+            {filteredFaqs.map((faq, i) => {
+              const isExpanded = expandedId === faq.id
               return (
                 <motion.div
                   layout
                   key={faq.id}
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.2 }}
-                  className="bg-white border border-slate-200/80 rounded-xl overflow-hidden shadow-sm hover:border-slate-300 transition-colors"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2, delay: i * 0.03 }}
+                  className={`glass rounded-2xl overflow-hidden shadow-sm transition-all duration-300 ${
+                    isExpanded ? 'shadow-sky-100/60 shadow-md' : 'hover:shadow-md'
+                  }`}
                 >
                   <button
-                    onClick={() => toggleAccordion(faq.id)}
+                    onClick={() => toggle(faq.id)}
                     className="w-full text-left px-6 py-5 flex justify-between items-center gap-4 group focus:outline-none"
                   >
-                    <span className="font-bold text-slate-900 text-base sm:text-lg group-hover:text-indigo-600 transition-colors">
+                    <span className={`font-poppins font-semibold text-base transition-colors duration-200 ${
+                      isExpanded ? 'text-sky-600' : 'text-slate-900 group-hover:text-sky-600'
+                    }`}>
                       {faq.question}
                     </span>
                     <motion.div
                       animate={{ rotate: isExpanded ? 180 : 0 }}
-                      transition={{ duration: 0.2, ease: "easeInOut" }}
-                      className="text-slate-400 shrink-0 group-hover:text-slate-600"
+                      transition={{ duration: 0.25, ease: 'easeInOut' }}
+                      className={`shrink-0 transition-colors ${isExpanded ? 'text-sky-500' : 'text-slate-400 group-hover:text-slate-600'}`}
                     >
                       <FiChevronDown className="w-5 h-5" />
                     </motion.div>
@@ -156,33 +162,43 @@ export default function FAQPage() {
                     {isExpanded && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
+                        animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25, ease: "easeInOut" }}
+                        transition={{ duration: 0.28, ease: 'easeInOut' }}
                       >
-                        <div className="px-6 pb-6 text-sm sm:text-base text-slate-600 leading-relaxed border-t border-slate-100 pt-4">
+                        <div className="px-6 pb-6 text-slate-600 text-sm sm:text-base leading-relaxed border-t border-slate-100/80 pt-4 font-poppins">
                           {faq.answer}
                         </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </motion.div>
-              );
+              )
             })}
           </AnimatePresence>
         </div>
 
-        <div className="mt-16 text-center bg-slate-950 text-white rounded-2xl p-8 shadow-sm border border-slate-800 max-w-4xl mx-auto">
-          <h3 className="text-xl font-bold mb-2">Still have a specific architectural query?</h3>
-          <p className="text-slate-400 text-sm max-w-md mx-auto mb-6">
-            Get in touch directly to discuss server clustering, relational scaling boundaries, or specialized long-term web management frameworks.
+        {/* CTA footer */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-14 text-center bg-slate-900 text-white rounded-[2rem] p-10 shadow-xl shadow-slate-200"
+        >
+          <h3 className="font-poppins text-xl font-bold mb-2">Still have a specific architectural query?</h3>
+          <p className="text-slate-400 text-sm max-w-sm mx-auto mb-7 font-poppins leading-relaxed">
+            Get in touch directly to discuss server clustering, relational scaling boundaries, or specialised long-term web management.
           </p>
-          <button className="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-6 py-2.5 text-sm rounded-xl transition-colors shadow-sm">
-            Reach Out to Our Engineers
-          </button>
-        </div>
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white font-semibold font-poppins px-6 py-3 text-sm rounded-xl transition-all duration-300 shadow-md shadow-sky-900/30 animate-pulse-glow"
+          >
+            Reach Out to Our Engineers <FiArrowRight className="w-4 h-4" />
+          </Link>
+        </motion.div>
 
       </div>
-    </div>
-  );
+    </section>
+  )
 }

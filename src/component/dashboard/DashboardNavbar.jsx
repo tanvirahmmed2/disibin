@@ -9,11 +9,11 @@ const DashboardNavbar = () => {
   return (
     <div className='w-full h-14 fixed top-0 px-4 sm:px-6 bg-white flex items-center justify-between z-50'>
         <div className='w-auto flex flex-row items-center justify-center gap-3'>
-            <button onClick={()=>setDashboardSidebar(!dashboardSidebar)} className='cursor-pointer'>
+            <button onClick={()=>setDashboardSidebar(!dashboardSidebar)} className='cursor-pointer lg:hidden'>
                 {
                     dashboardSidebar? <CiMenuFries size={20} /> : <CiMenuBurger size={20} />
                 }
-                </button>
+            </button>
         <Link href={'/dashboard'} className='text-xl'>Management</Link>
         </div>
         <button className='px-6 p-1 rounded-2xl cursor-pointer bg-sky-500 text-white' onClick={()=>logout()}>Logout</button>

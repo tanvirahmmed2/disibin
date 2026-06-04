@@ -4,6 +4,7 @@ import Bio from '@/component/pages/Bio'
 import CaseStudies from '@/component/pages/CaseStudies'
 import FAQ from '@/component/pages/FAQ'
 import Intro from '@/component/pages/Intro'
+import Partners from '@/component/pages/Partners'
 import Reviews from '@/component/pages/Reviews'
 import Services from '@/component/pages/Services'
 import Team from '@/component/pages/Team'
@@ -17,11 +18,12 @@ const MainPage = () => {
       <Intro />
       <Bio />
       <About />
-      <Reviews />
       <Services/>
       <CaseStudies/>
       <Team/>
       <FAQ/>
+      <Reviews />
+      <Partners />
     </main>
   )
 }

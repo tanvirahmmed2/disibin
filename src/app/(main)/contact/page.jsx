@@ -79,7 +79,7 @@ const ContactPage = () => {
                 Email
               </span>
               <p className="text-slate-800 ">
-                disibin@gmail.com
+                support@disibin.com
               </p>
             </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { FaTimes, FaPaperPlane, FaTicketAlt, FaUserTag, FaCheck } from "react-icons/fa";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { FaTimes, FaPaperPlane, FaTicketAlt, FaUserTag, FaCheck, FaArrowLeft } from "react-icons/fa";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -27,10 +27,55 @@ export default function SupportTicketsPage() {
     const [managers, setManagers] = useState([]);
     const [filter, setFilter] = useState("all");
     const messagesEndRef = useRef(null);
+    const activeTicketIdRef = useRef(null);
+    const pollIntervalRef = useRef(null);
+    const prevMsgCountRef = useRef(0);
+
+    // Scroll only when new messages arrive
+    useEffect(() => {
+        if (messages.length > prevMsgCountRef.current) {
+            messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
+        prevMsgCountRef.current = messages.length;
+    }, [messages]);
+
+    // Silent background refresh (no loading spinner)
+    const silentRefreshThread = useCallback(async (ticketId) => {
+        try {
+            const res = await axios.get(`/api/ticket/${ticketId}`);
+            const data = res.data;
+            if (data.success) {
+                setMessages(data.data.messages || []);
+                setActiveTicket(prev => prev ? { ...prev, ...data.data } : prev);
+            }
+        } catch {}
+    }, []);
+
+    const silentRefreshTickets = useCallback(async () => {
+        try {
+            const res = await axios.get("/api/ticket");
+            if (res.data.success) setTickets(res.data.data);
+        } catch {}
+    }, []);
+
+    // Start / stop polling when active ticket changes
+    useEffect(() => {
+        if (activeTicket) {
+            activeTicketIdRef.current = activeTicket.ticket_id;
+            fetchThread(activeTicket.ticket_id);
+            // Poll every 5 seconds
+            pollIntervalRef.current = setInterval(() => {
+                silentRefreshThread(activeTicketIdRef.current);
+                silentRefreshTickets();
+            }, 5000);
+        } else {
+            activeTicketIdRef.current = null;
+            clearInterval(pollIntervalRef.current);
+        }
+        return () => clearInterval(pollIntervalRef.current);
+    }, [activeTicket?.ticket_id]); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => { fetchMe(); fetchTickets(); fetchManagers(); }, []);
-    useEffect(() => { if (activeTicket) fetchThread(activeTicket.ticket_id); }, [activeTicket]);
-    useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
     const fetchMe = async () => {
         try {
@@ -122,7 +167,7 @@ export default function SupportTicketsPage() {
         <div className="flex h-[calc(100vh-6rem)] gap-0 bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden m-4">
 
             {/* Left Sidebar - Ticket List */}
-            <div className="w-80 flex-shrink-0 flex flex-col border-r border-gray-100 bg-gray-50/50">
+            <div className={`w-full md:w-80 flex-shrink-0 flex-col border-r border-gray-100 bg-gray-50/50 ${activeTicket ? 'hidden md:flex' : 'flex'}`}>
                 <div className="p-4 border-b border-gray-100 bg-white">
                     <h2 className="text-lg font-bold text-gray-800 mb-3">Support Tickets</h2>
                     {/* Filter tabs */}
@@ -178,13 +223,19 @@ export default function SupportTicketsPage() {
             </div>
 
             {/* Main Panel */}
-            <div className="flex-1 flex flex-col overflow-hidden">
+            <div className={`flex-1 flex-col overflow-hidden ${!activeTicket ? 'hidden md:flex' : 'flex'}`}>
                 {activeTicket ? (
                     <>
                         {/* Ticket Header */}
                         <div className="p-4 border-b border-gray-100 bg-white">
                             <div className="flex items-start justify-between gap-4">
                                 <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 mb-2 md:hidden">
+                                        <button onClick={() => setActiveTicket(null)} className="p-1 -ml-1 text-gray-400 hover:text-gray-800 rounded">
+                                            <FaArrowLeft size={14} />
+                                        </button>
+                                        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Back to list</span>
+                                    </div>
                                     <h2 className="font-bold text-gray-800 truncate">{activeTicket.subject}</h2>
                                     <div className="flex items-center gap-3 mt-1 flex-wrap">
                                         <span className="text-xs text-gray-400">#{activeTicket.ticket_id}</span>

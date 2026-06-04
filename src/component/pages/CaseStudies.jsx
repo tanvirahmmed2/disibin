@@ -1,70 +1,77 @@
 'use client'
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiDatabase, FiCheckCircle, FiActivity, FiServer } from 'react-icons/fi';
+import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { FiDatabase, FiCheckCircle, FiActivity, FiServer, FiZap } from 'react-icons/fi'
 
 const caseStudiesData = [
   {
     id: 'retail-multi-branch',
     tabTitle: 'Multi-Branch E-Commerce',
+    tag: 'Enterprise Retail & Logistics',
     title: 'Architecting real-time inventory sync across 14 global retail branches',
-    clientType: 'Enterprise Retail & Logistics',
-    problem: 'The client faced severe database race conditions where identical items were sold simultaneously online and in physical stores. Their legacy system updated inventory on a 6-hour cron cycle, leading to high cancellation rates, dirty reads, and massive data desynchronization across regional storefronts.',
+    problem: 'The client faced severe database race conditions where identical items were sold simultaneously online and in physical stores. Their legacy system updated inventory on a 6-hour cron cycle, leading to high cancellation rates, dirty reads, and massive data desynchronisation across regional storefronts.',
     solution: 'We deployed a Next.js App Router gateway coupled with a robust PostgreSQL database leveraging row-level security (RLS) and conditional branch isolation rules. Real-time telemetry was handled via low-overhead WebSockets, streaming instant item deductions across all point-of-sale instances globally without causing server thread pool starvation.',
     metrics: [
-      { label: 'Sync Latency', value: '< 85ms', detail: 'Down from 6 hours' },
-      { label: 'Query Performance', value: '140ms', detail: 'Complex multi-tenant indexing' },
-      { label: 'Data Pollution', value: '0.00%', detail: 'Achieved complete ACID compliance' }
+      { label: 'Sync Latency', value: '<85ms', detail: 'Down from 6 hours' },
+      { label: 'Query Speed', value: '140ms', detail: 'Complex multi-tenant indexing' },
+      { label: 'Data Pollution', value: '0.00%', detail: 'Full ACID compliance' },
     ],
-    techStack: ['Next.js', 'PostgreSQL', 'WebSockets', 'Redis Caching']
+    techStack: ['Next.js', 'PostgreSQL', 'WebSockets', 'Redis'],
   },
   {
     id: 'saas-cloud-automation',
     tabTitle: 'Enterprise SaaS Platform',
+    tag: 'B2B FinTech Operations',
     title: 'Scaling a multi-tenant dashboard to handle complex workspace permission roles',
-    clientType: 'B2B FinTech Operations',
     problem: 'A rapidly growing financial SaaS application was experiencing massive security vulnerabilities and sluggish dashboard load times. Their monolithic API could not scale securely when large corporate clients added hundreds of sub-accounts with highly custom, dynamic database permission rules.',
-    solution: 'We re-engineered the backend into a decoupled Node.js and Express microservices structure. By utilizing a hybrid database approach—using PostgreSQL for relational financial transactions and Redis for high-speed session tokens—we implemented a bulletproof Role-Based Access Control (RBAC) layer that securely signs and handles workspace data permissions on every request.',
+    solution: 'We re-engineered the backend into a decoupled Node.js and Express microservices structure. Using a hybrid database approach — PostgreSQL for relational financial transactions and Redis for high-speed session tokens — we implemented a bulletproof RBAC layer that securely signs and handles workspace data permissions on every request.',
     metrics: [
-      { label: 'Dashboard Load Time', value: '0.4s', detail: 'Improved by 300%' },
-      { label: 'Auth Token Verification', value: '12ms', detail: 'Ultra-fast Redis lookups' },
-      { label: 'Security Breaches', value: 'Zero', detail: 'Validated by third-party audit' }
+      { label: 'Dashboard Load', value: '0.4s', detail: 'Improved by 300%' },
+      { label: 'Auth Verification', value: '12ms', detail: 'Ultra-fast Redis lookups' },
+      { label: 'Security Breaches', value: 'Zero', detail: 'Third-party audited' },
     ],
-    techStack: ['Node.js', 'Express.js', 'PostgreSQL', 'Redis', 'Next.js']
-  }
-];
+    techStack: ['Node.js', 'Express.js', 'PostgreSQL', 'Redis', 'Next.js'],
+  },
+]
 
 export default function CaseStudies() {
-  const [activeTab, setActiveTab] = useState(caseStudiesData[0].id);
-  const activeData = caseStudiesData.find(item => item.id === activeTab);
+  const [activeTab, setActiveTab] = useState(caseStudiesData[0].id)
+  const activeData = caseStudiesData.find(item => item.id === activeTab)
 
   return (
-    <div className="py-20 px-4 border-t border-slate-800 antialiased">
+    <section className="w-full py-20 px-4 rounded-[2.5rem] shadow-xl shadow-slate-100 my-4">
       <div className="max-w-6xl mx-auto">
-        
-        {/* Component Header */}
-        <div className="mb-16 max-w-2xl">
-          <span className="text-indigo-500 font-semibold tracking-widest uppercase text-xs block mb-2">
+
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-14"
+        >
+          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500 font-poppins block mb-3">
             System Blueprints
           </span>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-            Engineering solutions for complex system problems
+          <h2 className="font-poppins text-3xl sm:text-4xl font-semibold text-slate-900 leading-tight mb-4">
+            Engineering solutions for{' '}
+            <span className="gradient-text">complex system problems</span>
           </h2>
-          <p className="mt-4 text-slate-400 text-sm sm:text-base leading-relaxed">
-            An open lookup at the code architecture, bottlenecks, and raw telemetry data behind our latest software production deployments.
+          <p className="text-slate-500 text-sm sm:text-base leading-relaxed max-w-xl font-poppins">
+            An open look at the code architecture, bottlenecks, and raw telemetry data behind our latest production deployments.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Tab Selection Switches (Minimal Line Style) */}
-        <div className="flex border-b border-slate-800 gap-6 mb-12 overflow-x-auto pb-px scrollbar-none">
-          {caseStudiesData.map((study) => (
+        {/* Tab switcher */}
+        <div className="flex gap-2 mb-10 flex-wrap">
+          {caseStudiesData.map(study => (
             <button
               key={study.id}
               onClick={() => setActiveTab(study.id)}
-              className={`py-3 font-medium text-sm transition-all whitespace-nowrap border-b-2 -mb-px focus:outline-none ${
+              className={`px-5 py-2.5 rounded-xl text-sm font-semibold font-poppins transition-all duration-200 ${
                 activeTab === study.id
-                  ? 'border-indigo-500 text-indigo-500 font-semibold'
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
+                  ? 'bg-slate-900 text-white shadow-md shadow-slate-200'
+                  : 'bg-white border border-slate-200 text-slate-600 hover:border-sky-300 hover:text-sky-600 hover:bg-sky-50'
               }`}
             >
               {study.tabTitle}
@@ -72,60 +79,55 @@ export default function CaseStudies() {
           ))}
         </div>
 
-        {/* Main Content Area */}
+        {/* Main content */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25 }}
+            className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start"
           >
-            
-            {/* Left/Middle Columns: Diagnostic Flow */}
-            <div className="lg:col-span-2 space-y-10">
+            {/* Left/middle: problem + solution */}
+            <div className="lg:col-span-2 space-y-6">
               <div>
-                <span className="text-xs font-semibold tracking-widest text-slate-500 uppercase block mb-1">
-                  {activeData.clientType}
+                <span className="text-[10px] font-semibold tracking-widest text-slate-400 uppercase font-poppins block mb-2">
+                  {activeData.tag}
                 </span>
-                <h3 className="text-2xl sm:text-3xl font-bold tracking-tight leading-snug">
+                <h3 className="font-poppins text-2xl sm:text-3xl font-semibold text-slate-900 leading-snug">
                   {activeData.title}
                 </h3>
               </div>
 
-              {/* The Problem Segment */}
-              <div className="border-l-2 border-red-500/40 pl-6 space-y-2">
-                <div className="flex items-center gap-2 text-red-400 font-semibold text-xs uppercase tracking-wider">
-                  <FiServer className="w-3.5 h-3.5 shrink-0" />
+              {/* Problem */}
+              <div className="glass rounded-2xl p-5 border-l-4 border-red-400 shadow-sm">
+                <div className="flex items-center gap-2 text-red-500 font-semibold text-xs uppercase tracking-wider font-poppins mb-3">
+                  <FiServer className="w-3.5 h-3.5" />
                   <span>The Architectural Bottleneck</span>
                 </div>
-                <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-                  {activeData.problem}
-                </p>
+                <p className="text-slate-600 text-sm leading-relaxed">{activeData.problem}</p>
               </div>
 
-              {/* The Solution Segment */}
-              <div className="border-l-2 border-emerald-500/40 pl-6 space-y-2">
-                <div className="flex items-center gap-2 text-emerald-400 font-semibold text-xs uppercase tracking-wider">
-                  <FiDatabase className="w-3.5 h-3.5 shrink-0" />
+              {/* Solution */}
+              <div className="glass rounded-2xl p-5 border-l-4 border-sky-400 shadow-sm">
+                <div className="flex items-center gap-2 text-sky-600 font-semibold text-xs uppercase tracking-wider font-poppins mb-3">
+                  <FiDatabase className="w-3.5 h-3.5" />
                   <span>The Deployed Architecture</span>
                 </div>
-                <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-                  {activeData.solution}
-                </p>
+                <p className="text-slate-600 text-sm leading-relaxed">{activeData.solution}</p>
               </div>
 
-              {/* Stack Framework Tags */}
-              <div className="pt-4">
-                <span className="text-xs font-semibold uppercase tracking-widest text-slate-500 block mb-3">
+              {/* Tech tags */}
+              <div>
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 font-poppins block mb-2">
                   Infrastructure Stack
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {activeData.techStack.map((tech, i) => (
-                    <span 
-                      key={i} 
-                      className="border border-slate-800 text-slate-400 px-2.5 py-1 rounded-md text-xs font-mono"
+                    <span
+                      key={i}
+                      className="bg-slate-900 text-slate-300 px-3 py-1 rounded-lg text-xs font-mono hover:bg-sky-600 hover:text-white transition-colors cursor-default"
                     >
                       {tech}
                     </span>
@@ -134,46 +136,36 @@ export default function CaseStudies() {
               </div>
             </div>
 
-            {/* Right Column: Numeric Logs */}
-            <div className="space-y-8 lg:border-l lg:border-slate-800 lg:pl-10">
-              <div className="flex items-center gap-2 text-indigo-500 font-semibold text-xs uppercase tracking-widest">
+            {/* Right: metrics */}
+            <div className="glass rounded-2xl p-6 shadow-sm space-y-6">
+              <div className="flex items-center gap-2 text-sky-500 font-semibold text-xs uppercase tracking-widest font-poppins">
                 <FiActivity className="w-4 h-4" />
                 <span>Performance Audit</span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-6">
-                {activeData.metrics.map((metric, i) => (
-                  <div 
-                    key={i} 
-                    className="border-b border-slate-800/60 pb-4 last:border-none"
-                  >
-                    <span className="text-xs font-medium text-slate-500 block uppercase tracking-wider">
-                      {metric.label}
-                    </span>
-                    <div className="text-2xl sm:text-3xl font-bold my-1 tracking-tight">
-                      {metric.value}
-                    </div>
-                    <span className="text-xs text-slate-400 block">
-                      {metric.detail}
-                    </span>
+              {activeData.metrics.map((metric, i) => (
+                <div key={i} className={`${i !== activeData.metrics.length - 1 ? 'pb-5 border-b border-slate-100' : ''}`}>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 font-poppins block mb-1">
+                    {metric.label}
+                  </span>
+                  <div className="text-3xl font-bold text-slate-900 font-poppins my-1 tracking-tight">
+                    {metric.value}
                   </div>
-                ))}
-              </div>
+                  <span className="text-xs text-sky-600 font-medium">{metric.detail}</span>
+                </div>
+              ))}
 
-              {/* Small Footnote Verification Note */}
-              <div className="flex gap-2 items-start text-slate-500 pt-2">
-                <FiCheckCircle className="w-4 h-4 shrink-0 mt-0.5 text-indigo-500/70" />
-                <p className="text-xs leading-relaxed">
-                  Every runtime value is verified through automated production deployment logs.
+              <div className="flex gap-2 items-start pt-2 border-t border-slate-100">
+                <FiCheckCircle className="w-4 h-4 shrink-0 mt-0.5 text-sky-400" />
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Every value verified through automated production deployment logs.
                 </p>
               </div>
-
             </div>
-
           </motion.div>
         </AnimatePresence>
 
       </div>
-    </div>
-  );
+    </section>
+  )
 }

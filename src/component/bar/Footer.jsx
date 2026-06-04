@@ -11,10 +11,10 @@ const Footer = () => {
         {/* Top CTA Banner */}
         <div className='w-full bg-slate-900 rounded-3xl p-8 md:p-12 mb-20 flex flex-col md:flex-row items-center justify-between gap-8 border border-white/5 relative overflow-hidden'>
           {/* Background Glow */}
-          <div className='absolute top-0 right-0 w-[500px] h-[500px] bg-sky-500/10 blur-[100px] rounded-full pointer-events-none translate-x-1/3 -translate-y-1/3' />
+          <div className='absolute top-0 right-0 w-125 h-125 bg-sky-500/10 blur-[100px] rounded-full pointer-events-none translate-x-1/3 -translate-y-1/3' />
 
           <div className='flex flex-col gap-4 relative z-10 text-center md:text-left max-w-2xl'>
-            <h2 className='text-3xl md:text-5xl font-poppins font-bold bg-gradient-to-br from-white to-slate-400 bg-clip-text text-transparent tracking-tight leading-tight'>
+            <h2 className='text-3xl md:text-5xl font-poppins font-bold bg-linear-to-br from-white to-slate-400 bg-clip-text text-transparent tracking-tight leading-tight'>
               Ready to build something great?
             </h2>
             <p className='text-slate-400 text-lg'>
@@ -71,7 +71,7 @@ const Footer = () => {
               <p>Rahmatpur, Sadar<br />Mymensingh - 2200, Bangladesh</p>
               <div className="pt-2 flex flex-col gap-1">
                 <p className='text-slate-200'>+880 1805 003886</p>
-                <p className="text-sky-400">disibin@gmail.com</p>
+                <p className="text-sky-400">support@disibin.com</p>
               </div>
             </div>
           </div>
