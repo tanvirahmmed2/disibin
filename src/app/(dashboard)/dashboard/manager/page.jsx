@@ -7,8 +7,9 @@ import Link from "next/link";
 import {
     FiLifeBuoy, FiStar, FiBriefcase, FiBox,
     FiArrowRight, FiTrendingUp, FiClock, FiCheckCircle,
-    FiPieChart, FiHandshake
+    FiPieChart
 } from "react-icons/fi";
+import { FaHandshake } from "react-icons/fa";
 
 const StatCard = ({ icon: Icon, label, value, sub, color }) => (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex flex-col gap-3">

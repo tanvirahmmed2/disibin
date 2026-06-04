@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { FiActivity, FiSearch, FiX, FiLifeBuoy, FiStar, FiBox, FiBriefcase, FiHandshake } from "react-icons/fi";
+import { FiActivity, FiSearch, FiX, FiLifeBuoy, FiStar, FiBox, FiBriefcase } from "react-icons/fi";
+import { FaHandshake } from "react-icons/fa";
 
 const fmtDate = (d) =>
     d ? new Date(d).toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
@@ -14,7 +15,7 @@ const getIcon = (type) => {
         case "review": return <FiStar className="text-amber-500" />;
         case "product": return <FiBox className="text-violet-500" />;
         case "project": return <FiBriefcase className="text-emerald-500" />;
-        case "partner": return <FiHandshake className="text-indigo-500" />;
+        case "partner": return <FaHandshake className="text-indigo-500" />;
         default: return <FiActivity className="text-slate-400" />;
     }
 };
