@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useContext, useEffect } from 'react';
 import { Context } from '@/component/helper/Context';
+import axios from 'axios';
 import toast from 'react-hot-toast';
 import { FiUser, FiMail, FiPhone, FiMapPin, FiSave } from 'react-icons/fi';
 
@@ -42,12 +43,8 @@ const ProfileForm = ({ onSaved }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res  = await fetch('/api/user', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
+      const res = await axios.patch('/api/user', formData);
+      const data = res.data;
 
       if (data.success) {
         toast.success('Profile updated successfully!');
@@ -57,8 +54,8 @@ const ProfileForm = ({ onSaved }) => {
       } else {
         toast.error(data.message);
       }
-    } catch {
-      toast.error('Failed to update profile');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update profile');
     } finally {
       setLoading(false);
     }

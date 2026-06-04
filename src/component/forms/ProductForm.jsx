@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
@@ -10,27 +10,15 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
   const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
-    price: '',
-    duration_days: '',
     description: '',
     demo_url: '',
-    is_lifetime: false,
     is_active: true,
     ...initialData
   });
   const [features, setFeatures] = useState(initialData?.features || []);
   const [newFeature, setNewFeature] = useState({ name: '', value: true });
   const [images, setImages] = useState(initialData?.images || []);
-  const [durationOption, setDurationOption] = useState('custom');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (formData.duration_days == 30) setDurationOption('1m');
-    else if (formData.duration_days == 90) setDurationOption('3m');
-    else if (formData.duration_days == 180) setDurationOption('6m');
-    else if (formData.duration_days == 365) setDurationOption('1y');
-    else setDurationOption('custom');
-  }, []);
 
 
   const handleImageUpload = (imageData) => {
@@ -87,9 +75,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
       const payload = { 
         ...formData, 
         images, 
-        features,
-        price: parseFloat(formData.price) || 0,
-        duration_days: formData.is_lifetime ? 0 : (parseInt(formData.duration_days) || 0)
+        features
       };
       const res = await axios[method](url, payload);
 
@@ -139,57 +125,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700">Price (USD)</label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                required
-                step="0.01"
-                className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all"
-                placeholder="499.00"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700">Duration</label>
-              <select
-                value={durationOption}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setDurationOption(val);
-                  if (val === '1m') setFormData({ ...formData, duration_days: 30 });
-                  else if (val === '3m') setFormData({ ...formData, duration_days: 90 });
-                  else if (val === '6m') setFormData({ ...formData, duration_days: 180 });
-                  else if (val === '1y') setFormData({ ...formData, duration_days: 365 });
-                }}
-                disabled={formData.is_lifetime}
-                className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all disabled:opacity-50"
-              >
-                <option value="1m">1 Month (30 Days)</option>
-                <option value="3m">3 Months (90 Days)</option>
-                <option value="6m">6 Months (180 Days)</option>
-                <option value="1y">1 Year (365 Days)</option>
-                <option value="custom">Custom</option>
-              </select>
-              
-              {durationOption === 'custom' && (
-                <input
-                  type="number"
-                  name="duration_days"
-                  value={formData.duration_days}
-                  onChange={handleChange}
-                  required={!formData.is_lifetime}
-                  disabled={formData.is_lifetime}
-                  className="w-full px-5 py-3 mt-2 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all disabled:opacity-50"
-                  placeholder="Enter days"
-                />
-              )}
-            </div>
 
-          </div>
         </div>
 
         <div className="space-y-6">
@@ -230,13 +166,6 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
           )}
 
           <div className="flex items-center gap-6 p-6 bg-slate-50 rounded-xl border border-slate-100">
-            <label className="flex items-center gap-2 cursor-pointer group">
-              <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${formData.is_lifetime ? 'bg-sky-500 border-sky-500' : 'border-slate-300'}`}>
-                {formData.is_lifetime && <FiCheck className="text-white" />}
-              </div>
-              <input type="checkbox" name="is_lifetime" checked={formData.is_lifetime} onChange={handleChange} className="hidden" />
-              <span className="text-sm font-bold text-slate-700 group-hover:text-sky-600 transition-colors">Lifetime</span>
-            </label>
             <label className="flex items-center gap-2 cursor-pointer group">
               <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${formData.is_active ? 'bg-emerald-500 border-emerald-500' : 'border-slate-300'}`}>
                 {formData.is_active && <FiCheck className="text-white" />}

@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import axios from 'axios';
 import { FaTimes } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
@@ -24,12 +25,8 @@ const NewTicketModal = ({ isOpen, onClose, onSuccess }) => {
     if (!form.subject || !form.message) return;
     setSubmitting(true);
     try {
-      const res  = await fetch('/api/ticket', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
+      const res = await axios.post('/api/ticket', form);
+      const data = res.data;
       if (data.success) {
         toast.success('Ticket submitted!');
         setForm({ subject: '', message: '', priority: 'medium' });
@@ -38,8 +35,8 @@ const NewTicketModal = ({ isOpen, onClose, onSuccess }) => {
       } else {
         toast.error(data.message);
       }
-    } catch {
-      toast.error('Failed to submit ticket');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to submit ticket');
     } finally {
       setSubmitting(false);
     }

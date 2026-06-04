@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { FaUser, FaUsers, FaPaperPlane, FaPlus, FaTimes, FaCircle } from 'react-icons/fa';
+import axios from 'axios';
 import toast from 'react-hot-toast';
 
 export default function ChatPage() {
@@ -40,8 +41,8 @@ export default function ChatPage() {
 
   const fetchInbox = async () => {
     try {
-      const res = await fetch('/api/chat');
-      const data = await res.json();
+      const res = await axios.get('/api/chat');
+      const data = res.data;
       if (data.success) {
         setInbox(data.data);
       } else {
@@ -58,8 +59,8 @@ export default function ChatPage() {
   const fetchMessages = async (conversationId) => {
     setLoadingMessages(true);
     try {
-      const res = await fetch(`/api/chat/${conversationId}`);
-      const data = await res.json();
+      const res = await axios.get(`/api/chat/${conversationId}`);
+      const data = res.data;
       if (data.success) {
         setMessages(data.data);
       } else {
@@ -78,12 +79,8 @@ export default function ChatPage() {
     if (!newMessage.trim() || !activeChat) return;
 
     try {
-      const res = await fetch(`/api/chat/${activeChat.conversation_id}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: newMessage })
-      });
-      const data = await res.json();
+      const res = await axios.post(`/api/chat/${activeChat.conversation_id}`, { content: newMessage });
+      const data = res.data;
       if (data.success) {
         setMessages([...messages, data.data]);
         setNewMessage('');
@@ -102,8 +99,8 @@ export default function ChatPage() {
     setSelectedUsers([]);
     setGroupTitle('');
     try {
-      const res = await fetch('/api/user/management');
-      const data = await res.json();
+      const res = await axios.get('/api/user/management');
+      const data = res.data;
       if (data.success) {
         setManagementUsers(data.data);
       } else {
@@ -136,16 +133,12 @@ export default function ChatPage() {
 
     setCreatingChat(true);
     try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          isGroup,
-          title: groupTitle,
-          participantIds: selectedUsers
-        })
+      const res = await axios.post('/api/chat', {
+        isGroup,
+        title: groupTitle,
+        participantIds: selectedUsers
       });
-      const data = await res.json();
+      const data = res.data;
       if (data.success) {
         toast.success(data.message);
         setIsModalOpen(false);

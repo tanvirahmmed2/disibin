@@ -1,10 +1,13 @@
 'use client'
 import About from '@/component/pages/About'
 import Bio from '@/component/pages/Bio'
+import CaseStudies from '@/component/pages/CaseStudies'
+import FAQ from '@/component/pages/FAQ'
 import Intro from '@/component/pages/Intro'
 import Reviews from '@/component/pages/Reviews'
+import Services from '@/component/pages/Services'
+import Team from '@/component/pages/Team'
 import React from 'react'
-import ProductsPage from './products/page'
 
 
 const MainPage = () => {
@@ -14,8 +17,11 @@ const MainPage = () => {
       <Intro />
       <Bio />
       <About />
-      <ProductsPage/>
       <Reviews />
+      <Services/>
+      <CaseStudies/>
+      <Team/>
+      <FAQ/>
     </main>
   )
 }

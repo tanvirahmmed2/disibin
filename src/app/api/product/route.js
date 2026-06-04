@@ -47,10 +47,10 @@ export async function POST(req) {
         }
 
         const body = await req.json();
-        const { name, price, description, duration_days, is_lifetime, demo_url, images, features } = body;
+        const { name, description, demo_url, images, features } = body;
 
-        if (!name || price === undefined) {
-            return NextResponse.json({ success: false, message: "Missing required fields (name, price)" }, { status: 400 });
+        if (!name) {
+            return NextResponse.json({ success: false, message: "Missing required fields (name)" }, { status: 400 });
         }
 
         const product = await transaction(async (client) => {
@@ -71,10 +71,10 @@ export async function POST(req) {
             
             // Insert product
             const productRes = await client.query(`
-                INSERT INTO products (name, slug, description, price, duration_days, is_lifetime, demo_url, created_by)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                INSERT INTO products (name, slug, description, demo_url, created_by)
+                VALUES ($1, $2, $3, $4, $5)
                 RETURNING *
-            `, [name, slug, description, price, duration_days, is_lifetime, demo_url, auth.data.id]);
+            `, [name, slug, description, demo_url, auth.data.id]);
             
             const prod = productRes.rows[0];
 

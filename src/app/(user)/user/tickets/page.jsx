@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { FaPlus, FaTicketAlt, FaClock, FaSpinner, FaCheckCircle } from "react-icons/fa";
+import axios from "axios";
 import toast from "react-hot-toast";
 import NewTicketModal  from "@/component/forms/NewTicketModal";
 import TicketReplyForm from "@/component/forms/TicketReplyForm";
@@ -36,8 +37,8 @@ export default function UserTicketsPage() {
 
     const fetchMe = async () => {
         try {
-            const res  = await fetch("/api/user/me");
-            const data = await res.json();
+            const res = await axios.get("/api/user/me");
+            const data = res.data;
             if (data.success) setCurrentUserId(data.data.id);
         } catch {}
     };
@@ -45,8 +46,8 @@ export default function UserTicketsPage() {
     const fetchTickets = async () => {
         setLoading(true);
         try {
-            const res  = await fetch("/api/ticket");
-            const data = await res.json();
+            const res = await axios.get("/api/ticket");
+            const data = res.data;
             if (data.success) setTickets(data.data);
             else toast.error(data.message);
         } catch {
@@ -59,8 +60,8 @@ export default function UserTicketsPage() {
     const fetchThread = async (ticketId) => {
         setLoadingThread(true);
         try {
-            const res  = await fetch(`/api/ticket/${ticketId}`);
-            const data = await res.json();
+            const res = await axios.get(`/api/ticket/${ticketId}`);
+            const data = res.data;
             if (data.success) setMessages(data.data.messages || []);
             else toast.error(data.message);
         } catch {

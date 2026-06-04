@@ -8,18 +8,12 @@ import {
   FiActivity, 
   FiPieChart, 
   FiBriefcase, 
-  FiCreditCard, 
-  FiUsers, 
-  FiShoppingBag, 
-  FiTag, 
-  FiBox, 
-  FiFolder, 
-  FiCheckSquare, 
   FiLifeBuoy,
   FiUser,
   FiStar,
   FiShield,
-  FiInbox
+  FiInbox,
+  FiBox
 } from 'react-icons/fi'
 import { FaGlobeAsia } from 'react-icons/fa'
 
@@ -36,28 +30,22 @@ const DashboardSidebar = () => {
       { name: 'People', href: '/dashboard/admin/people', icon: <FiUser /> },
       { name: 'Team', href: '/dashboard/admin/team', icon: <FiShield /> },
       { name: 'Careers', href: '/dashboard/admin/career', icon: <FiBriefcase /> },
-      { name: 'Payments', href: '/dashboard/admin/payments', icon: <FiCreditCard /> },
-      { name: 'Purchases', href: '/dashboard/admin/purchases', icon: <FiShoppingBag /> },
     ],
     manager: [
       { name: 'Analytics', href: '/dashboard/manager/analytics', icon: <FiPieChart /> },
+      { name: 'Projects', href: '/dashboard/manager/projects', icon: <FiBriefcase /> },
       { name: 'Products', href: '/dashboard/manager/products', icon: <FiBox /> },
-      { name: 'Projects', href: '/dashboard/manager/projects', icon: <FiFolder /> },
-      { name: 'Coupons', href: '/dashboard/manager/coupon', icon: <FiTag /> },
       { name: 'Reviews', href: '/dashboard/manager/reviews', icon: <FiStar /> },
       { name: 'Tickets', href: '/dashboard/manager/tickets', icon: <FiLifeBuoy /> },
-      { name: 'Tasks', href: '/dashboard/manager/tasks', icon: <FiCheckSquare /> },
-      { name: 'Payments', href: '/dashboard/manager/payments', icon: <FiCreditCard /> },
-      { name: 'Purchases', href: '/dashboard/manager/purchases', icon: <FiShoppingBag /> },
       { name: 'Activity', href: '/dashboard/manager/activity', icon: <FiActivity /> },
     ],
     support: [
       { name: 'Support Inbox', href: '/dashboard/support/support', icon: <FiInbox /> },
       { name: 'Tickets', href: '/dashboard/support/tickets', icon: <FiLifeBuoy /> },
-      { name: 'Tasks', href: '/dashboard/support/tasks', icon: <FiCheckSquare /> },
     ],
     developer: [
-      { name: 'Tasks', href: '/dashboard/developer/tasks', icon: <FiCheckSquare /> },
+      { name: 'My Projects', href: '/dashboard/developer/projects', icon: <FiBriefcase /> },
+      { name: 'My Tasks', href: '/dashboard/developer/tasks', icon: <FiActivity /> },
     ]
   }
 

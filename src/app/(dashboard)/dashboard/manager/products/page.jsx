@@ -84,7 +84,6 @@ const ProductsManagement = () => {
             <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider font-bold">
               <tr>
                 <th className="px-6 py-4">Product Info</th>
-                <th className="px-6 py-4">Price</th>
                 <th className="px-6 py-4">Status</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
@@ -92,11 +91,11 @@ const ProductsManagement = () => {
             <tbody className="divide-y divide-slate-50">
               {loading ? (
                 <tr>
-                  <td colSpan="4" className="px-6 py-10 text-center text-slate-400">Loading products...</td>
+                  <td colSpan="3" className="px-6 py-10 text-center text-slate-400">Loading products...</td>
                 </tr>
               ) : filteredProducts.length === 0 ? (
                 <tr>
-                  <td colSpan="4" className="px-6 py-10 text-center text-slate-400">No products found</td>
+                  <td colSpan="3" className="px-6 py-10 text-center text-slate-400">No products found</td>
                 </tr>
               ) :
  filteredProducts.map((product) => (
@@ -105,7 +104,6 @@ const ProductsManagement = () => {
                     <div className="font-bold text-slate-900">{product.name}</div>
                     <div className="text-xs text-slate-400">{product.slug}</div>
                   </td>
-                  <td className="px-6 py-4 font-semibold text-slate-700">${product.price}</td>
 
                   <td className="px-6 py-4">
                     <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${

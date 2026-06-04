@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import axios from 'axios';
 
 const CareerPage = () => {
   const [jobs, setJobs] = useState([]);
@@ -10,8 +11,8 @@ const CareerPage = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await fetch('/api/career');
-        const data = await res.json();
+        const res = await axios.get('/api/career');
+        const data = res.data;
         if (data.success) {
           setJobs(data.data);
         }

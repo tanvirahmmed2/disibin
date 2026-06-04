@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -28,12 +29,8 @@ const ResetPasswordForm = () => {
 
     setLoading(true);
     try {
-      const res = await fetch('/api/user/reset-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, password }),
-      });
-      const data = await res.json();
+      const res = await axios.post('/api/user/reset-password', { token, password });
+      const data = res.data;
 
       if (data.success) {
         toast.success(data.message);
@@ -41,8 +38,8 @@ const ResetPasswordForm = () => {
       } else {
         toast.error(data.message);
       }
-    } catch {
-      toast.error('Something went wrong');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }

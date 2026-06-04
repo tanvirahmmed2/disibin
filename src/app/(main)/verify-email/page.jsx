@@ -1,5 +1,6 @@
 'use client'
 import React, { useEffect, useState, Suspense } from 'react'
+import axios from 'axios'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -19,13 +20,8 @@ const VerifyEmailContent = () => {
       }
 
       try {
-        const res = await fetch('/api/user/verify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token })
-        })
-
-        const data = await res.json()
+        const res = await axios.post('/api/user/verify', { token })
+        const data = res.data
 
         if (data.success) {
           setStatus('success')
@@ -40,7 +36,7 @@ const VerifyEmailContent = () => {
         }
       } catch (error) {
         setStatus('error')
-        toast.error('Something went wrong')
+        toast.error(error.response?.data?.message || 'Something went wrong')
       }
     }
 

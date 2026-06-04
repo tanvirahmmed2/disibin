@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import axios from 'axios';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
@@ -14,12 +15,8 @@ const ForgotPasswordForm = () => {
 
     setLoading(true);
     try {
-      const res  = await fetch('/api/user/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      const data = await res.json();
+      const res = await axios.post('/api/user/forgot-password', { email });
+      const data = res.data;
 
       if (data.success) {
         setSubmitted(true);
@@ -27,8 +24,8 @@ const ForgotPasswordForm = () => {
       } else {
         toast.error(data.message);
       }
-    } catch {
-      toast.error('Something went wrong');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }

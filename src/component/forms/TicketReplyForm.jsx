@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import axios from 'axios';
 import { FaPaperPlane } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
@@ -24,20 +25,16 @@ const TicketReplyForm = ({ ticket, onSent, currentUserId }) => {
     if (!reply.trim()) return;
     setSending(true);
     try {
-      const res  = await fetch(`/api/ticket/${ticket.ticket_id}/message`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: reply }),
-      });
-      const data = await res.json();
+      const res = await axios.post(`/api/ticket/${ticket.ticket_id}/message`, { message: reply });
+      const data = res.data;
       if (data.success) {
         onSent?.({ ...data.data, user_name: 'You', user_role: 'user' });
         setReply('');
       } else {
         toast.error(data.message);
       }
-    } catch {
-      toast.error('Failed to send reply');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to send reply');
     } finally {
       setSending(false);
     }

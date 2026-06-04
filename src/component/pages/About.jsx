@@ -5,10 +5,34 @@ import React from 'react'
 
 const About = () => {
   return (
-    <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: .6 }} className='w-full max-w-4xl mx-auto h-auto py-20 flex flex-col items-center justify-center gap-6'>
-      <p className='text-2xl sm:text-4xl text-center font-lora cursor-text'>To deliver premium, enterprise-grade digital solutions that seamlessly integrate design, development, and intelligent automation into a unified global ecosystem. We are committed to empowering multinational organizations with scalable, secure, and innovative technologies that drive efficiency, enhance user experience, and support sustainable long-term growth through strategic collaboration and continuous digital transformation</p>
-      <Link href={'/about'} className='w-auto text-2xl md:text-4xl font-poppins bg-slate-700 text-white px-6 rounded-tl-2xl rounded-br-2xl'>About us</Link>
-    </motion.div>
+    <section className="w-full ">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }} 
+        whileInView={{ opacity: 1, y: 0 }} 
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, ease: "easeOut" }} 
+        className="w-full max-w-4xl mx-auto px-4 py-24 flex flex-col items-center justify-center gap-10"
+      >
+        {/* Core Vision Paragraph */}
+        <p className="text-xl sm:text-2xl md:text-3xl text-center font-lora text-slate-800 leading-relaxed max-w-3xl cursor-text">
+          To deliver premium, enterprise-grade digital solutions that seamlessly integrate design, development, and intelligent automation into a unified global ecosystem. We are committed to empowering multinational organizations with scalable, secure, and innovative technologies that drive efficiency, enhance user experience, and support sustainable long-term growth through strategic collaboration and continuous digital transformation.
+        </p>
+        
+        {/* Animated Action Button */}
+        <motion.div
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ duration: 0.2 }}
+        >
+          <Link 
+            href="/about" 
+            className="inline-block font-poppins font-medium text-lg md:text-xl bg-slate-900 text-white px-8 py-3 rounded-tl-2xl rounded-br-2xl hover:bg-slate-800 shadow-sm transition-colors tracking-wide"
+          >
+            About us
+          </Link>
+        </motion.div>
+      </motion.div>
+    </section>
   )
 }
 

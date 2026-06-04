@@ -89,15 +89,7 @@ const ProductDetailPage = () => {
                 {product.name}
               </h1>
               
-              <div className="mt-4 flex items-baseline gap-4">
-                <span className="text-3xl font-bold text-slate-900">${product.price}</span>
-                {product.duration_days > 0 && (
-                  <span className="text-slate-500 text-sm">/ {product.duration_days} Days</span>
-                )}
-                {product.is_lifetime && (
-                  <span className="text-emerald-500 text-sm font-bold">Lifetime Access</span>
-                )}
-              </div>
+
 
               <div className="mt-6 border-t border-slate-100 pt-6">
                 <h3 className="text-lg font-bold text-slate-900 mb-2">Description</h3>
@@ -135,13 +127,7 @@ const ProductDetailPage = () => {
                   Live Demo
                 </a>
               )}
-              <Link href={`/checkout/${product.product_id}`} className="w-full bg-linear-to-r from-sky-600 to-indigo-600 text-white py-2 rounded-lg font-bold hover:from-sky-700 hover:to-indigo-700 transition-all flex items-center justify-center gap-3 shadow-lg shadow-sky-100 group">
-                <FiShoppingCart className="group-hover:scale-110 transition-transform" />
-                Purchase Now
-              </Link>
-              <p className="text-center text-xs text-slate-400 mt-4">
-                Secure checkout. 100% money back guarantee.
-              </p>
+
             </div>
           </div>
         </div>

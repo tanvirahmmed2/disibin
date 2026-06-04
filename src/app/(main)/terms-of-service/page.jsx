@@ -7,7 +7,7 @@ const LegalPage = ({ title }) => {
       <div className="prose prose-slate max-w-none space-y-8 text-slate-600 leading-relaxed">
         <section>
           <h2 className="text-xl font-bold text-slate-800 mb-4 uppercase tracking-widest text-[10px]">Agreement</h2>
-          <p>By accessing Disibin's platforms and services, you agree to comply with our professional standards and operational guidelines.</p>
+          <p>By accessing Disibin&apos;s platforms and services, you agree to comply with our professional standards and operational guidelines.</p>
         </section>
       </div>
     </div>

@@ -2,6 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { FiCpu, FiDatabase, FiLayers, FiShield, FiSliders, FiActivity } from 'react-icons/fi';
 
 const AboutPage = () => {
   const fadeUp = {
@@ -29,9 +30,42 @@ const AboutPage = () => {
     { value: '100', suffix: '%', label: 'Commitment', sub: 'to quality and performance' },
   ];
 
-  return (
-    <div className=" text-slate-900 w-full">
+  // --- NEW ADDITIONAL INFORMATION DATASTRUCTURES ---
+  const coreValues = [
+    {
+      icon: <FiCpu className="w-6 h-6 text-indigo-600" />,
+      title: "Performance First Philosophy",
+      desc: "We write highly optimized code using Next.js Server Components. No unnecessary client-side weight, no blocking scripts—just instantaneous rendering layout speeds right out of the box."
+    },
+    {
+      icon: <FiDatabase className="w-6 h-6 text-indigo-600" />,
+      title: "Secure & Relational Architectures",
+      desc: "Our systems are built using strict database isolation. Whether applying row-level safety inside PostgreSQL or scaling schema rules, your business data views stay perfectly protected."
+    },
+    {
+      icon: <FiLayers className="w-6 h-6 text-indigo-600" />,
+      title: "Clean Decoupled Infrastructures",
+      desc: "We split frontends seamlessly from backend application layers. This component-driven ecosystem ensures your internal software branches can adapt, mutate, or scale without causing regression bugs."
+    }
+  ];
 
+  const techMatrix = [
+    { category: "Frontend Core", tools: "Next.js (App Router), React, Tailwind CSS, TypeScript, Framer Motion" },
+    { category: "Backend Engine", tools: "Node.js, Express.js, NestJS RESTful Services, Realtime WebSockets" },
+    { category: "Storage & State", tools: "PostgreSQL Databases, MongoDB Architecture, Redis Token Caching" },
+    { category: "Management CI/CD", tools: "GitHub Actions Automation, Docker Containers, AWS Virtual Cloud Platforms" }
+  ];
+
+  const managementPillars = [
+    { icon: <FiShield className="w-5 h-5 text-sky-500 shrink-0 mt-1" />, title: "Continuous Security Audits", desc: "Constant code dependency checking, vulnerability tracking, and automated SSL certificate rotations." },
+    { icon: <FiSliders className="w-5 h-5 text-sky-500 shrink-0 mt-1" />, title: "Query Speed Tuning", desc: "Routine database index maintenance to prevent slowdowns as transaction logging scales upwards." },
+    { icon: <FiActivity className="w-5 h-5 text-sky-500 shrink-0 mt-1" />, title: "Observability Metrics", desc: "Live memory utilization and response latency dashboards mapping exceptions in production instantly." }
+  ];
+
+  return (
+    <div className="text-slate-900 w-full antialiased">
+
+      {/* Hero Section */}
       <section className="w-full max-w-7xl mx-auto px-6 pt-16 pb-24 md:pt-24 md:pb-32">
         <motion.div
           initial="hidden"
@@ -51,7 +85,7 @@ const AboutPage = () => {
             className="text-5xl sm:text-7xl lg:text-8xl font-extrabold leading-[1.05] tracking-tight text-slate-900 mb-10"
           >
             We Are<br />
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-slate-900 via-sky-600 to-indigo-600">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-sky-600 to-indigo-600">
               Developers
             </span>
           </motion.h1>
@@ -69,7 +103,7 @@ const AboutPage = () => {
             className="text-lg text-slate-500 leading-relaxed max-w-2xl mb-14"
           >
             From concept to premium digital solutions — crafting fast, scalable web
-            applications that seamlessly combine design, development, and automation
+            applications that seamlessly combine design, development, and management
             into one powerful ecosystem. Long-term partnerships, continuous growth.
           </motion.p>
 
@@ -91,6 +125,31 @@ const AboutPage = () => {
       </section>
 
       <div className="w-full h-px bg-slate-100" />
+
+      {/* NEW SECTION 1: Core Architectural Engineering Principles */}
+      <section className="w-full py-24 px-6 max-w-7xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-40px' }}
+          variants={stagger}
+          className="grid grid-cols-1 md:grid-cols-3 gap-12"
+        >
+          {coreValues.map((value, i) => (
+            <motion.div key={i} variants={fadeUp} className="flex flex-col gap-4">
+              <div className="p-3 bg-slate-50 rounded-xl w-fit border border-slate-100">
+                {value.icon}
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 tracking-tight">{value.title}</h3>
+              <p className="text-sm text-slate-500 leading-relaxed">{value.desc}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
+
+      <div className="w-full h-px bg-slate-100" />
+
+      {/* Dark Mid-Section Banner */}
       <section className="w-full py-32 px-6 bg-slate-900">
         <motion.div
           className="max-w-4xl mx-auto text-center flex flex-col items-center"
@@ -124,6 +183,7 @@ const AboutPage = () => {
 
       <div className="w-full h-px bg-slate-100" />
 
+      {/* Metrics Section */}
       <section className="w-full py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <motion.div
@@ -149,6 +209,37 @@ const AboutPage = () => {
 
       <div className="w-full h-px bg-slate-100" />
 
+      {/* NEW SECTION 2: Stack Blueprint Matrix Row */}
+      <section className="w-full py-24 px-6 max-w-7xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-40px' }}
+          variants={stagger}
+          className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12"
+        >
+          <motion.div variants={fadeUp}>
+            <span className="text-xs font-bold tracking-widest text-indigo-600 uppercase block mb-2">Technical Standards</span>
+            <h3 className="text-3xl font-extrabold tracking-tight text-slate-900">Our Stack Infrastructure</h3>
+            <p className="text-sm text-slate-500 mt-3 leading-relaxed max-w-xs">
+              We operate exclusively on fully typed, optimized modern languages that decouple safely and run seamlessly at scale.
+            </p>
+          </motion.div>
+
+          <motion.div variants={fadeUp} className="divide-y divide-slate-100 border-t border-b border-slate-100">
+            {techMatrix.map((item, index) => (
+              <div key={index} className="py-5 grid grid-cols-1 sm:grid-cols-[1fr_2fr] gap-2 sm:gap-6 text-sm">
+                <span className="font-bold text-slate-800 uppercase tracking-wide text-xs pt-0.5">{item.category}</span>
+                <span className="text-slate-600 font-mono text-xs sm:text-sm">{item.tools}</span>
+              </div>
+            ))}
+          </motion.div>
+        </motion.div>
+      </section>
+
+      <div className="w-full h-px bg-slate-100" />
+
+      {/* Evolving Timeline Section */}
       <section className="w-full py-24 px-6 bg-slate-50">
         <div className="max-w-7xl mx-auto grid md:grid-cols-[1fr_2fr] gap-20 items-start">
 
@@ -163,7 +254,8 @@ const AboutPage = () => {
               Constantly <br />Evolving
             </h2>
             <p className="text-lg text-slate-500 leading-relaxed max-w-xs">
-           The web moves fast, and so do we. We continuously refine our stack to ensure we are delivering the most secure, maintainable, and performant codebases possible. </p>
+              The web moves fast, and so do we. We continuously refine our stack to ensure we are delivering the most secure, maintainable, and performant codebases possible.
+            </p>
           </motion.div>
 
           <motion.div
@@ -180,7 +272,6 @@ const AboutPage = () => {
                 className="relative pl-10 pb-14 border-l-2 border-slate-200 last:border-transparent group"
               >
                 <div className="absolute left-[-9px] top-1 w-4 h-4 rounded-full bg-white border-2 border-slate-300 group-hover:border-sky-500 group-hover:bg-sky-50 transition-all duration-300" />
-
                 <h3 className="text-2xl font-bold text-slate-900 mb-3">{item.title}</h3>
                 <p className="text-base text-slate-500 leading-relaxed max-w-lg">{item.desc}</p>
               </motion.div>
@@ -190,6 +281,44 @@ const AboutPage = () => {
         </div>
       </section>
 
+      <div className="w-full h-px bg-slate-100" />
+
+      {/* NEW SECTION 3: Long-term Web Management & Guardrails */}
+      <section className="w-full py-24 px-6 max-w-5xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={stagger}
+          className="text-center mb-16"
+        >
+          <motion.span variants={fadeUp} className="text-xs font-bold tracking-widest text-indigo-600 uppercase block mb-2">Continuous Lifecycle</motion.span>
+          <motion.h3 variants={fadeUp} className="text-3xl font-extrabold tracking-tight text-slate-900">Post-Launch Web Management</motion.h3>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {managementPillars.map((pillar, index) => (
+            <motion.div
+              key={index}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              className="border-t border-slate-200 pt-6 space-y-2"
+            >
+              <div className="flex items-center gap-2 font-bold text-slate-900 text-base">
+                {pillar.icon}
+                <span>{pillar.title}</span>
+              </div>
+              <p className="text-slate-500 text-xs sm:text-sm leading-relaxed pl-7">{pillar.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      <div className="w-full h-px bg-slate-100" />
+
+      {/* Philosophy Callout Footer */}
       <section className="w-full py-32 px-6">
         <div className="max-w-5xl mx-auto flex flex-col gap-24 text-center">
           <motion.div
@@ -208,10 +337,8 @@ const AboutPage = () => {
         </div>
       </section>
 
-
     </div>
   );
 };
 
 export default AboutPage;
-

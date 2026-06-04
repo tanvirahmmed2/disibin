@@ -94,7 +94,7 @@ const ManagerReviewsPage = () => {
                         <FiStar key={i} className={`w-3 h-3 ${i < review.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
                       ))}
                     </div>
-                    <p className="text-sm text-slate-600 truncate" title={review.comment}>"{review.comment}"</p>
+                    <p className="text-sm text-slate-600 truncate" title={review.comment}>&quot;{review.comment}&quot;</p>
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 w-max ${review.is_approved ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>

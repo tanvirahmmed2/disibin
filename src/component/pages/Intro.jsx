@@ -7,7 +7,7 @@ const Intro = () => {
 
 
 
-     
+
 
       <div className='w-full flex flex-col gap-4 animate-fade-up delay-100'>
         <p className='font-poppins text-lg sm:text-xl tracking-wide'>
@@ -45,7 +45,7 @@ const Intro = () => {
         </div>
       </div>
 
-     
+
     </section>
   )
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { FaTimes, FaPaperPlane, FaTicketAlt, FaUserTag, FaCheck } from "react-icons/fa";
+import axios from "axios";
 import toast from "react-hot-toast";
 
 const STATUS_OPTIONS = ["open", "in_progress", "resolved", "closed"];
@@ -33,8 +34,8 @@ export default function SupportTicketsPage() {
 
     const fetchMe = async () => {
         try {
-            const res = await fetch("/api/user/me");
-            const data = await res.json();
+            const res = await axios.get("/api/user/me");
+            const data = res.data;
             if (data.success) setCurrentUserId(data.data.id);
         } catch {}
     };
@@ -42,8 +43,8 @@ export default function SupportTicketsPage() {
     const fetchTickets = async () => {
         setLoading(true);
         try {
-            const res = await fetch("/api/ticket");
-            const data = await res.json();
+            const res = await axios.get("/api/ticket");
+            const data = res.data;
             if (data.success) setTickets(data.data);
         } catch { toast.error("Failed to load tickets"); }
         finally { setLoading(false); }
@@ -52,8 +53,8 @@ export default function SupportTicketsPage() {
     const fetchThread = async (ticketId) => {
         setLoadingThread(true);
         try {
-            const res = await fetch(`/api/ticket/${ticketId}`);
-            const data = await res.json();
+            const res = await axios.get(`/api/ticket/${ticketId}`);
+            const data = res.data;
             if (data.success) {
                 setMessages(data.data.messages || []);
                 // sync ticket data in case it changed
@@ -65,8 +66,8 @@ export default function SupportTicketsPage() {
 
     const fetchManagers = async () => {
         try {
-            const res = await fetch("/api/user/management");
-            const data = await res.json();
+            const res = await axios.get("/api/user/management");
+            const data = res.data;
             if (data.success) setManagers(data.data.filter(u => u.role === "manager" || u.role === "admin"));
         } catch {}
     };
@@ -75,12 +76,8 @@ export default function SupportTicketsPage() {
         e.preventDefault();
         if (!reply.trim() || !activeTicket) return;
         try {
-            const res = await fetch(`/api/ticket/${activeTicket.ticket_id}/message`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: reply }),
-            });
-            const data = await res.json();
+            const res = await axios.post(`/api/ticket/${activeTicket.ticket_id}/message`, { message: reply });
+            const data = res.data;
             if (data.success) {
                 setMessages(prev => [...prev, data.data]);
                 setReply("");
@@ -90,12 +87,8 @@ export default function SupportTicketsPage() {
 
     const updateStatus = async (status) => {
         try {
-            const res = await fetch(`/api/ticket/${activeTicket.ticket_id}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status }),
-            });
-            const data = await res.json();
+            const res = await axios.patch(`/api/ticket/${activeTicket.ticket_id}`, { status });
+            const data = res.data;
             if (data.success) {
                 toast.success("Status updated");
                 setActiveTicket(prev => ({ ...prev, status }));
@@ -106,12 +99,8 @@ export default function SupportTicketsPage() {
 
     const assignToManager = async (managerId) => {
         try {
-            const res = await fetch(`/api/ticket/${activeTicket.ticket_id}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ assigned_to: managerId }),
-            });
-            const data = await res.json();
+            const res = await axios.patch(`/api/ticket/${activeTicket.ticket_id}`, { assigned_to: managerId });
+            const data = res.data;
             if (data.success) {
                 toast.success("Ticket escalated to manager");
                 const mgr = managers.find(m => m.user_id === managerId);

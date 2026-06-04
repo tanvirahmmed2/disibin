@@ -12,40 +12,28 @@ const ContextProvider = ({ children }) => {
   const [dashboardSidebar, setDashboardSidebar] = useState(false);
   const [userSidebar, setUserSidebar] = useState(false);
   const [userData, setUserData] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isLoggedIn = !!userData;
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch('/api/user');
-        const data = await response.json();
-        
+        const response = await axios.get('/api/user');
+        const data = response.data;
         if (data.success && data.data) {
           setUserData(data.data);
-          setIsLoggedIn(true);
         } else {
           setUserData(null);
-          setIsLoggedIn(false);
         }
       } catch (error) {
         console.error("Session verification failed:", error);
       }
     };
-
     fetchUser();
   }, []);
 
-  useEffect(() => {
-    if (userData) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, [userData]);
-
   const logout = async () => {
     try {
-      await fetch('/api/user/logout', { method: 'POST' });
+      await axios.post('/api/user/logout');
       setUserData(null);
       router.push('/login');
     } catch (error) {

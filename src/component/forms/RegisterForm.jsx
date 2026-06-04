@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -18,12 +19,8 @@ const RegisterForm = () => {
 
     setLoading(true);
     try {
-      const res = await fetch('/api/user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
+      const res = await axios.post('/api/user', formData);
+      const data = res.data;
 
       if (data.success) {
         toast.success(data.message, { duration: 6000 });
@@ -31,8 +28,8 @@ const RegisterForm = () => {
       } else {
         toast.error(data.message);
       }
-    } catch {
-      toast.error('Something went wrong');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 
 const Bio = () => {
   const [stats, setStats] = useState([
@@ -11,8 +12,8 @@ const Bio = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('/api/public/home')
-        const result = await response.json()
+        const response = await axios.get('/api/public/home')
+        const result = response.data
         if (result.success) {
           const { stats: fetchedStats } = result.data
           setStats([

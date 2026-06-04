@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useContext } from 'react';
+import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Context } from '@/component/helper/Context';
@@ -18,12 +19,8 @@ const LoginForm = () => {
 
     setLoading(true);
     try {
-      const res = await fetch('/api/user/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
+      const res = await axios.post('/api/user/login', { email, password });
+      const data = res.data;
 
       if (data.success) {
         toast.success('Login successful!');
@@ -32,8 +29,8 @@ const LoginForm = () => {
       } else {
         toast.error(data.message);
       }
-    } catch {
-      toast.error('Something went wrong');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }

@@ -12,7 +12,7 @@ const Footer = () => {
         <div className='w-full bg-slate-900 rounded-3xl p-8 md:p-12 mb-20 flex flex-col md:flex-row items-center justify-between gap-8 border border-white/5 relative overflow-hidden'>
           {/* Background Glow */}
           <div className='absolute top-0 right-0 w-[500px] h-[500px] bg-sky-500/10 blur-[100px] rounded-full pointer-events-none translate-x-1/3 -translate-y-1/3' />
-          
+
           <div className='flex flex-col gap-4 relative z-10 text-center md:text-left max-w-2xl'>
             <h2 className='text-3xl md:text-5xl font-poppins font-bold bg-gradient-to-br from-white to-slate-400 bg-clip-text text-transparent tracking-tight leading-tight'>
               Ready to build something great?
@@ -21,7 +21,7 @@ const Footer = () => {
               Tell us about your plan & we&apos;ll get back to you very soon!
             </p>
           </div>
-          
+
           <Link href={'/contact'} className='relative z-10 shrink-0 bg-white text-slate-950 px-8 py-4 rounded-full font-semibold hover:bg-sky-50 hover:-translate-y-1 transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.1)]'>
             Get in touch
           </Link>

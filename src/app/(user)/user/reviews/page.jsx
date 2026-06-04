@@ -87,7 +87,7 @@ const UserReviewPage = () => {
           </div>
 
           <div className="p-4 bg-slate-50 rounded-xl">
-            <p className="text-slate-700 italic">"{review.comment}"</p>
+            <p className="text-slate-700 italic">&quot;{review.comment}&quot;</p>
           </div>
 
           {review.reply && (

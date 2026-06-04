@@ -2,6 +2,7 @@
 'use client';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
 
 const ContactPage = () => {
@@ -26,15 +27,8 @@ const ContactPage = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/support', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const result = await response.json();
+      const response = await axios.post('/api/support', formData);
+      const result = response.data;
 
       if (result.success) {
         toast.success(result.message || 'Message sent successfully!');
@@ -48,7 +42,7 @@ const ContactPage = () => {
         toast.error(result.message || 'Something went wrong.');
       }
     } catch (error) {
-      toast.error('Failed to send message.');
+      toast.error(error.response?.data?.message || 'Failed to send message.');
     } finally {
       setLoading(false);
     }

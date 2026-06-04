@@ -6,8 +6,6 @@ import { usePathname } from 'next/navigation'
 import { 
   FiUser, 
   FiLifeBuoy, 
-  FiShoppingBag, 
-  FiCreditCard, 
   FiStar, 
   FiSettings,
   FiLogOut
@@ -20,8 +18,6 @@ const UserSidebar = () => {
 
   const links = [
     { name: 'Profile', href: '/user/profile', icon: <FiUser /> },
-    { name: 'Purchases', href: '/user/purchases', icon: <FiShoppingBag /> },
-    { name: 'Payments', href: '/user/payments', icon: <FiCreditCard /> },
     { name: 'Tickets', href: '/user/tickets', icon: <FiLifeBuoy /> },
     { name: 'Reviews', href: '/user/reviews', icon: <FiStar /> },
     { name: 'Settings', href: '/user/settings', icon: <FiSettings /> },
