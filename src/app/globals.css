@@ -65,8 +65,3 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255,255,255,0.75);
 }
-
-/* ── Scrollbar ──────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #bae6fd; border-radius: 99px; }

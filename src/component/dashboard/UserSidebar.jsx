@@ -40,7 +40,7 @@ const UserSidebar = () => {
           userSidebar ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className='flex flex-col gap-1 px-3 overflow-y-auto custom-scrollbar'>
+        <div className='flex flex-col gap-1 px-3 overflow-y-auto flex-1'>
           <p className="px-4 mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
             User Menu
           </p>

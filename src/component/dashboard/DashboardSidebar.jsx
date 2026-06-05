@@ -73,7 +73,7 @@ const DashboardSidebar = () => {
           dashboardSidebar ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className='flex flex-col gap-1 px-3 overflow-y-auto custom-scrollbar'>
+        <div className='flex flex-col gap-1 px-3 overflow-y-auto flex-1'>
           
           <Link
             href="/dashboard"
