@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
+import { images } from '@/lib/images';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -72,7 +73,7 @@ const ContactPage = () => {
           </div>
 
           <div className="flex flex-col gap-4 font-poppins items-center justify-center w-full max-w-xl">
-            
+
 
             <div className="w-full grid grid-cols-3 sm:grid-cols-5 py-4 border-b border-slate-200">
               <span className="text-slate-800 ">
@@ -102,9 +103,19 @@ const ContactPage = () => {
             </div>
 
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="w-full mt-4 h-48 sm:h-64 rounded-xl overflow-hidden"
+          >
+            <img src={images.disibin11} alt="Contact Office" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+          </motion.div>
+
         </div>
 
-        <motion.div initial={{opacity:0, x:20}} whileInView={{opacity:1, x:0}} transition={{duration:0.6}} className="w-full">
+        <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} className="w-full">
 
           <form
             onSubmit={handleSubmit}

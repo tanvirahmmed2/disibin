@@ -54,7 +54,7 @@ const Bio = () => {
               overflow-hidden
             `}
           >
-            
+
             <div
               aria-hidden='true'
               className='pointer-events-none absolute -top-10 -left-10 w-40 h-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700'
@@ -71,6 +71,7 @@ const Bio = () => {
           </div>
         ))}
       </div>
+
     </section>
   )
 }

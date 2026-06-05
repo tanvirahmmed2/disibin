@@ -2,6 +2,8 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiDatabase, FiCheckCircle, FiActivity, FiServer, FiZap } from 'react-icons/fi'
+import { images } from '@/lib/images'
+
 
 const caseStudiesData = [
   {
@@ -17,6 +19,7 @@ const caseStudiesData = [
       { label: 'Data Pollution', value: '0.00%', detail: 'Full ACID compliance' },
     ],
     techStack: ['Next.js', 'PostgreSQL', 'WebSockets', 'Redis'],
+    image: images.disibin8
   },
   {
     id: 'saas-cloud-automation',
@@ -31,6 +34,7 @@ const caseStudiesData = [
       { label: 'Security Breaches', value: 'Zero', detail: 'Third-party audited' },
     ],
     techStack: ['Node.js', 'Express.js', 'PostgreSQL', 'Redis', 'Next.js'],
+    image: images.disibin7
   },
 ]
 
@@ -39,7 +43,7 @@ export default function CaseStudies() {
   const activeData = caseStudiesData.find(item => item.id === activeTab)
 
   return (
-    <section className="w-full py-20 px-4 rounded-[2.5rem] shadow-xl shadow-slate-100 my-4">
+    <section className="w-full py-20 px-4 rounded-xl shadow-xl shadow-slate-100 my-4">
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
@@ -68,11 +72,10 @@ export default function CaseStudies() {
             <button
               key={study.id}
               onClick={() => setActiveTab(study.id)}
-              className={`px-5 py-2.5 rounded-xl text-sm font-semibold font-poppins transition-all duration-200 ${
-                activeTab === study.id
+              className={`px-5 py-2.5 rounded-xl text-sm font-semibold font-poppins transition-all duration-200 ${activeTab === study.id
                   ? 'bg-slate-900 text-white shadow-md shadow-slate-200'
                   : 'bg-white border border-slate-200 text-slate-600 hover:border-sky-300 hover:text-sky-600 hover:bg-sky-50'
-              }`}
+                }`}
             >
               {study.tabTitle}
             </button>
@@ -137,25 +140,34 @@ export default function CaseStudies() {
             </div>
 
             {/* Right: metrics */}
-            <div className="glass rounded-2xl p-6 shadow-sm space-y-6">
+            <div className="glass rounded-2xl p-6 shadow-sm flex flex-col gap-6">
+
+              {activeData.image && (
+                <div className="w-full h-48 rounded-xl overflow-hidden shadow-inner mb-2">
+                  <img src={activeData.image} alt={activeData.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                </div>
+              )}
+
               <div className="flex items-center gap-2 text-sky-500 font-semibold text-xs uppercase tracking-widest font-poppins">
                 <FiActivity className="w-4 h-4" />
                 <span>Performance Audit</span>
               </div>
 
-              {activeData.metrics.map((metric, i) => (
-                <div key={i} className={`${i !== activeData.metrics.length - 1 ? 'pb-5 border-b border-slate-100' : ''}`}>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 font-poppins block mb-1">
-                    {metric.label}
-                  </span>
-                  <div className="text-3xl font-bold text-slate-900 font-poppins my-1 tracking-tight">
-                    {metric.value}
+              <div className="space-y-6">
+                {activeData.metrics.map((metric, i) => (
+                  <div key={i} className={`${i !== activeData.metrics.length - 1 ? 'pb-5 border-b border-slate-100' : ''}`}>
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 font-poppins block mb-1">
+                      {metric.label}
+                    </span>
+                    <div className="text-3xl font-bold text-slate-900 font-poppins my-1 tracking-tight">
+                      {metric.value}
+                    </div>
+                    <span className="text-xs text-sky-600 font-medium">{metric.detail}</span>
                   </div>
-                  <span className="text-xs text-sky-600 font-medium">{metric.detail}</span>
-                </div>
-              ))}
+                ))}
+              </div>
 
-              <div className="flex gap-2 items-start pt-2 border-t border-slate-100">
+              <div className="flex gap-2 items-start pt-2 border-t border-slate-100 mt-auto">
                 <FiCheckCircle className="w-4 h-4 shrink-0 mt-0.5 text-sky-400" />
                 <p className="text-xs text-slate-400 leading-relaxed">
                   Every value verified through automated production deployment logs.

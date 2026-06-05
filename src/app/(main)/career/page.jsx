@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
+import { images } from '@/lib/images';
 
 const CareerPage = () => {
   const [jobs, setJobs] = useState([]);
@@ -36,15 +37,23 @@ const CareerPage = () => {
   return (
     <div className="w-full min-h-screen flex flex-col pt-24 pb-16 px-4">
       <section className="w-full max-w-5xl mx-auto flex flex-col items-center justify-center gap-6 mb-20 text-center animate-fade-up">
-        
+
         <h1 className="font-poppins text-4xl sm:text-6xl font-semibold text-slate-900 leading-tight">
           Shape the Future of <br className="hidden sm:block" />
           <span className="gradient-text">Digital Excellence</span>
         </h1>
-        <p className="text-slate-500 w-full text-sm sm:text-base font-medium">
-          We&apos;re a high-care studio built on clarity and impact. If you&apos;re passionate about 
+        <p className="text-slate-500 w-full text-sm sm:text-base font-medium max-w-2xl mx-auto">
+          We&apos;re a high-care studio built on clarity and impact. If you&apos;re passionate about
           crafting premium digital experiences, we&apos;d love to meet you.
         </p>
+
+        <div className="w-full mt-8 rounded-xl overflow-hidden shadow-2xl shadow-sky-100/50 aspect-video md:aspect-[21/9]">
+          <img
+            src={images.disibin10}
+            alt="Career at Disibin"
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000"
+          />
+        </div>
       </section>
 
       {/* Jobs Section */}
@@ -64,12 +73,12 @@ const CareerPage = () => {
         ) : (
           <div className="flex flex-col gap-4">
             {jobs.map((job, idx) => (
-              <div 
-                key={job.job_id} 
+              <div
+                key={job.job_id}
                 className={`w-full glass rounded-2xl overflow-hidden transition-all duration-300 animate-fade-up delay-${(idx % 5 + 2) * 100}`}
               >
                 {/* Job Header */}
-                <div 
+                <div
                   className="p-6 cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-white/40 transition-colors"
                   onClick={() => toggleJob(job.job_id)}
                 >
@@ -81,7 +90,7 @@ const CareerPage = () => {
                       <span className="px-2 py-1 bg-sky-50 text-sky-600 rounded-md">{job.location}</span>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-4">
                     <span className="text-sm font-semibold text-slate-700 hidden sm:block">
                       {job.compensation}
@@ -96,7 +105,7 @@ const CareerPage = () => {
 
                 <div className={`transition-all duration-500 ease-in-out overflow-hidden ${expandedJob === job.job_id ? 'max-h-500 border-t border-slate-200/50' : 'max-h-0'}`}>
                   <div className="p-6 flex flex-col gap-6 text-sm text-slate-600">
-                    
+
                     {job.description && (
                       <div className="flex flex-col gap-2">
                         <h4 className="font-semibold text-slate-900">About the Role</h4>
@@ -129,7 +138,7 @@ const CareerPage = () => {
                       <span className="text-xs font-semibold text-slate-500 sm:hidden">
                         {job.compensation}
                       </span>
-                      <a 
+                      <a
                         href={`mailto:careers@disibin.com?subject=Application for ${job.title}`}
                         className="ml-auto px-6 py-2 bg-slate-900 text-white font-semibold rounded-lg hover:bg-sky-500 transition-colors shadow-lg shadow-slate-900/10"
                       >
