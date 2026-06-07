@@ -317,7 +317,7 @@ export default function SupportsManagement() {
                                         rows={3}
                                         value={replyText}
                                         onChange={e => setReplyText(e.target.value)}
-                                        placeholder={`Reply to ${selected.email}... (saved internally, also email them separately)`}
+                                        placeholder={`Reply to ${selected.email}... (will be sent via email)`}
                                         className="w-full text-sm px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent placeholder-gray-400"
                                     />
                                 </div>
@@ -330,7 +330,7 @@ export default function SupportsManagement() {
                                 </button>
                             </div>
                             <p className="text-[10px] text-gray-400 mt-2">
-                                Reply is stored internally. Email {selected.email} separately, then click &quot;Mark Replied&quot; or &quot;Save Reply&quot; to close.
+                                Entering a reply and clicking &quot;Save Reply&quot; will send an email to {selected.email}. Clicking &quot;Mark Replied&quot; will close the request without sending an email.
                             </p>
                         </div>
                     </>

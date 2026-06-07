@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isSupport } from "@/lib/middleware";
 import { dbQuery } from "@/lib/database/pg";
+import { sendEmail } from "@/lib/utils/brevo";
 
 // ── SUPPORT INBOX — single request operations ───────────────────────────────
 // All endpoints here operate on the `supports` table (contact form submissions).
@@ -100,6 +101,23 @@ export async function PATCH(req, { params }) {
 
         if (res.rows.length === 0) {
             return NextResponse.json({ success: false, message: "Support request not found" }, { status: 404 });
+        }
+
+        if (reply) {
+            const supportData = res.rows[0];
+            await sendEmail({
+                to: supportData.email,
+                subject: `Re: ${supportData.subject}`,
+                htmlContent: `<div style="font-family: sans-serif; color: #333;">
+                    <p>Hi ${supportData.name},</p>
+                    <p>${reply.replace(/\n/g, '<br/>')}</p>
+                    <hr style="border: none; border-top: 1px solid #eaeaea; margin: 20px 0;" />
+                    <p style="font-size: 12px; color: #666;">
+                        <strong>Your original message:</strong><br/>
+                        ${supportData.description ? supportData.description.replace(/\n/g, '<br/>') : ''}
+                    </p>
+                </div>`
+            });
         }
 
         return NextResponse.json({
