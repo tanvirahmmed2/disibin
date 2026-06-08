@@ -45,7 +45,6 @@ const Footer = () => {
           <div className='space-y-6'>
             <h4 className='text-xs font-semibold uppercase tracking-widest text-slate-50'>Platform</h4>
             <div className='flex flex-col gap-3 text-sm text-slate-400'>
-              <Link href='/projects' className='hover:text-sky-400 transition-colors'>Selected Works</Link>
               <Link href='/products' className='hover:text-sky-400 transition-colors'>Products</Link>
               <Link href='/about' className='hover:text-sky-400 transition-colors'>Our Vision</Link>
               <Link href='/team' className='hover:text-sky-400 transition-colors'>Dedicated Team</Link>
@@ -53,7 +52,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Legal Links */}
           <div className='space-y-6'>
             <h4 className='text-xs font-semibold uppercase tracking-widest text-slate-50'>Legal & Help</h4>
             <div className='flex flex-col gap-3 text-sm text-slate-400'>
