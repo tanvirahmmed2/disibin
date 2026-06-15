@@ -50,13 +50,13 @@ const ProductDetailPage = () => {
   if (!product) return null;
 
   return (
-    <div className="min-h-screen  py-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen  p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         <Link href="/products" className="inline-flex items-center gap-2 text-slate-600 hover:text-sky-600 font-bold mb-8 transition-colors">
           <FiArrowLeft /> Back to Products
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 bg-white rounded-md shadow-xl shadow-slate-100 border border-slate-100 p-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12  rounded-md shadow-xl shadow-slate-100 border border-slate-100 p-2">
       
           <div className="space-y-4">
             <div className="relative  aspect-video rounded-lg overflow-hidden border border-slate-100 bg-slate-50 flex items-center justify-center">
