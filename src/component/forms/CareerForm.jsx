@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { FiPlus, FiX } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-
+import TiptapEditor from './TiptapEditor';
 /**
  * CareerForm
  * ----------
@@ -145,7 +145,11 @@ const CareerForm = ({ initialData, onSuccess, onCancel }) => {
 
       <div className="space-y-1.5">
         <label className={labelCls}>Description *</label>
-        <textarea name="description" value={formData.description} onChange={handleChange} rows={4} className={`${inputCls} resize-none`} placeholder="Job description..." required />
+        <TiptapEditor
+          value={formData.description}
+          onChange={(html) => setFormData({ ...formData, description: html })}
+          placeholder="Job description..."
+        />
       </div>
 
       {/* Array Fields */}

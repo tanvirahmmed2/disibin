@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { images } from '@/lib/images'
 import { FiLinkedin, FiTwitter, FiGithub } from 'react-icons/fi'
-
-const fallbackImages = [
-  images.disibin6, images.disibin5, images.disibin4,
-  images.disibin3, images.disibin2, images.disibin
-]
-
 const Team = () => {
   const [teamMembers, setTeamMembers] = useState([])
   const [loading, setLoading] = useState(true)
@@ -75,11 +68,13 @@ const Team = () => {
               className="group flex flex-col items-center"
             >
               <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden shadow-lg shadow-sky-100 mb-6 bg-slate-100">
-                <img
-                  src={member.image || fallbackImages[idx % fallbackImages.length]}
-                  alt={member.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
-                />
+                {member.image && (
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                  />
+                )}
 
                 {/* Social overlay */}
                 <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">

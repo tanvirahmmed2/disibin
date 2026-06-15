@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiDatabase, FiCheckCircle, FiActivity, FiServer, FiZap } from 'react-icons/fi'
-import { images } from '@/lib/images'
 
 
 const caseStudiesData = [
@@ -18,8 +17,7 @@ const caseStudiesData = [
       { label: 'Query Speed', value: '140ms', detail: 'Complex multi-tenant indexing' },
       { label: 'Data Pollution', value: '0.00%', detail: 'Full ACID compliance' },
     ],
-    techStack: ['Next.js', 'PostgreSQL', 'WebSockets', 'Redis'],
-    image: images.disibin8
+    techStack: ['Next.js', 'PostgreSQL', 'WebSockets', 'Redis']
   },
   {
     id: 'saas-cloud-automation',
@@ -33,8 +31,7 @@ const caseStudiesData = [
       { label: 'Auth Verification', value: '12ms', detail: 'Ultra-fast Redis lookups' },
       { label: 'Security Breaches', value: 'Zero', detail: 'Third-party audited' },
     ],
-    techStack: ['Node.js', 'Express.js', 'PostgreSQL', 'Redis', 'Next.js'],
-    image: images.disibin7
+    techStack: ['Node.js', 'Express.js', 'PostgreSQL', 'Redis', 'Next.js']
   },
 ]
 
@@ -142,11 +139,6 @@ export default function CaseStudies() {
             {/* Right: metrics */}
             <div className="glass rounded-2xl p-6 shadow-sm flex flex-col gap-6">
 
-              {activeData.image && (
-                <div className="w-full h-48 rounded-xl overflow-hidden shadow-inner mb-2">
-                  <img src={activeData.image} alt={activeData.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
-                </div>
-              )}
 
               <div className="flex items-center gap-2 text-sky-500 font-semibold text-xs uppercase tracking-widest font-poppins">
                 <FiActivity className="w-4 h-4" />

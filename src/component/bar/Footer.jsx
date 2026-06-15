@@ -77,7 +77,7 @@ const Footer = () => {
 
         <div className='pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4'>
           <p className='text-slate-500 text-xs tracking-wider'>© {currentYear} DISIBIN.</p>
-          <p className='text-slate-500 text-xs tracking-wider uppercase font-medium'>Global Network</p>
+          <p className='text-slate-500 text-xs tracking-wider uppercase font-medium'>GLOBAL NETWORK</p>
         </div>
       </div>
     </footer>

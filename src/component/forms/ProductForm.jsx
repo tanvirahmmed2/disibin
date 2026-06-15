@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { FiPlus, FiTrash2, FiCheck } from 'react-icons/fi';
 import ImageUpload from '@/component/helper/ImageUpload';
-
+import TiptapEditor from './TiptapEditor';
 const ProductForm = ({ initialData, onSuccess, onCancel }) => {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -227,12 +227,9 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
 
       <div className="space-y-2">
         <label className="text-sm font-bold text-slate-700">Detailed Description</label>
-        <textarea
-          name="description"
+        <TiptapEditor
           value={formData.description}
-          onChange={handleChange}
-          rows={6}
-          className="w-full px-6 py-4 rounded-[2rem] border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all resize-none"
+          onChange={(html) => setFormData({ ...formData, description: html })}
           placeholder="Describe the product value proposition in detail..."
         />
       </div>

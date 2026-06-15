@@ -8,6 +8,7 @@ import {
     FaSearch, FaInbox, FaUserTie, FaRegEnvelope, FaTimes, FaPaperPlane, FaArrowLeft
 } from "react-icons/fa";
 import { FiMessageSquare } from "react-icons/fi";
+import TiptapEditor from "@/component/forms/TiptapEditor";
 
 // ── Support Inbox ────────────────────────────────────────────────────────────
 // Handles the `supports` table — guest contact form submissions.
@@ -268,7 +269,10 @@ export default function SupportsManagement() {
                             {/* Original message */}
                             <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
                                 <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Message from {selected.name}</h3>
-                                <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{selected.description}</p>
+                                <div 
+                                    className="text-gray-700 leading-relaxed prose prose-sm max-w-none"
+                                    dangerouslySetInnerHTML={{ __html: selected.description }}
+                                />
                             </div>
 
                             {/* Stored reply (if any) */}
@@ -277,7 +281,10 @@ export default function SupportsManagement() {
                                     <h3 className="text-xs font-semibold text-emerald-500 uppercase tracking-wider mb-3 flex items-center gap-1">
                                         <FiMessageSquare size={11} /> Your Reply
                                     </h3>
-                                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{selected.reply}</p>
+                                    <div 
+                                        className="text-gray-700 leading-relaxed prose prose-sm max-w-none"
+                                        dangerouslySetInnerHTML={{ __html: selected.reply }}
+                                    />
                                 </div>
                             )}
 
@@ -312,13 +319,11 @@ export default function SupportsManagement() {
                         {/* Reply composer */}
                         <div className="border-t border-gray-100 bg-white p-4">
                             <div className="flex items-start gap-3">
-                                <div className="flex-1">
-                                    <textarea
-                                        rows={3}
+                                <div className="flex-1 min-w-[200px]">
+                                    <TiptapEditor
                                         value={replyText}
-                                        onChange={e => setReplyText(e.target.value)}
+                                        onChange={setReplyText}
                                         placeholder={`Reply to ${selected.email}... (will be sent via email)`}
-                                        className="w-full text-sm px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent placeholder-gray-400"
                                     />
                                 </div>
                                 <button

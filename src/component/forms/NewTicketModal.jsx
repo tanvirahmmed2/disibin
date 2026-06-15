@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { FaTimes } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import TiptapEditor from './TiptapEditor';
 
 /**
  * NewTicketModal
@@ -70,13 +71,10 @@ const NewTicketModal = ({ isOpen, onClose, onSuccess }) => {
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Message *</label>
-            <textarea
+            <TiptapEditor
               value={form.message}
-              onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
+              onChange={(html) => setForm((p) => ({ ...p, message: html }))}
               placeholder="Describe your issue in detail..."
-              rows={4}
-              className={`${inputCls} resize-none`}
-              required
             />
           </div>
           <div>

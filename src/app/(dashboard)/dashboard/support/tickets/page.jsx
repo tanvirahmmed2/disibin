@@ -4,6 +4,12 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { FaTimes, FaPaperPlane, FaTicketAlt, FaUserTag, FaCheck, FaArrowLeft } from "react-icons/fa";
 import axios from "axios";
 import toast from "react-hot-toast";
+import TiptapEditor from "@/component/forms/TiptapEditor";
+
+const stripHtml = (html) => {
+  if (!html) return '';
+  return html.replace(/<[^>]*>?/gm, '');
+};
 
 const STATUS_OPTIONS = ["open", "in_progress", "resolved", "closed"];
 const STATUS_STYLES = {
@@ -296,9 +302,10 @@ export default function SupportTicketsPage() {
                                     <span className="text-xs font-medium text-gray-600">{activeTicket.user_name}</span>
                                     <span className="text-[10px] text-gray-400">(user)</span>
                                 </div>
-                                <div className="bg-white border border-gray-100 shadow-sm rounded-xl rounded-bl-none px-3 py-2 text-sm text-gray-800 max-w-[85%]">
-                                    {activeTicket.message}
-                                </div>
+                                <div 
+                                    className="bg-white border border-gray-100 shadow-sm rounded-xl rounded-bl-none px-4 py-3 text-sm text-gray-800 max-w-[85%] prose prose-sm max-w-none"
+                                    dangerouslySetInnerHTML={{ __html: activeTicket.message }}
+                                />
                                 <span className="text-[10px] text-gray-400 mt-1">{formatDate(activeTicket.created_at)}</span>
                             </div>
 
@@ -313,9 +320,10 @@ export default function SupportTicketsPage() {
                                                 <span className="text-xs font-medium text-gray-600">{msg.user_name}</span>
                                                 <span className="text-[10px] text-gray-400 capitalize">({msg.user_role})</span>
                                             </div>
-                                            <div className={`px-3 py-2 rounded-xl text-sm max-w-[85%] ${isMe ? "bg-blue-600 text-white rounded-br-none" : "bg-white border border-gray-100 shadow-sm text-gray-800 rounded-bl-none"}`}>
-                                                {msg.message}
-                                            </div>
+                                            <div 
+                                                className={`px-4 py-3 rounded-xl text-sm max-w-[85%] prose prose-sm max-w-none ${isMe ? "bg-blue-600 text-white rounded-br-none prose-invert" : "bg-white border border-gray-100 shadow-sm text-gray-800 rounded-bl-none"}`}
+                                                dangerouslySetInnerHTML={{ __html: msg.message }}
+                                            />
                                             <span className="text-[10px] text-gray-400 mt-1">{formatTime(msg.created_at)}</span>
                                         </div>
                                     );
@@ -326,21 +334,21 @@ export default function SupportTicketsPage() {
 
                         {/* Reply Input */}
                         <div className="p-4 border-t border-gray-100 bg-white">
-                            <form onSubmit={sendReply} className="flex gap-2">
-                                <input
-                                    type="text"
+                            <form onSubmit={sendReply} className="flex flex-col gap-3">
+                                <TiptapEditor
                                     value={reply}
-                                    onChange={e => setReply(e.target.value)}
+                                    onChange={setReply}
                                     placeholder="Reply to this ticket..."
-                                    className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
-                                <button
-                                    type="submit"
-                                    disabled={!reply.trim()}
-                                    className="p-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors disabled:bg-gray-200 disabled:cursor-not-allowed"
-                                >
-                                    <FaPaperPlane size={14} />
-                                </button>
+                                <div className="flex justify-end">
+                                    <button
+                                        type="submit"
+                                        disabled={!reply.trim() || reply === '<p></p>'}
+                                        className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors disabled:bg-gray-200 disabled:cursor-not-allowed font-medium flex items-center gap-2"
+                                    >
+                                        <FaPaperPlane size={14} /> Send Reply
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </>

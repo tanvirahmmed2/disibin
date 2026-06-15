@@ -93,11 +93,11 @@ const ProductDetailPage = () => {
 
               <div className="mt-6 border-t border-slate-100 pt-6">
                 <h3 className="text-lg font-bold text-slate-900 mb-2">Description</h3>
-                <p className="text-slate-600 leading-relaxed">
-                  {product.description}
-                </p>
+                <div 
+                  className="prose prose-slate max-w-none prose-p:leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: product.description }} 
+                />
               </div>
-
               {product.features && product.features.length > 0 && (
                 <div className="mt-6 border-t border-slate-100 pt-6">
                   <h3 className="text-lg font-bold text-slate-900 mb-4">What&apos;s Included</h3>
@@ -124,7 +124,7 @@ const ProductDetailPage = () => {
                   className="w-full bg-white text-slate-900 border-2 border-slate-200 py-2 rounded font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-3 group"
                 >
                   <FiExternalLink className="group-hover:scale-110 transition-transform" />
-                  Live Demo
+                  View
                 </a>
               )}
 

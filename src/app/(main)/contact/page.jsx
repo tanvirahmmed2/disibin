@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
-import { images } from '@/lib/images';
+import TiptapEditor from '@/component/forms/TiptapEditor';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -104,15 +104,6 @@ const ContactPage = () => {
 
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="w-full mt-4 h-48 sm:h-64 rounded-xl overflow-hidden"
-          >
-            <img src={images.disibin11} alt="Contact Office" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
-          </motion.div>
-
         </div>
 
         <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} className="w-full">
@@ -155,14 +146,10 @@ const ContactPage = () => {
               className="w-full px-5 py-4 rounded-2xl bg-slate-100 outline-none focus:border-sky-400 transition-all duration-300"
             />
 
-            <textarea
-              name="message"
+            <TiptapEditor
               value={formData.message}
-              onChange={handleChange}
+              onChange={(html) => setFormData({ ...formData, message: html })}
               placeholder="Tell us about your project, business goals, or technical requirements..."
-              rows={6}
-              required
-              className="w-full px-5 py-4 rounded-2xl bg-slate-100 outline-none resize-none focus:border-sky-400 transition-all duration-300"
             />
 
             <button

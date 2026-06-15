@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
-import { images } from '@/lib/images';
-
 const CareerPage = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,14 +44,6 @@ const CareerPage = () => {
           We&apos;re a high-care studio built on clarity and impact. If you&apos;re passionate about
           crafting premium digital experiences, we&apos;d love to meet you.
         </p>
-
-        <div className="w-full mt-8 rounded-xl overflow-hidden shadow-2xl shadow-sky-100/50 aspect-video md:aspect-[21/9]">
-          <img
-            src={images.disibin10}
-            alt="Career at Disibin"
-            className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000"
-          />
-        </div>
       </section>
 
       {/* Jobs Section */}
@@ -109,7 +99,10 @@ const CareerPage = () => {
                     {job.description && (
                       <div className="flex flex-col gap-2">
                         <h4 className="font-semibold text-slate-900">About the Role</h4>
-                        <p className="whitespace-pre-wrap">{job.description}</p>
+                        <div 
+                          className="prose prose-slate max-w-none prose-p:leading-relaxed text-sm"
+                          dangerouslySetInnerHTML={{ __html: job.description }} 
+                        />
                       </div>
                     )}
 

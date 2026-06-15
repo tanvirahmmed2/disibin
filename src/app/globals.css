@@ -1,6 +1,5 @@
 @import "tailwindcss";
-
-@theme {
+@plugin "@tailwindcss/typography";@theme {
   --font-lora: var(--font-lora);
   --font-jersey: var(--font-jersey);
   --font-silkscreen: var(--font-silkscreen);

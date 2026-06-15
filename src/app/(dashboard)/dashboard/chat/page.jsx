@@ -4,6 +4,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FaUser, FaUsers, FaPaperPlane, FaPlus, FaTimes, FaCircle } from 'react-icons/fa';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import TiptapEditor from '@/component/forms/TiptapEditor';
+
+const stripHtml = (html) => {
+  if (!html) return '';
+  return html.replace(/<[^>]*>?/gm, '');
+};
 
 export default function ChatPage() {
   const [inbox, setInbox] = useState([]);
@@ -205,7 +211,7 @@ export default function ChatPage() {
                     {chat.last_message ? (
                       <>
                         <span className="font-medium">{chat.sender_id === chat.created_by ? 'You' : chat.sender_name}: </span>
-                        {chat.last_message}
+                        {stripHtml(chat.last_message)}
                       </>
                     ) : 'No messages yet'}
                   </p>
@@ -260,9 +266,10 @@ export default function ChatPage() {
                     return (
                       <div key={msg.message_id || index} className={`flex flex-col ${msg.sender_id === activeChat.sender_id ? 'items-end' : 'items-start'}`}>
                          <span className="text-xs text-gray-400 mb-1 ml-1">{msg.sender_name}</span>
-                        <div className={`px-4 py-2 rounded-2xl max-w-[75%] ${msg.sender_id === activeChat.sender_id ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-100 text-gray-800 rounded-bl-none'}`}>
-                          {msg.content}
-                        </div>
+                        <div 
+                          className={`px-4 py-2 rounded-2xl max-w-[75%] prose prose-sm max-w-none ${msg.sender_id === activeChat.sender_id ? 'bg-blue-600 text-white rounded-br-none prose-invert' : 'bg-gray-100 text-gray-800 rounded-bl-none'}`}
+                          dangerouslySetInnerHTML={{ __html: msg.content }}
+                        />
                         <span className="text-[10px] text-gray-400 mt-1">
                           {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
@@ -277,17 +284,19 @@ export default function ChatPage() {
             {/* Message Input */}
             <div className="p-4 bg-white border-t border-gray-100">
               <form onSubmit={sendMessage} className="flex gap-2">
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Type a message..."
-                  className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
+                <div className="flex-1">
+                  <TiptapEditor
+                    value={newMessage}
+                    onChange={setNewMessage}
+                    placeholder="Type a message..."
+                    hideToolbar={true}
+                    minHeight="50px"
+                  />
+                </div>
                 <button 
                   type="submit" 
-                  disabled={!newMessage.trim()}
-                  className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center min-w-[48px]"
+                  disabled={!newMessage.trim() || newMessage === '<p></p>'}
+                  className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center min-w-[48px] h-[48px] self-end mb-2"
                 >
                   <FaPaperPlane size={16} />
                 </button>

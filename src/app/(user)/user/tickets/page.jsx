@@ -173,9 +173,10 @@ export default function UserTicketsPage() {
                                             <span className="text-xs font-medium text-gray-600">You</span>
                                             <span className="text-[10px] text-gray-400">(user)</span>
                                         </div>
-                                        <div className="bg-white border border-gray-100 shadow-sm rounded-xl rounded-bl-none px-3 py-2 text-sm text-gray-800 max-w-[85%]">
-                                            {activeTicket.message}
-                                        </div>
+                                        <div 
+                                            className="bg-white border border-gray-100 shadow-sm rounded-xl rounded-bl-none px-4 py-3 text-sm text-gray-800 max-w-[85%] prose prose-sm max-w-none"
+                                            dangerouslySetInnerHTML={{ __html: activeTicket.message }}
+                                        />
                                         <span className="text-[10px] text-gray-400 mt-1">{formatDate(activeTicket.created_at)}</span>
                                     </div>
 
@@ -190,9 +191,10 @@ export default function UserTicketsPage() {
                                                         <span className="text-xs font-medium text-gray-600">{msg.user_name}</span>
                                                         <span className="text-[10px] text-gray-400 capitalize">({msg.user_role})</span>
                                                     </div>
-                                                    <div className={`px-3 py-2 rounded-xl text-sm max-w-[85%] ${isMe ? "bg-blue-600 text-white rounded-br-none" : "bg-white border border-gray-100 shadow-sm text-gray-800 rounded-bl-none"}`}>
-                                                        {msg.message}
-                                                    </div>
+                                                    <div 
+                                                        className={`px-4 py-3 rounded-xl text-sm max-w-[85%] prose prose-sm max-w-none ${isMe ? "bg-blue-600 text-white rounded-br-none prose-invert" : "bg-white border border-gray-100 shadow-sm text-gray-800 rounded-bl-none"}`}
+                                                        dangerouslySetInnerHTML={{ __html: msg.message }}
+                                                    />
                                                     <span className="text-[10px] text-gray-400 mt-1">
                                                         {msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
                                                     </span>

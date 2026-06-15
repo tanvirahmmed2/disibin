@@ -2,7 +2,6 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import React from 'react'
-import { images } from '@/lib/images'
 
 
 const highlights = [
@@ -24,28 +23,11 @@ const About = () => {
       <div className="relative z-10 flex flex-col md:flex-row items-center gap-12 px-4 max-w-7xl mx-auto">
 
         <motion.div
-          initial={{ opacity: 0, x: -36 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: 'easeOut' }}
-          className="w-full md:w-1/2 flex justify-center"
-        >
-          <div className="relative w-full max-w-md aspect-square rounded-xl overflow-hidden shadow-2xl shadow-sky-100">
-            <img
-              src={images.disibin9}
-              alt="About us"
-              className="w-full h-full object-cover hover:scale-110 transition-transform duration-1000"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 36 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 36 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: 'easeOut', delay: 0.2 }}
-          className="w-full md:w-1/2 flex flex-col items-start gap-8"
+          className="w-full flex flex-col items-center text-center gap-8 max-w-4xl mx-auto"
         >
           {/* Eyebrow */}
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500 font-poppins">
@@ -61,7 +43,7 @@ const About = () => {
           </p>
 
           {/* Stat pills */}
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap justify-center gap-4">
             {highlights.map((h, i) => (
               <motion.div
                 key={h.label}
@@ -69,7 +51,7 @@ const About = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 + 0.3, duration: 0.5 }}
-                className="glass rounded-2xl px-6 py-4 flex flex-col items-start shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-default"
+                className="glass rounded-2xl px-6 py-4 flex flex-col items-center shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-default"
               >
                 <span className="text-lg font-bold text-slate-900 font-poppins">{h.value}</span>
                 <span className="text-xs text-slate-500 font-poppins mt-0.5">{h.label}</span>
