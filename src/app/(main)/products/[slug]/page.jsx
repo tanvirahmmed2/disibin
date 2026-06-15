@@ -59,7 +59,7 @@ const ProductDetailPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 bg-white rounded-md shadow-xl shadow-slate-100 border border-slate-100 p-2">
       
           <div className="space-y-4">
-            <div className="relative h-96 rounded-lg overflow-hidden border border-slate-100 bg-slate-50 flex items-center justify-center">
+            <div className="relative  aspect-video rounded-lg overflow-hidden border border-slate-100 bg-slate-50 flex items-center justify-center">
               {activeImage ? (
                 <Image width={1000} height={1000} src={activeImage} alt={product.name} className="w-full h-full object-cover" />
               ) : (
@@ -68,12 +68,12 @@ const ProductDetailPage = () => {
             </div>
             
             {product.images && product.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-4 gap-1">
                 {product.images.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveImage(img.url)}
-                    className={`relative h-20 rounded-xl overflow-hidden border-2 transition-all ${activeImage === img.url ? 'border-sky-500 shadow-lg shadow-sky-100' : 'border-black/20 hover:border-slate-200'}`}
+                    className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-all ${activeImage === img.url ? 'border-sky-500 shadow-lg shadow-sky-100' : 'border-black/20 hover:border-slate-200'}`}
                   >
                     <Image width={1000} height={1000} src={img.url} alt="" className="w-full h-full object-cover" />
                   </button>
