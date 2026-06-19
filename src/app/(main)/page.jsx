@@ -7,7 +7,6 @@ import Intro from '@/component/pages/Intro'
 import Partners from '@/component/pages/Partners'
 import Reviews from '@/component/pages/Reviews'
 import Services from '@/component/pages/Services'
-import Team from '@/component/pages/Team'
 import React from 'react'
 
 
@@ -21,7 +20,6 @@ const MainPage = () => {
       <Services/>
       <CaseStudies/>
       <FAQ/>
-      <Team/>
       <Reviews />
       <Partners />
     </main>

@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { FiUser, FiX, FiUpload, FiTrash2 } from 'react-icons/fi';
+import { FiUpload, FiTrash2 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 
@@ -8,12 +8,7 @@ import axios from 'axios';
  * TeamForm
  * --------
  * Form to add or edit a team member.
- * Handles image upload to Cloudinary via /api/image.
- *
- * Props
- *   initialData — member object (Edit mode) | null (Create mode)
- *   onSuccess   — (member) => void
- *   onCancel    — () => void
+ * Sends raw files directly to /api/team via FormData.
  */
 const TeamForm = ({ initialData, onSuccess, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -25,8 +20,9 @@ const TeamForm = ({ initialData, onSuccess, onCancel }) => {
     bio: '',
   });
 
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -38,6 +34,7 @@ const TeamForm = ({ initialData, onSuccess, onCancel }) => {
         image_id: initialData.image_id || '',
         bio: initialData.bio || '',
       });
+      setImagePreview(initialData.image || '');
     }
   }, [initialData]);
 
@@ -46,7 +43,7 @@ const TeamForm = ({ initialData, onSuccess, onCancel }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFileUpload = async (e) => {
+  const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -55,50 +52,52 @@ const TeamForm = ({ initialData, onSuccess, onCancel }) => {
       return toast.error('Please upload an image file');
     }
 
-    const data = new FormData();
-    data.append('image', file);
-
-    setUploading(true);
-    try {
-      const res = await axios.post('/api/image', data, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-
-      if (res.data.success) {
-        setFormData({
-          ...formData,
-          image: res.data.data.url,
-          image_id: res.data.data.public_id
-        });
-        toast.success('Image uploaded successfully');
-      }
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to upload image');
-    } finally {
-      setUploading(false);
-    }
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
   };
 
   const clearImage = () => {
-    setFormData({ ...formData, image: '', image_id: '' });
+    setImageFile(null);
+    setImagePreview('');
+    setFormData(prev => ({ ...prev, image: '', image_id: '' }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.post) {
-      return toast.error('Name and Post are required');
+    if (!formData.name || !formData.post || !formData.email) {
+      return toast.error('Name, Post and Email are required');
+    }
+    if (!imagePreview) {
+      return toast.error('Avatar Image is required');
     }
 
     setLoading(true);
     try {
+      const submitData = new FormData();
+      submitData.append('name', formData.name);
+      submitData.append('post', formData.post);
+      if (formData.email) submitData.append('email', formData.email);
+      if (formData.bio) submitData.append('bio', formData.bio);
+
+      if (imageFile) {
+        // Send new uploaded raw file
+        submitData.append('image', imageFile);
+      } else {
+        // Keeping current image or cleared
+        if (formData.image) submitData.append('image', formData.image);
+        if (formData.image_id) submitData.append('image_id', formData.image_id);
+      }
+
       let res;
       if (initialData) {
-        res = await axios.patch('/api/team', {
-          memberId: initialData.member_id,
-          ...formData,
+        submitData.append('memberId', initialData.member_id);
+        res = await axios.patch('/api/team', submitData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
         });
       } else {
-        res = await axios.post('/api/team', formData);
+        res = await axios.post('/api/team', submitData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
       }
 
       if (res.data.success) {
@@ -129,17 +128,17 @@ const TeamForm = ({ initialData, onSuccess, onCancel }) => {
       </div>
 
       <div className="space-y-1.5">
-        <label className={labelCls}>Email</label>
-        <input type="email" name="email" value={formData.email} onChange={handleChange} className={inputCls} placeholder="e.g. john@example.com" />
+        <label className={labelCls}>Email *</label>
+        <input type="email" name="email" value={formData.email} onChange={handleChange} className={inputCls} placeholder="e.g. john@example.com" required />
       </div>
 
       {/* Image Upload */}
       <div className="space-y-1.5">
-        <label className={labelCls}>Avatar Image</label>
+        <label className={labelCls}>Avatar Image *</label>
         
-        {formData.image ? (
+        {imagePreview ? (
           <div className="relative w-32 h-32 rounded-2xl overflow-hidden border border-slate-200 group">
-            <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+            <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
             <button
               type="button"
               onClick={clearImage}
@@ -153,22 +152,16 @@ const TeamForm = ({ initialData, onSuccess, onCancel }) => {
           <div className="w-full">
             <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-200 border-dashed rounded-2xl cursor-pointer hover:bg-slate-50 transition-colors">
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                {uploading ? (
-                  <div className="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mb-2" />
-                ) : (
-                  <FiUpload className="text-slate-400 mb-2" size={20} />
-                )}
-                <p className="text-xs text-slate-500">
-                  {uploading ? 'Uploading...' : 'Click to upload image'}
-                </p>
+                <FiUpload className="text-slate-400 mb-2" size={20} />
+                <p className="text-xs text-slate-500">Click to upload image</p>
                 <p className="text-xs text-slate-400 mt-0.5">PNG, JPG or WEBP</p>
               </div>
-              <input type="file" className="hidden" onChange={handleFileUpload} accept="image/*" disabled={uploading} />
+              <input type="file" className="hidden" onChange={handleFileUpload} accept="image/*" />
             </label>
           </div>
         )}
         
-        {formData.image_id && (
+        {formData.image_id && !imageFile && (
           <div className="text-xs text-slate-400 mt-1">
             Cloudinary ID: <span className="font-mono">{formData.image_id}</span>
           </div>
@@ -185,7 +178,7 @@ const TeamForm = ({ initialData, onSuccess, onCancel }) => {
         <button type="button" onClick={onCancel} className="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-all">
           Cancel
         </button>
-        <button type="submit" disabled={loading || uploading} className="px-5 py-2.5 rounded-xl bg-violet-600 text-white font-bold text-sm hover:bg-violet-700 transition-all shadow-lg shadow-violet-200 disabled:opacity-50">
+        <button type="submit" disabled={loading} className="px-5 py-2.5 rounded-xl bg-violet-600 text-white font-bold text-sm hover:bg-violet-700 transition-all shadow-lg shadow-violet-200 disabled:opacity-50">
           {loading ? 'Saving...' : initialData ? 'Update Member' : 'Add Member'}
         </button>
       </div>

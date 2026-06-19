@@ -73,7 +73,7 @@ const ProductsPage = () => {
 
               </Link>
 
-              <Link href={product.demo_url} className='w-full grid grid-cols-2'>
+              <Link href={`/products/${product.slug}`} className='w-full grid grid-cols-2'>
                 {
                   product.images.map((i)=>(
                     <Image key={i.id} src={i.url} alt='Image' width={1000} height={1000} className='w-full aspect-video even:aspect-square object-cover overflow-hidden hover:scale-105 transition ease-in-out duration-500 cursor-pointer'/>
