@@ -48,7 +48,7 @@ const TeamPage = () => {
 
       {/* Header */}
       <div className="flex flex-col items-center justify-center max-w-3xl px-4 text-center mb-10 animate-fade-in">
-        <h1 className="text-4xl sm:text-6xl font-extrabold mb-4 text-slate-900 font-poppins tracking-tight">
+        <h1 className="text-4xl sm:text-6xl font-bold mb-4 text-slate-900  tracking-tight">
           Meet Our <span className="gradient-text">Dedicated Team</span>
         </h1>
         <p className="text-slate-500 text-base sm:text-lg leading-relaxed font-poppins max-w-2xl">
@@ -87,7 +87,7 @@ const TeamPage = () => {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 relative"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 relative"
           >
             {members.map((m) => (
               <motion.div
@@ -96,7 +96,7 @@ const TeamPage = () => {
                 className="flex flex-col even:flex-col-reverse justify-start text-left group w-full gap-2 relative overflow-hidden"
               >
 
-                <div className="relative aspect-square w-full overflow-hidden  flex items-center justify-center shadow-inner transition-transform duration-500 ">
+                <div className="relative aspect-3/4 w-full overflow-hidden  flex items-center justify-center shadow-inner transition-transform duration-500 ">
                   {m.image ? (
                     <Image
                       width={500}
