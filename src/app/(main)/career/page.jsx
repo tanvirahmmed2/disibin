@@ -99,9 +99,9 @@ const CareerPage = () => {
                     {job.description && (
                       <div className="flex flex-col gap-2">
                         <h4 className="font-semibold text-slate-900">About the Role</h4>
-                        <div 
+                        <div
                           className="prose prose-slate max-w-none prose-p:leading-relaxed text-sm"
-                          dangerouslySetInnerHTML={{ __html: job.description }} 
+                          dangerouslySetInnerHTML={{ __html: job.description }}
                         />
                       </div>
                     )}

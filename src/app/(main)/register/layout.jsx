@@ -1,16 +1,8 @@
-import { isLogin } from "@/lib/middleware"
-import { redirect } from "next/navigation"
-
 export const metadata = {
-  title: 'Create Account | Disibin',
-  description: 'Join the Disibin network and start architecting your digital future.',
-}
+  title: "Register Account | Disibin",
+  description: "Create a new Disibin account to access our user ticketing system and explore premium solutions.",
+};
 
-export default async function Layout({ children }) {
-  const auth= await isLogin()
-  if(auth.success) return redirect('/user')
-
-  return(
-     <section className="w-full animate-in fade-in duration-700">{children}</section>
-  )
+export default function Layout({ children }) {
+  return <>{children}</>;
 }

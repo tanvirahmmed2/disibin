@@ -1,8 +1,8 @@
 export const metadata = {
-  title: 'Join Our Team | Disibin',
-  description: 'Explore career opportunities and build your legacy with the global studio at Disibin.',
-}
+  title: "Join Us | Disibin Careers",
+  description: "Join the Disibin team as a system architect, developer, support representative, or manager. Learn how you can grow with us.",
+};
 
 export default function Layout({ children }) {
-  return <section className="w-full animate-in fade-in duration-700">{children}</section>
+  return <>{children}</>;
 }

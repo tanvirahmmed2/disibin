@@ -1,4 +1,3 @@
-'use client'
 import About from '@/component/pages/About'
 import Bio from '@/component/pages/Bio'
 import CaseStudies from '@/component/pages/CaseStudies'
@@ -9,6 +8,10 @@ import Reviews from '@/component/pages/Reviews'
 import Services from '@/component/pages/Services'
 import React from 'react'
 
+export const metadata = {
+  title: 'Disibin | Enterprise-Grade Digital Systems & Software',
+  description: 'Disibin builds robust, high-performance web systems, custom applications, and cloud-native solutions designed for scale and security.',
+};
 
 const MainPage = () => {
 

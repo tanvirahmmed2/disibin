@@ -1,8 +1,9 @@
 export const metadata = {
-  title: 'Contact Us | Disibin',
-  description: 'Reach out to the Disibin support desk for inquiries, partnerships, and project consultations.',
-}
+  title: "Contact Disibin | Get in Touch with Our Team",
+  description: "Have a complex challenge or enterprise-scale project? Get in touch with Disibin's strategy, development, and support teams.",
+  keywords: ["Contact Disibin", "support email", "office location", "project inquiry", "consultation request"],
+};
 
 export default function Layout({ children }) {
-  return <section className="w-full animate-in fade-in duration-700">{children}</section>
+  return <>{children}</>;
 }

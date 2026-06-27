@@ -1,16 +1,9 @@
-import React from 'react'
+export const metadata = {
+  title: "Our Premium Products | Disibin",
+  description: "Explore Disibin's premium digital products. We build scalable, secure, and reliable software systems tailored to your enterprise needs.",
+  keywords: ["Disibin products", "digital products", "custom web tools", "enterprise products", "software bundle"],
+};
 
-export const metadata={
-    title:'Products | Disibin',
-    description:'Products of disibin'
+export default function Layout({ children }) {
+  return <>{children}</>;
 }
-
-const layout = ({children}) => {
-  return (
-    <div className='w-full'>
-      {children}
-    </div>
-  )
-}
-
-export default layout

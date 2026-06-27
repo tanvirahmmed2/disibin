@@ -92,7 +92,7 @@ const AboutPage = () => {
 
           <motion.p
             variants={fadeUp}
-            className="text-2xl md:text-3xl font-medium leading-snug text-slate-600 mb-10 max-w-3xl"
+            className="text-2xl md:text-3xl font-medium leading-snug text-slate-650 mb-10 max-w-3xl"
           >
             We build technology that{' '}
             <span className="text-slate-900 font-semibold">works, scales, and performs.</span>
