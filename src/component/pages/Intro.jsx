@@ -3,11 +3,10 @@ import Link from 'next/link'
 
 const Intro = () => {
   return (
-    <section className='w-full relative flex flex-col gap-12 items-start justify-center py-28 min-h-[90vh] px-2 overflow-hidden'>
+    <section className='w-full relative flex flex-col gap-12 items-start justify-center py-28 min-h-200 px-2 overflow-hidden'>
 
 
 
-      {/* Dotted Texture Background */}
       <div 
         className="absolute inset-0 z-0 pointer-events-none"
         style={{
