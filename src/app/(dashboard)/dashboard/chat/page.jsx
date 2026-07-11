@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { FaUser, FaUsers, FaPaperPlane, FaPlus, FaTimes, FaCircle } from 'react-icons/fa';
+import { FaUser, FaUsers, FaPaperPlane, FaPlus, FaTimes, FaCircle, FaArrowLeft } from 'react-icons/fa';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import TiptapEditor from '@/component/forms/TiptapEditor';
@@ -166,10 +166,9 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-6rem)] bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
+    <div className="flex min-h-screen w-full bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
       
-      {/* Sidebar - Inbox */}
-      <div className="w-1/3 min-w-[280px] border-r border-gray-100 flex flex-col bg-gray-50/50">
+      <div className={`w-full md:w-1/3 md:min-w-70 border-r border-gray-100 flex-col bg-gray-50/50 ${activeChat ? 'hidden md:flex' : 'flex'}`}>
         <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-white">
           <h2 className="text-xl font-bold text-gray-800">Messages</h2>
           <button 
@@ -202,7 +201,7 @@ export default function ChatPage() {
                       {chat.is_group ? chat.title : chat.other_participant_name}
                     </h3>
                     {chat.last_message_time && (
-                      <span className="text-xs text-gray-400 flex-shrink-0">
+                      <span className="text-xs text-gray-400 shrink-0">
                         {new Date(chat.last_message_time).toLocaleDateString()}
                       </span>
                     )}
@@ -225,13 +224,18 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col bg-white">
+      <div className={`w-full flex-col min-h-screen items-center justify-between bg-white ${activeChat ? 'flex' : 'hidden md:flex'}`}>
         {activeChat ? (
           <>
-            {/* Chat Header */}
-            <div className="p-4 border-b border-gray-100 flex items-center gap-3 bg-white">
-              <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+            <div className="p-4 border-b border-gray-100 flex items-center gap-3 bg-white ">
+              <button 
+                onClick={() => setActiveChat(null)} 
+                className="p-2 -ml-1 text-gray-500 hover:text-gray-800 rounded-full md:hidden shrink-0"
+                aria-label="Back to conversations"
+              >
+                <FaArrowLeft size={16} />
+              </button>
+              <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
                 {activeChat.is_group ? <FaUsers size={18} /> : <FaUser size={18} />}
               </div>
               <div>
@@ -244,7 +248,6 @@ export default function ChatPage() {
               </div>
             </div>
 
-            {/* Messages List */}
             <div className="flex-1 overflow-y-auto p-4 bg-gray-50/30">
               {loadingMessages ? (
                 <div className="flex justify-center p-4 text-gray-400">Loading messages...</div>
@@ -255,19 +258,12 @@ export default function ChatPage() {
               ) : (
                 <div className="space-y-4">
                   {messages.map((msg, index) => {
-                    // We don't have the current user's ID directly in state easily unless we decode token or just assume 
-                    // based on if they are the sender. Let's rely on inbox sender check or just if their name is not the other participant's
                     const isMe = !activeChat.is_group && msg.sender_name !== activeChat.other_participant_name;
-                    // For groups, it's a bit trickier without user ID. We can compare with activeChat data if needed, or we just fetch user ID.
-                    // A better way is to pass current userId from the layout or API.
-                    // For now, let's assume if msg.sender_name is the current session user. Since we don't have it, we'll try to infer.
-                    // Actually, msg.sender_id === (some session ID). Let's just use a visual trick if it's their own message by checking if they were the sender of the last message in the inbox.
-                    // Wait, let's just make it generic for now or fetch session.
-                    return (
+                  return (
                       <div key={msg.message_id || index} className={`flex flex-col ${msg.sender_id === activeChat.sender_id ? 'items-end' : 'items-start'}`}>
                          <span className="text-xs text-gray-400 mb-1 ml-1">{msg.sender_name}</span>
                         <div 
-                          className={`px-4 py-2 rounded-2xl max-w-[75%] prose prose-sm max-w-none ${msg.sender_id === activeChat.sender_id ? 'bg-blue-600 text-white rounded-br-none prose-invert' : 'bg-gray-100 text-gray-800 rounded-bl-none'}`}
+                          className={`px-4 py-2 rounded-2xl max-w-full prose prose-sm  ${msg.sender_id === activeChat.sender_id ? 'bg-blue-600 text-white rounded-br-none prose-invert' : 'bg-gray-100 text-gray-800 rounded-bl-none'}`}
                           dangerouslySetInnerHTML={{ __html: msg.content }}
                         />
                         <span className="text-[10px] text-gray-400 mt-1">
@@ -281,7 +277,6 @@ export default function ChatPage() {
               )}
             </div>
 
-            {/* Message Input */}
             <div className="p-4 bg-white border-t border-gray-100">
               <form onSubmit={sendMessage} className="flex gap-2">
                 <div className="flex-1">
@@ -314,7 +309,6 @@ export default function ChatPage() {
         )}
       </div>
 
-      {/* New Chat Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[80vh]">
@@ -336,7 +330,7 @@ export default function ChatPage() {
                     className={`flex items-center p-3 rounded-lg cursor-pointer border transition-all ${selectedUsers.includes(user.user_id) ? 'border-blue-500 bg-blue-50' : 'border-gray-100 hover:border-blue-300 hover:bg-gray-50'}`}
                   >
                     <div className="w-10 h-10 bg-gray-200 rounded-full mr-3 flex items-center justify-center overflow-hidden">
-                      {user.image ? <img src={user.image} alt={user.name} className="w-full h-full object-cover" /> : <FaUser className="text-gray-400" />}
+                      <FaUser className="text-gray-400" />
                     </div>
                     <div className="flex-1">
                       <p className="font-semibold text-gray-800 text-sm">{user.name}</p>

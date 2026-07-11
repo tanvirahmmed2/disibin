@@ -1,8 +1,6 @@
 import Footer from '@/component/bar/Footer'
 import Navbar from '@/component/bar/Navbar'
 import Sidebar from '@/component/bar/Sidebar'
-import { ManagementRole } from '@/lib/middleware'
-import { redirect } from 'next/navigation'
 import React from 'react'
 
 export const metadata={

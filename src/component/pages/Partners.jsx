@@ -20,9 +20,8 @@ const Partners = () => {
   if (loading || partners.length === 0) return null;
 
   return (
-    <section className="w-full py-16 px-4 my-8 flex flex-col items-center gap-10 rounded-[2.5rem] shadow-xl shadow-slate-100 overflow-hidden bg-white">
+    <section className="w-full py-16 px-4 my-8 flex flex-col items-center gap-10 rounded-[2.5rem]  overflow-hidden ">
 
-      {/* Heading */}
       <div className="text-center space-y-2">
         <p className="text-xs font-semibold tracking-widest uppercase text-sky-500">Trusted By</p>
         <h2 className="text-3xl md:text-5xl font-poppins text-slate-900">Our Partners & Collaborators</h2>
@@ -31,7 +30,6 @@ const Partners = () => {
         </p>
       </div>
 
-      {/* Grid Layout */}
       <div className="w-full max-w-6xl mx-auto px-4">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 justify-items-center">
           {partners.map((p) => (
@@ -40,7 +38,6 @@ const Partners = () => {
         </div>
       </div>
 
-      {/* Count badge */}
       <p className="text-xs text-slate-400 font-medium">
         {partners.length} partner{partners.length !== 1 ? 's' : ''} & growing
       </p>

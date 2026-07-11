@@ -24,7 +24,6 @@ const DashboardSidebar = () => {
 
   const role = userData?.role || ''
 
-  // ── Canonical link map ── keep in sync with DashboardOverview.jsx ──
   const links = {
     admin: [
       { name: 'Analytics',     href: '/dashboard/admin/analytics', icon: <FiPieChart /> },
@@ -93,13 +92,13 @@ const DashboardSidebar = () => {
               <p className="px-4 mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
                 {role} Panel
               </p>
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-3">
                 {roleLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setDashboardSidebar(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
+                    className={`flex items-center gap-3 px-4 py-1 text-sm rounded-xl font-medium transition-all duration-200 ${
                       isActive(link.href)
                         ? 'bg-sky-50 text-sky-600'
                         : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'

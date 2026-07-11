@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { FaPlus, FaTicketAlt, FaClock, FaSpinner, FaCheckCircle } from "react-icons/fa";
+import { FaPlus, FaTicketAlt, FaClock, FaSpinner, FaCheckCircle, FaArrowLeft } from "react-icons/fa";
 import axios from "axios";
 import toast from "react-hot-toast";
 import NewTicketModal  from "@/component/forms/NewTicketModal";
@@ -75,10 +75,10 @@ export default function UserTicketsPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <div className="max-w-6xl mx-auto px-4 py-8">
+            <div className={`max-w-6xl mx-auto ${activeTicket ? 'px-2 py-3 md:px-4 md:py-8' : 'px-4 py-8'}`}>
 
                 {/* Header */}
-                <div className="flex items-center justify-between mb-6">
+                <div className={`flex items-center justify-between mb-6 ${activeTicket ? 'hidden md:flex' : 'flex'}`}>
                     <div>
                         <h1 className="text-2xl font-bold text-gray-800">My Tickets</h1>
                         <p className="text-sm text-gray-500 mt-0.5">Track your support requests</p>
@@ -91,10 +91,10 @@ export default function UserTicketsPage() {
                     </button>
                 </div>
 
-                <div className="flex gap-4 h-[calc(100vh-12rem)]">
+                <div className={`flex gap-4 ${activeTicket ? 'h-[calc(100vh-8rem)] md:h-[calc(100vh-12rem)]' : 'h-[calc(100vh-12rem)]'}`}>
 
                     {/* ── Ticket List ── */}
-                    <div className="w-full max-w-sm flex-shrink-0 flex flex-col bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div className={`w-full md:max-w-sm md:flex-shrink-0 flex-col bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden ${activeTicket ? 'hidden md:flex' : 'flex'}`}>
                         <div className="p-3 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wide">
                             {tickets.length} Ticket{tickets.length !== 1 ? "s" : ""}
                         </div>
@@ -138,30 +138,39 @@ export default function UserTicketsPage() {
                     </div>
 
                     {/* ── Thread Viewer ── */}
-                    <div className="flex-1 flex flex-col bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div className={`flex-1 flex-col bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden ${activeTicket ? 'flex' : 'hidden md:flex'}`}>
                         {activeTicket ? (
                             <>
                                 {/* Thread Header */}
-                                <div className="p-4 border-b border-gray-100">
-                                    <div className="flex items-start justify-between">
-                                        <div>
-                                            <h2 className="font-bold text-gray-800">{activeTicket.subject}</h2>
-                                            <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
-                                                <span>#{activeTicket.ticket_id}</span>
-                                                <span className={`capitalize font-medium ${PRIORITY_STYLES[activeTicket.priority]}`}>
-                                                    {activeTicket.priority} priority
-                                                </span>
-                                                {(() => {
-                                                    const s = STATUS_STYLES[activeTicket.status] || STATUS_STYLES.open;
-                                                    return (
-                                                        <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full border font-medium ${s.bg} ${s.text} ${s.border}`}>
-                                                            {s.icon} {s.label}
-                                                        </span>
-                                                    );
-                                                })()}
+                                <div className="p-4 border-b border-gray-100 flex items-center gap-3">
+                                    <button
+                                        onClick={() => setActiveTicket(null)}
+                                        className="p-2 -ml-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full md:hidden flex-shrink-0"
+                                        aria-label="Back to tickets list"
+                                    >
+                                        <FaArrowLeft size={16} />
+                                    </button>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-start justify-between gap-4">
+                                            <div className="min-w-0">
+                                                <h2 className="font-bold text-gray-800 text-lg truncate">{activeTicket.subject}</h2>
+                                                <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 flex-wrap">
+                                                    <span>#{activeTicket.ticket_id}</span>
+                                                    <span className={`capitalize font-medium ${PRIORITY_STYLES[activeTicket.priority]}`}>
+                                                        {activeTicket.priority} priority
+                                                    </span>
+                                                    {(() => {
+                                                        const s = STATUS_STYLES[activeTicket.status] || STATUS_STYLES.open;
+                                                        return (
+                                                            <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full border font-medium ${s.bg} ${s.text} ${s.border}`}>
+                                                                {s.icon} {s.label}
+                                                            </span>
+                                                        );
+                                                    })()}
+                                                </div>
                                             </div>
+                                            <span className="text-xs text-gray-400 flex-shrink-0 mt-1">{formatDate(activeTicket.created_at)}</span>
                                         </div>
-                                        <span className="text-xs text-gray-400">{formatDate(activeTicket.created_at)}</span>
                                     </div>
                                 </div>
 
