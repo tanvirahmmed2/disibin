@@ -25,7 +25,7 @@ const AboutPage = () => {
 
   const metrics = [
     { value: '6', suffix: '+', label: 'Years of Excellence', sub: 'delivering premium results' },
-    { value: '120', suffix: '+', label: 'Businesses Served', sub: 'across industries worldwide' },
+    { value: '125', suffix: '+', label: 'Businesses Served', sub: 'across industries worldwide' },
     { value: '50', suffix: '+', label: 'International Brands', sub: 'trusting our solutions' },
     { value: '100', suffix: '%', label: 'Commitment', sub: 'to quality and performance' },
   ];
