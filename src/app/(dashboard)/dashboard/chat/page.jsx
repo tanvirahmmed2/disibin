@@ -291,7 +291,7 @@ export default function ChatPage() {
                 <button 
                   type="submit" 
                   disabled={!newMessage.trim() || newMessage === '<p></p>'}
-                  className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center min-w-[48px] h-[48px] self-end mb-2"
+                  className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center min-w-12 h-12 self-end mb-2"
                 >
                   <FaPaperPlane size={16} />
                 </button>
