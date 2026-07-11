@@ -51,13 +51,13 @@ const Navbar = () => {
   const isManagement = userData?.role && userData.role !== 'user'
 
   return (
-    <div className='w-full fixed top-0 px-3 sm:px-4 z-50 pt-3'>
+    <div className='w-full fixed top-0 px-3  z-50 pt-3'>
       <nav
         className={`w-full bg-white flex items-center justify-between h-14 px-5 rounded-2xl transition-all duration-500 ${showTopbar ? 'translate-y-0 opacity-100' : '-translate-y-[120%] opacity-0'} `}
       >
         <Link
           href='/'
-          className='text-3xl font-poppins font-semibold tracking-tight text-slate-900 hover:text-gray-500 transition-colors duration-300'
+          className='text-3xl font-jersey -tracking-tighter font-semibold  text-slate-900 hover:text-gray-500 transition-colors duration-300'
         >
           Disibin
         </Link>
