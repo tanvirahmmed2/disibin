@@ -53,7 +53,6 @@ export default function Services() {
   return (
     <div className="w-full antialiased space-y-6">
 
-      {/* ── Hero ──────────────────────────────────────── */}
       <motion.section
         {...fadeUp()}
         className="w-full text-center py-20 px-4 rounded-[2.5rem] shadow-xl shadow-slate-100 flex flex-col items-center gap-5"
@@ -69,7 +68,6 @@ export default function Services() {
         </p>
       </motion.section>
 
-      {/* ── What We Build ──────────────────────────────── */}
       <motion.section {...fadeUp(0.1)} className="w-full px-4 py-16">
         <div className="mb-10">
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500 font-poppins block mb-2">Capabilities</span>
@@ -98,7 +96,6 @@ export default function Services() {
         </div>
       </motion.section>
 
-      {/* ── Tech Stack ─────────────────────────────────── */}
       <motion.section
         {...fadeUp(0.1)}
         className="w-full bg-slate-900 text-white py-16 px-6 rounded-[2.5rem] shadow-xl"
@@ -133,17 +130,16 @@ export default function Services() {
         </div>
       </motion.section>
 
-      {/* ── How We Work ────────────────────────────────── */}
-      <motion.section {...fadeUp(0.1)} className="w-full px-4 py-16">
+      <motion.section {...fadeUp(0.1)} className="w-full py-16">
         <div className="text-center mb-16">
           <span className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500 font-poppins block mb-3">Our Process</span>
           <h3 className="font-poppins text-3xl font-semibold text-slate-900">Development System & How We Work</h3>
           <p className="mt-3 text-slate-500 text-sm font-poppins max-w-xl mx-auto">A systematic, multi-step pipeline built to launch projects predictably and securely.</p>
         </div>
 
-        <div className="relative max-w-3xl mx-auto">
+        <div className="relative w-full">
           {/* Vertical line */}
-          <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-sky-200 via-slate-200 to-transparent" />
+          <div className="absolute left-6 top-0 bottom-0 w-px bg-linear-to-b from-sky-200 via-slate-200 to-transparent" />
 
           <div className="space-y-10 pl-16">
             {steps.map((step, i) => (
@@ -166,13 +162,12 @@ export default function Services() {
           </div>
         </div>
 
-        {/* Guarantee banner */}
         <motion.div
           {...fadeUp(0.3)}
-          className="mt-14 flex flex-col sm:flex-row items-start gap-4 bg-sky-50 border border-sky-100 rounded-2xl p-6 shadow-sm max-w-3xl mx-auto"
+          className="mt-14 w-full flex flex-col sm:flex-row items-start gap-4 bg-sky-50 border border-sky-100 rounded-2xl p-6 shadow-sm"
         >
           <FiCheckCircle className="w-6 h-6 text-sky-500 shrink-0 mt-0.5" />
-          <div>
+          <div className='w-full'>
             <h4 className="font-poppins font-bold text-slate-900 text-base mb-1">The Production Guarantee</h4>
             <p className="text-slate-600 text-sm leading-relaxed">
               All code we deliver is cleanly decoupled, type-safe, and shipped with descriptive markdown architecture documentation — so your engineers can safely inherit and scale it.

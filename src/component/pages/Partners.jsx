@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Image from 'next/image';
 
 const Partners = () => {
   const [partners, setPartners] = useState([]);
@@ -20,7 +21,7 @@ const Partners = () => {
   if (loading || partners.length === 0) return null;
 
   return (
-    <section className="w-full py-16 px-4 my-8 flex flex-col items-center gap-10 rounded-[2.5rem]  overflow-hidden ">
+    <section className="w-full py-16  my-8 flex flex-col items-center gap-10 rounded-[2.5rem]  overflow-hidden ">
 
       <div className="text-center space-y-2">
         <p className="text-xs font-semibold tracking-widest uppercase text-sky-500">Trusted By</p>
@@ -30,7 +31,7 @@ const Partners = () => {
         </p>
       </div>
 
-      <div className="w-full max-w-6xl mx-auto px-4">
+      <div className="w-full ">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 justify-items-center">
           {partners.map((p) => (
             <PartnerCard key={p.partner_id} partner={p} />
@@ -50,12 +51,12 @@ function PartnerCard({ partner }) {
   const [imgErr, setImgErr] = useState(false);
 
   return (
-    <div className="w-full max-w-[180px] group cursor-default select-none">
+    <div className="w-full max-w-50 group cursor-default select-none">
       <div className="flex flex-col items-center gap-3 w-full p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 h-full">
         {/* Logo */}
         <div className="h-14 flex items-center justify-center w-full">
           {partner.logo && !imgErr ? (
-            <img
+            <Image width={500} height={500}
               src={partner.logo}
               alt={partner.name}
               className="max-h-12 max-w-full object-contain transition-all duration-300"

@@ -116,7 +116,7 @@ const ProductDetailPage = () => {
       <div className="absolute top-10 left-10 w-72 h-72 bg-sky-200/20 rounded-full filter blur-3xl pointer-events-none -z-10 animate-pulse"></div>
       <div className="absolute top-1/3 right-10 w-96 h-96 bg-indigo-200/10 rounded-full filter blur-3xl pointer-events-none -z-10 animate-pulse delay-1000"></div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
        
         <div className="flex items-center gap-2 mb-8 animate-fade-in">
           <Link 
@@ -193,15 +193,12 @@ const ProductDetailPage = () => {
 
           </div>
 
-          {/* Product Meta & Actions */}
           <div className="w-full flex flex-col justify-between gap-6 py-2">
             <div>
-              {/* Title */}
               <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900  tracking-tight mb-4">
                 {product.name}
               </h1>
 
-              {/* Hook / Key Specs */}
               {product.features && product.features.length > 0 && (
                 <div className="mt-6 space-y-3">
                   <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Core Highlights</h3>

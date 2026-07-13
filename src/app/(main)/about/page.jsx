@@ -30,7 +30,6 @@ const AboutPage = () => {
     { value: '100', suffix: '%', label: 'Commitment', sub: 'to quality and performance' },
   ];
 
-  // --- NEW ADDITIONAL INFORMATION DATASTRUCTURES ---
   const coreValues = [
     {
       icon: <FiCpu className="w-6 h-6 text-indigo-600" />,

@@ -77,9 +77,8 @@ export default function FAQ() {
 
   return (
     <section className="w-full py-20 px-4 antialiased">
-      <div className="w-full max-w-4xl mx-auto">
+      <div className="w-full">
 
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -99,7 +98,6 @@ export default function FAQ() {
           </p>
         </motion.div>
 
-        {/* Category filters */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -123,7 +121,6 @@ export default function FAQ() {
           ))}
         </motion.div>
 
-        {/* Accordion list */}
         <div className="space-y-3">
           <AnimatePresence mode="popLayout">
             {filteredFaqs.map((faq, i) => {
