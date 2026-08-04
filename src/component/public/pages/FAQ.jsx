@@ -181,15 +181,15 @@ export default function FAQ() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-14 text-center bg-slate-900 text-white rounded-[2rem] p-10 shadow-xl shadow-slate-200"
+          className="mt-14 text-center bg-slate-900 text-white rounded-xl p-10 shadow-xl shadow-slate-200"
         >
           <h3 className="font-poppins text-xl font-bold mb-2">Still have a specific architectural query?</h3>
           <p className="text-slate-400 text-sm max-w-sm mx-auto mb-7 font-poppins leading-relaxed">
             Get in touch directly to discuss server clustering, relational scaling boundaries, or specialised long-term web management.
           </p>
           <Link
-            href="/contact"
-            className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white font-semibold font-poppins px-6 py-3 text-sm rounded-xl transition-all duration-300 shadow-md shadow-sky-900/30 animate-pulse-glow"
+            href="/tickets"
+            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-light text-white font-semibold font-poppins px-6 py-3 text-sm rounded-xl transition-all duration-300 shadow-md shadow-sky-900/30 animate-pulse-glow"
           >
             Reach Out to Our Engineers <FiArrowRight className="w-4 h-4" />
           </Link>

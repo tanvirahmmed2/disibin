@@ -84,23 +84,13 @@ const Sidebar = () => {
                 Profile
               </Link>
 
-              {/* Wishlist is not implemented yet */}
-              {/* 
-              <Link
-                href='/wishlist'
-                onClick={closeSidebar}
-                className='w-full px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-sky-50 hover:text-sky-600 transition-all duration-300 text-center'
-              >
-                Wishlist
-              </Link> 
-              */}
-
+          
               <button
                 onClick={() => {
                   closeSidebar()
                   handleLogout()
                 }}
-                className='w-full px-4 py-3 rounded-xl text-red-500 font-medium hover:bg-red-50 transition-all duration-300'
+                className='w-full px-4 py-3 rounded-xl text-secondary font-medium hover:bg-red-50 transition-all duration-300'
               >
                 Logout
               </button>
@@ -110,7 +100,7 @@ const Sidebar = () => {
               <Link
                 href='/login'
                 onClick={closeSidebar}
-                className='w-full py-3 rounded-xl bg-slate-100 text-slate-900 text-center font-semibold hover:bg-slate-200 transition-all duration-300'
+                className='w-full py-3 rounded-xl bg-slate-100 text-primary text-center font-semibold  transition-all duration-300'
               >
                 Login
               </Link>
@@ -118,7 +108,7 @@ const Sidebar = () => {
               <Link
                 href='/register'
                 onClick={closeSidebar}
-                className='w-full py-3 rounded-xl bg-slate-900 text-white text-center font-semibold hover:bg-sky-600 transition-all duration-300'
+                className='w-full py-3 rounded-xl bg-primary text-white text-center font-semibold hover:bg-secondary hover:text-tertiary-light transition-all duration-300'
               >
                 Register
               </Link>

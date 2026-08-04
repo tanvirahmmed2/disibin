@@ -38,13 +38,13 @@ const ProductDetailPage = () => {
   const [activeTab, setActiveTab] = useState('overview'); // overview, features, support
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
-  const activeImage = product?.images?.[activeIndex]?.url || null;
+  const activeImage = product?.images?.[activeIndex]?.image || null;
 
   useEffect(() => {
     const fetchProduct = async () => {
       if (!slug) return;
       try {
-        const res = await axios.get(`/api/product/${slug}`);
+        const res = await axios.get(`/api/public/product/${slug}`);
         if (res.data.success) {
           setProduct(res.data.data);
           const primaryIndex = res.data.data.images?.findIndex(img => img.is_primary);

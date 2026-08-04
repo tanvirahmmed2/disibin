@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { dbQuery } from "@/lib/database/pg";
 
-// GET all published products (Public)
-export async function GET() {
+// GET single published product by slug (Public)
+export async function GET(req, { params }) {
     try {
+        const { slug } = await params;
+
         const res = await dbQuery(`
             SELECT
                 p.id,
@@ -46,11 +48,15 @@ export async function GET() {
                     '[]'::json
                 ) AS features
             FROM products p
-            WHERE p.is_published = true
-            ORDER BY p.created_at DESC
-        `);
+            WHERE p.slug = $1 AND p.is_published = true
+            LIMIT 1
+        `, [slug]);
 
-        return NextResponse.json({ success: true, data: res.rows });
+        if (res.rows.length === 0) {
+            return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
+        }
+
+        return NextResponse.json({ success: true, data: res.rows[0] });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

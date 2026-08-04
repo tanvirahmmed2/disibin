@@ -12,7 +12,7 @@ const ProductsPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get('/api/product');
+        const res = await axios.get('/api/public/product');
         if (res.data.success) {
           setProducts(res.data.data);
         }
@@ -27,7 +27,7 @@ const ProductsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center ">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-500"></div>
       </div>
     );
@@ -38,7 +38,7 @@ const ProductsPage = () => {
       <div className="w-full mx-auto">
 
         <div className="text-center mb-16">
-          <h1 className="text-4xl text-slate-900 sm:text-7xl bg-clip-text  font-poppins">
+          <h1 className="text-4xl text-slate-900 sm:text-7xl bg-clip-text font-poppins">
             Our Premium Products
           </h1>
           <p className="mt-4 text-xl text-slate-600 max-w-2xl mx-auto font-poppins">
@@ -48,8 +48,7 @@ const ProductsPage = () => {
 
         <div className="w-full mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
           {products.map((product) => (
-            <div key={product.product_id} className="bg-white flex flex-col gap-4 md:even:flex-col-reverse overflow-hidden">
-
+            <div key={product.id} className="bg-white flex flex-col gap-4 md:even:flex-col-reverse overflow-hidden">
 
               <Link href={`/products/${product.slug}`} className="p-6 grow flex flex-col">
                 <h2 className="text-2xl font-bold text-slate-900 group-hover:text-sky-600 transition-colors">
@@ -69,18 +68,22 @@ const ProductsPage = () => {
                     )}
                   </div>
                 )}
-
-
               </Link>
 
-              <Link href={`/products/${product.slug}`} className='w-full grid grid-cols-2'>
-                {
-                  product.images.map((i) => (
-                    <Image key={i.id} src={i.url} alt='Image' width={1000} height={1000} className='w-full aspect-video even:aspect-square object-cover overflow-hidden hover:scale-105 transition ease-in-out duration-500 cursor-pointer' />
-                  ))
-                }
-              </Link>
-
+              {product.images && product.images.length > 0 && (
+                <Link href={`/products/${product.slug}`} className="w-full grid grid-cols-2">
+                  {product.images.slice(0, 4).map((img) => (
+                    <Image
+                      key={img.id}
+                      src={img.image}
+                      alt={img.title || product.name}
+                      width={1000}
+                      height={1000}
+                      className="w-full aspect-video even:aspect-square object-cover overflow-hidden hover:scale-105 transition ease-in-out duration-500 cursor-pointer"
+                    />
+                  ))}
+                </Link>
+              )}
 
             </div>
           ))}

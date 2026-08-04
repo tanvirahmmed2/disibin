@@ -25,6 +25,7 @@ import {
   FiUserCheck,
   FiAlertCircle,
   FiSettings,
+  FiTag,
 } from 'react-icons/fi'
 import { FaGlobeAsia, FaHandshake } from 'react-icons/fa'
 
@@ -53,6 +54,7 @@ const roleLinks = {
       links: [
         { name: 'Projects',      href: '/team/projects',              icon: <FiClipboard /> },
         { name: 'Products',      href: '/team/products',              icon: <FiBox /> },
+        { name: 'Features',      href: '/team/products/features',     icon: <FiTag /> },
         { name: 'Payments',      href: '/team/payments',              icon: <FiCreditCard /> },
         { name: 'Partners',      href: '/team/partners',              icon: <FaHandshake /> },
         { name: 'Agreements',    href: '/team/agreements',            icon: <FiBookOpen /> },
@@ -99,6 +101,7 @@ const roleLinks = {
       links: [
         { name: 'Projects',      href: '/team/projects',              icon: <FiClipboard /> },
         { name: 'Products',      href: '/team/products',              icon: <FiBox /> },
+        { name: 'Features',      href: '/team/products/features',     icon: <FiTag /> },
         { name: 'Board',         href: '/team/board',                 icon: <FiLayout /> },
         { name: 'Partners',      href: '/team/partners',              icon: <FaHandshake /> },
         { name: 'Payments',      href: '/team/payments',              icon: <FiCreditCard /> },

@@ -9,19 +9,16 @@ import ProductForm from '@/component/forms/ProductForm';
 
 const ProductEditPage = ({ params }) => {
   const { slug } = use(params);
-  const isNew = slug === 'new';
   const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(!isNew);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isNew) {
-      fetchProduct();
-    }
+    fetchProduct();
   }, [slug]);
 
   const fetchProduct = async () => {
     try {
-      const res = await axios.get(`/api/product/${slug}`);
+      const res = await axios.get(`/api/team/product/${slug}`);
       if (res.data.success) {
         setProduct(res.data.data);
       } else {
@@ -37,10 +34,10 @@ const ProductEditPage = ({ params }) => {
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-8">
       <Toaster position="top-center" />
-      
+
       <div className="flex items-center justify-between">
-        <Link 
-          href="/dashboard/manager/products" 
+        <Link
+          href="/team/products"
           className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors font-medium"
         >
           <FiArrowLeft /> Back to Products
@@ -54,11 +51,9 @@ const ProductEditPage = ({ params }) => {
               <FiPackage size={24} />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">
-                {isNew ? 'Create New Product' : 'Edit Product Details'}
-              </h1>
+              <h1 className="text-3xl font-bold text-slate-900">Edit Product Details</h1>
               <p className="text-slate-500 font-medium">
-                {isNew ? 'Define your new product offering' : `Currently editing: ${product?.name || '...'}`}
+                {loading ? 'Loading...' : `Currently editing: ${product?.name || slug}`}
               </p>
             </div>
           </div>
@@ -70,11 +65,19 @@ const ProductEditPage = ({ params }) => {
               <div className="w-12 h-12 border-4 border-sky-500/20 border-t-sky-500 rounded-full animate-spin"></div>
               <p className="text-slate-400 font-bold animate-pulse">Fetching product data...</p>
             </div>
-          ) : (
-            <ProductForm 
-              initialData={product} 
+          ) : product ? (
+            <ProductForm
+              initialData={product}
               onCancel={() => window.history.back()}
             />
+          ) : (
+            <div className="text-center py-20 text-slate-400">
+              <FiPackage size={48} className="mx-auto mb-4 opacity-50" />
+              <p className="text-lg font-bold">Product not found</p>
+              <Link href="/team/products" className="text-sky-500 hover:underline text-sm mt-2 inline-block">
+                Back to Products
+              </Link>
+            </div>
           )}
         </div>
       </div>

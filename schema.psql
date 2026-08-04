@@ -128,10 +128,12 @@ CREATE INDEX idx_product_images_is_primary ON product_images(product_id, is_prim
 CREATE TABLE IF NOT EXISTS features (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
   description TEXT
 );
 
 CREATE INDEX idx_features_name ON features(name);
+CREATE INDEX idx_features_slug ON features(slug);
 
 CREATE TABLE IF NOT EXISTS product_features (
   id SERIAL PRIMARY KEY,

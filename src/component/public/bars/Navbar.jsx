@@ -57,7 +57,7 @@ const Navbar = () => {
       >
         <Link
           href='/'
-          className='text-3xl font-jersey -tracking-tighter font-semibold  text-slate-900 hover:text-gray-500 transition-colors duration-300'
+          className='text-3xl font-jersey -tracking-tighter font-semibold  text-primary hover:text-gray-500 transition-colors duration-300'
         >
           Disibin
         </Link>
@@ -67,7 +67,7 @@ const Navbar = () => {
             <Link
               key={l.href}
               href={l.href}
-              className='px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-gray-600 hover:bg-gray-50 transition-all duration-200'
+              className='px-4 py-2 rounded-xl text-sm font-medium text-primary hover:text-gray-600 hover:bg-gray-50 transition-all duration-200'
             >
               {l.label}
             </Link>
@@ -79,7 +79,7 @@ const Navbar = () => {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className='ml-3 px-5 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-gray-600 transition-all duration-300 shadow-sm flex items-center gap-2'
+                className='ml-3 px-5 py-2 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-gray-600 transition-all duration-300 shadow-sm flex items-center gap-2'
               >
                 Account
                 <span className={`transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`}>▾</span>
@@ -102,7 +102,7 @@ const Navbar = () => {
                     <Link
                       href="/user/profile"
                       onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-violet-600 transition-all"
+                      className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-primary hover:bg-slate-50 hover:text-violet-600 transition-all"
                     >
                       <FiUser className="shrink-0" /> Profile
                     </Link>
@@ -110,16 +110,16 @@ const Navbar = () => {
                     <Link
                       href="/user"
                       onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-violet-600 transition-all"
+                      className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-primary hover:bg-slate-50 hover:text-violet-600 transition-all"
                     >
                       <FiGrid className="shrink-0" /> User Portal
                     </Link>
 
                     {isManagement && (
                       <Link
-                        href="/dashboard"
+                        href="/team"
                         onClick={() => setDropdownOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-violet-600 transition-all"
+                        className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-primary hover:bg-slate-50 hover:text-violet-600 transition-all"
                       >
                         <FiShield className="shrink-0" /> Management
                       </Link>
@@ -143,7 +143,7 @@ const Navbar = () => {
           ) : (
             <Link
               href='/auth/login'
-              className='ml-3 px-5 py-2 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-gray-600 transition-all duration-300 shadow-sm'
+              className='ml-3 px-5 py-2 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-gray-600 transition-all duration-300 shadow-sm'
             >
               Login
             </Link>

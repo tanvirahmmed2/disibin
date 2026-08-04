@@ -23,7 +23,7 @@ const Overview = ({ userData }) => {
     manager: [
       { name: 'Analytics',      href: '/dashboard/manager/analytics', icon: <FiPieChart   className="w-8 h-8 text-sky-500"     />, desc: 'View operational metrics' },
       { name: 'Projects',       href: '/dashboard/manager/projects',  icon: <FiBriefcase  className="w-8 h-8 text-emerald-500" />, desc: 'Manage internal projects' },
-      { name: 'Products',       href: '/dashboard/manager/products',  icon: <FiBox        className="w-8 h-8 text-orange-500"  />, desc: 'Manage digital products' },
+      { name: 'Products',       href: '/team/products',               icon: <FiBox        className="w-8 h-8 text-orange-500"  />, desc: 'Manage digital products' },
       { name: 'Reviews',        href: '/dashboard/manager/reviews',   icon: <FiStar       className="w-8 h-8 text-amber-400"   />, desc: 'Moderate customer feedback' },
       { name: 'Tickets',        href: '/dashboard/manager/tickets',   icon: <FiLifeBuoy   className="w-8 h-8 text-indigo-500"  />, desc: 'Handle support tickets' },
       { name: 'Partners',       href: '/dashboard/manager/partners',  icon: <FaHandshake  className="w-8 h-8 text-blue-500"    />, desc: 'Manage homepage partner logos' },

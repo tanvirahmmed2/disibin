@@ -2,12 +2,11 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-export const Context = createContext()
 
-
+export const Context = createContext();
 
 const ContextProvider = ({ children }) => {
-  const router = useRouter()
+  const router = useRouter();
   const [sidebar, setSidebar] = useState(false);
   const [dashboardSidebar, setDashboardSidebar] = useState(false);
   const [userSidebar, setUserSidebar] = useState(false);
@@ -15,39 +14,42 @@ const ContextProvider = ({ children }) => {
   const [teamData, setTeamData] = useState(null);
   const isLoggedIn = !!userData;
 
+  // Fetch regular user session
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get('/api/user/me');
-        const data = response.data;
-        if (data.success && data.data) {
-          setUserData(data.data);
+        const response = await axios.get('/api/user/me', {
+          validateStatus: (status) => status < 500
+        });
+        if (response.data?.success && response.data?.data) {
+          setUserData(response.data.data);
         } else {
           setUserData(null);
         }
       } catch (error) {
-        console.error("Session verification failed:", error);
+        setUserData(null);
       }
     };
     fetchUser();
   }, []);
 
-
+  // Fetch team member session
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchTeamUser = async () => {
       try {
-        const response = await axios.get('/api/team/me');
-        const data = response.data;
-        if (data.success && data.data) {
-          setTeamData(data.data);
+        const response = await axios.get('/api/team/me', {
+          validateStatus: (status) => status < 500
+        });
+        if (response.data?.success && response.data?.data) {
+          setTeamData(response.data.data);
         } else {
           setTeamData(null);
         }
       } catch (error) {
-        console.error("Session verification failed:", error);
+        setTeamData(null);
       }
     };
-    fetchUser();
+    fetchTeamUser();
   }, []);
 
   const logout = async () => {
@@ -76,14 +78,14 @@ const ContextProvider = ({ children }) => {
     userSidebar, setUserSidebar,
     dashboardSidebar, setDashboardSidebar,
     userData, setUserData, teamData, setTeamData,
-    isLoggedIn, logout,teamLogout
-  }
+    isLoggedIn, logout, teamLogout
+  };
 
   return (
     <Context.Provider value={contextValues}>
       {children}
     </Context.Provider>
-  )
-}
+  );
+};
 
-export default ContextProvider
+export default ContextProvider;

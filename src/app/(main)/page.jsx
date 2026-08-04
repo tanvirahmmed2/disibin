@@ -15,7 +15,7 @@ export const metadata = {
 const MainPage = () => {
 
   return (
-    <main className='w-full min-h-200 px-4 max-w-7xl mx-auto flex flex-col gap-4 pb-20'>
+    <main className='w-full min-h-200 p-4 md:p-8 flex flex-col gap-4 pb-20'>
       <Intro />
       <Bio />
       <About />
