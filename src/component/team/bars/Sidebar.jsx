@@ -1,0 +1,243 @@
+'use client'
+import Link from 'next/link'
+import React, { useContext } from 'react'
+import { Context } from '../../helper/Context'
+import { usePathname } from 'next/navigation'
+import {
+  FiActivity,
+  FiPieChart,
+  FiBriefcase,
+  FiLifeBuoy,
+  FiUser,
+  FiStar,
+  FiShield,
+  FiInbox,
+  FiBox,
+  FiCheckSquare,
+  FiUsers,
+  FiCreditCard,
+  FiFileText,
+  FiLogOut,
+  FiMessageSquare,
+  FiClipboard,
+  FiBookOpen,
+  FiLayout,
+  FiMail,
+  FiUserCheck,
+  FiAlertCircle,
+} from 'react-icons/fi'
+import { FaGlobeAsia, FaHandshake } from 'react-icons/fa'
+
+const roleLinks = {
+  admin: [
+    {
+      label: 'Overview',
+      links: [
+        { name: 'Dashboard',     href: '/team',                       icon: <FiPieChart /> },
+        { name: 'Activity Log',  href: '/team/activity-log',          icon: <FiActivity /> },
+      ],
+    },
+    {
+      label: 'Management',
+      links: [
+        { name: 'Team Members',  href: '/team/team-member',           icon: <FiShield /> },
+        { name: 'Users',         href: '/team/users',                 icon: <FiUsers /> },
+        { name: 'Leads',         href: '/team/leads',                 icon: <FiUserCheck /> },
+        { name: 'Careers',       href: '/team/career',                icon: <FiBriefcase /> },
+        { name: 'Board',         href: '/team/board',                 icon: <FiLayout /> },
+        { name: 'Reports',       href: '/team/reports',               icon: <FiFileText /> },
+      ],
+    },
+    {
+      label: 'Operations',
+      links: [
+        { name: 'Projects',      href: '/team/projects',              icon: <FiClipboard /> },
+        { name: 'Products',      href: '/team/products',              icon: <FiBox /> },
+        { name: 'Payments',      href: '/team/payments',              icon: <FiCreditCard /> },
+        { name: 'Partners',      href: '/team/partners',              icon: <FaHandshake /> },
+        { name: 'Agreements',    href: '/team/agreements',            icon: <FiBookOpen /> },
+      ],
+    },
+    {
+      label: 'Support & Comms',
+      links: [
+        { name: 'Support',       href: '/team/support',               icon: <FiAlertCircle /> },
+        { name: 'Tickets',       href: '/team/tickets',               icon: <FiLifeBuoy /> },
+        { name: 'Reviews',       href: '/team/reviews',               icon: <FiStar /> },
+        { name: 'Newsletter',    href: '/team/news-letter',           icon: <FiMail /> },
+        { name: 'Chat',          href: '/team/chat',                  icon: <FiMessageSquare /> },
+      ],
+    },
+    {
+      label: 'Logs',
+      links: [
+        { name: 'Team Login Logs', href: '/team/team-login-logs',     icon: <FiInbox /> },
+        { name: 'User Login Logs', href: '/team/user-login-logs',     icon: <FiInbox /> },
+        { name: 'Security',        href: '/team/security',            icon: <FiShield /> },
+      ],
+    },
+  ],
+  manager: [
+    {
+      label: 'Overview',
+      links: [
+        { name: 'Dashboard',     href: '/team',                       icon: <FiPieChart /> },
+      ],
+    },
+    {
+      label: 'Management',
+      links: [
+        { name: 'Projects',      href: '/team/projects',              icon: <FiClipboard /> },
+        { name: 'Products',      href: '/team/products',              icon: <FiBox /> },
+        { name: 'Board',         href: '/team/board',                 icon: <FiLayout /> },
+        { name: 'Leads',         href: '/team/leads',                 icon: <FiUserCheck /> },
+        { name: 'Partners',      href: '/team/partners',              icon: <FaHandshake /> },
+        { name: 'Reports',       href: '/team/reports',               icon: <FiFileText /> },
+      ],
+    },
+    {
+      label: 'Support & Comms',
+      links: [
+        { name: 'Reviews',       href: '/team/reviews',               icon: <FiStar /> },
+        { name: 'Tickets',       href: '/team/tickets',               icon: <FiLifeBuoy /> },
+        { name: 'Newsletter',    href: '/team/news-letter',           icon: <FiMail /> },
+        { name: 'Chat',          href: '/team/chat',                  icon: <FiMessageSquare /> },
+      ],
+    },
+  ],
+  support: [
+    {
+      label: 'Support',
+      links: [
+        { name: 'Dashboard',     href: '/team',                       icon: <FiPieChart /> },
+        { name: 'Support Inbox', href: '/team/support',               icon: <FiAlertCircle /> },
+        { name: 'Tickets',       href: '/team/tickets',               icon: <FiLifeBuoy /> },
+        { name: 'Reviews',       href: '/team/reviews',               icon: <FiStar /> },
+        { name: 'Chat',          href: '/team/chat',                  icon: <FiMessageSquare /> },
+      ],
+    },
+  ],
+  developer: [
+    {
+      label: 'Overview',
+      links: [
+        { name: 'Dashboard',     href: '/team',                       icon: <FiPieChart /> },
+      ],
+    },
+    {
+      label: 'Work',
+      links: [
+        { name: 'Projects',      href: '/team/projects',              icon: <FiClipboard /> },
+        { name: 'Board',         href: '/team/board',                 icon: <FiLayout /> },
+        { name: 'Reports',       href: '/team/reports',               icon: <FiFileText /> },
+        { name: 'Chat',          href: '/team/chat',                  icon: <FiMessageSquare /> },
+      ],
+    },
+  ],
+}
+
+const Sidebar = () => {
+  const { dashboardSidebar, setDashboardSidebar, teamData, teamLogout } = useContext(Context)
+  const pathname = usePathname()
+
+  const role = teamData?.role || ''
+  const sections = roleLinks[role] || []
+
+  const isActive = (href) => pathname === href
+
+  const closeMenu = () => setDashboardSidebar(false)
+
+  return (
+    <>
+      {/* Mobile overlay */}
+      {dashboardSidebar && (
+        <div
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"
+          onClick={closeMenu}
+        />
+      )}
+
+      <aside
+        className={`fixed top-14 left-0 z-50 h-[calc(100vh-3.5rem)] w-64 bg-white border-r border-slate-100 flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+          dashboardSidebar ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        {/* Scrollable nav */}
+        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-5">
+          {sections.map((section) => (
+            <div key={section.label}>
+              <p className="px-4 mb-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                {section.label}
+              </p>
+              <div className="flex flex-col gap-0.5">
+                {section.links.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={closeMenu}
+                    className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                      isActive(link.href)
+                        ? 'bg-sky-50 text-sky-600'
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    }`}
+                  >
+                    <span className="text-base flex-shrink-0">{link.icon}</span>
+                    <span>{link.name}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {/* Account section */}
+          <div>
+            <p className="px-4 mb-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+              Account
+            </p>
+            <div className="flex flex-col gap-0.5">
+              <Link
+                href="/team/profile"
+                onClick={closeMenu}
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  isActive('/team/profile')
+                    ? 'bg-sky-50 text-sky-600'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <FiUser className="text-base flex-shrink-0" />
+                <span>My Profile</span>
+              </Link>
+              <Link
+                href="/"
+                onClick={closeMenu}
+                className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all duration-200"
+              >
+                <FaGlobeAsia className="text-base flex-shrink-0" />
+                <span>Web Home</span>
+              </Link>
+            </div>
+          </div>
+        </nav>
+
+        {/* User info + logout */}
+        <div className="px-4 py-4 border-t border-slate-100 space-y-2">
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
+            <p className="text-xs font-bold text-slate-900 truncate">{teamData?.name}</p>
+            <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">
+              {teamData?.role}
+            </p>
+          </div>
+          <button
+            onClick={teamLogout}
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-all duration-200"
+          >
+            <FiLogOut className="text-base flex-shrink-0" />
+            <span>Log Out</span>
+          </button>
+        </div>
+      </aside>
+    </>
+  )
+}
+
+export default Sidebar

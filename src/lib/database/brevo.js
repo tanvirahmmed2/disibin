@@ -2,21 +2,31 @@ import * as brevo from "@getbrevo/brevo";
 import { BREVO_API_KEY, BREVO_SENDER_EMAIL, BREVO_SENDER_NAME } from "./secret";
 
 
-export const sendEmail = async ({ toEmail, toName, subject, htmlContent }) => {
+/**
+ * Unified email sender.
+ * Accepts either:
+ *   { to, subject, htmlContent }          — legacy shorthand
+ *   { toEmail, toName, subject, htmlContent } — explicit form
+ */
+export const sendEmail = async (options) => {
     try {
+        // Support both call signatures
+        const toEmail = options.toEmail || options.to;
+        const toName  = options.toName  || '';
+        const { subject, htmlContent } = options;
+
         const apiInstance = new brevo.TransactionalEmailsApi();
-        
         apiInstance.setApiKey(
-            brevo.TransactionalEmailsApiApiKeys.apiKey, BREVO_API_KEY
+            brevo.TransactionalEmailsApiApiKeys.apiKey,
+            BREVO_API_KEY
         );
 
         const smtpEmail = new brevo.SendSmtpEmail();
-
         smtpEmail.subject = subject;
         smtpEmail.htmlContent = htmlContent;
-        smtpEmail.sender = { 
+        smtpEmail.sender = {
             name: BREVO_SENDER_NAME,
-            email: BREVO_SENDER_EMAIL
+            email: BREVO_SENDER_EMAIL,
         };
         smtpEmail.to = [{ email: toEmail, name: toName }];
 
@@ -27,6 +37,7 @@ export const sendEmail = async ({ toEmail, toName, subject, htmlContent }) => {
         return { success: false, error };
     }
 };
+
 
 export const sendVerificationEmail = async (email, name, verificationUrl) => {
     const subject = "Verify your Disibin Account";
@@ -42,6 +53,7 @@ export const sendVerificationEmail = async (email, name, verificationUrl) => {
     return await sendEmail({ toEmail: email, toName: name, subject, htmlContent });
 };
 
+
 export const sendStaffInvitationEmail = async (email, name, activationUrl) => {
     const subject = "Invitation to join Disibin Team";
     const htmlContent = `
@@ -55,4 +67,3 @@ export const sendStaffInvitationEmail = async (email, name, activationUrl) => {
     `;
     return await sendEmail({ toEmail: email, toName: name, subject, htmlContent });
 };
-

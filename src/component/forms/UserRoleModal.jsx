@@ -1,23 +1,18 @@
 'use client';
-import React, { useState } from 'react';
-import { FiUser, FiX } from 'react-icons/fi';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import { FiX, FiShield } from 'react-icons/fi';
 
-/**
- * UserRoleModal
- * -------------
- * Modal to change a user's role.
- *
- * Props
- *   isOpen    — boolean
- *   user      — the user object (needs .user_id, .name, .role)
- *   onClose   — () => void
- *   onSuccess — (updatedUser) => void
- */
 const UserRoleModal = ({ isOpen, user, onClose, onSuccess }) => {
-  const [role, setRole] = useState(user?.role || 'user');
+  const [role, setRole] = useState('support');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setRole(user.role || 'support');
+    }
+  }, [user]);
 
   if (!isOpen || !user) return null;
 
@@ -26,71 +21,76 @@ const UserRoleModal = ({ isOpen, user, onClose, onSuccess }) => {
     setLoading(true);
     try {
       const res = await axios.patch('/api/user/manage', {
-        targetUserId: user.user_id,
-        role: role
+        targetUserId: user.id || user.user_id,
+        role
       });
       if (res.data.success) {
-        toast.success('User role updated');
-        onSuccess?.(res.data.data);
+        toast.success(res.data.message || 'User role updated successfully');
+        onSuccess(res.data.data || { ...user, role });
         onClose();
+      } else {
+        toast.error(res.data.message);
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update role');
+      toast.error(err.response?.data?.message || 'Failed to update user role');
     } finally {
       setLoading(false);
     }
   };
 
-  const roles = ['admin', 'manager', 'support', 'developer', 'user'];
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 bg-gradient-to-r from-violet-600 to-indigo-600">
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <FiUser size={18} />
-            Change Role · {user.name}
-          </h2>
-          <button onClick={onClose} className="text-white/70 hover:text-white transition-colors">
-            <FiX size={18} />
-          </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-lg"
+        >
+          <FiX size={20} />
+        </button>
+
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
+            <FiShield size={24} />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-slate-900">Change Member Role</h3>
+            <p className="text-xs text-slate-500">{user.name} ({user.email})</p>
+          </div>
         </div>
 
-        {/* Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-400 ml-1">Select Role</label>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
+          <div>
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">
+              Select Role
+            </label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white outline-none focus:ring-2 focus:ring-violet-500 transition-all"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none text-slate-800 font-medium focus:border-blue-500"
             >
-              {roles.map((r) => (
-                <option key={r} value={r} className="capitalize">{r}</option>
-              ))}
+              <option value="support">Support</option>
+              <option value="manager">Manager</option>
+              <option value="developer">Developer</option>
             </select>
           </div>
 
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 mt-4">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-3 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-all"
+              className="w-1/2 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50"
             >
               Cancel
             </button>
             <button
               type="submit"
-              disabled={loading || role === user.role}
-              className="flex-1 py-3 rounded-xl bg-violet-600 text-white font-bold text-sm hover:bg-violet-700 transition-all shadow-lg shadow-violet-200 disabled:opacity-50 disabled:shadow-none"
+              disabled={loading}
+              className="w-1/2 py-2.5 rounded-xl bg-slate-900 text-white font-bold hover:bg-blue-600 transition-colors disabled:opacity-50"
             >
-              {loading ? 'Updating...' : 'Save Changes'}
+              {loading ? 'Saving...' : 'Save Role'}
             </button>
           </div>
         </form>
-
       </div>
     </div>
   );

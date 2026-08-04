@@ -12,12 +12,13 @@ const ContextProvider = ({ children }) => {
   const [dashboardSidebar, setDashboardSidebar] = useState(false);
   const [userSidebar, setUserSidebar] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [teamData, setTeamData] = useState(null);
   const isLoggedIn = !!userData;
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get('/api/user');
+        const response = await axios.get('/api/user/me');
         const data = response.data;
         if (data.success && data.data) {
           setUserData(data.data);
@@ -31,13 +32,43 @@ const ContextProvider = ({ children }) => {
     fetchUser();
   }, []);
 
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get('/api/team/me');
+        const data = response.data;
+        if (data.success && data.data) {
+          setTeamData(data.data);
+        } else {
+          setTeamData(null);
+        }
+      } catch (error) {
+        console.error("Session verification failed:", error);
+      }
+    };
+    fetchUser();
+  }, []);
+
   const logout = async () => {
     try {
       await axios.post('/api/user/logout');
       setUserData(null);
-      router.push('/login');
+      router.push('/auth/login');
     } catch (error) {
       console.error("Logout failed:", error);
+    }
+  };
+
+  const teamLogout = async () => {
+    try {
+      await axios.post('/api/team/logout');
+    } catch (error) {
+      console.error("Team logout request failed:", error);
+    } finally {
+      // Always clear state and redirect, even if the API call errors
+      setTeamData(null);
+      router.push('/team-auth/login');
     }
   };
 
@@ -45,8 +76,8 @@ const ContextProvider = ({ children }) => {
     sidebar, setSidebar,
     userSidebar, setUserSidebar,
     dashboardSidebar, setDashboardSidebar,
-    userData, setUserData,
-    isLoggedIn, logout
+    userData, setUserData, teamData, setTeamData,
+    isLoggedIn, logout,teamLogout
   }
 
   return (

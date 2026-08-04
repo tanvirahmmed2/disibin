@@ -1,6 +1,6 @@
-import Footer from '@/component/bar/Footer'
-import Navbar from '@/component/bar/Navbar'
-import Sidebar from '@/component/bar/Sidebar'
+import Footer from '@/component/public/bars/Footer'
+import Navbar from '@/component/public/bars/Navbar'
+import Sidebar from '@/component/public/bars/Sidebar'
 import React from 'react'
 
 export const metadata={

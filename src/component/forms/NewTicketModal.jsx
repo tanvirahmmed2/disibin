@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { FaTimes } from 'react-icons/fa';
 import toast from 'react-hot-toast';
-import TiptapEditor from './TiptapEditor';
+import TiptapEditor from '../helper/TiptapEditor';
 
 /**
  * NewTicketModal

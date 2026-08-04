@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { FaPaperPlane } from 'react-icons/fa';
 import toast from 'react-hot-toast';
-import TiptapEditor from '@/component/forms/TiptapEditor';
+import TiptapEditor from '@/component/helper/TiptapEditor';
 
 /**
  * TicketReplyForm

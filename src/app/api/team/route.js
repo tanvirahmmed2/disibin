@@ -1,190 +1,179 @@
 import { NextResponse } from "next/server";
-import { isManager } from "@/lib/middleware";
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import { isManager } from "@/lib/auth/team";
 import { dbQuery } from "@/lib/database/pg";
-import cloudinary from "@/lib/database/cloudinary";
+import { sendEmail } from "@/lib/database/brevo";
+import { BASE_URL } from "@/lib/database/secret";
 
-// GET team members (Public)
+// ─── GET /api/team ────────────────────────────────────────────────────────────
+// List all team members (manager only)
 export async function GET() {
     try {
-        const res = await dbQuery("SELECT * FROM teams ORDER BY created_at ASC");
+        const auth = await isManager();
+        if (!auth.success) return NextResponse.json(auth, { status: 403 });
+
+        const res = await dbQuery(
+            `SELECT id, name, email, phone, role, is_active, is_verified,
+                    city, country, last_login, created_at, updated_at
+             FROM teams
+             ORDER BY created_at ASC`
+        );
         return NextResponse.json({ success: true, data: res.rows });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
-// POST add member (Manager only)
+// ─── POST /api/team ───────────────────────────────────────────────────────────
+// Create a new team member and send invitation email (manager only)
 export async function POST(req) {
     try {
         const auth = await isManager();
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
-        const formData = await req.formData();
-        const name = formData.get('name');
-        const post = formData.get('post');
-        const email = formData.get('email');
-        const bio = formData.get('bio');
-        const imageFile = formData.get('image'); // Can be File object or empty/null
+        const body = await req.json();
+        const { name, email, phone, role, password: rawPassword } = body;
 
-        if (!name || !post || !email || !imageFile) {
-            return NextResponse.json({ success: false, message: "Name, Post, Email, and Avatar Image are required" }, { status: 400 });
+        if (!name || !email || !role) {
+            return NextResponse.json(
+                { success: false, message: "Name, email, and role are required" },
+                { status: 400 }
+            );
         }
 
-        // Image upload directly to Cloudinary if provided as file
-        let imageUrl = null;
-        let imagePublicId = null;
-
-        if (imageFile && typeof imageFile !== 'string') {
-            const bytes = await imageFile.arrayBuffer();
-            const buffer = Buffer.from(bytes);
-
-            const uploadResult = await new Promise((resolve, reject) => {
-                const uploadStream = cloudinary.uploader.upload_stream(
-                    {
-                        folder: "disibin_team",
-                        resource_type: "image",
-                    },
-                    (error, result) => {
-                        if (error) reject(error);
-                        else resolve(result);
-                    }
-                );
-                uploadStream.end(buffer);
-            });
-            imageUrl = uploadResult.secure_url;
-            imagePublicId = uploadResult.public_id;
+        if (!['support', 'manager', 'developer'].includes(role)) {
+            return NextResponse.json(
+                { success: false, message: "Role must be support, manager, or developer" },
+                { status: 400 }
+            );
         }
 
-        // Normalize optional parameters: empty string or null -> DB NULL
-        const normalizedEmail = email === "" || email === null ? null : email;
-        const normalizedBio = bio === "" || bio === null ? null : bio;
+        const existing = await dbQuery("SELECT id FROM teams WHERE email = $1", [email]);
+        if (existing.rows.length > 0) {
+            return NextResponse.json({ success: false, message: "Email already registered" }, { status: 400 });
+        }
 
-        const query = `
-            INSERT INTO teams (name, post, email, image, image_id, bio)
-            VALUES ($1, $2, $3, $4, $5, $6)
-            RETURNING *
+        if (phone) {
+            const phoneCheck = await dbQuery("SELECT id FROM teams WHERE phone = $1", [phone]);
+            if (phoneCheck.rows.length > 0) {
+                return NextResponse.json({ success: false, message: "Phone number already registered" }, { status: 400 });
+            }
+        }
+
+        const tempPassword = rawPassword || crypto.randomBytes(8).toString("hex");
+        const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+        const verificationToken = crypto.randomBytes(32).toString("hex");
+        const verificationExpiresAt = new Date(Date.now() + 7 * 24 * 3600000); // 7 days
+
+        const res = await dbQuery(
+            `INSERT INTO teams (name, email, phone, password, role, verification_token, verification_expires_at)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)
+             RETURNING id, name, email, phone, role, is_active, is_verified, created_at`,
+            [name, email, phone || null, hashedPassword, role, verificationToken, verificationExpiresAt]
+        );
+        const newMember = res.rows[0];
+
+        const verifyLink = `${BASE_URL}/team-auth/verify?token=${verificationToken}`;
+        const htmlContent = `
+            <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 40px; border: 1px solid #f0f0f0; border-radius: 10px;">
+                <h1 style="color: #0f172a; font-size: 24px; font-weight: 700; margin-bottom: 16px;">Welcome to Disibin Team</h1>
+                <p style="color: #64748b; line-height: 1.6;">Hi ${name}, you've been added as a <strong>${role}</strong> on the Disibin management team.</p>
+                <p style="color: #64748b; line-height: 1.6; margin-bottom: 8px;">Your login credentials:</p>
+                <p style="color: #64748b;"><strong>Email:</strong> ${email}</p>
+                <p style="color: #64748b; margin-bottom: 24px;"><strong>Temporary Password:</strong> ${rawPassword ? '(as provided by manager)' : tempPassword}</p>
+                <p style="color: #64748b; margin-bottom: 24px;">Please click the button below to verify your email and activate your account:</p>
+                <a href="${verifyLink}" style="display: inline-block; padding: 16px 32px; background-color: #0f172a; color: #ffffff; text-decoration: none; border-radius: 12px; font-weight: 600;">Verify Email &amp; Activate</a>
+                <p style="color: #94a3b8; font-size: 12px; margin-top: 32px;">This verification link will expire in 7 days.</p>
+            </div>
         `;
-        const res = await dbQuery(query, [name, post, normalizedEmail, imageUrl, imagePublicId, normalizedBio]);
+        await sendEmail({ to: email, subject: "Welcome to Disibin Team — Verify Your Account", htmlContent });
 
-        return NextResponse.json({
-            success: true,
-            message: "Team member added successfully",
-            data: res.rows[0]
-        }, { status: 201 });
+        return NextResponse.json(
+            { success: true, message: "Team member created and invitation email sent", data: newMember },
+            { status: 201 }
+        );
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
-// PATCH update member (Manager only)
+// ─── PATCH /api/team ──────────────────────────────────────────────────────────
+// Update a team member's fields (manager only)
+// Guards: cannot demote/deactivate the last active manager
 export async function PATCH(req) {
     try {
         const auth = await isManager();
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
-        const formData = await req.formData();
-        const memberId = formData.get('memberId');
-        const name = formData.get('name');
-        const post = formData.get('post');
-        const email = formData.get('email');
-        const bio = formData.get('bio');
-        const imageFile = formData.get('image'); // Can be File object, string (URL), or null
-        const imageId = formData.get('image_id'); // Existing image public ID if string
+        const body = await req.json();
+        const { id, ...updateData } = body;
 
-        if (!memberId) {
-            return NextResponse.json({ success: false, message: "Member ID is required" }, { status: 400 });
+        if (!id) {
+            return NextResponse.json({ success: false, message: "Team member ID is required" }, { status: 400 });
         }
 
-        if (!name || !post || !email) {
-            return NextResponse.json({ success: false, message: "Name, Post, and Email are required" }, { status: 400 });
-        }
+        // Strip protected fields
+        const {
+            password, verification_token, verification_expires_at,
+            reset_token, token_expires_at, ...safeData
+        } = updateData;
 
-        // 1. Get current member to compare image_id later
-        const currentMemberRes = await dbQuery("SELECT * FROM teams WHERE member_id = $1", [memberId]);
-        const currentMember = currentMemberRes.rows[0];
-        if (!currentMember) {
-            return NextResponse.json({ success: false, message: "Member not found" }, { status: 404 });
-        }
-
-        // 2. Prepare update data dictionary
-        const updateData = {};
-        if (name !== null) updateData.name = name;
-        if (post !== null) updateData.post = post;
-        
-        updateData.email = email === "" || email === null ? null : email;
-        updateData.bio = bio === "" || bio === null ? null : bio;
-
-        // Image logical flow
-        let finalImage = null;
-        let finalImageId = null;
-
-        if (imageFile && typeof imageFile !== 'string') {
-            // New avatar file was uploaded
-            const bytes = await imageFile.arrayBuffer();
-            const buffer = Buffer.from(bytes);
-
-            const uploadResult = await new Promise((resolve, reject) => {
-                const uploadStream = cloudinary.uploader.upload_stream(
-                    {
-                        folder: "disibin_team",
-                        resource_type: "image",
-                    },
-                    (error, result) => {
-                        if (error) reject(error);
-                        else resolve(result);
-                    }
-                );
-                uploadStream.end(buffer);
-            });
-            finalImage = uploadResult.secure_url;
-            finalImageId = uploadResult.public_id;
-        } else if (typeof imageFile === 'string') {
-            // Keep existing avatar URL
-            finalImage = imageFile;
-            finalImageId = imageId;
-        } else {
-            // Avatar cleared
-            finalImage = null;
-            finalImageId = null;
-        }
-
-        if (!finalImage) {
-            return NextResponse.json({ success: false, message: "Avatar Image is required" }, { status: 400 });
-        }
-
-        updateData.image = finalImage;
-        updateData.image_id = finalImageId;
-
-        const keys = Object.keys(updateData);
-        if (keys.length === 0) {
+        if (Object.keys(safeData).length === 0) {
             return NextResponse.json({ success: false, message: "No fields to update" }, { status: 400 });
         }
+
+        // Guard: at least one active manager must remain
+        const memberRes = await dbQuery("SELECT role, is_active FROM teams WHERE id = $1", [id]);
+        if (memberRes.rows.length === 0) {
+            return NextResponse.json({ success: false, message: "Team member not found" }, { status: 404 });
+        }
+
+        const current = memberRes.rows[0];
+        const isBeingDemoted = safeData.role && safeData.role !== 'manager' && current.role === 'manager';
+        const isBeingDeactivated = safeData.is_active === false && current.is_active === true && current.role === 'manager';
+
+        if (isBeingDemoted || isBeingDeactivated) {
+            const activeManagersRes = await dbQuery(
+                "SELECT COUNT(*) AS cnt FROM teams WHERE role = 'manager' AND is_active = TRUE"
+            );
+            const activeManagerCount = parseInt(activeManagersRes.rows[0].cnt, 10);
+            if (activeManagerCount <= 1) {
+                return NextResponse.json(
+                    { success: false, message: "Cannot remove the last active manager. Promote another manager first." },
+                    { status: 400 }
+                );
+            }
+        }
+
+        // Validate field names (prevent SQL injection)
+        const keys = Object.keys(safeData);
         for (const key of keys) {
             if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) {
                 return NextResponse.json({ success: false, message: "Invalid field name" }, { status: 400 });
             }
         }
-        const values = Object.values(updateData);
-        const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(", ");
-        
-        const query = `UPDATE teams SET ${setClause} WHERE member_id = $${keys.length + 1} RETURNING *`;
-        const res = await dbQuery(query, [...values, memberId]);
-        const updatedMember = res.rows[0];
 
-        // 3. Delete old image from Cloudinary if image_id was replaced/removed
-        if (currentMember.image_id && currentMember.image_id !== updatedMember.image_id) {
-            try {
-                await cloudinary.uploader.destroy(currentMember.image_id);
-            } catch (error) {
-                console.error("Failed to delete old image from Cloudinary:", error);
-            }
+        const values = Object.values(safeData);
+        const setClause = keys.map((key, i) => `${key} = $${i + 1}`).join(", ");
+
+        const res = await dbQuery(
+            `UPDATE teams SET ${setClause}, updated_at = now()
+             WHERE id = $${keys.length + 1}
+             RETURNING id, name, email, phone, role, is_active, is_verified, updated_at`,
+            [...values, id]
+        );
+
+        if (res.rows.length === 0) {
+            return NextResponse.json({ success: false, message: "Team member not found" }, { status: 404 });
         }
 
         return NextResponse.json({
             success: true,
             message: "Team member updated successfully",
-            data: updatedMember
+            data: res.rows[0]
         });
 
     } catch (error) {
@@ -192,38 +181,52 @@ export async function PATCH(req) {
     }
 }
 
-// DELETE member (Manager only)
+// ─── DELETE /api/team?id=<id> ─────────────────────────────────────────────────
+// Remove a team member (manager only)
+// Guards: cannot delete the last active manager
 export async function DELETE(req) {
     try {
         const auth = await isManager();
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
         const { searchParams } = new URL(req.url);
-        const memberId = searchParams.get('id');
+        const id = searchParams.get('id');
 
-        if (!memberId) {
-            return NextResponse.json({ success: false, message: "Member ID is required" }, { status: 400 });
+        if (!id) {
+            return NextResponse.json({ success: false, message: "Team member ID is required" }, { status: 400 });
         }
 
-        const res = await dbQuery("DELETE FROM teams WHERE member_id = $1 RETURNING *", [memberId]);
-        
-        if (res.rows.length === 0) return NextResponse.json({ success: false, message: "Member not found" }, { status: 404 });
+        // Check if target exists
+        const memberRes = await dbQuery("SELECT id, role, is_active FROM teams WHERE id = $1", [id]);
+        if (memberRes.rows.length === 0) {
+            return NextResponse.json({ success: false, message: "Team member not found" }, { status: 404 });
+        }
 
-        const member = res.rows[0];
-        
-        // Delete image from Cloudinary
-        if (member.image_id) {
-            try {
-                await cloudinary.uploader.destroy(member.image_id);
-            } catch (error) {
-                console.error("Failed to delete member image from Cloudinary:", error);
+        const target = memberRes.rows[0];
+
+        // Guard: cannot delete the last active manager
+        if (target.role === 'manager' && target.is_active) {
+            const activeManagersRes = await dbQuery(
+                "SELECT COUNT(*) AS cnt FROM teams WHERE role = 'manager' AND is_active = TRUE"
+            );
+            const activeManagerCount = parseInt(activeManagersRes.rows[0].cnt, 10);
+            if (activeManagerCount <= 1) {
+                return NextResponse.json(
+                    { success: false, message: "Cannot remove the last active manager. Promote another manager first." },
+                    { status: 400 }
+                );
             }
         }
 
+        const res = await dbQuery(
+            "DELETE FROM teams WHERE id = $1 RETURNING id, name, email, role",
+            [id]
+        );
+
         return NextResponse.json({
             success: true,
-            message: "Team member removed",
-            data: member
+            message: "Team member removed successfully",
+            data: res.rows[0]
         });
 
     } catch (error) {

@@ -8,7 +8,7 @@ export async function POST() {
             message: "Logged out successfully"
         });
 
-        response.cookies.set("disibin", "", {
+        response.cookies.set("disibin-user", "", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",

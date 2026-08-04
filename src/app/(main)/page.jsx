@@ -1,11 +1,10 @@
-import About from '@/component/pages/About'
-import Bio from '@/component/pages/Bio'
-import CaseStudies from '@/component/pages/CaseStudies'
-import FAQ from '@/component/pages/FAQ'
-import Intro from '@/component/pages/Intro'
-import Partners from '@/component/pages/Partners'
-import Reviews from '@/component/pages/Reviews'
-import Services from '@/component/pages/Services'
+import About from '@/component/public/pages/About'
+import Bio from '@/component/public/pages/Bio'
+import FAQ from '@/component/public/pages/FAQ'
+import Intro from '@/component/public/pages/Intro'
+import Partners from '@/component/public/pages/Partners'
+import Reviews from '@/component/public/pages/Reviews'
+import Services from '@/component/public/pages/Services'
 import React from 'react'
 
 export const metadata = {
@@ -21,7 +20,6 @@ const MainPage = () => {
       <Bio />
       <About />
       <Services/>
-      <CaseStudies/>
       <FAQ/>
       <Reviews />
       <Partners />

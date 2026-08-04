@@ -1,7 +1,6 @@
-import UserNavbar from "@/component/dashboard/UserNavbar"
-import UserSidebar from "@/component/dashboard/UserSidebar"
-import { isLogin } from "@/lib/middleware"
-import { redirect } from "next/navigation"
+import Navbar from "@/component/user/bars/Navbar"
+import Sidebar from "@/component/user/bars/Sidebar"
+
 
 export const metadata = {
   title: 'My Dashboard | Disibin',
@@ -9,13 +8,10 @@ export const metadata = {
 }
 
 export default async function Layout({ children }) {
-  const auth= await isLogin()
-  if(!auth.success)return redirect('/login')
-
   return (
     <section className="w-full animate-in fade-in duration-700 relative overflow-x-hidden pt-14">
-      <UserNavbar/>
-      <UserSidebar/>
+      <Navbar/>
+      <Sidebar/>
       {children}
     </section>
   )

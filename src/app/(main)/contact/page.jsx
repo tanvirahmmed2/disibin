@@ -4,14 +4,14 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
-import TiptapEditor from '@/component/forms/TiptapEditor';
+import TiptapEditor from '@/component/helper/TiptapEditor';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
-    message: '',
+    description: '',
   });
 
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ const ContactPage = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/support', formData);
+      const response = await axios.post('/api/public/support', formData);
       const result = response.data;
 
       if (result.success) {
@@ -37,7 +37,7 @@ const ContactPage = () => {
           name: '',
           email: '',
           subject: '',
-          message: '',
+          description: '',
         });
       } else {
         toast.error(result.message || 'Something went wrong.');
@@ -147,8 +147,8 @@ const ContactPage = () => {
             />
 
             <TiptapEditor
-              value={formData.message}
-              onChange={(html) => setFormData({ ...formData, message: html })}
+              value={formData.description}
+              onChange={(html) => setFormData({ ...formData, description: html })}
               placeholder="Tell us about your project, business goals, or technical requirements..."
             />
 

@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { FiPlus, FiTrash2, FiCheck } from 'react-icons/fi';
 import ImageUpload from '@/component/helper/ImageUpload';
-import TiptapEditor from './TiptapEditor';
+import TiptapEditor from '../helper/TiptapEditor';
 const ProductForm = ({ initialData, onSuccess, onCancel }) => {
   const router = useRouter();
   const [formData, setFormData] = useState({

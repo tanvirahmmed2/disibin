@@ -1,9 +1,9 @@
+import { isUserLogin } from "@/lib/auth/user";
 import { NextResponse } from "next/server";
-import { isLogin } from "@/lib/middleware";
 
 export async function GET(req) {
     try {
-        const auth = await isLogin();
+        const auth = await isUserLogin()
         if (!auth.success) return NextResponse.json({ success: false, message: "Not authenticated" }, { status: 401 });
         
         return NextResponse.json({ success: true, data: auth.data });
