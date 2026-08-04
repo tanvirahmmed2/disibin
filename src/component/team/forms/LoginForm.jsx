@@ -29,7 +29,7 @@ const LoginForm = () => {
         if (meRes.data.success) {
           setUserData(meRes.data.data);
         }
-        router.push('/team');
+        window.location.replace('/team');
       } else {
         toast.error(data.message);
       }

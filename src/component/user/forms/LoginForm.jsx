@@ -25,12 +25,11 @@ const LoginForm = () => {
 
       if (data.success) {
         toast.success('Login successful!');
-        // Fetch fresh user data after login
         const meRes = await axios.get('/api/user');
         if (meRes.data.success) {
           setUserData(meRes.data.data);
         }
-        router.push('/user');
+        window.location.replace('/user');
       } else {
         toast.error(data.message);
       }

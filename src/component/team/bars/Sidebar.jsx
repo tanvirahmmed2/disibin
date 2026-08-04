@@ -13,7 +13,6 @@ import {
   FiShield,
   FiInbox,
   FiBox,
-  FiCheckSquare,
   FiUsers,
   FiCreditCard,
   FiFileText,
@@ -25,6 +24,7 @@ import {
   FiMail,
   FiUserCheck,
   FiAlertCircle,
+  FiSettings,
 } from 'react-icons/fi'
 import { FaGlobeAsia, FaHandshake } from 'react-icons/fa'
 
@@ -69,7 +69,7 @@ const roleLinks = {
       ],
     },
     {
-      label: 'Logs',
+      label: 'Logs & Security',
       links: [
         { name: 'Team Login Logs', href: '/team/team-login-logs',     icon: <FiInbox /> },
         { name: 'User Login Logs', href: '/team/user-login-logs',     icon: <FiInbox /> },
@@ -82,24 +82,35 @@ const roleLinks = {
       label: 'Overview',
       links: [
         { name: 'Dashboard',     href: '/team',                       icon: <FiPieChart /> },
+        { name: 'Activity Log',  href: '/team/activity-log',          icon: <FiActivity /> },
       ],
     },
     {
-      label: 'Management',
+      label: 'People & Staff',
+      links: [
+        { name: 'Team Members',  href: '/team/team-member',           icon: <FiShield /> },
+        { name: 'Users',         href: '/team/users',                 icon: <FiUsers /> },
+        { name: 'Leads',         href: '/team/leads',                 icon: <FiUserCheck /> },
+        { name: 'Careers',       href: '/team/career',                icon: <FiBriefcase /> },
+      ],
+    },
+    {
+      label: 'Operations & Work',
       links: [
         { name: 'Projects',      href: '/team/projects',              icon: <FiClipboard /> },
         { name: 'Products',      href: '/team/products',              icon: <FiBox /> },
         { name: 'Board',         href: '/team/board',                 icon: <FiLayout /> },
-        { name: 'Leads',         href: '/team/leads',                 icon: <FiUserCheck /> },
         { name: 'Partners',      href: '/team/partners',              icon: <FaHandshake /> },
+        { name: 'Payments',      href: '/team/payments',              icon: <FiCreditCard /> },
         { name: 'Reports',       href: '/team/reports',               icon: <FiFileText /> },
       ],
     },
     {
       label: 'Support & Comms',
       links: [
-        { name: 'Reviews',       href: '/team/reviews',               icon: <FiStar /> },
+        { name: 'Support',       href: '/team/support',               icon: <FiAlertCircle /> },
         { name: 'Tickets',       href: '/team/tickets',               icon: <FiLifeBuoy /> },
+        { name: 'Reviews',       href: '/team/reviews',               icon: <FiStar /> },
         { name: 'Newsletter',    href: '/team/news-letter',           icon: <FiMail /> },
         { name: 'Chat',          href: '/team/chat',                  icon: <FiMessageSquare /> },
       ],
@@ -107,9 +118,14 @@ const roleLinks = {
   ],
   support: [
     {
-      label: 'Support',
+      label: 'Overview',
       links: [
         { name: 'Dashboard',     href: '/team',                       icon: <FiPieChart /> },
+      ],
+    },
+    {
+      label: 'Support & Help',
+      links: [
         { name: 'Support Inbox', href: '/team/support',               icon: <FiAlertCircle /> },
         { name: 'Tickets',       href: '/team/tickets',               icon: <FiLifeBuoy /> },
         { name: 'Reviews',       href: '/team/reviews',               icon: <FiStar /> },
@@ -140,11 +156,10 @@ const Sidebar = () => {
   const { dashboardSidebar, setDashboardSidebar, teamData, teamLogout } = useContext(Context)
   const pathname = usePathname()
 
-  const role = teamData?.role || ''
-  const sections = roleLinks[role] || []
+  const role = teamData?.role || 'support'
+  const sections = roleLinks[role] || roleLinks.support
 
   const isActive = (href) => pathname === href
-
   const closeMenu = () => setDashboardSidebar(false)
 
   return (
@@ -177,7 +192,7 @@ const Sidebar = () => {
                     onClick={closeMenu}
                     className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                       isActive(link.href)
-                        ? 'bg-sky-50 text-sky-600'
+                        ? 'bg-sky-50 text-sky-600 font-semibold'
                         : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                     }`}
                   >
@@ -192,7 +207,7 @@ const Sidebar = () => {
           {/* Account section */}
           <div>
             <p className="px-4 mb-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
-              Account
+              Account Settings
             </p>
             <div className="flex flex-col gap-0.5">
               <Link
@@ -200,12 +215,36 @@ const Sidebar = () => {
                 onClick={closeMenu}
                 className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                   isActive('/team/profile')
-                    ? 'bg-sky-50 text-sky-600'
+                    ? 'bg-sky-50 text-sky-600 font-semibold'
                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
                 <FiUser className="text-base flex-shrink-0" />
                 <span>My Profile</span>
+              </Link>
+              <Link
+                href="/team/settings"
+                onClick={closeMenu}
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  isActive('/team/settings')
+                    ? 'bg-sky-50 text-sky-600 font-semibold'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <FiSettings className="text-base flex-shrink-0" />
+                <span>Settings</span>
+              </Link>
+              <Link
+                href="/team/security"
+                onClick={closeMenu}
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  isActive('/team/security')
+                    ? 'bg-sky-50 text-sky-600 font-semibold'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <FiShield className="text-base flex-shrink-0" />
+                <span>Security</span>
               </Link>
               <Link
                 href="/"
@@ -222,9 +261,9 @@ const Sidebar = () => {
         {/* User info + logout */}
         <div className="px-4 py-4 border-t border-slate-100 space-y-2">
           <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
-            <p className="text-xs font-bold text-slate-900 truncate">{teamData?.name}</p>
+            <p className="text-xs font-bold text-slate-900 truncate">{teamData?.name || 'Staff Member'}</p>
             <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">
-              {teamData?.role}
+              {teamData?.role || 'Team'}
             </p>
           </div>
           <button

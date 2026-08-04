@@ -1,10 +1,42 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import { cookies } from "next/headers";
 import { BASE_URL } from "@/lib/database/secret";
 import { dbQuery } from "@/lib/database/pg";
 import { sendEmail } from "@/lib/database/brevo";
 import { isUserLogin } from "@/lib/auth/user";
+
+// GET — Get own profile (authenticated user)
+export async function GET() {
+    try {
+        const auth = await isUserLogin();
+        if (!auth.success) {
+            return NextResponse.json(auth, { status: 401 });
+        }
+
+        const res = await dbQuery(
+            `SELECT id, name, email, phone, is_active, is_verified, is_2fa_active,
+                    city, country, address_line1, address_line2, state, postal_code, 
+                    pending_email, last_login, created_at, updated_at 
+             FROM users WHERE id = $1`,
+            [auth.data.id]
+        );
+        const user = res.rows[0];
+
+        if (!user) {
+            return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+        }
+
+        return NextResponse.json({
+            success: true,
+            data: { ...user, role: 'user' }
+        });
+
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}
 
 // POST — Register a new user
 export async function POST(req) {
@@ -31,7 +63,6 @@ export async function POST(req) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Insert user — no username column in schema
         const userRes = await dbQuery(
             `INSERT INTO users (name, email, phone, password) VALUES ($1, $2, $3, $4) RETURNING id, name, email, created_at`,
             [name, email, phone, hashedPassword]
@@ -81,7 +112,7 @@ export async function PATCH(req) {
         const body = await req.json();
 
         // Strip out protected fields
-        const { password, role, email, id, user_id, is_active, is_verified, ...updateData } = body;
+        const { password, role, email, id, user_id, is_active, is_verified, pending_email, email_change_code, email_change_expires_at, ...updateData } = body;
 
         if (Object.keys(updateData).length === 0) {
             return NextResponse.json({ success: false, message: "No fields to update" }, { status: 400 });
@@ -114,28 +145,40 @@ export async function PATCH(req) {
     }
 }
 
-// GET — Get own profile (authenticated user)
-export async function GET() {
+// DELETE — Delete user account (authenticated user, requires password verification)
+export async function DELETE(req) {
     try {
         const auth = await isUserLogin();
         if (!auth.success) {
             return NextResponse.json(auth, { status: 401 });
         }
 
-        const res = await dbQuery(
-            `SELECT id, name, email, phone, is_active, is_verified, city, country, address_line1, address_line2, state, postal_code, last_login, created_at, updated_at FROM users WHERE id = $1`,
-            [auth.data.id]
-        );
-        const user = res.rows[0];
+        const userId = auth.data.id;
+        const body = await req.json().catch(() => ({}));
+        const { password } = body;
 
-        if (!user) {
+        if (!password) {
+            return NextResponse.json({ success: false, message: "Password is required to confirm account deletion" }, { status: 400 });
+        }
+
+        const userRes = await dbQuery("SELECT password FROM users WHERE id = $1", [userId]);
+        if (userRes.rows.length === 0) {
             return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
         }
 
-        return NextResponse.json({
-            success: true,
-            data: { ...user, role: 'user' }
-        });
+        const isMatch = await bcrypt.compare(password, userRes.rows[0].password);
+        if (!isMatch) {
+            return NextResponse.json({ success: false, message: "Incorrect password" }, { status: 400 });
+        }
+
+        // Delete user account from DB
+        await dbQuery("DELETE FROM users WHERE id = $1", [userId]);
+
+        // Clear user cookie
+        const cookieStore = await cookies();
+        cookieStore.delete('disibin-user');
+
+        return NextResponse.json({ success: true, message: "Account deleted successfully" });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });

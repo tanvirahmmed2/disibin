@@ -6,12 +6,12 @@ import { Context } from '@/component/helper/Context';
 import { Toaster, toast } from 'react-hot-toast';
 import {
   FiShield, FiLock, FiMail, FiCheckCircle,
-  FiTrash2, FiAlertTriangle, FiSend, FiSmartphone
+  FiTrash2, FiAlertTriangle, FiSend, FiKey, FiSmartphone
 } from 'react-icons/fi';
 
-export default function TeamSecurityPage() {
+export default function UserSecurityPage() {
   const router = useRouter();
-  const { teamData, setTeamData, teamLogout } = useContext(Context);
+  const { userData, setUserData, logout } = useContext(Context);
 
   // 2FA State
   const [is2faActive, setIs2faActive] = useState(false);
@@ -33,23 +33,23 @@ export default function TeamSecurityPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
-    if (teamData) {
-      setIs2faActive(!!teamData.is_2fa_active);
+    if (userData) {
+      setIs2faActive(!!userData.is_2fa_active);
     }
-  }, [teamData]);
+  }, [userData]);
 
   // Handle 2FA Toggle
   const handleToggle2fa = async (newValue) => {
     setTfaLoading(true);
     try {
-      const res = await axios.post('/api/team/security', {
+      const res = await axios.post('/api/user/security', {
         action: 'toggle-2fa',
         is2faActive: newValue,
       });
 
       if (res.data.success) {
         setIs2faActive(newValue);
-        setTeamData((prev) => ({ ...prev, is_2fa_active: newValue }));
+        setUserData((prev) => ({ ...prev, is_2fa_active: newValue }));
         toast.success(res.data.message);
       } else {
         toast.error(res.data.message);
@@ -73,7 +73,7 @@ export default function TeamSecurityPage() {
 
     setPwdLoading(true);
     try {
-      const res = await axios.post('/api/team/security', {
+      const res = await axios.post('/api/user/security', {
         action: 'change-password',
         currentPassword: pwdForm.currentPassword,
         newPassword: pwdForm.newPassword,
@@ -99,7 +99,7 @@ export default function TeamSecurityPage() {
 
     setEmailLoading(true);
     try {
-      const res = await axios.post('/api/team/security', {
+      const res = await axios.post('/api/user/security', {
         action: 'request-email-change',
         newEmail: emailForm.newEmail,
       });
@@ -125,14 +125,14 @@ export default function TeamSecurityPage() {
 
     setEmailLoading(true);
     try {
-      const res = await axios.post('/api/team/security', {
+      const res = await axios.post('/api/user/security', {
         action: 'verify-email-change',
         code: emailForm.code,
       });
 
       if (res.data.success) {
-        toast.success('Team email updated successfully!');
-        setTeamData((prev) => ({ ...prev, email: res.data.newEmail, pending_email: null }));
+        toast.success('Email updated successfully!');
+        setUserData((prev) => ({ ...prev, email: res.data.newEmail, pending_email: null }));
         setEmailForm({ newEmail: '', code: '' });
         setEmailStep('request');
       } else {
@@ -152,24 +152,24 @@ export default function TeamSecurityPage() {
 
     setDeleteLoading(true);
     try {
-      const res = await axios.delete('/api/team/me', { data: { password: deletePassword } });
+      const res = await axios.delete('/api/user', { data: { password: deletePassword } });
       if (res.data.success) {
-        toast.success('Team account deleted successfully');
+        toast.success('Account deleted successfully');
         setShowDeleteModal(false);
-        setTeamData(null);
-        window.location.replace('/team-auth/login');
+        setUserData(null);
+        window.location.replace('/auth/login');
       } else {
         toast.error(res.data.message);
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to delete team account');
+      toast.error(err.response?.data?.message || 'Failed to delete account');
     } finally {
       setDeleteLoading(false);
     }
   };
 
   const inputCls =
-    'w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-medium text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition-all';
+    'w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-medium text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all';
   const labelCls = 'text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 block';
 
   return (
@@ -178,13 +178,13 @@ export default function TeamSecurityPage() {
 
       {/* Header Card */}
       <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex items-center gap-4">
-        <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white flex-shrink-0">
+        <div className="w-12 h-12 rounded-2xl bg-sky-50 flex items-center justify-center text-sky-600 flex-shrink-0">
           <FiShield size={22} />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Security & Access Credentials</h1>
+          <h1 className="text-xl font-bold text-slate-900">Security & Credentials</h1>
           <p className="text-slate-500 text-sm mt-0.5">
-            Manage two-factor authentication, staff password, email verification code flow, and account removal.
+            Manage two-factor authentication, password, email address verification, and account deletion.
           </p>
         </div>
       </div>
@@ -211,7 +211,7 @@ export default function TeamSecurityPage() {
               </span>
             </div>
             <p className="text-slate-500 text-sm mt-1 max-w-xl">
-              Add extra security to your team staff account. Require two-factor authentication when accessing sensitive management tools.
+              Add an extra layer of security to your account. When enabled, login attempts require two-factor verification.
             </p>
           </div>
         </div>
@@ -220,7 +220,7 @@ export default function TeamSecurityPage() {
           onClick={() => handleToggle2fa(!is2faActive)}
           disabled={tfaLoading}
           className={`relative inline-flex h-8 w-14 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-            is2faActive ? 'bg-slate-900' : 'bg-slate-300'
+            is2faActive ? 'bg-emerald-500' : 'bg-slate-300'
           } ${tfaLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <span
@@ -236,7 +236,7 @@ export default function TeamSecurityPage() {
         {/* Password Update Card */}
         <div className="bg-white rounded-3xl p-7 border border-slate-100 shadow-sm space-y-5">
           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2 pb-3 border-b border-slate-100">
-            <span className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-800">
+            <span className="w-8 h-8 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
               <FiLock size={16} />
             </span>
             Change Password
@@ -292,15 +292,15 @@ export default function TeamSecurityPage() {
         {/* Email Address Update Card */}
         <div className="bg-white rounded-3xl p-7 border border-slate-100 shadow-sm space-y-5">
           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2 pb-3 border-b border-slate-100">
-            <span className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-800">
+            <span className="w-8 h-8 rounded-xl bg-sky-50 flex items-center justify-center text-sky-600">
               <FiMail size={16} />
             </span>
-            Update Team Email Address
+            Update Email Address
           </h2>
 
-          <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-100 text-xs text-amber-900 leading-relaxed">
-            <strong>Verification Policy:</strong> A 6-digit verification code will be dispatched to your{' '}
-            <strong>current email ({teamData?.email})</strong> to confirm authorization before updating.
+          <div className="p-3.5 rounded-2xl bg-sky-50/70 border border-sky-100 text-xs text-sky-800 leading-relaxed">
+            <strong>Security Notice:</strong> When you update your email, a 6-digit verification code will be sent to your{' '}
+            <strong>current registered email ({userData?.email})</strong> to confirm ownership before applying the change.
           </div>
 
           {emailStep === 'request' ? (
@@ -309,7 +309,7 @@ export default function TeamSecurityPage() {
                 <label className={labelCls}>Current Email</label>
                 <input
                   type="email"
-                  value={teamData?.email || ''}
+                  value={userData?.email || ''}
                   disabled
                   className={`${inputCls} opacity-60 bg-slate-100 cursor-not-allowed`}
                 />
@@ -319,7 +319,7 @@ export default function TeamSecurityPage() {
                 <label className={labelCls}>New Email Address</label>
                 <input
                   type="email"
-                  placeholder="newemail@disibin.com"
+                  placeholder="newemail@example.com"
                   value={emailForm.newEmail}
                   onChange={(e) => setEmailForm({ ...emailForm, newEmail: e.target.value })}
                   className={inputCls}
@@ -330,7 +330,7 @@ export default function TeamSecurityPage() {
               <button
                 type="submit"
                 disabled={emailLoading}
-                className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-slate-800 transition-all shadow-md disabled:opacity-50"
+                className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-sky-600 text-white font-bold text-sm hover:bg-sky-500 transition-all shadow-md shadow-sky-600/20 disabled:opacity-50"
               >
                 <FiSend size={15} />
                 {emailLoading ? 'Sending Verification Code...' : 'Send Verification Code to Current Email'}
@@ -339,7 +339,7 @@ export default function TeamSecurityPage() {
           ) : (
             <form onSubmit={handleVerifyEmailCode} className="space-y-4">
               <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-100 text-xs text-emerald-800">
-                Code sent to: <strong>{teamData?.email}</strong>. Enter code below to confirm change to{' '}
+                Code sent to: <strong>{userData?.email}</strong>. Enter code below to confirm change to{' '}
                 <strong>{pendingTargetEmail}</strong>.
               </div>
 
@@ -377,7 +377,7 @@ export default function TeamSecurityPage() {
           )}
         </div>
 
-        {/* Danger Zone: Team Account Deletion */}
+        {/* Danger Zone: Account Deletion */}
         <div className="md:col-span-2 bg-rose-50/50 rounded-3xl p-7 border border-rose-100 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -385,8 +385,8 @@ export default function TeamSecurityPage() {
                 <FiAlertTriangle size={20} />
               </div>
               <div>
-                <h3 className="text-base font-bold text-rose-900">Danger Zone — Delete Team Account</h3>
-                <p className="text-xs text-rose-600 mt-0.5">Permanently remove your team member account from the system.</p>
+                <h3 className="text-base font-bold text-rose-900">Danger Zone — Delete Account</h3>
+                <p className="text-xs text-rose-600 mt-0.5">Permanently delete your profile and account credentials.</p>
               </div>
             </div>
 
@@ -409,11 +409,11 @@ export default function TeamSecurityPage() {
               <div className="w-10 h-10 rounded-2xl bg-rose-100 flex items-center justify-center">
                 <FiTrash2 size={20} />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">Confirm Team Account Deletion</h3>
+              <h3 className="text-lg font-bold text-slate-900">Confirm Account Deletion</h3>
             </div>
 
             <p className="text-sm text-slate-600 leading-relaxed">
-              This action is permanent. Enter your password to remove your team member profile. Note: If you are the last active manager, account deletion will be blocked.
+              This action is permanent and cannot be undone. Please enter your password to confirm deletion of your account.
             </p>
 
             <form onSubmit={handleDeleteAccount} className="space-y-4">

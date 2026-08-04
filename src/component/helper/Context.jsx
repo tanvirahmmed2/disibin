@@ -54,7 +54,7 @@ const ContextProvider = ({ children }) => {
     try {
       await axios.post('/api/user/logout');
       setUserData(null);
-      router.push('/auth/login');
+      window.location.replace('/auth/login');
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -66,9 +66,8 @@ const ContextProvider = ({ children }) => {
     } catch (error) {
       console.error("Team logout request failed:", error);
     } finally {
-      // Always clear state and redirect, even if the API call errors
       setTeamData(null);
-      router.push('/team-auth/login');
+      window.location.replace('/team-auth/login');
     }
   };
 
