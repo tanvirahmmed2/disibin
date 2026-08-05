@@ -78,6 +78,16 @@ export async function POST(req) {
             [verificationToken, expiresAt, user.id]
         );
 
+        // Automatically create a client lead record upon user registration
+        try {
+            await dbQuery(
+                `INSERT INTO client_leads (name, email, phone, note) VALUES ($1, $2, $3, $4)`,
+                [name, email, phone || null, "Auto-generated from user registration"]
+            );
+        } catch (leadError) {
+            console.error("Auto client_leads insertion failed:", leadError.message);
+        }
+
         const verifyLink = `${BASE_URL}/auth/verify?token=${verificationToken}`;
         const htmlContent = `
             <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 40px; border: 1px solid #f0f0f0; border-radius: 10px;">

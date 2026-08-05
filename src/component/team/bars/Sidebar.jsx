@@ -43,7 +43,8 @@ const roleLinks = {
       links: [
         { name: 'Team Members',  href: '/team/team-member',           icon: <FiShield /> },
         { name: 'Users',         href: '/team/users',                 icon: <FiUsers /> },
-        { name: 'Leads',         href: '/team/leads',                 icon: <FiUserCheck /> },
+        { name: 'Client Leads',  href: '/team/leads/clients',         icon: <FiUserCheck /> },
+        { name: 'Business Leads',href: '/team/leads/business',        icon: <FiUserCheck /> },
         { name: 'Careers',       href: '/team/career',                icon: <FiBriefcase /> },
         { name: 'Board',         href: '/team/board',                 icon: <FiLayout /> },
         { name: 'Reports',       href: '/team/reports',               icon: <FiFileText /> },
@@ -92,7 +93,8 @@ const roleLinks = {
       links: [
         { name: 'Team Members',  href: '/team/team-member',           icon: <FiShield /> },
         { name: 'Users',         href: '/team/users',                 icon: <FiUsers /> },
-        { name: 'Leads',         href: '/team/leads',                 icon: <FiUserCheck /> },
+        { name: 'Client Leads',  href: '/team/leads/clients',         icon: <FiUserCheck /> },
+        { name: 'Business Leads',href: '/team/leads/business',        icon: <FiUserCheck /> },
         { name: 'Careers',       href: '/team/career',                icon: <FiBriefcase /> },
       ],
     },
@@ -129,6 +131,7 @@ const roleLinks = {
     {
       label: 'Support & Help',
       links: [
+        { name: 'Client Leads',  href: '/team/leads/clients',         icon: <FiUserCheck /> },
         { name: 'Support Inbox', href: '/team/support',               icon: <FiAlertCircle /> },
         { name: 'Tickets',       href: '/team/tickets',               icon: <FiLifeBuoy /> },
         { name: 'Reviews',       href: '/team/reviews',               icon: <FiStar /> },
@@ -162,7 +165,10 @@ const Sidebar = () => {
   const role = teamData?.role || 'support'
   const sections = roleLinks[role] || roleLinks.support
 
-  const isActive = (href) => pathname === href
+  const isActive = (href) => {
+    if (href === '/team') return pathname === '/team'
+    return pathname === href || pathname.startsWith(href + '/')
+  }
   const closeMenu = () => setDashboardSidebar(false)
 
   return (

@@ -11,7 +11,6 @@ import Link from 'next/link';
 
 const EMPTY_FORM = { name: '', description: '' };
 
-/* ── Inline Feature Row ────────────────────────────── */
 function FeatureItem({ feature, onUpdate, onDelete }) {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(feature.name);
@@ -81,7 +80,7 @@ function FeatureItem({ feature, onUpdate, onDelete }) {
               value={name}
               onChange={e => setName(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') handleSave(); if (e.key === 'Escape') cancelEdit(); }}
-              className="w-full px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-sky-500 outline-none text-sm font-semibold"
+              className="w-full px-3 py-1.5 rounded-lg  outline-none text-sm font-semibold"
               placeholder="Feature name"
             />
             <input
@@ -89,31 +88,27 @@ function FeatureItem({ feature, onUpdate, onDelete }) {
               value={description}
               onChange={e => setDescription(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') handleSave(); if (e.key === 'Escape') cancelEdit(); }}
-              className="w-full px-3 py-1.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none text-xs text-slate-600"
+              className="w-full px-3 py-1.5 rounded-lg outline-none text-xs text-slate-600"
               placeholder="Description (optional)"
             />
           </div>
         ) : (
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-bold text-slate-900 text-sm">{feature.name}</span>
-              {feature.slug && (
-                <span className="text-[10px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
-                  {feature.slug}
-                </span>
-              )}
+              <span className="font-semibold text-slate-900 text-sm">{feature.name}</span>
+              
               {feature.product_count > 0 ? (
                 <button
                   type="button"
                   onClick={() => setShowProducts(!showProducts)}
-                  className="text-xs text-sky-600 bg-sky-50 hover:bg-sky-100 px-2 py-0.5 rounded-full font-semibold transition-colors flex items-center gap-1"
+                  className="text-xs text-primary bg-tertiary hover:bg-tertiary-light px-2 py-0.5 rounded-full font-semibold transition-colors flex items-center gap-1"
                 >
                   <FiPackage size={11} />
                   {feature.product_count} product{feature.product_count !== 1 ? 's' : ''}
                   {showProducts ? <FiChevronUp size={11} /> : <FiChevronDown size={11} />}
                 </button>
               ) : (
-                <span className="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full font-medium">
+                <span className="text-xs text-primary-light bg-tertiary px-2 py-0.5 rounded-full font-medium">
                   Unused
                 </span>
               )}
@@ -146,14 +141,14 @@ function FeatureItem({ feature, onUpdate, onDelete }) {
             <>
               <button
                 onClick={startEdit}
-                className="p-1.5 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-all"
+                className="p-1.5 text-primary-light hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-all"
                 title="Edit Feature"
               >
                 <FiEdit2 size={15} />
               </button>
               <button
                 onClick={handleDelete}
-                className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                className="p-1.5 text-primary-light hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
                 title="Delete Feature"
               >
                 <FiTrash2 size={15} />
@@ -164,14 +159,14 @@ function FeatureItem({ feature, onUpdate, onDelete }) {
       </div>
 
       {showProducts && !editing && feature.products?.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-slate-100">
-          <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1.5">Tagged Products:</span>
+        <div className="mt-3 pt-3 border-t border-tertiary">
+          <span className="text-[10px] uppercase font-bold tracking-wider text-primary-light block mb-1.5">Tagged Products:</span>
           <div className="flex flex-wrap gap-1.5">
             {feature.products.map(p => (
               <Link
                 key={p.id}
                 href={`/team/products/${p.slug}`}
-                className="inline-flex items-center gap-1 text-xs text-slate-700 bg-slate-100 hover:bg-sky-50 hover:text-sky-600 px-2.5 py-1 rounded-md font-medium transition-colors"
+                className="inline-flex items-center gap-1 text-xs text-slate-700 bg-tertiary hover:bg-sky-50 hover:text-sky-600 px-2.5 py-1 rounded-md font-medium transition-colors"
               >
                 <FiPackage size={10} /> {p.name}
               </Link>
@@ -183,7 +178,6 @@ function FeatureItem({ feature, onUpdate, onDelete }) {
   );
 }
 
-/* ── Main Features Page ────────────────────────────── */
 const FeaturesPage = () => {
   const [features, setFeatures] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -256,12 +250,11 @@ const FeaturesPage = () => {
     <div className="p-6 w-full space-y-6">
       <Toaster position="top-center" />
 
-      {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link
             href="/team/products"
-            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-all"
+            className="p-2 text-primary-light hover:text-slate-700 hover:bg-tertiary rounded-xl transition-all"
             title="Back to Products"
           >
             <FiArrowLeft size={18} />
@@ -283,7 +276,6 @@ const FeaturesPage = () => {
         </button>
       </div>
 
-      {/* Quick Add Form Panel */}
       {showAdd && (
         <form onSubmit={handleCreate} className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
@@ -296,14 +288,14 @@ const FeaturesPage = () => {
               placeholder="Feature name (e.g. 24/7 Support) *"
               value={form.name}
               onChange={e => setForm({ ...form, name: e.target.value })}
-              className="px-3.5 py-2 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-sky-500 outline-none text-xs font-semibold"
+              className="px-3.5 py-2 rounded-lg border border-slate-300 bg-white  outline-none text-xs font-semibold"
             />
             <input
               type="text"
               placeholder="Short description (optional)"
               value={form.description}
               onChange={e => setForm({ ...form, description: e.target.value })}
-              className="px-3.5 py-2 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-sky-500 outline-none text-xs"
+              className="px-3.5 py-2 rounded-lg border border-slate-200 bg-white  outline-none text-xs"
             />
           </div>
           <div className="flex justify-end gap-2 pt-1">
@@ -326,36 +318,34 @@ const FeaturesPage = () => {
         </form>
       )}
 
-      {/* Search Bar */}
       <div className="relative">
-        <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={15} />
+        <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-primary-light" size={15} />
         <input
           type="text"
           placeholder="Search features..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full pl-10 pr-9 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-700 outline-none focus:ring-2 focus:ring-sky-500"
+          className="w-full pl-10 pr-9 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-700 outline-none focus:ring-2 "
         />
         {search && (
           <button
             onClick={() => setSearch('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-primary-light hover:text-slate-600"
           >
             <FiX size={14} />
           </button>
         )}
       </div>
 
-      {/* Features List */}
       {loading ? (
-        <div className="flex items-center justify-center py-16 text-slate-400 text-xs font-semibold gap-2">
+        <div className="flex items-center justify-center py-16 text-primary-light text-xs font-semibold gap-2">
           <FiLoader size={16} className="animate-spin text-sky-500" />
           <span>Loading features...</span>
         </div>
       ) : filteredFeatures.length === 0 ? (
-        <div className="text-center py-16 border-2 border-dashed border-slate-200 rounded-2xl text-slate-400">
+        <div className="text-center py-16 border-2 border-dashed border-slate-200 rounded-2xl text-primary-light">
           <FiTag size={32} className="mx-auto mb-2 opacity-40" />
-          <p className="font-bold text-slate-600 text-sm">
+          <p className="font-semibold text-slate-600 text-sm">
             {search ? `No features match "${search}"` : 'No features created yet'}
           </p>
           {!search && (

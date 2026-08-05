@@ -12,8 +12,14 @@ export const sendEmail = async (options) => {
     try {
         // Support both call signatures
         const toEmail = options.toEmail || options.to;
-        const toName  = options.toName  || '';
+        const rawName = options.toName || options.name || '';
+        const toName = typeof rawName === 'string' ? rawName.trim() : '';
         const { subject, htmlContent } = options;
+
+        if (!toEmail) {
+            console.error("Brevo Email Error: Missing recipient email");
+            return { success: false, error: "Missing recipient email" };
+        }
 
         const apiInstance = new brevo.TransactionalEmailsApi();
         apiInstance.setApiKey(
@@ -25,16 +31,22 @@ export const sendEmail = async (options) => {
         smtpEmail.subject = subject;
         smtpEmail.htmlContent = htmlContent;
         smtpEmail.sender = {
-            name: BREVO_SENDER_NAME,
+            name: BREVO_SENDER_NAME || 'Disibin',
             email: BREVO_SENDER_EMAIL,
         };
-        smtpEmail.to = [{ email: toEmail, name: toName }];
+
+        const recipient = { email: toEmail };
+        if (toName) {
+            recipient.name = toName;
+        }
+        smtpEmail.to = [recipient];
 
         const data = await apiInstance.sendTransacEmail(smtpEmail);
         return { success: true, data };
     } catch (error) {
-        console.error("Brevo Email Error:", error);
-        return { success: false, error };
+        const errorDetail = error.response?.body || error.response?.data || error.message || error;
+        console.error("Brevo Email Error:", errorDetail);
+        return { success: false, error: errorDetail };
     }
 };
 

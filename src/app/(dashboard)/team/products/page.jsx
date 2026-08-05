@@ -81,7 +81,7 @@ const ProductsManagement = () => {
 
   const filteredProducts = products.filter(p => {
     const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          p.slug.toLowerCase().includes(searchTerm.toLowerCase());
+      p.slug.toLowerCase().includes(searchTerm.toLowerCase());
 
     if (!matchesSearch) return false;
     if (statusFilter === 'published') return p.is_published;
@@ -148,11 +148,10 @@ const ProductsManagement = () => {
               <button
                 key={tab.id}
                 onClick={() => setStatusFilter(tab.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  statusFilter === tab.id
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${statusFilter === tab.id
                     ? 'bg-white text-slate-900 shadow-sm'
                     : 'text-slate-500 hover:text-slate-900'
-                }`}
+                  }`}
               >
                 {tab.label}
               </button>
@@ -259,9 +258,8 @@ const ProductsManagement = () => {
 
                       <td className="px-6 py-4">
                         <div className="flex flex-wrap items-center gap-1.5">
-                          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${
-                            product.is_published ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-100 text-slate-500'
-                          }`}>
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${product.is_published ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-100 text-slate-500'
+                            }`}>
                             {product.is_published ? <FiEye size={12} /> : <FiEyeOff size={12} />}
                             {product.is_published ? 'Published' : 'Draft'}
                           </span>

@@ -47,7 +47,7 @@ const ProductEditPage = ({ params }) => {
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="p-6 sm:p-8 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-sky-500 text-white flex items-center justify-center shadow-md shadow-sky-500/20 shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-primary-light text-white flex items-center justify-center shadow-md shadow-primary-light/20 shrink-0">
               <FiPackage size={20} />
             </div>
             <div>
@@ -71,7 +71,7 @@ const ProductEditPage = ({ params }) => {
         <div className="p-6 sm:p-8">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 space-y-3">
-              <div className="w-10 h-10 border-4 border-sky-500/20 border-t-sky-500 rounded-full animate-spin"></div>
+              <div className="w-10 h-10 border-4 border-primary-light/20 border-t-primary-light rounded-full animate-spin"></div>
               <p className="text-slate-400 text-sm font-semibold animate-pulse">Fetching product details...</p>
             </div>
           ) : product ? (
@@ -83,7 +83,7 @@ const ProductEditPage = ({ params }) => {
             <div className="text-center py-16 text-slate-400">
               <FiPackage size={40} className="mx-auto mb-3 opacity-40" />
               <p className="text-base font-bold text-slate-700">Product not found</p>
-              <Link href="/team/products" className="text-sky-600 hover:underline text-xs font-semibold mt-2 inline-block">
+              <Link href="/team/products" className="text-primary hover:underline text-xs font-semibold mt-2 inline-block">
                 Return to Products List
               </Link>
             </div>

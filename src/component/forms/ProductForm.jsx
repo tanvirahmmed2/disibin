@@ -45,8 +45,8 @@ function CreateFeatureModal({ onClose, onCreate }) {
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md mx-4 p-8 space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-sky-100 flex items-center justify-center">
-              <FiZap className="text-sky-600" size={18} />
+            <div className="w-10 h-10 rounded-2xl bg-tertiary flex items-center justify-center">
+              <FiZap className="text-primary" size={18} />
             </div>
             <h2 className="text-xl font-bold text-slate-900">New Feature</h2>
           </div>
@@ -68,7 +68,7 @@ function CreateFeatureModal({ onClose, onCreate }) {
               value={name}
               onChange={e => setName(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleCreate(); } if (e.key === 'Escape') onClose(); }}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none text-sm font-semibold text-slate-900 transition-all"
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-light outline-none text-sm font-semibold text-slate-900 transition-all"
               placeholder="e.g. 24/7 Support"
             />
           </div>
@@ -78,7 +78,7 @@ function CreateFeatureModal({ onClose, onCreate }) {
               value={description}
               onChange={e => setDescription(e.target.value)}
               rows={3}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none text-sm text-slate-600 resize-none transition-all"
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-light outline-none text-sm text-slate-600 resize-none transition-all"
               placeholder="Brief description of this feature..."
             />
           </div>
@@ -96,7 +96,7 @@ function CreateFeatureModal({ onClose, onCreate }) {
             type="button"
             onClick={handleCreate}
             disabled={loading || !name.trim()}
-            className="flex-1 py-3 rounded-xl bg-sky-600 text-white font-bold hover:bg-sky-700 transition-all text-sm disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-xl bg-primary text-white font-bold  transition-all text-sm disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? (
               <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
@@ -126,13 +126,11 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
     ...initialData,
   });
 
-  // All available features from DB
   const [availableFeatures, setAvailableFeatures] = useState([]);
   const [featuresLoading, setFeaturesLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [featureSearch, setFeatureSearch] = useState('');
 
-  // Selected feature IDs (Set for O(1) toggle)
   const [selectedIds, setSelectedIds] = useState(
     new Set((initialData?.features || []).map(f => f.id))
   );
@@ -157,7 +155,6 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
     }
   }, []);
 
-  // Fetch available features on mount
   useEffect(() => {
     const fetchFeatures = async () => {
       setFeaturesLoading(true);
@@ -181,7 +178,6 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
     });
   };
 
-  // Called when a new feature is created in the modal
   const handleFeatureCreated = (newFeature) => {
     setAvailableFeatures(prev => [...prev, newFeature].sort((a, b) => a.name.localeCompare(b.name)));
     setSelectedIds(prev => new Set([...prev, newFeature.id]));
@@ -224,7 +220,6 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
     }
     setLoading(true);
 
-    // Build features payload from selected IDs
     const featuresPayload = availableFeatures
       .filter(f => selectedIds.has(f.id))
       .map(f => ({ id: f.id, name: f.name, slug: f.slug, value: true }));
@@ -274,7 +269,6 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
 
       <form onSubmit={(e) => { e.preventDefault(); submitForm(formData.is_published); }} className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Left — Core Fields */}
           <div className="space-y-6">
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-700">Product Name *</label>
@@ -285,7 +279,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all font-semibold text-slate-900"
+                className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-light outline-none transition-all font-semibold text-slate-900"
                 placeholder="E.g. Enterprise Bundle"
               />
             </div>
@@ -300,7 +294,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
                   min="0"
                   value={formData.price}
                   onChange={handleChange}
-                  className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all font-semibold"
+                  className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-light outline-none transition-all font-semibold"
                   placeholder="0"
                 />
               </div>
@@ -313,7 +307,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
                   min="0"
                   value={formData.discount}
                   onChange={handleChange}
-                  className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all font-semibold text-emerald-600"
+                  className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-light outline-none transition-all font-semibold text-emerald-600"
                   placeholder="0"
                 />
               </div>
@@ -326,7 +320,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
                 name="demo_url"
                 value={formData.demo_url || ''}
                 onChange={handleChange}
-                className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all"
+                className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-light outline-none transition-all"
                 placeholder="https://demo.example.com"
               />
             </div>
@@ -344,12 +338,11 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
                   onChange={handleChange}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500"></div>
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-light"></div>
               </label>
             </div>
           </div>
 
-          {/* Right — Images */}
           <div className="space-y-4">
             <ImageUpload onUpload={handleImageUpload} label="Upload Product Images" />
             {images.length > 0 && (
@@ -387,7 +380,6 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
           </div>
         </div>
 
-        {/* Features Section */}
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
@@ -405,13 +397,13 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
                   placeholder="Filter features..."
                   value={featureSearch}
                   onChange={(e) => setFeatureSearch(e.target.value)}
-                  className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 outline-none w-36 sm:w-48"
+                  className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary-light outline-none w-36 sm:w-48"
                 />
               )}
               <button
                 type="button"
                 onClick={() => setShowModal(true)}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-sky-600 transition-all shrink-0"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-primary transition-all shrink-0"
               >
                 <FiPlus size={14} />
                 New Feature
@@ -421,7 +413,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
 
           {featuresLoading ? (
             <div className="flex items-center justify-center py-12 rounded-2xl border-2 border-dashed border-slate-100">
-              <span className="w-6 h-6 border-2 border-slate-200 border-t-sky-500 rounded-full animate-spin" />
+              <span className="w-6 h-6 border-2 border-slate-200 border-t-primary-light rounded-full animate-spin" />
               <span className="ml-3 text-sm text-slate-400">Loading features...</span>
             </div>
           ) : availableFeatures.length === 0 ? (
@@ -430,7 +422,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
               <button
                 type="button"
                 onClick={() => setShowModal(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-600 text-white text-sm font-bold hover:bg-sky-700 transition-all"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary transition-all"
               >
                 <FiPlus size={13} /> Create your first feature
               </button>
@@ -449,24 +441,19 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
                       key={feature.id}
                       type="button"
                       onClick={() => toggleFeature(feature.id)}
-                      className={`relative text-left p-4 rounded-2xl border-2 transition-all duration-150 ${
+                      className={`relative text-left p-2 rounded-2xl border-2 transition-all duration-150 ${
                         selected
-                          ? 'border-sky-500 bg-sky-50 shadow-sm shadow-sky-100'
+                          ? 'border-primary-light bg-sky-50 shadow-sm shadow-tertiary'
                           : 'border-slate-100 bg-white hover:border-slate-200 hover:shadow-sm'
                       }`}
                     >
-                      {/* Checkmark badge */}
                       <div className={`absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                        selected ? 'bg-sky-500 border-sky-500' : 'border-slate-200'
+                        selected ? 'bg-primary-light border-primary-light' : 'border-slate-200'
                       }`}>
                         {selected && <FiCheck className="text-white" size={11} />}
                       </div>
-                      <p className="font-bold text-sm text-slate-900 pr-6 leading-snug">{feature.name}</p>
-                      {feature.slug && (
-                        <span className="inline-block mt-1 text-[10px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
-                          {feature.slug}
-                        </span>
-                      )}
+                      <p className=" text-sm text-slate-900 pr-6 leading-snug">{feature.name}</p>
+                    
                       {feature.description && (
                         <p className="text-xs text-slate-500 mt-1.5 leading-relaxed line-clamp-2">{feature.description}</p>
                       )}

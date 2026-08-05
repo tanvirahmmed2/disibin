@@ -1,395 +1,283 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useMemo } from "react";
-import axios from "axios";
-import toast from "react-hot-toast";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { toast, Toaster } from 'react-hot-toast';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
-    FaEnvelopeOpenText, FaCheckCircle, FaTrash, FaSpinner,
-    FaSearch, FaInbox, FaUserTie, FaRegEnvelope, FaTimes,
-    FaPaperPlane, FaArrowLeft, FaFilter
-} from "react-icons/fa";
-import { FiMessageSquare } from "react-icons/fi";
-import TiptapEditor from "@/component/helper/TiptapEditor";
+  FiLifeBuoy, FiSearch, FiCheckCircle, FiClock,
+  FiTrash2, FiMessageSquare, FiLoader, FiX, FiRefreshCw
+} from 'react-icons/fi';
 
 export default function SupportsManagement() {
-    const [supports, setSupports]           = useState([]);
-    const [loading, setLoading]             = useState(true);
-    const [filter, setFilter]               = useState("all");
-    const [search, setSearch]               = useState("");
-    const [selected, setSelected]           = useState(null);
-    const [actionLoading, setActionLoading] = useState(null);
-    const [replyText, setReplyText]         = useState("");
-    const [replyLoading, setReplyLoading]   = useState(false);
+  const router = useRouter();
+  const [supports, setSupports] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
+  const [search, setSearch] = useState('');
+  const [deleting, setDeleting] = useState(null);
 
-    useEffect(() => { fetchSupports(); }, []);
+  useEffect(() => {
+    fetchSupports();
+  }, []);
 
-    const fetchSupports = async () => {
-        setLoading(true);
-        try {
-            const res = await axios.get("/api/team/support");
-            if (res.data.success) setSupports(res.data.data);
-        } catch {
-            toast.error("Failed to load contact requests");
-        } finally {
-            setLoading(false);
-        }
-    };
+  const fetchSupports = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get('/api/team/support');
+      if (res.data.success) {
+        setSupports(res.data.data);
+      }
+    } catch {
+      toast.error('Failed to load support requests');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const openRequest = (s) => {
-        setSelected(s);
-        setReplyText(s.reply || "");
-    };
+  const handleDelete = async (id, e) => {
+    if (e) e.stopPropagation();
+    if (!window.confirm('Delete this support request? This cannot be undone.')) return;
 
-    // PATCH — save reply, send email, mark replied
-    const sendReply = async () => {
-        if (!replyText || !replyText.replace(/<[^>]+>/g, "").trim()) {
-            return toast.error("Reply cannot be empty");
-        }
-        setReplyLoading(true);
-        try {
-            const res = await axios.patch("/api/team/support", {
-                id: selected.id,
-                reply: replyText
-            });
-            if (res.data.success) {
-                toast.success("Reply saved & email sent to submitter");
-                const updated = res.data.data;
-                setSupports(prev => prev.map(s => s.id === updated.id ? updated : s));
-                setSelected(updated);
-            } else {
-                toast.error(res.data.message);
-            }
-        } catch {
-            toast.error("Failed to save reply");
-        } finally {
-            setReplyLoading(false);
-        }
-    };
+    setDeleting(id);
+    try {
+      const res = await axios.delete(`/api/team/support?id=${id}`);
+      if (res.data.success) {
+        toast.success('Support request deleted');
+        setSupports(prev => prev.filter(s => s.id !== id));
+      } else {
+        toast.error(res.data.message || 'Failed to delete');
+      }
+    } catch {
+      toast.error('Failed to delete support request');
+    } finally {
+      setDeleting(null);
+    }
+  };
 
-    // DELETE — remove request
-    const deleteRequest = async (id) => {
-        if (!confirm("Delete this contact request? This cannot be undone.")) return;
-        setActionLoading(id + "_delete");
-        try {
-            const res = await axios.delete(`/api/team/support?id=${id}`);
-            if (res.data.success) {
-                toast.success("Deleted successfully");
-                setSupports(prev => prev.filter(s => s.id !== id));
-                if (selected?.id === id) {
-                    setSelected(null);
-                    setReplyText("");
-                }
-            } else {
-                toast.error(res.data.message);
-            }
-        } catch {
-            toast.error("Failed to delete");
-        } finally {
-            setActionLoading(null);
-        }
-    };
+  // Metrics
+  const totalCount = supports.length;
+  const pendingCount = supports.filter(s => s.status === 'pending').length;
+  const repliedCount = supports.filter(s => s.status === 'replied').length;
 
-    const filtered = useMemo(() => {
-        let list = supports;
-        if (filter !== "all") list = list.filter(s => s.status === filter);
-        if (search.trim()) {
-            const q = search.toLowerCase();
-            list = list.filter(s =>
-                s.name?.toLowerCase().includes(q) ||
-                s.email?.toLowerCase().includes(q) ||
-                s.subject?.toLowerCase().includes(q) ||
-                s.description?.toLowerCase().includes(q)
-            );
-        }
-        return list;
-    }, [supports, filter, search]);
+  const filteredSupports = supports.filter(s => {
+    const matchesFilter = filter === 'all' || s.status === filter;
+    if (!matchesFilter) return false;
 
-    const stats = {
-        total:   supports.length,
-        pending: supports.filter(s => s.status === "pending").length,
-        replied: supports.filter(s => s.status === "replied").length,
-    };
-
-    const fmt = (d) => d ? new Date(d).toLocaleDateString("en-US", {
-        month: "short", day: "numeric", year: "numeric",
-        hour: "2-digit", minute: "2-digit"
-    }) : "";
-
+    if (!search.trim()) return true;
+    const term = search.toLowerCase();
     return (
-        <div className="flex h-[calc(100vh-6rem)] overflow-hidden m-4 gap-0 bg-white rounded-xl border border-gray-100 shadow-sm">
-
-            {/* ── Left Panel: Inbox List ── */}
-            <div className={`w-full md:w-80 flex-shrink-0 flex-col border-r border-gray-100 bg-gray-50/50 ${selected ? "hidden md:flex" : "flex"}`}>
-
-                <div className="p-4 border-b border-gray-100 bg-white space-y-3">
-                    <div className="flex items-center gap-2">
-                        <FaEnvelopeOpenText className="text-amber-500" size={16} />
-                        <h2 className="text-base font-bold text-gray-800">Contact Requests</h2>
-                    </div>
-
-                    {/* Stats */}
-                    <div className="grid grid-cols-3 gap-2">
-                        <div className="text-center p-2 bg-gray-50 rounded-lg">
-                            <p className="text-lg font-bold text-gray-800">{stats.total}</p>
-                            <p className="text-[10px] text-gray-400 font-medium">Total</p>
-                        </div>
-                        <div className="text-center p-2 bg-amber-50 rounded-lg">
-                            <p className="text-lg font-bold text-amber-700">{stats.pending}</p>
-                            <p className="text-[10px] text-amber-500 font-medium">Pending</p>
-                        </div>
-                        <div className="text-center p-2 bg-emerald-50 rounded-lg">
-                            <p className="text-lg font-bold text-emerald-700">{stats.replied}</p>
-                            <p className="text-[10px] text-emerald-500 font-medium">Replied</p>
-                        </div>
-                    </div>
-
-                    {/* Search */}
-                    <div className="relative">
-                        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={11} />
-                        <input
-                            type="text"
-                            value={search}
-                            onChange={e => setSearch(e.target.value)}
-                            placeholder="Search requests..."
-                            className="w-full pl-8 pr-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
-                        />
-                        {search && (
-                            <button onClick={() => setSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                                <FaTimes size={10} />
-                            </button>
-                        )}
-                    </div>
-
-                    {/* Filters */}
-                    <div className="flex gap-1">
-                        {["all", "pending", "replied"].map(f => (
-                            <button
-                                key={f}
-                                onClick={() => setFilter(f)}
-                                className={`flex-1 text-[11px] py-1.5 rounded-lg font-medium capitalize transition-colors ${
-                                    filter === f ? "bg-amber-500 text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-                                }`}
-                            >
-                                {f}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                {/* List */}
-                <div className="flex-1 overflow-y-auto divide-y divide-gray-100">
-                    {loading ? (
-                        <div className="flex justify-center py-10">
-                            <FaSpinner size={20} className="animate-spin text-amber-400" />
-                        </div>
-                    ) : filtered.length === 0 ? (
-                        <div className="flex flex-col items-center py-12 text-gray-400">
-                            <FaInbox size={28} className="mb-2 text-gray-300" />
-                            <p className="text-sm">No requests found</p>
-                        </div>
-                    ) : filtered.map(s => {
-                        const isPending = s.status === "pending";
-                        const isActive  = selected?.id === s.id;
-                        return (
-                            <div
-                                key={s.id}
-                                onClick={() => openRequest(s)}
-                                className={`p-3.5 cursor-pointer transition-all border-l-4 ${
-                                    isActive ? "bg-amber-50 border-l-amber-500" : "border-l-transparent hover:bg-white"
-                                }`}
-                            >
-                                <div className="flex items-start justify-between gap-2 mb-1">
-                                    <p className={`text-sm font-semibold line-clamp-1 ${isActive ? "text-amber-800" : "text-gray-800"}`}>
-                                        {s.subject || "No subject"}
-                                    </p>
-                                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-semibold flex-shrink-0 ${
-                                        isPending ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"
-                                    }`}>
-                                        {isPending ? "Pending" : "Replied"}
-                                    </span>
-                                </div>
-                                <p className="text-xs font-medium text-gray-600">{s.name}</p>
-                                <p className="text-[10px] text-gray-400 truncate">{s.email}</p>
-                                <p className="text-[10px] text-gray-400 mt-1">{fmt(s.created_at)}</p>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-
-            {/* ── Right Panel: Detail & Reply ── */}
-            <div className={`flex-1 flex-col overflow-hidden ${!selected ? "hidden md:flex" : "flex"}`}>
-                {selected ? (
-                    <>
-                        {/* Header */}
-                        <div className="p-5 border-b border-gray-100 bg-white">
-                            <div className="flex items-start justify-between gap-4">
-                                <div className="flex-1 min-w-0">
-                                    {/* Mobile back button */}
-                                    <div className="flex items-center gap-2 mb-2 md:hidden">
-                                        <button
-                                            onClick={() => setSelected(null)}
-                                            className="p-1 -ml-1 text-gray-400 hover:text-gray-800 rounded"
-                                        >
-                                            <FaArrowLeft size={14} />
-                                        </button>
-                                        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Back to inbox</span>
-                                    </div>
-
-                                    <h2 className="text-lg font-bold text-gray-900 truncate">{selected.subject || "No subject"}</h2>
-                                    <div className="flex items-center gap-3 mt-1.5 flex-wrap">
-                                        <span className="text-xs text-gray-500 flex items-center gap-1">
-                                            <FaUserTie size={10} className="text-gray-400" /> {selected.name}
-                                        </span>
-                                        <a
-                                            href={`mailto:${selected.email}`}
-                                            className="text-xs text-blue-600 hover:underline flex items-center gap-1"
-                                        >
-                                            <FaRegEnvelope size={10} /> {selected.email}
-                                        </a>
-                                        <span className="text-xs text-gray-400">#{selected.id}</span>
-                                        <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                                            selected.status === "pending"
-                                                ? "bg-amber-100 text-amber-700"
-                                                : "bg-emerald-100 text-emerald-700"
-                                        }`}>
-                                            {selected.status === "pending" ? "Pending" : "✓ Replied"}
-                                        </span>
-                                    </div>
-                                    <p className="text-xs text-gray-400 mt-1">Received: {fmt(selected.created_at)}</p>
-                                    {selected.responder_name && (
-                                        <p className="text-xs text-emerald-600 mt-0.5">
-                                            Responded by: <strong>{selected.responder_name}</strong>
-                                            {selected.updated_at && ` · ${fmt(selected.updated_at)}`}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* Actions */}
-                                <div className="flex items-center gap-2 flex-shrink-0">
-                                    <button
-                                        onClick={() => deleteRequest(selected.id)}
-                                        disabled={actionLoading === selected.id + "_delete"}
-                                        className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-100 transition font-medium disabled:opacity-60"
-                                    >
-                                        {actionLoading === selected.id + "_delete"
-                                            ? <FaSpinner size={11} className="animate-spin" />
-                                            : <FaTrash size={11} />}
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Body */}
-                        <div className="flex-1 overflow-y-auto p-5 bg-gray-50/30 space-y-4">
-
-                            {/* Original message */}
-                            <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-                                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                                    Message from {selected.name}
-                                </h3>
-                                <div
-                                    className="text-gray-700 leading-relaxed prose prose-sm max-w-none"
-                                    dangerouslySetInnerHTML={{ __html: selected.description }}
-                                />
-                            </div>
-
-                            {/* Saved reply */}
-                            {selected.reply && (
-                                <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-5 shadow-sm">
-                                    <h3 className="text-xs font-semibold text-emerald-500 uppercase tracking-wider mb-3 flex items-center gap-1">
-                                        <FiMessageSquare size={11} /> Reply Sent
-                                        {selected.responder_name && (
-                                            <span className="ml-1 text-emerald-400 font-normal">by {selected.responder_name}</span>
-                                        )}
-                                    </h3>
-                                    <div
-                                        className="text-gray-700 leading-relaxed prose prose-sm max-w-none"
-                                        dangerouslySetInnerHTML={{ __html: selected.reply }}
-                                    />
-                                </div>
-                            )}
-
-                            {/* Sender details */}
-                            <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
-                                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Sender Details</h3>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <p className="text-xs text-gray-400 font-medium">Name</p>
-                                        <p className="text-sm text-gray-800 font-semibold mt-0.5">{selected.name}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-400 font-medium">Email</p>
-                                        <a href={`mailto:${selected.email}`} className="text-sm text-blue-600 hover:underline font-medium mt-0.5 block">
-                                            {selected.email}
-                                        </a>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-400 font-medium">Submitted</p>
-                                        <p className="text-sm text-gray-700 mt-0.5">{fmt(selected.created_at)}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-400 font-medium">Status</p>
-                                        <span className={`inline-block text-xs px-2 py-0.5 rounded-full font-semibold mt-0.5 ${
-                                            selected.status === "pending"
-                                                ? "bg-amber-100 text-amber-700"
-                                                : "bg-emerald-100 text-emerald-700"
-                                        }`}>
-                                            {selected.status === "pending" ? "Awaiting Reply" : "✓ Replied"}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Reply Composer */}
-                        <div className="border-t border-gray-100 bg-white p-4">
-                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                                {selected.status === "replied" ? "Update Reply" : "Write Reply"}
-                            </p>
-                            <div className="flex items-start gap-3">
-                                <div className="flex-1 min-w-[200px]">
-                                    <TiptapEditor
-                                        value={replyText}
-                                        onChange={setReplyText}
-                                        placeholder={`Reply to ${selected.email}...`}
-                                    />
-                                </div>
-                                <button
-                                    onClick={sendReply}
-                                    disabled={replyLoading}
-                                    className="flex items-center gap-2 px-4 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-semibold text-sm transition disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
-                                >
-                                    {replyLoading
-                                        ? <FaSpinner size={14} className="animate-spin" />
-                                        : <FaPaperPlane size={14} />}
-                                    {selected.status === "replied" ? "Update & Resend" : "Send Reply"}
-                                </button>
-                            </div>
-                            <p className="text-[10px] text-gray-400 mt-2">
-                                Clicking &quot;Send Reply&quot; will save the reply and send an email to{" "}
-                                <strong>{selected.email}</strong>.
-                            </p>
-                        </div>
-                    </>
-                ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
-                        <FaEnvelopeOpenText size={44} className="mb-4 text-gray-200" />
-                        <p className="text-gray-500 font-semibold text-lg">Select a request</p>
-                        <p className="text-sm text-gray-400 mt-1 text-center max-w-xs">
-                            Choose a contact request from the list to view and reply
-                        </p>
-                        {stats.pending > 0 && (
-                            <div className="mt-4 px-4 py-2 bg-amber-50 border border-amber-100 rounded-lg">
-                                <p className="text-sm text-amber-700 font-medium">
-                                    {stats.pending} pending {stats.pending === 1 ? "request" : "requests"} need attention
-                                </p>
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
-        </div>
+      s.name?.toLowerCase().includes(term) ||
+      s.email?.toLowerCase().includes(term) ||
+      s.subject?.toLowerCase().includes(term) ||
+      s.description?.toLowerCase().includes(term)
     );
+  });
+
+  return (
+    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-6">
+      <Toaster position="top-center" />
+
+      {/* Header Card */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
+            <span className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+              <FiLifeBuoy size={20} />
+            </span>
+            Support Inbox
+          </h1>
+          <p className="text-slate-500 text-sm pl-11">
+            Manage incoming contact form submissions and support inquiries
+          </p>
+        </div>
+
+        <button
+          onClick={fetchSupports}
+          disabled={loading}
+          className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl font-semibold transition-all text-sm self-start sm:self-auto shadow-sm"
+        >
+          <FiRefreshCw className={loading ? 'animate-spin' : ''} size={15} />
+          Refresh Inbox
+        </button>
+      </div>
+
+      {/* Metric Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+            <FiLifeBuoy size={22} />
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Inquiries</p>
+            <p className="text-2xl font-bold text-slate-900">{loading ? '...' : totalCount}</p>
+          </div>
+        </div>
+
+        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+            <FiClock size={22} />
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Pending Reply</p>
+            <p className="text-2xl font-bold text-slate-900">{loading ? '...' : pendingCount}</p>
+          </div>
+        </div>
+
+        <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <FiCheckCircle size={22} />
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Replied</p>
+            <p className="text-2xl font-bold text-slate-900">{loading ? '...' : repliedCount}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Main List Container */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden space-y-0">
+        {/* Controls Bar */}
+        <div className="p-4 border-b border-slate-100 bg-slate-50/60 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="relative w-full sm:w-80">
+            <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+            <input
+              type="text"
+              placeholder="Search by name, email, subject..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full pl-10 pr-9 py-2 bg-white rounded-xl border border-slate-200 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm"
+            />
+            {search && (
+              <button
+                onClick={() => setSearch('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                <FiX size={14} />
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-1 bg-slate-200/60 p-1 rounded-xl w-full sm:w-auto">
+            {[
+              { id: 'all', label: 'All', count: totalCount },
+              { id: 'pending', label: 'Pending', count: pendingCount },
+              { id: 'replied', label: 'Replied', count: repliedCount },
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setFilter(tab.id)}
+                className={`flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                  filter === tab.id
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                  filter === tab.id ? 'bg-slate-100 text-slate-700' : 'bg-slate-300/50 text-slate-600'
+                }`}>
+                  {tab.count}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Content */}
+        {loading ? (
+          <div className="py-16 text-center text-slate-400 space-y-3">
+            <FiLoader className="animate-spin mx-auto text-amber-500" size={28} />
+            <p className="text-sm font-medium">Loading support inquiries...</p>
+          </div>
+        ) : filteredSupports.length === 0 ? (
+          <div className="py-16 text-center space-y-4 px-4">
+            <div className="w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+              <FiLifeBuoy size={32} />
+            </div>
+            <div className="space-y-1 max-w-sm mx-auto">
+              <h3 className="font-bold text-slate-800 text-base">No support requests found</h3>
+              <p className="text-xs text-slate-500">
+                {search || filter !== 'all'
+                  ? 'No inquiries match your filter criteria.'
+                  : 'All incoming customer messages will be displayed here.'}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-slate-50/80 text-slate-500 text-xs uppercase tracking-wider font-bold border-b border-slate-100">
+                <tr>
+                  <th className="px-6 py-4">Sender Info</th>
+                  <th className="px-6 py-4">Subject</th>
+                  <th className="px-6 py-4">Status</th>
+                  <th className="px-6 py-4">Date</th>
+                  <th className="px-6 py-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-sm">
+                {filteredSupports.map((item) => {
+                  const isPending = item.status === 'pending';
+                  return (
+                    <tr
+                      key={item.id}
+                      onClick={() => router.push(`/team/support/${item.id}`)}
+                      className="hover:bg-slate-50/70 cursor-pointer transition-colors group"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="font-bold text-slate-900">{item.name}</div>
+                        <div className="text-xs text-slate-400 font-medium">{item.email}</div>
+                      </td>
+
+                      <td className="px-6 py-4 max-w-xs">
+                        <p className="font-semibold text-slate-800 line-clamp-1">{item.subject || 'No Subject'}</p>
+                        <p className="text-xs text-slate-400 line-clamp-1 mt-0.5">
+                          {item.description?.replace(/<[^>]+>/g, '') || ''}
+                        </p>
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${
+                          isPending
+                            ? 'bg-amber-50 text-amber-600 border border-amber-100'
+                            : 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                        }`}>
+                          {isPending ? <FiClock size={11} /> : <FiCheckCircle size={11} />}
+                          {isPending ? 'Pending' : 'Replied'}
+                        </span>
+                      </td>
+
+                      <td className="px-6 py-4 text-xs text-slate-500 font-medium">
+                        {new Date(item.created_at).toLocaleDateString()}
+                      </td>
+
+                      <td className="px-6 py-4 text-right space-x-1" onClick={e => e.stopPropagation()}>
+                        <Link
+                          href={`/team/support/${item.id}`}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-sky-600 text-white rounded-lg text-xs font-bold transition-all shadow-sm"
+                        >
+                          <FiMessageSquare size={13} /> {isPending ? 'Reply' : 'View Details'}
+                        </Link>
+                        <button
+                          onClick={(e) => handleDelete(item.id, e)}
+                          disabled={deleting === item.id}
+                          className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all disabled:opacity-40"
+                          title="Delete Request"
+                        >
+                          <FiTrash2 size={15} />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
+
