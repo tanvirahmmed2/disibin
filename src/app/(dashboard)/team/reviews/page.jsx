@@ -1,140 +1,326 @@
 'use client';
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
-import { FiStar, FiTrash2, FiCheckCircle, FiClock, FiXCircle } from 'react-icons/fi';
-import DeleteReviewModal from '@/component/forms/DeleteReviewModal';
+import {
+  FiStar, FiCheckCircle, FiXCircle, FiMessageSquare,
+  FiTrash2, FiLoader, FiX, FiRefreshCw, FiEdit3, FiSend
+} from 'react-icons/fi';
 
-const ManagerReviewsPage = () => {
-  const [reviews,       setReviews]       = useState([]);
-  const [loading,       setLoading]       = useState(true);
-  const [deleteTarget,  setDeleteTarget]  = useState(null);
-  const [deleteLoading, setDeleteLoading] = useState(false);
+export default function TeamReviewsPage() {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
+  const [updating, setUpdating] = useState(null);
+  const [deleting, setDeleting] = useState(null);
 
-  useEffect(() => { fetchReviews(); }, []);
+  // Reply Modal State
+  const [selectedReview, setSelectedReview] = useState(null);
+  const [replyText, setReplyText] = useState('');
+  const [sendingReply, setSendingReply] = useState(false);
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
 
   const fetchReviews = async () => {
+    setLoading(true);
     try {
       const res = await axios.get('/api/public/review?type=all');
-      if (res.data.success) setReviews(res.data.data);
+      if (res.data.success) {
+        setReviews(res.data.data);
+      }
     } catch {
-      toast.error('Failed to fetch reviews');
+      toast.error('Failed to load reviews');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleApproval = async (id, currentStatus) => {
+  const toggleApproval = async (review, approvedState) => {
+    setUpdating(review.id);
     try {
-      const res = await axios.patch(`/api/public/review/${id}`, { is_approved: !currentStatus });
+      const res = await axios.patch(`/api/public/review/${review.id}`, { is_approved: approvedState });
       if (res.data.success) {
-        toast.success(`Review ${!currentStatus ? 'approved' : 'hidden'} successfully`);
-        setReviews(reviews.map((r) => r.review_id === id ? { ...r, is_approved: !currentStatus } : r));
+        toast.success(`Review ${approvedState ? 'approved' : 'rejected'}`);
+        setReviews(prev => prev.map(r => r.id === review.id ? { ...r, is_approved: approvedState } : r));
+      } else {
+        toast.error(res.data.message || 'Failed to update status');
       }
     } catch {
-      toast.error('Failed to update review status');
+      toast.error('Failed to update review approval');
+    } finally {
+      setUpdating(null);
     }
   };
 
-  const handleDelete = async () => {
-    if (!deleteTarget) return;
-    setDeleteLoading(true);
+  const openReplyModal = (review) => {
+    setSelectedReview(review);
+    setReplyText(review.reply || '');
+  };
+
+  const handleSendReply = async () => {
+    if (!selectedReview) return;
+    setSendingReply(true);
     try {
-      const res = await axios.delete(`/api/public/review/${deleteTarget.review_id}`);
+      const res = await axios.patch(`/api/public/review/${selectedReview.id}`, { reply: replyText.trim() });
       if (res.data.success) {
-        toast.success('Review deleted successfully');
-        setReviews(reviews.filter((r) => r.review_id !== deleteTarget.review_id));
-        setDeleteTarget(null);
+        toast.success('Staff reply updated');
+        const updated = res.data.data;
+        setReviews(prev => prev.map(r => r.id === updated.id ? updated : r));
+        setSelectedReview(null);
+      } else {
+        toast.error(res.data.message || 'Failed to update reply');
+      }
+    } catch {
+      toast.error('Failed to save reply');
+    } finally {
+      setSendingReply(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Delete this review permanently?')) return;
+    setDeleting(id);
+    try {
+      const res = await axios.delete(`/api/public/review/${id}`);
+      if (res.data.success) {
+        toast.success('Review deleted');
+        setReviews(prev => prev.filter(r => r.id !== id));
+      } else {
+        toast.error(res.data.message || 'Failed to delete');
       }
     } catch {
       toast.error('Failed to delete review');
     } finally {
-      setDeleteLoading(false);
+      setDeleting(null);
     }
   };
 
+  const filteredReviews = reviews.filter(r => {
+    if (filter === 'pending') return !r.is_approved;
+    if (filter === 'approved') return r.is_approved;
+    return true;
+  });
+
+  const totalCount = reviews.length;
+  const pendingCount = reviews.filter(r => !r.is_approved).length;
+  const approvedCount = reviews.filter(r => r.is_approved).length;
+
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-6">
       <Toaster position="top-center" />
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <FiStar className="text-sky-500" /> Customer Reviews
+      {/* Header Banner */}
+      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
+            <span className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
+              <FiStar size={20} />
+            </span>
+            Client Reviews Moderation
           </h1>
-          <p className="text-slate-500 text-sm">Approve or moderate user feedback.</p>
+          <p className="text-slate-500 text-sm pl-11">
+            Moderate client ratings, approve public testimonials, and post official staff replies
+          </p>
+        </div>
+
+        <button
+          onClick={fetchReviews}
+          disabled={loading}
+          className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl font-semibold transition-all text-xs self-start sm:self-auto shadow-sm"
+        >
+          <FiRefreshCw className={loading ? 'animate-spin' : ''} size={15} />
+          Refresh List
+        </button>
+      </div>
+
+      {/* Metric Badges & Filter Tabs */}
+      <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-1 bg-slate-100/70 p-1 rounded-2xl w-full sm:w-auto">
+          {[
+            { id: 'all', label: 'All Reviews', count: totalCount },
+            { id: 'pending', label: 'Pending Approval', count: pendingCount },
+            { id: 'approved', label: 'Approved', count: approvedCount },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setFilter(tab.id)}
+              className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                filter === tab.id
+                  ? 'bg-white text-slate-900 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <span>{tab.label}</span>
+              <span className={`text-[10px] px-2 py-0.2 rounded-full ${
+                filter === tab.id ? 'bg-slate-100 text-slate-700' : 'bg-slate-200 text-slate-600'
+              }`}>
+                {tab.count}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider font-bold">
-              <tr>
-                <th className="px-6 py-4">User</th>
-                <th className="px-6 py-4">Rating & Comment</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
-              {loading ? (
-                <tr><td colSpan="4" className="px-6 py-10 text-center text-slate-400">Loading reviews...</td></tr>
-              ) : reviews.length === 0 ? (
-                <tr><td colSpan="4" className="px-6 py-10 text-center text-slate-400">No reviews found</td></tr>
-              ) : reviews.map((review) => (
-                <tr key={review.review_id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="font-bold text-slate-900">{review.user_name}</div>
-                    <div className="text-xs text-slate-400">{review.user_email}</div>
-                  </td>
-                  <td className="px-6 py-4 max-w-xs">
-                    <div className="flex items-center gap-1 mb-1">
-                      {[...Array(5)].map((_, i) => (
-                        <FiStar key={i} className={`w-3 h-3 ${i < review.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
-                      ))}
+      {/* Reviews Content Grid */}
+      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        {loading ? (
+          <div className="py-16 text-center text-slate-400 space-y-3">
+            <FiLoader className="animate-spin mx-auto text-amber-500" size={28} />
+            <p className="text-sm font-medium">Loading client reviews...</p>
+          </div>
+        ) : filteredReviews.length === 0 ? (
+          <div className="py-16 text-center space-y-3 px-4">
+            <FiStar className="mx-auto text-slate-300" size={32} />
+            <p className="font-bold text-slate-800 text-base">No reviews found</p>
+            <p className="text-xs text-slate-500">There are no client reviews matching your filter criteria.</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-slate-100">
+            {filteredReviews.map((r) => (
+              <div key={r.id} className="p-6 space-y-4 hover:bg-slate-50/50 transition-colors">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  {/* User info & Stars */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-bold text-slate-900 text-base">{r.user_name}</h3>
+                      <span className="text-xs text-slate-400">({r.user_email})</span>
                     </div>
-                    <p className="text-sm text-slate-600 truncate" title={review.comment}>&quot;{review.comment}&quot;</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 w-max ${review.is_approved ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
-                      {review.is_approved ? <FiCheckCircle /> : <FiClock />}
-                      {review.is_approved ? 'Approved' : 'Pending'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right space-x-2">
+
+                    <div className="flex items-center gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <FiStar
+                          key={star}
+                          size={16}
+                          className={star <= r.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}
+                        />
+                      ))}
+                      <span className="text-xs font-bold text-slate-600 ml-1.5">{r.rating} / 5</span>
+                    </div>
+                  </div>
+
+                  {/* Moderation Controls */}
+                  <div className="flex items-center gap-2 self-start sm:self-auto">
                     <button
-                      onClick={() => handleApproval(review.review_id, review.is_approved)}
-                      title={review.is_approved ? 'Hide Review' : 'Approve Review'}
-                      className={`p-2 rounded-lg transition-all ${review.is_approved ? 'text-amber-500 hover:bg-amber-50' : 'text-emerald-500 hover:bg-emerald-50'}`}
+                      onClick={() => toggleApproval(r, !r.is_approved)}
+                      disabled={updating === r.id}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                        r.is_approved
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-200'
+                          : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200'
+                      }`}
                     >
-                      {review.is_approved ? <FiXCircle size={18} /> : <FiCheckCircle size={18} />}
+                      {updating === r.id ? (
+                        <FiLoader className="animate-spin" size={13} />
+                      ) : r.is_approved ? (
+                        <FiCheckCircle size={13} />
+                      ) : (
+                        <FiXCircle size={13} />
+                      )}
+                      {r.is_approved ? 'Approved (Click to Reject)' : 'Approve Review'}
                     </button>
+
                     <button
-                      onClick={() => setDeleteTarget(review)}
+                      onClick={() => openReplyModal(r)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-sky-50 text-slate-700 hover:text-sky-600 border border-slate-200 rounded-xl text-xs font-bold transition-all"
+                    >
+                      <FiEdit3 size={13} />
+                      {r.reply ? 'Edit Staff Reply' : 'Add Reply'}
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(r.id)}
+                      disabled={deleting === r.id}
+                      className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all disabled:opacity-40"
                       title="Delete Review"
-                      className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
                     >
-                      <FiTrash2 size={18} />
+                      <FiTrash2 size={16} />
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </div>
+                </div>
+
+                {/* Comment Text */}
+                <p className="text-slate-800 text-sm leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                  {r.comment || 'No text comment provided.'}
+                </p>
+
+                {/* Staff Reply callout */}
+                {r.reply && (
+                  <div className="bg-sky-50/70 p-4 rounded-2xl border border-sky-100 space-y-1">
+                    <p className="text-xs font-bold text-sky-700 flex items-center gap-1.5">
+                      <FiMessageSquare size={13} /> Official Staff Reply
+                    </p>
+                    <p className="text-slate-700 text-sm leading-relaxed pl-5">
+                      {r.reply}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* ── Delete modal (from component/forms) ── */}
-      <DeleteReviewModal
-        isOpen={!!deleteTarget}
-        review={deleteTarget}
-        onConfirm={handleDelete}
-        onCancel={() => setDeleteTarget(null)}
-        loading={deleteLoading}
-      />
+      {/* Staff Reply Modal */}
+      {selectedReview && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden">
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <FiMessageSquare className="text-sky-500" size={18} />
+                Reply to {selectedReview.user_name}
+              </h3>
+              <button
+                onClick={() => setSelectedReview(null)}
+                className="w-8 h-8 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-all"
+              >
+                <FiX size={16} />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs space-y-1">
+                <p className="font-bold text-slate-800">Review from {selectedReview.user_name}</p>
+                <p className="text-slate-600 line-clamp-2">{selectedReview.comment}</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Official Staff Response *
+                </label>
+                <textarea
+                  value={replyText}
+                  onChange={e => setReplyText(e.target.value)}
+                  placeholder="Thank the user or address their feedback..."
+                  rows={4}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all resize-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setSelectedReview(null)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSendReply}
+                  disabled={sendingReply}
+                  className="px-5 py-2.5 bg-slate-900 hover:bg-sky-600 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shadow-md flex items-center gap-2"
+                >
+                  {sendingReply ? <FiLoader className="animate-spin" size={14} /> : <FiSend size={14} />}
+                  {sendingReply ? 'Saving Reply...' : 'Save Staff Reply'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-};
-
-export default ManagerReviewsPage;
+}

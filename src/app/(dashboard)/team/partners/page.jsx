@@ -1,337 +1,417 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import toast from "react-hot-toast";
+import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
+import { toast, Toaster } from 'react-hot-toast';
 import {
-    FaHandshake, FaPlus, FaEdit, FaTrash, FaTimes,
-    FaCheck, FaSpinner, FaUpload, FaBuilding
-} from "react-icons/fa";
+  FaHandshake, FaPlus, FaTrash, FaEdit, FaSpinner,
+  FaSearch, FaTimes, FaGlobe, FaEnvelope
+} from 'react-icons/fa';
+import { FiLoader, FiPaperclip, FiX } from 'react-icons/fi';
 
-const EMPTY_FORM = { name: "", logo: "", logo_id: "", description: "" };
+export default function TeamPartnersManagement() {
+  const [partners, setPartners] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
-export default function PartnerManagementPage() {
-    const [partners, setPartners] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
-    const [deleting, setDeleting] = useState(null);
-    const [showForm, setShowForm] = useState(false);
-    const [editing, setEditing] = useState(null);
-    const [form, setForm] = useState(EMPTY_FORM);
-    const [uploading, setUploading] = useState(false);
-    const [imgError, setImgError] = useState({});
-    const nameRef = useRef(null);
-    const fileRef = useRef(null);
+  // Form & Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingPartner, setEditingPartner] = useState(null);
+  const [form, setForm] = useState({ company_name: '', business_url: '', email: '', image: '', image_id: '' });
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
-    useEffect(() => { fetchPartners(); }, []);
-    useEffect(() => { if (showForm) nameRef.current?.focus(); }, [showForm]);
+  const fileInputRef = useRef(null);
 
-    const fetchPartners = async () => {
-        setLoading(true);
-        try {
-            const res = await axios.get("/api/public/partner");
-            if (res.data.success) setPartners(res.data.data);
-        } catch { toast.error("Failed to load partners"); }
-        finally { setLoading(false); }
-    };
+  useEffect(() => {
+    fetchPartners();
+  }, []);
 
-    const openCreate = () => {
-        setEditing(null);
-        setForm(EMPTY_FORM);
-        setImgError(p => ({ ...p, form: false }));
-        setShowForm(true);
-    };
+  const fetchPartners = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get('/api/public/partner');
+      if (res.data.success) {
+        setPartners(res.data.data);
+      }
+    } catch {
+      toast.error('Failed to load partners');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const openEdit = (p) => {
-        setEditing(p);
-        setForm({ name: p.name, logo: p.logo || "", logo_id: p.logo_id || "", description: p.description || "" });
-        setImgError(p2 => ({ ...p2, form: false }));
-        setShowForm(true);
-    };
+  const openAddModal = () => {
+    setEditingPartner(null);
+    setForm({ company_name: '', business_url: '', email: '', image: '', image_id: '' });
+    setIsModalOpen(true);
+  };
 
-    const closeForm = () => { setShowForm(false); setEditing(null); setForm(EMPTY_FORM); };
+  const openEditModal = (partner) => {
+    setEditingPartner(partner);
+    setForm({
+      company_name: partner.company_name,
+      business_url: partner.business_url,
+      email: partner.email,
+      image: partner.image,
+      image_id: partner.image_id
+    });
+    setIsModalOpen(true);
+  };
 
-    // Upload file to Cloudinary via /api/image
-    const handleFileUpload = async (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        setUploading(true);
-        try {
-            const fd = new FormData();
-            fd.append("image", file);
-            const res = await axios.post("/api/image", fd);
-            if (res.data.success) {
-                setForm(p => ({ ...p, logo: res.data.data.url, logo_id: res.data.data.public_id }));
-                setImgError(p => ({ ...p, form: false }));
-                toast.success("Logo uploaded");
-            } else toast.error(res.data.message);
-        } catch { toast.error("Upload failed"); }
-        finally { setUploading(false); if (fileRef.current) fileRef.current.value = ""; }
-    };
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-    // Clear logo (and optionally delete from Cloudinary if it was a new upload during this session)
-    const clearLogo = () => {
-        setForm(p => ({ ...p, logo: "", logo_id: "" }));
-        setImgError(p => ({ ...p, form: false }));
-    };
+    setUploadingImage(true);
+    const formData = new FormData();
+    formData.append('image', file);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!form.name.trim()) return toast.error("Partner name is required");
-        setSaving(true);
-        try {
-            if (editing) {
-                const res = await axios.patch("/api/public/partner", { partnerId: editing.partner_id, ...form });
-                if (res.data.success) {
-                    toast.success("Partner updated");
-                    setPartners(prev => prev.map(p => p.partner_id === editing.partner_id ? res.data.data : p));
-                    closeForm();
-                } else toast.error(res.data.message);
-            } else {
-                const res = await axios.post("/api/public/partner", form);
-                if (res.data.success) {
-                    toast.success("Partner added");
-                    setPartners(prev => [...prev, res.data.data]);
-                    closeForm();
-                } else toast.error(res.data.message);
-            }
-        } catch (err) { toast.error(err?.response?.data?.message || "Something went wrong"); }
-        finally { setSaving(false); }
-    };
+    try {
+      const res = await axios.post('/api/image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
 
-    const handleDelete = async (p) => {
-        if (!confirm(`Remove "${p.name}" from partners? This will also delete the logo from Cloudinary.`)) return;
-        setDeleting(p.partner_id);
-        try {
-            const res = await axios.delete(`/api/public/partner?id=${p.partner_id}`);
-            if (res.data.success) {
-                toast.success("Partner removed");
-                setPartners(prev => prev.filter(x => x.partner_id !== p.partner_id));
-            } else toast.error(res.data.message);
-        } catch { toast.error("Failed to delete"); }
-        finally { setDeleting(null); }
-    };
+      if (res.data.success) {
+        setForm(prev => ({
+          ...prev,
+          image: res.data.data.url,
+          image_id: res.data.data.public_id
+        }));
+        toast.success('Logo uploaded successfully');
+      } else {
+        toast.error(res.data.message || 'Upload failed');
+      }
+    } catch {
+      toast.error('Failed to upload logo');
+    } finally {
+      setUploadingImage(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
 
-    return (
-        <div className="p-6 max-w-6xl mx-auto space-y-6">
+  const handleSave = async (e) => {
+    e.preventDefault();
+    if (!form.company_name.trim()) return toast.error('Company name is required');
+    if (!form.image) return toast.error('Company logo image is required');
+    if (!form.email.trim()) return toast.error('Contact email is required');
 
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                        <FaHandshake className="text-blue-600" size={22} /> Partners & Collaborations
-                    </h1>
-                    <p className="text-sm text-gray-500 mt-0.5">Manage partner logos shown on the homepage</p>
-                </div>
-                <button onClick={openCreate}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm shadow-sm">
-                    <FaPlus size={12} /> Add Partner
-                </button>
-            </div>
+    setSaving(true);
+    try {
+      if (editingPartner) {
+        // Update partner
+        const res = await axios.patch('/api/public/partner', { id: editingPartner.id, ...form });
+        if (res.data.success) {
+          toast.success('Partner updated successfully');
+          setPartners(prev => prev.map(p => p.id === editingPartner.id ? res.data.data : p));
+          setIsModalOpen(false);
+        } else {
+          toast.error(res.data.message || 'Failed to update partner');
+        }
+      } else {
+        // Create partner
+        const res = await axios.post('/api/public/partner', form);
+        if (res.data.success) {
+          toast.success('Partner created successfully');
+          setPartners(prev => [res.data.data, ...prev]);
+          setIsModalOpen(false);
+        } else {
+          toast.error(res.data.message || 'Failed to create partner');
+        }
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to save partner');
+    } finally {
+      setSaving(false);
+    }
+  };
 
-            {/* Stats banner */}
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-5 text-white shadow-sm">
-                <p className="text-blue-100 text-sm font-medium">Total Partners</p>
-                <p className="text-4xl font-bold mt-1">{partners.length}</p>
-                <p className="text-blue-200 text-xs mt-1">Displayed on the public homepage</p>
-            </div>
+  const handleDelete = async (partner) => {
+    if (!window.confirm(`Delete partner "${partner.company_name}"? This cannot be undone.`)) return;
 
-            {/* ── Modal ─────────────────────────────────────────── */}
-            {showForm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+    setDeletingId(partner.id);
+    try {
+      const res = await axios.delete(`/api/public/partner?id=${partner.id}`);
+      if (res.data.success) {
+        toast.success('Partner deleted');
+        setPartners(prev => prev.filter(p => p.id !== partner.id));
+      } else {
+        toast.error(res.data.message || 'Failed to delete partner');
+      }
+    } catch {
+      toast.error('Failed to delete partner');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
-                        <div className="flex items-center justify-between p-5 border-b border-gray-100">
-                            <h2 className="font-bold text-gray-900 text-lg">
-                                {editing ? "Edit Partner" : "Add New Partner"}
-                            </h2>
-                            <button onClick={closeForm}
-                                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500">
-                                <FaTimes size={14} />
-                            </button>
-                        </div>
+  const filteredPartners = partners.filter(p => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return p.company_name?.toLowerCase().includes(q) || p.email?.toLowerCase().includes(q) || p.slug?.toLowerCase().includes(q);
+  });
 
-                        <form onSubmit={handleSubmit} className="p-5 space-y-4">
+  return (
+    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-6">
+      <Toaster position="top-center" />
 
-                            {/* Logo — click to upload */}
-                            <div>
-                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
-                                    Logo
-                                </label>
-
-                                {/* Hidden file input */}
-                                <input
-                                    ref={fileRef}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleFileUpload}
-                                    className="hidden"
-                                    id="logo-upload"
-                                    disabled={uploading}
-                                />
-
-                                {/* Clickable upload / preview zone */}
-                                <label
-                                    htmlFor="logo-upload"
-                                    className={`relative h-36 flex flex-col items-center justify-center rounded-xl border-2 border-dashed transition-all overflow-hidden ${
-                                        uploading
-                                            ? "bg-blue-50 border-blue-200 cursor-wait"
-                                            : form.logo && !imgError["form"]
-                                                ? "bg-gray-50 border-gray-200 cursor-pointer hover:border-blue-300"
-                                                : "bg-gray-50 border-gray-200 cursor-pointer hover:bg-blue-50 hover:border-blue-300"
-                                    }`}
-                                >
-                                    {uploading ? (
-                                        <div className="flex flex-col items-center gap-2 text-blue-500">
-                                            <FaSpinner size={22} className="animate-spin" />
-                                            <p className="text-xs font-medium">Uploading to Cloudinary...</p>
-                                        </div>
-                                    ) : form.logo && !imgError["form"] ? (
-                                        <>
-                                            <img
-                                                src={form.logo}
-                                                alt="preview"
-                                                className="max-h-20 max-w-[80%] object-contain"
-                                                onError={() => setImgError(p => ({ ...p, form: true }))}
-                                            />
-                                            <p className="text-[10px] text-gray-400 mt-2">Click to replace</p>
-                                        </>
-                                    ) : (
-                                        <div className="flex flex-col items-center gap-2 text-gray-400">
-                                            <FaUpload size={20} />
-                                            <p className="text-xs font-medium text-gray-500">Click to upload logo</p>
-                                            <p className="text-[10px] text-gray-400">PNG, JPG, SVG, WebP</p>
-                                        </div>
-                                    )}
-
-                                    {/* Remove button (shown when a logo is set) */}
-                                    {form.logo && !uploading && (
-                                        <button
-                                            type="button"
-                                            onClick={e => { e.preventDefault(); clearLogo(); }}
-                                            className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors z-10"
-                                        >
-                                            <FaTimes size={9} />
-                                        </button>
-                                    )}
-                                </label>
-
-                                {/* Cloudinary confirmation */}
-                                {form.logo_id && (
-                                    <p className="text-[10px] text-emerald-600 mt-1.5 flex items-center gap-1">
-                                        <FaCheck size={9} />
-                                        <span>Uploaded · </span>
-                                        <span className="font-mono truncate text-emerald-500">{form.logo_id}</span>
-                                    </p>
-                                )}
-                            </div>
-
-                            {/* Name */}
-                            <div>
-                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">
-                                    Partner Name <span className="text-red-500">*</span>
-                                </label>
-                                <input ref={nameRef} type="text" value={form.name}
-                                    onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
-                                    placeholder="e.g. Acme Corporation"
-                                    className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                            </div>
-
-                            {/* Description */}
-                            <div>
-                                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">
-                                    Short Description
-                                </label>
-                                <textarea value={form.description}
-                                    onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
-                                    placeholder="Brief description of the partnership..."
-                                    rows={3}
-                                    className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" />
-                            </div>
-
-                            <div className="flex gap-2 pt-1">
-                                <button type="button" onClick={closeForm}
-                                    className="flex-1 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors font-medium">
-                                    Cancel
-                                </button>
-                                <button type="submit" disabled={saving || uploading}
-                                    className="flex-1 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
-                                    {saving ? <FaSpinner size={12} className="animate-spin" /> : <FaCheck size={12} />}
-                                    {editing ? "Save Changes" : "Add Partner"}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-
-            {/* ── Partner Grid ─────────────────────────────────── */}
-            {loading ? (
-                <div className="flex justify-center py-16">
-                    <FaSpinner size={28} className="animate-spin text-blue-400" />
-                </div>
-            ) : partners.length === 0 ? (
-                <div className="flex flex-col items-center py-20 text-gray-400 bg-white rounded-xl border border-gray-100 shadow-sm">
-                    <FaHandshake size={48} className="mb-4 text-gray-200" />
-                    <p className="font-semibold text-gray-500 text-lg">No partners yet</p>
-                    <p className="text-sm mt-1 mb-4">Add your first collaboration partner</p>
-                    <button onClick={openCreate}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm">
-                        <FaPlus size={12} /> Add Partner
-                    </button>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {partners.map(p => (
-                        <div key={p.partner_id}
-                            className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all overflow-hidden">
-                            {/* Logo */}
-                            <div className="h-32 bg-gray-50 flex items-center justify-center p-6 border-b border-gray-100 relative">
-                                {p.logo && !imgError[p.partner_id] ? (
-                                    <img src={p.logo} alt={p.name}
-                                        className="max-h-16 max-w-full object-contain"
-                                        onError={() => setImgError(prev => ({ ...prev, [p.partner_id]: true }))} />
-                                ) : (
-                                    <div className="flex flex-col items-center gap-2 text-gray-300">
-                                        <FaBuilding size={28} />
-                                        <p className="text-xs">No logo</p>
-                                    </div>
-                                )}
-                                {p.logo_id && (
-                                    <span className="absolute top-2 right-2 text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full font-medium">
-                                        Cloudinary
-                                    </span>
-                                )}
-                            </div>
-                            {/* Content */}
-                            <div className="p-4">
-                                <h3 className="font-bold text-gray-900">{p.name}</h3>
-                                {p.description && (
-                                    <p className="text-sm text-gray-500 mt-1 line-clamp-2">{p.description}</p>
-                                )}
-                                <p className="text-[10px] text-gray-400 mt-2">
-                                    Added {new Date(p.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                                </p>
-                            </div>
-                            {/* Actions */}
-                            <div className="px-4 pb-4 flex gap-2">
-                                <button onClick={() => openEdit(p)}
-                                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium border border-gray-200 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition-colors">
-                                    <FaEdit size={11} /> Edit
-                                </button>
-                                <button onClick={() => handleDelete(p)}
-                                    disabled={deleting === p.partner_id}
-                                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium border border-gray-200 text-gray-600 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors disabled:opacity-50">
-                                    {deleting === p.partner_id
-                                        ? <FaSpinner size={11} className="animate-spin" />
-                                        : <FaTrash size={11} />}
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
+      {/* Header Banner */}
+      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
+            <span className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
+              <FaHandshake size={20} />
+            </span>
+            Partners Management
+          </h1>
+          <p className="text-slate-500 text-sm pl-11">
+            Manage official business partners displayed across public pages
+          </p>
         </div>
-    );
+
+        <button
+          onClick={openAddModal}
+          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-2xl font-bold text-xs sm:text-sm transition-all shadow-md shrink-0 self-start sm:self-auto"
+        >
+          <FaPlus size={14} />
+          Add New Partner
+        </button>
+      </div>
+
+      {/* Main Grid Container */}
+      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        {/* Search Bar */}
+        <div className="p-4 border-b border-slate-100 bg-slate-50/60">
+          <div className="relative max-w-md">
+            <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+            <input
+              type="text"
+              placeholder="Search partner by name or email..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full pl-10 pr-9 py-2 bg-white rounded-xl border border-slate-200 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm"
+            />
+            {search && (
+              <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                <FaTimes size={14} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Content */}
+        {loading ? (
+          <div className="py-16 text-center text-slate-400 space-y-3">
+            <FiLoader className="animate-spin mx-auto text-sky-500" size={28} />
+            <p className="text-sm font-medium">Loading partner list...</p>
+          </div>
+        ) : filteredPartners.length === 0 ? (
+          <div className="py-16 text-center space-y-4 px-4">
+            <div className="w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+              <FaHandshake size={32} />
+            </div>
+            <div className="space-y-1 max-w-sm mx-auto">
+              <h3 className="font-bold text-slate-800 text-base">No partners found</h3>
+              <p className="text-xs text-slate-500">
+                {search ? 'No partners match your search term.' : 'Add your first partner to showcase on public pages.'}
+              </p>
+            </div>
+            <button
+              onClick={openAddModal}
+              className="text-xs text-sky-600 font-bold hover:underline"
+            >
+              + Add First Partner
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+            {filteredPartners.map((p) => (
+              <div
+                key={p.id}
+                className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4 group"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden shrink-0">
+                      {p.image ? (
+                        <img src={p.image} alt={p.company_name} className="w-full h-full object-contain p-1" />
+                      ) : (
+                        <span className="font-bold text-sky-600 text-lg">{p.company_name?.charAt(0)}</span>
+                      )}
+                    </div>
+
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-slate-900 text-sm truncate group-hover:text-sky-600 transition-colors">
+                        {p.company_name}
+                      </h3>
+                      <p className="text-[11px] text-slate-400 truncate">/{p.slug}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      onClick={() => openEditModal(p)}
+                      className="p-1.5 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-all"
+                      title="Edit Partner"
+                    >
+                      <FaEdit size={14} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(p)}
+                      disabled={deletingId === p.id}
+                      className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all disabled:opacity-40"
+                      title="Delete Partner"
+                    >
+                      {deletingId === p.id ? <FiLoader className="animate-spin" size={14} /> : <FaTrash size={14} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5 text-xs text-slate-500 pt-2 border-t border-slate-100">
+                  <a
+                    href={p.business_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 hover:text-sky-600 truncate font-medium"
+                  >
+                    <FaGlobe size={12} className="text-slate-400 shrink-0" />
+                    <span className="truncate">{p.business_url}</span>
+                  </a>
+                  <div className="flex items-center gap-2 text-slate-500 truncate">
+                    <FaEnvelope size={12} className="text-slate-400 shrink-0" />
+                    <span className="truncate">{p.email}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Add / Edit Partner Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden">
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <FaHandshake className="text-sky-500" size={18} />
+                {editingPartner ? 'Edit Partner' : 'Add New Partner'}
+              </h3>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="w-8 h-8 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-all"
+              >
+                <FaTimes size={16} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSave} className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Company Name *
+                </label>
+                <input
+                  type="text"
+                  value={form.company_name}
+                  onChange={e => setForm(p => ({ ...p, company_name: e.target.value }))}
+                  placeholder="E.g. Acme Corporation"
+                  required
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Business Website URL *
+                  </label>
+                  <input
+                    type="url"
+                    value={form.business_url}
+                    onChange={e => setForm(p => ({ ...p, business_url: e.target.value }))}
+                    placeholder="https://example.com"
+                    required
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Contact Email *
+                  </label>
+                  <input
+                    type="email"
+                    value={form.email}
+                    onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+                    placeholder="partner@example.com"
+                    required
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Company Logo Uploader */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Company Logo *
+                </label>
+
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                  accept="image/*"
+                  className="hidden"
+                />
+
+                <div className="flex items-center gap-3">
+                  {form.image ? (
+                    <div className="relative w-16 h-16 rounded-xl border border-slate-200 overflow-hidden bg-slate-50 shrink-0">
+                      <img src={form.image} alt="Logo preview" className="w-full h-full object-contain p-1" />
+                      <button
+                        type="button"
+                        onClick={() => setForm(p => ({ ...p, image: '', image_id: '' }))}
+                        className="absolute top-0.5 right-0.5 w-4 h-4 bg-slate-900/80 text-white rounded-full flex items-center justify-center text-[10px]"
+                      >
+                        <FiX size={10} />
+                      </button>
+                    </div>
+                  ) : null}
+
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadingImage}
+                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border border-slate-200"
+                  >
+                    {uploadingImage ? <FiLoader className="animate-spin" size={14} /> : <FiPaperclip size={14} />}
+                    {uploadingImage ? 'Uploading Logo...' : form.image ? 'Replace Logo' : 'Upload Logo'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving || uploadingImage}
+                  className="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shadow-md flex items-center gap-2"
+                >
+                  {saving ? <FiLoader className="animate-spin" size={14} /> : null}
+                  {saving ? 'Saving...' : editingPartner ? 'Update Partner' : 'Save Partner'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

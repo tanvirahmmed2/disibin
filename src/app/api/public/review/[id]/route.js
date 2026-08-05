@@ -3,43 +3,54 @@ import { isManager } from "@/lib/auth/team";
 import { isUserLogin as isLogin } from "@/lib/auth/user";
 import { dbQuery } from "@/lib/database/pg";
 
-// PATCH - Approve or reject a review (Manager only)
+// PATCH - Approve/reject review and update staff reply (Manager only)
 export async function PATCH(req, { params }) {
     try {
         const auth = await isManager();
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
-        const { id } = await params;
-        const { is_approved } = await req.json();
+        const resolvedParams = await params;
+        const reviewId = resolvedParams.id;
+        const body = await req.json();
+        const { is_approved, reply } = body;
 
-        if (is_approved === undefined) {
-            return NextResponse.json({ success: false, message: "Approval status is required" }, { status: 400 });
+        let query = "UPDATE reviews SET ";
+        const queryParams = [];
+        const updates = [];
+
+        if (is_approved !== undefined) {
+            queryParams.push(Boolean(is_approved));
+            updates.push(`is_approved = $${queryParams.length}`);
         }
 
-        const res = await dbQuery(`
-            UPDATE reviews
-            SET is_approved = $1
-            WHERE review_id = $2
-            RETURNING *
-        `, [is_approved, id]);
+        if (reply !== undefined) {
+            queryParams.push(reply ? reply.trim() : null);
+            updates.push(`reply = $${queryParams.length}`);
+        }
 
+        if (updates.length === 0) {
+            return NextResponse.json({ success: false, message: "Nothing to update" }, { status: 400 });
+        }
+
+        queryParams.push(reviewId);
+        query += updates.join(", ") + ` WHERE id = $${queryParams.length} RETURNING id, user_id, rating, comment, reply, is_approved, created_at`;
+
+        const res = await dbQuery(query, queryParams);
         const review = res.rows[0];
 
-        if (review && auth.data.id) {
-            const logQuery = `
-                INSERT INTO logs (user_id, action, entity_type, entity_id, description)
-                VALUES ($1, $2, $3, $4, $5)
-            `;
-            await dbQuery(logQuery, [auth.data.id, is_approved ? 'APPROVE' : 'REJECT', 'review', id, JSON.stringify({ review_id: id })]);
-        }
-        
         if (!review) {
             return NextResponse.json({ success: false, message: "Review not found" }, { status: 404 });
         }
 
+        // Record activity log
+        await dbQuery(`
+            INSERT INTO activity_logs (team_id, action, entity_type, entity_id, description)
+            VALUES ($1, $2, $3, $4, $5)
+        `, [auth.data.id, 'REVIEW_UPDATE', 'review', reviewId, `Updated review #${reviewId} (approved: ${review.is_approved})`]).catch(() => {});
+
         return NextResponse.json({
             success: true,
-            message: `Review ${is_approved ? 'approved' : 'rejected'} successfully`,
+            message: "Review updated successfully",
             data: review
         });
 
@@ -51,42 +62,28 @@ export async function PATCH(req, { params }) {
 // DELETE - Remove a review (User deletes their own, Manager can delete any)
 export async function DELETE(req, { params }) {
     try {
-        const auth = await isLogin();
-        if (!auth.success) return NextResponse.json(auth, { status: 401 });
+        const resolvedParams = await params;
+        const reviewId = resolvedParams.id;
 
-        const { id } = await params;
-        
-        // Check if user is manager
+        const userAuth = await isLogin();
         const managerAuth = await isManager();
+
+        if (!userAuth.success && !managerAuth.success) {
+            return NextResponse.json({ success: false, message: "Please login" }, { status: 401 });
+        }
+
         const isUserManager = managerAuth.success;
 
         if (!isUserManager) {
-            // If just a regular user, verify this is THEIR review
-            const res = await dbQuery(`
-                SELECT r.*
-                FROM reviews r
-                WHERE r.user_id = $1
-            `, [auth.data.id]);
-            
-            const userReview = res.rows.length > 0 ? res.rows[0] : null;
-            
-            if (!userReview || userReview.review_id.toString() !== id) {
+            // Check if this is the user's review
+            const userReviewRes = await dbQuery("SELECT id FROM reviews WHERE id = $1 AND user_id = $2", [reviewId, userAuth.data.id]);
+            if (userReviewRes.rows.length === 0) {
                 return NextResponse.json({ success: false, message: "Unauthorized to delete this review" }, { status: 403 });
             }
         }
 
-        const res = await dbQuery("DELETE FROM reviews WHERE review_id = $1 RETURNING *", [id]);
-        const deletedReview = res.rows[0];
-
-        if (deletedReview && auth.data.id) {
-            const logQuery = `
-                INSERT INTO logs (user_id, action, entity_type, entity_id, description)
-                VALUES ($1, $2, $3, $4, $5)
-            `;
-            await dbQuery(logQuery, [auth.data.id, 'DELETE', 'review', id, JSON.stringify({ review_id: id })]);
-        }
-
-        if (!deletedReview) {
+        const res = await dbQuery("DELETE FROM reviews WHERE id = $1 RETURNING id", [reviewId]);
+        if (res.rows.length === 0) {
             return NextResponse.json({ success: false, message: "Review not found" }, { status: 404 });
         }
 
