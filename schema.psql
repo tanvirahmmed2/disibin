@@ -589,3 +589,41 @@ BEFORE UPDATE ON news_letters
 FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
 
 CREATE INDEX idx_news_letters_created_by ON news_letters(created_by);
+
+-- =====================================================
+-- 10. BOARDS (ADVISORY & EXECUTIVE BOARD)
+-- =====================================================
+CREATE TABLE IF NOT EXISTS boards (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  post TEXT NOT NULL,
+  email TEXT UNIQUE,
+  image TEXT,
+  image_id TEXT,
+  bio TEXT,
+  created_at TIMESTAMP DEFAULT now()
+);
+
+CREATE INDEX idx_boards_email ON boards(email);
+
+-- =====================================================
+-- 11. AGREEMENTS
+-- =====================================================
+CREATE TABLE IF NOT EXISTS agreements (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  project_id INT REFERENCES projects(id) ON DELETE CASCADE,
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  file_url TEXT NOT NULL,
+  file_id TEXT,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'signed', 'rejected')),
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);
+
+CREATE TRIGGER update_agreements_modtime 
+BEFORE UPDATE ON agreements 
+FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
+
+CREATE INDEX idx_agreements_project_id ON agreements(project_id);
+CREATE INDEX idx_agreements_user_id ON agreements(user_id);

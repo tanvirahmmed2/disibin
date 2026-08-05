@@ -1,36 +1,34 @@
 import { NextResponse } from "next/server";
-import { isUserLogin } from "@/lib/auth/user";
+import { isTeamLogin } from "@/lib/auth/team";
 import { dbQuery } from "@/lib/database/pg";
 import cloudinary from "@/lib/database/cloudinary";
 
-// GET — Fetch project workspace details for customer user
+// GET — Fetch project workspace details for team staff
 export async function GET(req, { params }) {
     try {
-        const auth = await isUserLogin();
+        const auth = await isTeamLogin();
         if (!auth.success) return NextResponse.json(auth, { status: 401 });
 
-        const userId = auth.data.id;
         const resolvedParams = await params;
         const projectId = resolvedParams.id;
 
-        // Fetch project
         const projectRes = await dbQuery(`
-            SELECT p.id, p.title, p.product_id, p.user_id, p.status, p.created_at, p.updated_at,
-                   prod.name as product_name, prod.slug as product_slug, prod.price as product_price, prod.demo_url
+            SELECT p.id, p.title, p.product_id, p.user_id, p.team_id, p.status, p.created_at, p.updated_at,
+                   prod.name as product_name, prod.slug as product_slug, prod.price as product_price,
+                   u.name as user_name, u.email as user_email, u.phone as user_phone
             FROM projects p
             LEFT JOIN products prod ON p.product_id = prod.id
-            WHERE p.id = $1 AND (p.user_id = $2 OR EXISTS (
-                SELECT 1 FROM project_participants pp WHERE pp.project_id = p.id AND pp.user_id = $2
-            ))
-        `, [projectId, userId]);
+            LEFT JOIN users u ON p.user_id = u.id
+            WHERE p.id = $1
+        `, [projectId]);
 
         if (projectRes.rows.length === 0) {
-            return NextResponse.json({ success: false, message: "Project not found or access denied" }, { status: 404 });
+            return NextResponse.json({ success: false, message: "Project not found" }, { status: 404 });
         }
 
         const project = projectRes.rows[0];
 
-        // Fetch messages
+        // Messages
         const messagesRes = await dbQuery(`
             SELECT pm.id, pm.project_id, pm.user_id, pm.team_id, pm.message, pm.created_at,
                    u.name as user_name, t.name as team_name, t.role as team_role
@@ -41,7 +39,7 @@ export async function GET(req, { params }) {
             ORDER BY pm.created_at ASC
         `, [projectId]);
 
-        // Fetch attachments
+        // Attachments
         const attachmentsRes = await dbQuery(`
             SELECT pa.id, pa.project_id, pa.user_id, pa.team_id, pa.file_url, pa.file_id, pa.created_at,
                    u.name as user_name, t.name as team_name
@@ -52,7 +50,7 @@ export async function GET(req, { params }) {
             ORDER BY pa.created_at DESC
         `, [projectId]);
 
-        // Fetch purchases & payments
+        // Purchases & Payments
         const purchasesRes = await dbQuery(`
             SELECT pur.id as purchase_id, pur.product_id, pur.price, pur.discount, pur.status as purchase_status, pur.created_at,
                    pay.id as payment_id, pay.price as payment_price, pay.paid, pay.due, pay.status as payment_status
@@ -62,7 +60,7 @@ export async function GET(req, { params }) {
             ORDER BY pur.created_at DESC
         `, [projectId]);
 
-        // Fetch agreements
+        // Agreements
         const agreementsRes = await dbQuery(`
             SELECT id, title, file_url, status, created_at, updated_at
             FROM agreements
@@ -86,13 +84,13 @@ export async function GET(req, { params }) {
     }
 }
 
-// POST — Send chat message or attachment file in project workspace
+// POST — Send message or upload file attachment from staff
 export async function POST(req, { params }) {
     try {
-        const auth = await isUserLogin();
+        const auth = await isTeamLogin();
         if (!auth.success) return NextResponse.json(auth, { status: 401 });
 
-        const userId = auth.data.id;
+        const teamId = auth.data.id;
         const resolvedParams = await params;
         const projectId = resolvedParams.id;
 
@@ -121,43 +119,78 @@ export async function POST(req, { params }) {
                 file_url = uploadResult.secure_url;
                 file_id = uploadResult.public_id;
 
-                // Insert attachment record
                 await dbQuery(`
-                    INSERT INTO project_attachments (project_id, user_id, file_url, file_id)
+                    INSERT INTO project_attachments (project_id, team_id, file_url, file_id)
                     VALUES ($1, $2, $3, $4)
-                `, [projectId, userId, file_url, file_id]);
+                `, [projectId, teamId, file_url, file_id]);
             }
 
             if (messageText && messageText.trim()) {
                 await dbQuery(`
-                    INSERT INTO project_messages (project_id, user_id, message)
+                    INSERT INTO project_messages (project_id, team_id, message)
                     VALUES ($1, $2, $3)
-                `, [projectId, userId, messageText.trim()]);
+                `, [projectId, teamId, messageText.trim()]);
             }
 
-            // Touch project updated_at timestamp
             await dbQuery("UPDATE projects SET updated_at = now() WHERE id = $1", [projectId]);
 
-            return NextResponse.json({ success: true, message: "Sent successfully" });
+            return NextResponse.json({ success: true, message: "Staff message sent" });
 
         } else {
             const { message } = await req.json();
 
             if (!message || !message.trim()) {
-                return NextResponse.json({ success: false, message: "Message text is required" }, { status: 400 });
+                return NextResponse.json({ success: false, message: "Message is required" }, { status: 400 });
             }
 
             const res = await dbQuery(`
-                INSERT INTO project_messages (project_id, user_id, message)
+                INSERT INTO project_messages (project_id, team_id, message)
                 VALUES ($1, $2, $3)
                 RETURNING *
-            `, [projectId, userId, message.trim()]);
+            `, [projectId, teamId, message.trim()]);
 
-            // Touch project updated_at timestamp
             await dbQuery("UPDATE projects SET updated_at = now() WHERE id = $1", [projectId]);
 
             return NextResponse.json({ success: true, data: res.rows[0] });
         }
+
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}
+
+// PATCH — Update project status (Staff only)
+export async function PATCH(req, { params }) {
+    try {
+        const auth = await isTeamLogin();
+        if (!auth.success) return NextResponse.json(auth, { status: 401 });
+
+        const resolvedParams = await params;
+        const projectId = resolvedParams.id;
+
+        const { status } = await req.json();
+
+        const validStatuses = ['pending', 'working', 'ready', 'ontest', 'fixing', 'approved'];
+        if (!status || !validStatuses.includes(status)) {
+            return NextResponse.json({ success: false, message: "Invalid project status" }, { status: 400 });
+        }
+
+        const res = await dbQuery(`
+            UPDATE projects
+            SET status = $1, updated_at = now()
+            WHERE id = $2
+            RETURNING *
+        `, [status, projectId]);
+
+        if (res.rows.length === 0) {
+            return NextResponse.json({ success: false, message: "Project not found" }, { status: 404 });
+        }
+
+        return NextResponse.json({
+            success: true,
+            message: `Project status updated to ${status}`,
+            data: res.rows[0]
+        });
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
