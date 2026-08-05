@@ -6,14 +6,14 @@ import { toast, Toaster } from 'react-hot-toast';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
-  FiArrowLeft, FiUser, FiMail, FiCalendar, FiShield,
-  FiPaperclip, FiSend, FiLoader, FiX, FiAlertCircle
+  FiArrowLeft, FiUser, FiUsers, FiPaperclip, FiSend,
+  FiLoader, FiShield, FiX, FiAlertCircle
 } from 'react-icons/fi';
 
-export default function TeamTicketDetailPage() {
+export default function TeamChatDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const ticketId = params?.slug;
+  const chatId = params?.id;
 
   const [thread, setThread] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,8 +27,8 @@ export default function TeamTicketDetailPage() {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    if (ticketId) fetchThread();
-  }, [ticketId]);
+    if (chatId) fetchThread();
+  }, [chatId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -37,11 +37,11 @@ export default function TeamTicketDetailPage() {
   const fetchThread = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`/api/team/ticket/${ticketId}`);
+      const res = await axios.get(`/api/team/chat/${chatId}`);
       if (res.data.success) {
         setThread(res.data.data);
       } else {
-        toast.error(res.data.message || 'Failed to load ticket thread');
+        toast.error(res.data.message || 'Failed to load conversation thread');
       }
     } catch {
       toast.error('Failed to load conversation thread');
@@ -93,20 +93,20 @@ export default function TeamTicketDetailPage() {
     setSendingMsg(true);
     try {
       const payload = {
-        message: messageText.trim(),
+        content: messageText.trim(),
         images: attachedImages.map(img => ({ file_url: img.file_url, file_id: img.file_id }))
       };
 
-      const res = await axios.post(`/api/team/ticket/${ticketId}`, payload);
+      const res = await axios.post(`/api/team/chat/${chatId}`, payload);
       if (res.data.success) {
         setMessageText('');
         setAttachedImages([]);
         fetchThread();
       } else {
-        toast.error(res.data.message || 'Failed to send reply');
+        toast.error(res.data.message || 'Failed to send message');
       }
     } catch {
-      toast.error('Failed to send reply');
+      toast.error('Failed to send message');
     } finally {
       setSendingMsg(false);
     }
@@ -116,128 +116,106 @@ export default function TeamTicketDetailPage() {
     return (
       <div className="min-h-[65vh] flex flex-col items-center justify-center space-y-3 p-6 text-slate-400">
         <FiLoader className="animate-spin text-sky-500" size={28} />
-        <p className="text-sm font-medium">Loading ticket thread...</p>
+        <p className="text-sm font-medium">Loading conversation...</p>
       </div>
     );
   }
 
-  if (!thread || !thread.ticket) {
+  if (!thread || !thread.chat) {
     return (
       <div className="p-6 max-w-3xl mx-auto space-y-4 text-center">
         <Toaster position="top-center" />
         <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm space-y-4">
           <FiAlertCircle className="mx-auto text-amber-500" size={36} />
-          <h2 className="text-lg font-bold text-slate-800">Ticket Not Found</h2>
+          <h2 className="text-lg font-bold text-slate-800">Conversation Not Found</h2>
           <Link
-            href="/team/tickets"
+            href="/team/chat"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-sky-600 transition-all shadow-md"
           >
-            <FiArrowLeft size={14} /> Back to Team Tickets
+            <FiArrowLeft size={14} /> Back to Team Messages
           </Link>
         </div>
       </div>
     );
   }
 
-  const { ticket, user, messages, attachments } = thread;
+  const { chat, participants, messages, attachments } = thread;
+  const otherParticipants = participants?.filter(p => p.name !== chat.current_user_name) || [];
+  const chatTitle = chat.is_group ? chat.title : (otherParticipants[0]?.name || 'Staff Member');
 
   return (
     <div className="p-4 sm:p-6 md:p-8 max-w-4xl mx-auto space-y-4">
       <Toaster position="top-center" />
 
-      {/* Header Info Card */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-        <div className="flex items-center justify-between gap-4">
+      {/* Top Header Card */}
+      <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3.5 min-w-0">
           <Link
-            href="/team/tickets"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-sky-600 transition-colors"
+            href="/team/chat"
+            className="p-2 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded-2xl transition-all shrink-0"
+            title="Back to messages"
           >
-            <FiArrowLeft size={16} /> Back to Support Tickets
+            <FiArrowLeft size={20} />
           </Link>
-          <span className="text-xs font-mono text-slate-400 bg-slate-100 px-2.5 py-1 rounded-md">
-            Ticket #{ticket.id}
-          </span>
-        </div>
 
-        <div>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900">{ticket.title}</h1>
-        </div>
-
-        {/* Customer Details Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100 text-xs">
-          <div className="flex items-center gap-2 text-slate-700">
-            <FiUser className="text-sky-500 shrink-0" size={15} />
-            <div>
-              <p className="text-slate-400 font-medium">Customer</p>
-              <p className="font-bold">{user?.name || 'Customer'}</p>
-            </div>
+          <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 font-bold ${
+            chat.is_group ? 'bg-amber-50 text-amber-600' : 'bg-sky-50 text-sky-600'
+          }`}>
+            {chat.is_group ? <FiUsers size={20} /> : <FiUser size={20} />}
           </div>
 
-          <div className="flex items-center gap-2 text-slate-700">
-            <FiMail className="text-sky-500 shrink-0" size={15} />
-            <div>
-              <p className="text-slate-400 font-medium">Email Address</p>
-              <a href={`mailto:${user?.email}`} className="font-bold hover:underline">{user?.email || 'N/A'}</a>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 text-slate-700">
-            <FiCalendar className="text-sky-500 shrink-0" size={15} />
-            <div>
-              <p className="text-slate-400 font-medium">Created On</p>
-              <p className="font-bold">{new Date(ticket.created_at).toLocaleString()}</p>
-            </div>
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 truncate">{chatTitle}</h1>
+            <p className="text-xs text-slate-500 flex items-center gap-2">
+              <span className="font-semibold text-sky-600 capitalize">
+                {chat.is_group ? 'Group Conversation' : (otherParticipants[0]?.role || 'Staff')}
+              </span>
+              <span>· {participants.length} Members</span>
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Main Chat Thread */}
-      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-20rem)] min-h-[440px]">
+      {/* Main Chat Thread Container */}
+      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-16rem)] min-h-[480px]">
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-slate-50/30">
           {messages.length === 0 ? (
             <div className="py-16 text-center text-slate-400 text-xs font-medium">
-              No messages in this thread yet. Send a response below to start messaging the customer.
+              No messages in this chat conversation yet. Type a message below to start chatting.
             </div>
           ) : (
             messages.map((msg) => {
-              const isStaff = Boolean(msg.team_id);
-              const msgAttachments = attachments?.filter(att => 
-                (isStaff && att.team_id === msg.team_id) || (!isStaff && att.user_id === msg.user_id)
-              ) || [];
+              const isMe = msg.sender_name === chat.current_user_name || false;
+              const msgAttachments = attachments?.filter(att => att.sender_id === msg.sender_id) || [];
 
               return (
                 <div
                   key={msg.id}
-                  className={`flex flex-col ${isStaff ? 'items-end ml-auto' : 'items-start mr-auto'} max-w-[88%] sm:max-w-[78%]`}
+                  className={`flex flex-col ${isMe ? 'items-end ml-auto' : 'items-start mr-auto'} max-w-[88%] sm:max-w-[78%]`}
                 >
-                  {/* Sender Label */}
+                  {/* Sender Name */}
                   <div className="flex items-center gap-1.5 mb-1 px-1 text-[11px] font-bold">
-                    {isStaff ? (
-                      <span className="text-sky-600 flex items-center gap-1">
-                        <FiShield size={12} />
-                        {msg.team_name || 'Staff Member'}
-                        <span className="text-[10px] uppercase font-semibold">({msg.team_role || 'Staff'})</span>
-                      </span>
-                    ) : (
-                      <span className="text-slate-700 flex items-center gap-1">
-                        <FiUser size={12} className="text-amber-500" />
-                        {msg.user_name || 'Customer'}
-                      </span>
-                    )}
+                    <span className={isMe ? 'text-sky-600' : 'text-slate-700 flex items-center gap-1'}>
+                      {!isMe && <FiShield className="text-amber-500" size={12} />}
+                      {isMe ? 'You' : msg.sender_name}
+                      {msg.sender_role && (
+                        <span className="text-[10px] text-slate-400 uppercase font-semibold">({msg.sender_role})</span>
+                      )}
+                    </span>
                   </div>
 
                   {/* Bubble */}
                   <div
                     className={`p-4 rounded-3xl shadow-sm text-sm space-y-2 ${
-                      isStaff
+                      isMe
                         ? 'bg-slate-900 text-white rounded-br-none'
                         : 'bg-white border border-slate-100 text-slate-800 rounded-bl-none'
                     }`}
                   >
-                    <p className="leading-relaxed whitespace-pre-wrap">{msg.message}</p>
+                    <p className="leading-relaxed whitespace-pre-wrap">{msg.content}</p>
 
-                    {/* Attachments */}
+                    {/* Image Attachments */}
                     {msgAttachments.length > 0 && (
                       <div className="grid grid-cols-2 gap-2 pt-1">
                         {msgAttachments.map((att) => (
@@ -257,7 +235,7 @@ export default function TeamTicketDetailPage() {
                     )}
                   </div>
 
-                  {/* Time */}
+                  {/* Timestamp */}
                   <span className="text-[10px] text-slate-400 mt-1 px-1 font-medium">
                     {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
@@ -268,7 +246,7 @@ export default function TeamTicketDetailPage() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Staff Reply Form */}
+        {/* Message Input Composer */}
         <div className="border-t border-slate-100 bg-white/80 backdrop-blur-md p-3 sm:p-4 space-y-3">
           {/* Image Preview Strip */}
           {attachedImages.length > 0 && (
@@ -318,7 +296,7 @@ export default function TeamTicketDetailPage() {
                     handleSendMessage();
                   }
                 }}
-                placeholder="Write your response to the customer... (Shift + Enter for new line)"
+                placeholder="Write your message... (Shift + Enter for new line)"
                 rows={1}
                 className="w-full bg-transparent border-0 resize-none text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none max-h-32 px-1 py-0.5"
               />

@@ -1,243 +1,185 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef } from "react";
-import { FaPlus, FaTicketAlt, FaClock, FaSpinner, FaCheckCircle, FaArrowLeft } from "react-icons/fa";
-import axios from "axios";
-import toast from "react-hot-toast";
-import NewTicketModal  from "@/component/forms/NewTicketModal";
-import TicketReplyForm from "@/component/forms/TicketReplyForm";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { toast, Toaster } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import {
+  FiLifeBuoy, FiPlus, FiMessageSquare, FiImage,
+  FiCalendar, FiLoader, FiSearch, FiX, FiRefreshCw
+} from 'react-icons/fi';
+import NewTicketModal from '@/component/forms/NewTicketModal';
 
-// ── pure data helpers ──────────────────────────────────────────────────────
-const STATUS_STYLES = {
-    open:        { label: "Open",        bg: "bg-blue-50",   text: "text-blue-700",   border: "border-blue-200",  icon: <FaClock size={11} /> },
-    in_progress: { label: "In Progress", bg: "bg-amber-50",  text: "text-amber-700",  border: "border-amber-200", icon: <FaSpinner size={11} /> },
-    resolved:    { label: "Resolved",    bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200", icon: <FaCheckCircle size={11} /> },
-    closed:      { label: "Closed",      bg: "bg-gray-100",  text: "text-gray-500",   border: "border-gray-200",  icon: <FaCheckCircle size={11} /> },
-};
-const PRIORITY_STYLES = {
-    low: "text-gray-400", medium: "text-blue-500", high: "text-orange-500", urgent: "text-red-600",
-};
-const formatDate = (d) =>
-    d ? new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "";
+export default function UserTicketsListPage() {
+  const router = useRouter();
+  const [tickets, setTickets] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [showNewModal, setShowNewModal] = useState(false);
 
-// ── page ───────────────────────────────────────────────────────────────────
-export default function UserTicketsPage() {
-    const [tickets,       setTickets]       = useState([]);
-    const [loading,       setLoading]       = useState(true);
-    const [activeTicket,  setActiveTicket]  = useState(null);
-    const [messages,      setMessages]      = useState([]);
-    const [loadingThread, setLoadingThread] = useState(false);
-    const [currentUserId, setCurrentUserId] = useState(null);
-    const [showModal,     setShowModal]     = useState(false);
-    const messagesEndRef = useRef(null);
+  useEffect(() => {
+    fetchTickets();
+  }, []);
 
-    useEffect(() => { fetchMe(); fetchTickets(); }, []);
-    useEffect(() => { if (activeTicket) fetchThread(activeTicket.ticket_id); }, [activeTicket]);
-    useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+  const fetchTickets = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get('/api/user/ticket');
+      if (res.data.success) {
+        setTickets(res.data.data);
+      }
+    } catch {
+      toast.error('Failed to load support tickets');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const fetchMe = async () => {
-        try {
-            const res = await axios.get("/api/user/me");
-            const data = res.data;
-            if (data.success) setCurrentUserId(data.data.id);
-        } catch {}
-    };
-
-    const fetchTickets = async () => {
-        setLoading(true);
-        try {
-            const res = await axios.get("/api/ticket");
-            const data = res.data;
-            if (data.success) setTickets(data.data);
-            else toast.error(data.message);
-        } catch {
-            toast.error("Failed to load tickets");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const fetchThread = async (ticketId) => {
-        setLoadingThread(true);
-        try {
-            const res = await axios.get(`/api/ticket/${ticketId}`);
-            const data = res.data;
-            if (data.success) setMessages(data.data.messages || []);
-            else toast.error(data.message);
-        } catch {
-            toast.error("Failed to load conversation");
-        } finally {
-            setLoadingThread(false);
-        }
-    };
-
-    const handleReplySent = (newMsg) => setMessages((prev) => [...prev, newMsg]);
-
+  const filteredTickets = tickets.filter(t => {
+    if (!search.trim()) return true;
+    const term = search.toLowerCase();
     return (
-        <div className="min-h-screen bg-gray-50">
-            <div className={`max-w-6xl mx-auto ${activeTicket ? 'px-2 py-3 md:px-4 md:py-8' : 'px-4 py-8'}`}>
-
-                {/* Header */}
-                <div className={`flex items-center justify-between mb-6 ${activeTicket ? 'hidden md:flex' : 'flex'}`}>
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-800">My Tickets</h1>
-                        <p className="text-sm text-gray-500 mt-0.5">Track your support requests</p>
-                    </div>
-                    <button
-                        onClick={() => setShowModal(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium text-sm"
-                    >
-                        <FaPlus size={12} /> New Ticket
-                    </button>
-                </div>
-
-                <div className={`flex gap-4 ${activeTicket ? 'h-[calc(100vh-8rem)] md:h-[calc(100vh-12rem)]' : 'h-[calc(100vh-12rem)]'}`}>
-
-                    {/* ── Ticket List ── */}
-                    <div className={`w-full md:max-w-sm md:flex-shrink-0 flex-col bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden ${activeTicket ? 'hidden md:flex' : 'flex'}`}>
-                        <div className="p-3 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                            {tickets.length} Ticket{tickets.length !== 1 ? "s" : ""}
-                        </div>
-                        <div className="flex-1 overflow-y-auto divide-y divide-gray-50">
-                            {loading ? (
-                                <div className="flex justify-center items-center py-12 text-gray-400">
-                                    <div className="animate-spin w-6 h-6 border-2 border-blue-200 border-t-blue-600 rounded-full" />
-                                </div>
-                            ) : tickets.length === 0 ? (
-                                <div className="flex flex-col items-center py-12 text-gray-400">
-                                    <FaTicketAlt size={28} className="mb-2 text-gray-300" />
-                                    <p className="text-sm">No tickets yet</p>
-                                </div>
-                            ) : (
-                                tickets.map((t) => {
-                                    const s        = STATUS_STYLES[t.status] || STATUS_STYLES.open;
-                                    const isActive = activeTicket?.ticket_id === t.ticket_id;
-                                    return (
-                                        <div
-                                            key={t.ticket_id}
-                                            onClick={() => setActiveTicket(t)}
-                                            className={`p-4 cursor-pointer transition-all border-l-4 ${isActive ? "bg-blue-50 border-l-blue-600" : "border-l-transparent hover:bg-gray-50"}`}
-                                        >
-                                            <div className="flex items-start justify-between gap-2 mb-1.5">
-                                                <h3 className={`font-semibold text-sm leading-snug line-clamp-1 ${isActive ? "text-blue-700" : "text-gray-800"}`}>
-                                                    {t.subject}
-                                                </h3>
-                                                <span className={`flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border font-medium flex-shrink-0 ${s.bg} ${s.text} ${s.border}`}>
-                                                    {s.icon} {s.label}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center justify-between text-xs text-gray-400">
-                                                <span className={`font-medium capitalize ${PRIORITY_STYLES[t.priority]}`}>{t.priority}</span>
-                                                <span>{formatDate(t.created_at)}</span>
-                                            </div>
-                                        </div>
-                                    );
-                                })
-                            )}
-                        </div>
-                    </div>
-
-                    {/* ── Thread Viewer ── */}
-                    <div className={`flex-1 flex-col bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden ${activeTicket ? 'flex' : 'hidden md:flex'}`}>
-                        {activeTicket ? (
-                            <>
-                                {/* Thread Header */}
-                                <div className="p-4 border-b border-gray-100 flex items-center gap-3">
-                                    <button
-                                        onClick={() => setActiveTicket(null)}
-                                        className="p-2 -ml-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full md:hidden flex-shrink-0"
-                                        aria-label="Back to tickets list"
-                                    >
-                                        <FaArrowLeft size={16} />
-                                    </button>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-start justify-between gap-4">
-                                            <div className="min-w-0">
-                                                <h2 className="font-bold text-gray-800 text-lg truncate">{activeTicket.subject}</h2>
-                                                <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 flex-wrap">
-                                                    <span>#{activeTicket.ticket_id}</span>
-                                                    <span className={`capitalize font-medium ${PRIORITY_STYLES[activeTicket.priority]}`}>
-                                                        {activeTicket.priority} priority
-                                                    </span>
-                                                    {(() => {
-                                                        const s = STATUS_STYLES[activeTicket.status] || STATUS_STYLES.open;
-                                                        return (
-                                                            <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full border font-medium ${s.bg} ${s.text} ${s.border}`}>
-                                                                {s.icon} {s.label}
-                                                            </span>
-                                                        );
-                                                    })()}
-                                                </div>
-                                            </div>
-                                            <span className="text-xs text-gray-400 flex-shrink-0 mt-1">{formatDate(activeTicket.created_at)}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Messages */}
-                                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/40">
-                                    {/* Original message */}
-                                    <div className="flex flex-col items-start">
-                                        <div className="flex items-center gap-1.5 mb-1">
-                                            <span className="text-xs font-medium text-gray-600">You</span>
-                                            <span className="text-[10px] text-gray-400">(user)</span>
-                                        </div>
-                                        <div 
-                                            className="bg-white border border-gray-100 shadow-sm rounded-xl rounded-bl-none px-4 py-3 text-sm text-gray-800 max-w-[85%] prose prose-sm max-w-none"
-                                            dangerouslySetInnerHTML={{ __html: activeTicket.message }}
-                                        />
-                                        <span className="text-[10px] text-gray-400 mt-1">{formatDate(activeTicket.created_at)}</span>
-                                    </div>
-
-                                    {loadingThread ? (
-                                        <div className="flex justify-center py-4 text-gray-400 text-sm">Loading...</div>
-                                    ) : (
-                                        messages.map((msg, i) => {
-                                            const isMe = msg.user_id === currentUserId;
-                                            return (
-                                                <div key={msg.message_id || i} className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}>
-                                                    <div className="flex items-center gap-1.5 mb-1">
-                                                        <span className="text-xs font-medium text-gray-600">{msg.user_name}</span>
-                                                        <span className="text-[10px] text-gray-400 capitalize">({msg.user_role})</span>
-                                                    </div>
-                                                    <div 
-                                                        className={`px-4 py-3 rounded-xl text-sm max-w-[85%] prose prose-sm max-w-none ${isMe ? "bg-blue-600 text-white rounded-br-none prose-invert" : "bg-white border border-gray-100 shadow-sm text-gray-800 rounded-bl-none"}`}
-                                                        dangerouslySetInnerHTML={{ __html: msg.message }}
-                                                    />
-                                                    <span className="text-[10px] text-gray-400 mt-1">
-                                                        {msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
-                                                    </span>
-                                                </div>
-                                            );
-                                        })
-                                    )}
-                                    <div ref={messagesEndRef} />
-                                </div>
-
-                                {/* ── Reply form (from component/forms) ── */}
-                                <TicketReplyForm
-                                    ticket={activeTicket}
-                                    onSent={handleReplySent}
-                                    currentUserId={currentUserId}
-                                />
-                            </>
-                        ) : (
-                            <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
-                                <FaTicketAlt size={36} className="mb-3 text-gray-300" />
-                                <p className="font-medium text-gray-500">Select a ticket</p>
-                                <p className="text-sm">to view the conversation</p>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            {/* ── New ticket modal (from component/forms) ── */}
-            <NewTicketModal
-                isOpen={showModal}
-                onClose={() => setShowModal(false)}
-                onSuccess={fetchTickets}
-            />
-        </div>
+      t.title?.toLowerCase().includes(term) ||
+      t.last_message?.toLowerCase().includes(term)
     );
+  });
+
+  return (
+    <div className="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto space-y-6">
+      <Toaster position="top-center" />
+
+      {/* Header Banner */}
+      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
+            <span className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
+              <FiLifeBuoy size={20} />
+            </span>
+            My Support Tickets
+          </h1>
+          <p className="text-slate-500 text-sm pl-11">
+            Track your support inquiries and chat with technical support
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <button
+            onClick={fetchTickets}
+            disabled={loading}
+            className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl font-semibold transition-all text-xs"
+            title="Refresh Tickets"
+          >
+            <FiRefreshCw className={loading ? 'animate-spin' : ''} size={16} />
+          </button>
+          <button
+            onClick={() => setShowNewModal(true)}
+            className="flex items-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md shrink-0"
+          >
+            <FiPlus size={16} />
+            New Ticket
+          </button>
+        </div>
+      </div>
+
+      {/* Main List Container */}
+      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden space-y-0">
+        {/* Search Bar */}
+        <div className="p-4 border-b border-slate-100 bg-slate-50/60">
+          <div className="relative max-w-md">
+            <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+            <input
+              type="text"
+              placeholder="Search my tickets..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full pl-10 pr-9 py-2 bg-white rounded-xl border border-slate-200 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm"
+            />
+            {search && (
+              <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                <FiX size={14} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Content */}
+        {loading ? (
+          <div className="py-16 text-center text-slate-400 space-y-3">
+            <FiLoader className="animate-spin mx-auto text-sky-500" size={28} />
+            <p className="text-sm font-medium">Loading your support tickets...</p>
+          </div>
+        ) : filteredTickets.length === 0 ? (
+          <div className="py-16 text-center space-y-4 px-4">
+            <div className="w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+              <FiMessageSquare size={32} />
+            </div>
+            <div className="space-y-1 max-w-sm mx-auto">
+              <h3 className="font-bold text-slate-800 text-base">No support tickets</h3>
+              <p className="text-xs text-slate-500">
+                {search ? 'No tickets match your search query.' : 'You have not created any support tickets yet.'}
+              </p>
+            </div>
+            <button
+              onClick={() => setShowNewModal(true)}
+              className="text-xs text-sky-600 font-bold hover:underline"
+            >
+              + Create First Ticket
+            </button>
+          </div>
+        ) : (
+          <div className="divide-y divide-slate-100">
+            {filteredTickets.map((t) => (
+              <div
+                key={t.id}
+                onClick={() => router.push(`/user/tickets/${t.id}`)}
+                className="p-5 hover:bg-slate-50/80 cursor-pointer transition-all flex items-center justify-between gap-4 group"
+              >
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 font-bold">
+                    <FiMessageSquare size={22} />
+                  </div>
+
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-base font-bold text-slate-900 group-hover:text-sky-600 transition-colors truncate">
+                        {t.title}
+                      </h3>
+                      <span className="text-xs font-mono text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">
+                        #{t.id}
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-slate-500 truncate font-medium">
+                      {t.last_message || 'No messages yet'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="text-right shrink-0">
+                  <p className="text-xs font-medium text-slate-400">
+                    {new Date(t.created_at).toLocaleDateString()}
+                  </p>
+                  <span className="inline-block mt-2 px-4 py-1.5 bg-slate-900 group-hover:bg-sky-600 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+                    Open Ticket →
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* New Ticket Modal */}
+      <NewTicketModal
+        isOpen={showNewModal}
+        onClose={() => setShowNewModal(false)}
+        onSuccess={(newTicketData) => {
+          fetchTickets();
+          if (newTicketData?.ticket?.id) {
+            router.push(`/user/tickets/${newTicketData.ticket.id}`);
+          }
+        }}
+      />
+    </div>
+  );
 }

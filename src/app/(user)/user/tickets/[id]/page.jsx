@@ -6,14 +6,14 @@ import { toast, Toaster } from 'react-hot-toast';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
-  FiArrowLeft, FiUser, FiMail, FiCalendar, FiShield,
+  FiArrowLeft, FiUser, FiCalendar, FiShield,
   FiPaperclip, FiSend, FiLoader, FiX, FiAlertCircle
 } from 'react-icons/fi';
 
-export default function TeamTicketDetailPage() {
+export default function UserTicketDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const ticketId = params?.slug;
+  const ticketId = params?.id;
 
   const [thread, setThread] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -37,7 +37,7 @@ export default function TeamTicketDetailPage() {
   const fetchThread = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`/api/team/ticket/${ticketId}`);
+      const res = await axios.get(`/api/user/ticket/${ticketId}`);
       if (res.data.success) {
         setThread(res.data.data);
       } else {
@@ -97,16 +97,16 @@ export default function TeamTicketDetailPage() {
         images: attachedImages.map(img => ({ file_url: img.file_url, file_id: img.file_id }))
       };
 
-      const res = await axios.post(`/api/team/ticket/${ticketId}`, payload);
+      const res = await axios.post(`/api/user/ticket/${ticketId}`, payload);
       if (res.data.success) {
         setMessageText('');
         setAttachedImages([]);
         fetchThread();
       } else {
-        toast.error(res.data.message || 'Failed to send reply');
+        toast.error(res.data.message || 'Failed to send message');
       }
     } catch {
-      toast.error('Failed to send reply');
+      toast.error('Failed to send message');
     } finally {
       setSendingMsg(false);
     }
@@ -129,30 +129,30 @@ export default function TeamTicketDetailPage() {
           <FiAlertCircle className="mx-auto text-amber-500" size={36} />
           <h2 className="text-lg font-bold text-slate-800">Ticket Not Found</h2>
           <Link
-            href="/team/tickets"
+            href="/user/tickets"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-sky-600 transition-all shadow-md"
           >
-            <FiArrowLeft size={14} /> Back to Team Tickets
+            <FiArrowLeft size={14} /> Back to My Tickets
           </Link>
         </div>
       </div>
     );
   }
 
-  const { ticket, user, messages, attachments } = thread;
+  const { ticket, messages, attachments } = thread;
 
   return (
     <div className="p-4 sm:p-6 md:p-8 max-w-4xl mx-auto space-y-4">
       <Toaster position="top-center" />
 
-      {/* Header Info Card */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
+      {/* Header Card */}
+      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-2">
         <div className="flex items-center justify-between gap-4">
           <Link
-            href="/team/tickets"
+            href="/user/tickets"
             className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-sky-600 transition-colors"
           >
-            <FiArrowLeft size={16} /> Back to Support Tickets
+            <FiArrowLeft size={16} /> Back to My Tickets
           </Link>
           <span className="text-xs font-mono text-slate-400 bg-slate-100 px-2.5 py-1 rounded-md">
             Ticket #{ticket.id}
@@ -161,68 +161,41 @@ export default function TeamTicketDetailPage() {
 
         <div>
           <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900">{ticket.title}</h1>
-        </div>
-
-        {/* Customer Details Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100 text-xs">
-          <div className="flex items-center gap-2 text-slate-700">
-            <FiUser className="text-sky-500 shrink-0" size={15} />
-            <div>
-              <p className="text-slate-400 font-medium">Customer</p>
-              <p className="font-bold">{user?.name || 'Customer'}</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 text-slate-700">
-            <FiMail className="text-sky-500 shrink-0" size={15} />
-            <div>
-              <p className="text-slate-400 font-medium">Email Address</p>
-              <a href={`mailto:${user?.email}`} className="font-bold hover:underline">{user?.email || 'N/A'}</a>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 text-slate-700">
-            <FiCalendar className="text-sky-500 shrink-0" size={15} />
-            <div>
-              <p className="text-slate-400 font-medium">Created On</p>
-              <p className="font-bold">{new Date(ticket.created_at).toLocaleString()}</p>
-            </div>
-          </div>
+          <p className="text-xs text-slate-400 flex items-center gap-1 mt-1">
+            <FiCalendar size={12} /> Created {new Date(ticket.created_at).toLocaleString()}
+          </p>
         </div>
       </div>
 
       {/* Main Chat Thread */}
-      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-20rem)] min-h-[440px]">
+      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-18rem)] min-h-[460px]">
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-slate-50/30">
           {messages.length === 0 ? (
             <div className="py-16 text-center text-slate-400 text-xs font-medium">
-              No messages in this thread yet. Send a response below to start messaging the customer.
+              No messages in this thread yet. Send a message below to start the conversation.
             </div>
           ) : (
             messages.map((msg) => {
-              const isStaff = Boolean(msg.team_id);
+              const isUserMsg = Boolean(msg.user_id);
               const msgAttachments = attachments?.filter(att => 
-                (isStaff && att.team_id === msg.team_id) || (!isStaff && att.user_id === msg.user_id)
+                (isUserMsg && att.user_id === msg.user_id) || (!isUserMsg && att.team_id === msg.team_id)
               ) || [];
 
               return (
                 <div
                   key={msg.id}
-                  className={`flex flex-col ${isStaff ? 'items-end ml-auto' : 'items-start mr-auto'} max-w-[88%] sm:max-w-[78%]`}
+                  className={`flex flex-col ${isUserMsg ? 'items-end ml-auto' : 'items-start mr-auto'} max-w-[88%] sm:max-w-[78%]`}
                 >
                   {/* Sender Label */}
                   <div className="flex items-center gap-1.5 mb-1 px-1 text-[11px] font-bold">
-                    {isStaff ? (
-                      <span className="text-sky-600 flex items-center gap-1">
-                        <FiShield size={12} />
-                        {msg.team_name || 'Staff Member'}
-                        <span className="text-[10px] uppercase font-semibold">({msg.team_role || 'Staff'})</span>
-                      </span>
+                    {isUserMsg ? (
+                      <span className="text-sky-600">You</span>
                     ) : (
                       <span className="text-slate-700 flex items-center gap-1">
-                        <FiUser size={12} className="text-amber-500" />
-                        {msg.user_name || 'Customer'}
+                        <FiShield className="text-sky-500" size={12} />
+                        {msg.team_name || 'Support Staff'}
+                        <span className="text-[10px] text-slate-400 uppercase font-semibold">({msg.team_role || 'Staff'})</span>
                       </span>
                     )}
                   </div>
@@ -230,7 +203,7 @@ export default function TeamTicketDetailPage() {
                   {/* Bubble */}
                   <div
                     className={`p-4 rounded-3xl shadow-sm text-sm space-y-2 ${
-                      isStaff
+                      isUserMsg
                         ? 'bg-slate-900 text-white rounded-br-none'
                         : 'bg-white border border-slate-100 text-slate-800 rounded-bl-none'
                     }`}
@@ -268,7 +241,7 @@ export default function TeamTicketDetailPage() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Staff Reply Form */}
+        {/* User Reply Form */}
         <div className="border-t border-slate-100 bg-white/80 backdrop-blur-md p-3 sm:p-4 space-y-3">
           {/* Image Preview Strip */}
           {attachedImages.length > 0 && (
@@ -318,7 +291,7 @@ export default function TeamTicketDetailPage() {
                     handleSendMessage();
                   }
                 }}
-                placeholder="Write your response to the customer... (Shift + Enter for new line)"
+                placeholder="Write your message... (Shift + Enter for new line)"
                 rows={1}
                 className="w-full bg-transparent border-0 resize-none text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none max-h-32 px-1 py-0.5"
               />

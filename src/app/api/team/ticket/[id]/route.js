@@ -1,34 +1,46 @@
 import { NextResponse } from "next/server";
 import { dbQuery } from "@/lib/database/pg";
-import { isUserLogin } from "@/lib/auth/user";
+import { isTeamLogin } from "@/lib/auth/team";
 
-// GET — Fetch thread for a specific user ticket
+// GET — Fetch thread for a specific ticket (Team view)
 export async function GET(req, { params }) {
     try {
-        const auth = await isUserLogin();
+        const auth = await isTeamLogin();
         if (!auth.success) return NextResponse.json(auth, { status: 401 });
 
-        const userId = auth.data.id;
+        const teamId = auth.data.id;
         const resolvedParams = await params;
         const ticketId = resolvedParams.id;
-
-        // Check if user is participant
-        const partRes = await dbQuery(
-            `SELECT id FROM ticket_participants WHERE ticket_id = $1 AND user_id = $2`,
-            [ticketId, userId]
-        );
-        if (partRes.rows.length === 0) {
-            return NextResponse.json({ success: false, message: "Ticket not found or access denied" }, { status: 404 });
-        }
 
         // Fetch ticket details
         const ticketRes = await dbQuery(
             `SELECT id, title, created_at, updated_at FROM tickets WHERE id = $1`,
             [ticketId]
         );
+        if (ticketRes.rows.length === 0) {
+            return NextResponse.json({ success: false, message: "Ticket not found" }, { status: 404 });
+        }
         const ticket = ticketRes.rows[0];
 
-        // Fetch messages with sender names
+        // Ensure team member is added to participants
+        await dbQuery(
+            `INSERT INTO ticket_participants (ticket_id, team_id, last_read_at) 
+             VALUES ($1, $2, now()) 
+             ON CONFLICT (ticket_id, user_id, team_id) DO UPDATE SET last_read_at = now()`,
+            [ticketId, teamId]
+        );
+
+        // Fetch user participant info
+        const userPartRes = await dbQuery(
+            `SELECT u.id, u.name, u.email 
+             FROM ticket_participants tp
+             JOIN users u ON tp.user_id = u.id
+             WHERE tp.ticket_id = $1 LIMIT 1`,
+            [ticketId]
+        );
+        const userInfo = userPartRes.rows[0] || null;
+
+        // Fetch messages with sender details
         const messagesRes = await dbQuery(
             `SELECT 
                 tm.id, 
@@ -57,16 +69,11 @@ export async function GET(req, { params }) {
             [ticketId]
         );
 
-        // Mark last_read_at
-        await dbQuery(
-            `UPDATE ticket_participants SET last_read_at = now() WHERE ticket_id = $1 AND user_id = $2`,
-            [ticketId, userId]
-        );
-
         return NextResponse.json({
             success: true,
             data: {
                 ticket,
+                user: userInfo,
                 messages: messagesRes.rows,
                 attachments: attachmentsRes.rows
             }
@@ -77,43 +84,34 @@ export async function GET(req, { params }) {
     }
 }
 
-// POST — Send a message / attachment to ticket
+// POST — Team member sends reply / attachments to ticket
 export async function POST(req, { params }) {
     try {
-        const auth = await isUserLogin();
+        const auth = await isTeamLogin();
         if (!auth.success) return NextResponse.json(auth, { status: 401 });
 
-        const userId = auth.data.id;
+        const teamId = auth.data.id;
         const resolvedParams = await params;
         const ticketId = resolvedParams.id;
         const body = await req.json();
         const { message, images } = body;
 
-        // Check if user is participant
-        const partRes = await dbQuery(
-            `SELECT id FROM ticket_participants WHERE ticket_id = $1 AND user_id = $2`,
-            [ticketId, userId]
-        );
-        if (partRes.rows.length === 0) {
-            return NextResponse.json({ success: false, message: "Ticket not found or access denied" }, { status: 404 });
-        }
-
         const msgText = (message || "").trim();
         const hasImages = Array.isArray(images) && images.length > 0;
 
         if (!msgText && !hasImages) {
-            return NextResponse.json({ success: false, message: "Cannot send empty message" }, { status: 400 });
+            return NextResponse.json({ success: false, message: "Cannot send empty reply" }, { status: 400 });
         }
 
         let newMessage = null;
         if (msgText) {
             const msgRes = await dbQuery(
-                `INSERT INTO ticket_messages (ticket_id, user_id, message) 
+                `INSERT INTO ticket_messages (ticket_id, team_id, message) 
                  VALUES ($1, $2, $3) 
-                 RETURNING id, ticket_id, user_id, message, created_at`,
-                [ticketId, userId, msgText]
+                 RETURNING id, ticket_id, team_id, message, created_at`,
+                [ticketId, teamId, msgText]
             );
-            newMessage = { ...msgRes.rows[0], user_name: auth.data.name || "You" };
+            newMessage = { ...msgRes.rows[0], team_name: auth.data.name || "Support Team", team_role: auth.data.role || "staff" };
         }
 
         const newAttachments = [];
@@ -121,10 +119,10 @@ export async function POST(req, { params }) {
             for (const img of images) {
                 if (img.file_url) {
                     const attRes = await dbQuery(
-                        `INSERT INTO ticket_attachments (ticket_id, user_id, file_url, file_id) 
+                        `INSERT INTO ticket_attachments (ticket_id, team_id, file_url, file_id) 
                          VALUES ($1, $2, $3, $4) 
-                         RETURNING id, ticket_id, user_id, file_url, file_id, created_at`,
-                        [ticketId, userId, img.file_url, img.file_id || null]
+                         RETURNING id, ticket_id, team_id, file_url, file_id, created_at`,
+                        [ticketId, teamId, img.file_url, img.file_id || null]
                     );
                     newAttachments.push(attRes.rows[0]);
                 }
@@ -136,7 +134,7 @@ export async function POST(req, { params }) {
 
         return NextResponse.json({
             success: true,
-            message: "Message sent",
+            message: "Reply sent successfully",
             data: {
                 newMessage,
                 newAttachments
