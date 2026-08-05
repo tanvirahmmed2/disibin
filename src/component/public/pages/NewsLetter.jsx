@@ -1,37 +1,64 @@
-'use client'
-import React from 'react'
-import { useState } from 'react'
-import toast from 'react-hot-toast'
+'use client';
+
+import React, { useState } from 'react';
+import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
+import { FiLoader, FiSend, FiCheckCircle } from 'react-icons/fi';
 
 const NewsLetter = () => {
+    const [email, setEmail] = useState('');
+    const [submitting, setSubmitting] = useState(false);
 
-    const [formData, setFormData] = useState({
-        email: ''
-    })
-
-    const handleChange = (e) => {
-        const { name, value } = e.target
-        setFormData((d) => ({ ...d, [name]: value }))
-    }
-
-    const handleSubscribe = (e) => {
-        e.preventDefault()
-        try {
-
-        } catch (error) {
-            toast.error(error?.response?.data?.message || 'Failed to subscribe')
-
+    const handleSubscribe = async (e) => {
+        e.preventDefault();
+        if (!email.trim()) {
+            return toast.error('Please enter your email address');
         }
-    }
+
+        setSubmitting(true);
+        try {
+            const res = await axios.post('/api/public/subscribe', { email: email.trim() });
+            if (res.data.success) {
+                toast.success(res.data.message || 'Thank you for subscribing!');
+                setEmail('');
+            } else {
+                toast.error(res.data.message || 'Subscription failed');
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Already subscribed or invalid email');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     return (
-        <form onSubmit={handleSubscribe} className='w-full flex flex-col  items-center justify-center gap-6'>
-            <p className='text-tertiary-light text-3xl'>Receive Latest Update!</p>
-            <div className='w-full flex flex-col md:flex-row items-center justify-center gap-4'>
-                <input type="email" name='email' id='email' onChange={handleChange} value={formData.email} placeholder='ENTER YOUR EMAIL' className='w-80 text-tertiary-dark bg-tertiary-light px-4 p-2 outline-none rounded-sm' />
-                <button type='submit' className='w-auto px-6 p-2 text-tertiary-light bg-secondary'>Subscribe</button>
+        <form onSubmit={handleSubscribe} className="w-full flex flex-col items-center justify-center gap-6">
+            <Toaster position="top-center" />
+            <p className="text-tertiary-light text-2xl sm:text-3xl font-extrabold text-center tracking-tight">
+                Receive Latest Updates!
+            </p>
+            <div className="w-full max-w-md flex flex-col sm:flex-row items-center justify-center gap-3">
+                <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    onChange={(e) => setEmail(e.target.value)}
+                    value={email}
+                    placeholder="ENTER YOUR EMAIL"
+                    required
+                    className="w-full text-slate-800 bg-white px-4 py-3 outline-none rounded-xl text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-secondary transition-all shadow-sm"
+                />
+                <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full sm:w-auto px-6 py-3 text-white bg-secondary hover:bg-emerald-600 rounded-xl font-bold text-sm transition-all shadow-md shrink-0 disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                    {submitting ? <FiLoader className="animate-spin" size={16} /> : <FiSend size={16} />}
+                    {submitting ? 'Subscribing...' : 'Subscribe'}
+                </button>
             </div>
         </form>
-    )
-}
+    );
+};
 
-export default NewsLetter
+export default NewsLetter;
