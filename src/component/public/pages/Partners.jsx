@@ -10,7 +10,7 @@ const Partners = () => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const res = await axios.get('/api/partner');
+        const res = await axios.get('/api/public/partner');
         if (res.data.success) setPartners(res.data.data);
       } catch {}
       finally { setLoading(false); }

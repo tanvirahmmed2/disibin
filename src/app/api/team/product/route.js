@@ -15,6 +15,8 @@ export async function GET() {
                 p.slug,
                 p.description,
                 p.demo_url,
+                p.price,
+                p.discount,
                 p.is_featured,
                 p.is_published,
                 p.created_by,
@@ -60,16 +62,14 @@ export async function POST(req) {
         const auth = await isManager();
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
-        const body = await req.json();
-        const { name, description, demo_url, is_featured, is_published, images, features } = body;
+        const body = await req.json().catch(() => ({}));
+        const { name, description, demo_url, price, discount, is_featured, is_published, images, features } = body;
 
-        if (!name || !name.trim()) {
-            return NextResponse.json({ success: false, message: "Product name is required" }, { status: 400 });
-        }
+        const productName = (name && name.trim()) ? name.trim() : "enter title";
 
         const product = await transaction(async (client) => {
             // Auto-generate unique slug from name
-            const baseSlug = name.trim().toLowerCase()
+            const baseSlug = productName.toLowerCase()
                 .replace(/[^a-z0-9]+/g, '-')
                 .replace(/(^-|-$)/g, '');
 
@@ -83,16 +83,18 @@ export async function POST(req) {
 
             // Insert product
             const productRes = await client.query(`
-                INSERT INTO products (name, slug, description, demo_url, is_featured, is_published, created_by)
-                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                INSERT INTO products (name, slug, description, demo_url, price, discount, is_featured, is_published, created_by)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                 RETURNING *
             `, [
-                name.trim(),
+                productName,
                 slug,
                 description || null,
                 demo_url || null,
-                is_featured !== undefined ? is_featured : true,
-                is_published !== undefined ? is_published : true,
+                Number(price) || 0,
+                Number(discount) || 0,
+                is_featured !== undefined ? is_featured : false,
+                is_published !== undefined ? is_published : false,
                 auth.data.id
             ]);
 
@@ -121,32 +123,41 @@ export async function POST(req) {
                     if (!feat.name || !feat.name.trim()) continue;
 
                     const trimmed = feat.name.trim();
-                    const existingFeat = await client.query(
-                        "SELECT id FROM features WHERE LOWER(name) = LOWER($1)",
-                        [trimmed]
-                    );
+                    let featureId = feat.id;
 
-                    let featureId;
-                    if (existingFeat.rows.length > 0) {
-                        featureId = existingFeat.rows[0].id;
-                    } else {
-                        const baseSlug = trimmed.toLowerCase()
-                            .replace(/[^a-z0-9]+/g, '-')
-                            .replace(/(^-|-$)/g, '');
-
-                        let featureSlug = baseSlug || 'feature';
-                        let counter = 1;
-                        while (true) {
-                            const existingSlug = await client.query("SELECT id FROM features WHERE slug = $1", [featureSlug]);
-                            if (existingSlug.rows.length === 0) break;
-                            featureSlug = `${baseSlug}-${counter++}`;
+                    if (featureId) {
+                        const existingFeat = await client.query("SELECT id FROM features WHERE id = $1", [featureId]);
+                        if (existingFeat.rows.length === 0) {
+                            featureId = null;
                         }
+                    }
 
-                        const newFeat = await client.query(
-                            "INSERT INTO features (name, slug, description) VALUES ($1, $2, $3) RETURNING id",
-                            [trimmed, featureSlug, feat.description || null]
+                    if (!featureId) {
+                        const existingByName = await client.query(
+                            "SELECT id FROM features WHERE LOWER(name) = LOWER($1)",
+                            [trimmed]
                         );
-                        featureId = newFeat.rows[0].id;
+                        if (existingByName.rows.length > 0) {
+                            featureId = existingByName.rows[0].id;
+                        } else {
+                            const baseSlug = trimmed.toLowerCase()
+                                .replace(/[^a-z0-9]+/g, '-')
+                                .replace(/(^-|-$)/g, '');
+
+                            let featureSlug = baseSlug || 'feature';
+                            let counter = 1;
+                            while (true) {
+                                const existingSlug = await client.query("SELECT id FROM features WHERE slug = $1", [featureSlug]);
+                                if (existingSlug.rows.length === 0) break;
+                                featureSlug = `${baseSlug}-${counter++}`;
+                            }
+
+                            const newFeat = await client.query(
+                                "INSERT INTO features (name, slug, description) VALUES ($1, $2, $3) RETURNING id",
+                                [trimmed, featureSlug, feat.description || null]
+                            );
+                            featureId = newFeat.rows[0].id;
+                        }
                     }
 
                     await client.query(`

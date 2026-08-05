@@ -119,8 +119,10 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
     name: '',
     description: '',
     demo_url: '',
-    is_featured: true,
-    is_published: true,
+    price: 0,
+    discount: 0,
+    is_featured: false,
+    is_published: false,
     ...initialData,
   });
 
@@ -128,6 +130,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
   const [availableFeatures, setAvailableFeatures] = useState([]);
   const [featuresLoading, setFeaturesLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [featureSearch, setFeatureSearch] = useState('');
 
   // Selected feature IDs (Set for O(1) toggle)
   const [selectedIds, setSelectedIds] = useState(
@@ -145,6 +148,14 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
   );
 
   const [loading, setLoading] = useState(false);
+  const nameInputRef = useRef(null);
+
+  useEffect(() => {
+    if (nameInputRef.current && (formData.name === 'enter title' || !formData.name)) {
+      nameInputRef.current.focus();
+      nameInputRef.current.select();
+    }
+  }, []);
 
   // Fetch available features on mount
   useEffect(() => {
@@ -206,9 +217,11 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
     setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.name.trim()) { toast.error('Product name is required'); return; }
+  const submitForm = async (publishStatus = false) => {
+    if (!formData.name || !formData.name.trim()) {
+      toast.error('Product name is required');
+      return;
+    }
     setLoading(true);
 
     // Build features payload from selected IDs
@@ -225,8 +238,10 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
         name: formData.name.trim(),
         description: formData.description || null,
         demo_url: formData.demo_url || null,
+        price: Number(formData.price) || 0,
+        discount: Number(formData.discount) || 0,
         is_featured: formData.is_featured,
-        is_published: formData.is_published,
+        is_published: publishStatus,
         images,
         features: featuresPayload,
       };
@@ -234,7 +249,8 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
       const res = await axios[method](url, payload);
 
       if (res.data.success) {
-        toast.success(res.data.message || 'Product saved successfully');
+        toast.success(res.data.message || (publishStatus ? 'Product published successfully!' : 'Draft saved successfully!'));
+        setFormData(prev => ({ ...prev, is_published: publishStatus }));
         if (onSuccess) onSuccess(res.data.data);
         else router.push('/team/products');
       } else {
@@ -256,21 +272,51 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
         />
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={(e) => { e.preventDefault(); submitForm(formData.is_published); }} className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Left — Core Fields */}
           <div className="space-y-6">
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-700">Product Name *</label>
               <input
+                ref={nameInputRef}
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all"
+                className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all font-semibold text-slate-900"
                 placeholder="E.g. Enterprise Bundle"
               />
+            </div>
+
+            {/* Price & Discount */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-slate-700">Price ($)</label>
+                <input
+                  type="number"
+                  name="price"
+                  min="0"
+                  value={formData.price}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all font-semibold"
+                  placeholder="0"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-slate-700">Discount ($)</label>
+                <input
+                  type="number"
+                  name="discount"
+                  min="0"
+                  value={formData.discount}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all font-semibold text-emerald-600"
+                  placeholder="0"
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -285,21 +331,20 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
               />
             </div>
 
-            <div className="flex items-center gap-6 p-6 bg-slate-50 rounded-xl border border-slate-100">
-              <label className="flex items-center gap-2 cursor-pointer group">
-                <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${formData.is_published ? 'bg-emerald-500 border-emerald-500' : 'border-slate-300'}`}>
-                  {formData.is_published && <FiCheck className="text-white" size={13} />}
-                </div>
-                <input type="checkbox" name="is_published" checked={!!formData.is_published} onChange={handleChange} className="hidden" />
-                <span className="text-sm font-bold text-slate-700 group-hover:text-emerald-600 transition-colors">Published</span>
-              </label>
-
-              <label className="flex items-center gap-2 cursor-pointer group">
-                <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${formData.is_featured ? 'bg-sky-500 border-sky-500' : 'border-slate-300'}`}>
-                  {formData.is_featured && <FiCheck className="text-white" size={13} />}
-                </div>
-                <input type="checkbox" name="is_featured" checked={!!formData.is_featured} onChange={handleChange} className="hidden" />
-                <span className="text-sm font-bold text-slate-700 group-hover:text-sky-600 transition-colors">Featured</span>
+            <div className="flex items-center justify-between p-5 bg-slate-50 rounded-2xl border border-slate-100">
+              <div>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Featured Status</span>
+                <span className="text-sm font-bold text-slate-700">Display on featured list</span>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="is_featured"
+                  checked={!!formData.is_featured}
+                  onChange={handleChange}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500"></div>
               </label>
             </div>
           </div>
@@ -344,7 +389,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
 
         {/* Features Section */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h3 className="text-base font-bold text-slate-900">Product Features</h3>
               <p className="text-xs text-slate-400 mt-0.5">
@@ -353,14 +398,25 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
                   : 'Select the features this product includes'}
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => setShowModal(true)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-bold hover:bg-sky-600 transition-all"
-            >
-              <FiPlus size={14} />
-              New Feature
-            </button>
+            <div className="flex items-center gap-2">
+              {availableFeatures.length > 0 && (
+                <input
+                  type="text"
+                  placeholder="Filter features..."
+                  value={featureSearch}
+                  onChange={(e) => setFeatureSearch(e.target.value)}
+                  className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 outline-none w-36 sm:w-48"
+                />
+              )}
+              <button
+                type="button"
+                onClick={() => setShowModal(true)}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-sky-600 transition-all shrink-0"
+              >
+                <FiPlus size={14} />
+                New Feature
+              </button>
+            </div>
           </div>
 
           {featuresLoading ? (
@@ -381,37 +437,42 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {availableFeatures.map(feature => {
-                const selected = selectedIds.has(feature.id);
-                return (
-                  <button
-                    key={feature.id}
-                    type="button"
-                    onClick={() => toggleFeature(feature.id)}
-                    className={`relative text-left p-4 rounded-2xl border-2 transition-all duration-150 ${
-                      selected
-                        ? 'border-sky-500 bg-sky-50 shadow-sm shadow-sky-100'
-                        : 'border-slate-100 bg-white hover:border-slate-200 hover:shadow-sm'
-                    }`}
-                  >
-                    {/* Checkmark badge */}
-                    <div className={`absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                      selected ? 'bg-sky-500 border-sky-500' : 'border-slate-200'
-                    }`}>
-                      {selected && <FiCheck className="text-white" size={11} />}
-                    </div>
-                    <p className="font-bold text-sm text-slate-900 pr-6 leading-snug">{feature.name}</p>
-                    {feature.slug && (
-                      <span className="inline-block mt-1 text-[10px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
-                        {feature.slug}
-                      </span>
-                    )}
-                    {feature.description && (
-                      <p className="text-xs text-slate-500 mt-1.5 leading-relaxed line-clamp-2">{feature.description}</p>
-                    )}
-                  </button>
-                );
-              })}
+              {availableFeatures
+                .filter(f =>
+                  f.name.toLowerCase().includes((featureSearch || '').toLowerCase()) ||
+                  (f.description && f.description.toLowerCase().includes((featureSearch || '').toLowerCase()))
+                )
+                .map(feature => {
+                  const selected = selectedIds.has(feature.id);
+                  return (
+                    <button
+                      key={feature.id}
+                      type="button"
+                      onClick={() => toggleFeature(feature.id)}
+                      className={`relative text-left p-4 rounded-2xl border-2 transition-all duration-150 ${
+                        selected
+                          ? 'border-sky-500 bg-sky-50 shadow-sm shadow-sky-100'
+                          : 'border-slate-100 bg-white hover:border-slate-200 hover:shadow-sm'
+                      }`}
+                    >
+                      {/* Checkmark badge */}
+                      <div className={`absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                        selected ? 'bg-sky-500 border-sky-500' : 'border-slate-200'
+                      }`}>
+                        {selected && <FiCheck className="text-white" size={11} />}
+                      </div>
+                      <p className="font-bold text-sm text-slate-900 pr-6 leading-snug">{feature.name}</p>
+                      {feature.slug && (
+                        <span className="inline-block mt-1 text-[10px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
+                          {feature.slug}
+                        </span>
+                      )}
+                      {feature.description && (
+                        <p className="text-xs text-slate-500 mt-1.5 leading-relaxed line-clamp-2">{feature.description}</p>
+                      )}
+                    </button>
+                  );
+                })}
             </div>
           )}
         </div>
@@ -427,22 +488,33 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end space-x-3 pt-6 border-t border-slate-100">
+        <div className="flex flex-wrap justify-end items-center gap-3 pt-6 border-t border-slate-100">
           {onCancel && (
             <button
               type="button"
               onClick={onCancel}
-              className="px-8 py-3 rounded-2xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition-all"
+              className="px-6 py-3 rounded-2xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition-all text-sm"
             >
               Cancel
             </button>
           )}
+
           <button
-            type="submit"
+            type="button"
+            onClick={() => submitForm(false)}
             disabled={loading}
-            className="px-10 py-3 rounded-2xl bg-slate-900 text-white font-bold hover:bg-sky-600 transition-all disabled:opacity-50 shadow-lg shadow-slate-200"
+            className="px-6 py-3 rounded-2xl bg-slate-100 text-slate-800 font-bold hover:bg-slate-200 transition-all disabled:opacity-50 text-sm flex items-center gap-2"
           >
-            {loading ? 'Processing...' : initialData?.slug ? 'Update Product' : 'Create Product'}
+            {formData.is_published ? 'Unpublish (Save Draft)' : 'Save Draft'}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => submitForm(true)}
+            disabled={loading}
+            className="px-8 py-3 rounded-2xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition-all disabled:opacity-50 shadow-lg shadow-emerald-500/20 text-sm flex items-center gap-2"
+          >
+            {loading ? 'Saving...' : formData.is_published ? 'Save Changes' : 'Publish Product'}
           </button>
         </div>
       </form>

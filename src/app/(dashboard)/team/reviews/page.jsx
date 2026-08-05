@@ -15,7 +15,7 @@ const ManagerReviewsPage = () => {
 
   const fetchReviews = async () => {
     try {
-      const res = await axios.get('/api/review?type=all');
+      const res = await axios.get('/api/public/review?type=all');
       if (res.data.success) setReviews(res.data.data);
     } catch {
       toast.error('Failed to fetch reviews');
@@ -26,7 +26,7 @@ const ManagerReviewsPage = () => {
 
   const handleApproval = async (id, currentStatus) => {
     try {
-      const res = await axios.patch(`/api/review/${id}`, { is_approved: !currentStatus });
+      const res = await axios.patch(`/api/public/review/${id}`, { is_approved: !currentStatus });
       if (res.data.success) {
         toast.success(`Review ${!currentStatus ? 'approved' : 'hidden'} successfully`);
         setReviews(reviews.map((r) => r.review_id === id ? { ...r, is_approved: !currentStatus } : r));
@@ -40,7 +40,7 @@ const ManagerReviewsPage = () => {
     if (!deleteTarget) return;
     setDeleteLoading(true);
     try {
-      const res = await axios.delete(`/api/review/${deleteTarget.review_id}`);
+      const res = await axios.delete(`/api/public/review/${deleteTarget.review_id}`);
       if (res.data.success) {
         toast.success('Review deleted successfully');
         setReviews(reviews.filter((r) => r.review_id !== deleteTarget.review_id));

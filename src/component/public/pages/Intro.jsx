@@ -40,13 +40,13 @@ const Intro = () => {
           <div className='flex flex-row items-center gap-3 shrink-0'>
             <Link
               href='/contact'
-              className='px-6 py-3 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-sky-600 transition-all duration-300 shadow-md shadow-slate-200 animate-pulse-glow'
+              className='px-6 py-3 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-primary transition-all duration-300 animate-pulse-glow'
             >
               Get Started
             </Link>
             <Link
               href='/products'
-              className='px-6 py-3 rounded-xl border border-slate-200 text-slate-700 text-sm font-semibold hover:border-sky-300 hover:text-sky-600 hover:bg-sky-50 transition-all duration-300'
+              className='px-6 py-3 rounded-xl border border-slate-200 text-slate-700 text-sm font-semibold hover:border-secondary hover:text-primary hover:bg-secondary-light transition-all duration-300'
             >
               View Work →
             </Link>

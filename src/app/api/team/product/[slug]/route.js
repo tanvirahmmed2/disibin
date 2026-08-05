@@ -18,6 +18,8 @@ export async function GET(req, { params }) {
                 p.slug,
                 p.description,
                 p.demo_url,
+                p.price,
+                p.discount,
                 p.is_featured,
                 p.is_published,
                 p.created_by,
@@ -70,33 +72,58 @@ export async function PUT(req, { params }) {
 
         const { slug } = await params;
         const body = await req.json();
-        const { name, description, demo_url, is_featured, is_published, images, features } = body;
+        const { name, description, demo_url, price, discount, is_featured, is_published, images, features } = body;
 
         if (!name || !name.trim()) {
             return NextResponse.json({ success: false, message: "Product name is required" }, { status: 400 });
         }
 
         // Verify product exists
-        const existingRes = await dbQuery("SELECT id, name FROM products WHERE slug = $1", [slug]);
+        const existingRes = await dbQuery("SELECT id, name, slug FROM products WHERE slug = $1", [slug]);
         if (existingRes.rows.length === 0) {
             return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
         }
         const productId = existingRes.rows[0].id;
+        const currentName = existingRes.rows[0].name;
+        const currentSlug = existingRes.rows[0].slug;
 
         const updatedProduct = await transaction(async (client) => {
-            // Update core product fields
+            // Generate updated unique slug if product name changed
+            let newSlug = currentSlug;
+            const newNameTrimmed = name.trim();
+            if (newNameTrimmed.toLowerCase() !== currentName.toLowerCase()) {
+                const baseSlug = newNameTrimmed.toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/(^-|-$)/g, '');
+
+                newSlug = baseSlug || 'product';
+                let counter = 1;
+                while (true) {
+                    const existing = await client.query(
+                        "SELECT id FROM products WHERE slug = $1 AND id != $2",
+                        [newSlug, productId]
+                    );
+                    if (existing.rows.length === 0) break;
+                    newSlug = `${baseSlug}-${counter++}`;
+                }
+            }
+
+            // Update core product fields including slug
             const productRes = await client.query(`
                 UPDATE products
-                SET name = $1, description = $2, demo_url = $3,
-                    is_featured = $4, is_published = $5, updated_at = now()
-                WHERE id = $6
+                SET name = $1, slug = $2, description = $3, demo_url = $4,
+                    price = $5, discount = $6, is_featured = $7, is_published = $8, updated_at = now()
+                WHERE id = $9
                 RETURNING *
             `, [
-                name.trim(),
+                newNameTrimmed,
+                newSlug,
                 description || null,
                 demo_url || null,
+                Number(price) || 0,
+                Number(discount) || 0,
                 is_featured !== undefined ? is_featured : true,
-                is_published !== undefined ? is_published : true,
+                is_published !== undefined ? is_published : false,
                 productId
             ]);
 
@@ -156,32 +183,41 @@ export async function PUT(req, { params }) {
                     if (!feat.name || !feat.name.trim()) continue;
 
                     const trimmed = feat.name.trim();
-                    const existingFeat = await client.query(
-                        "SELECT id FROM features WHERE LOWER(name) = LOWER($1)",
-                        [trimmed]
-                    );
+                    let featureId = feat.id;
 
-                    let featureId;
-                    if (existingFeat.rows.length > 0) {
-                        featureId = existingFeat.rows[0].id;
-                    } else {
-                        const baseSlug = trimmed.toLowerCase()
-                            .replace(/[^a-z0-9]+/g, '-')
-                            .replace(/(^-|-$)/g, '');
-
-                        let featureSlug = baseSlug || 'feature';
-                        let counter = 1;
-                        while (true) {
-                            const existingSlug = await client.query("SELECT id FROM features WHERE slug = $1", [featureSlug]);
-                            if (existingSlug.rows.length === 0) break;
-                            featureSlug = `${baseSlug}-${counter++}`;
+                    if (featureId) {
+                        const existingFeat = await client.query("SELECT id FROM features WHERE id = $1", [featureId]);
+                        if (existingFeat.rows.length === 0) {
+                            featureId = null;
                         }
+                    }
 
-                        const newFeat = await client.query(
-                            "INSERT INTO features (name, slug, description) VALUES ($1, $2, $3) RETURNING id",
-                            [trimmed, featureSlug, feat.description || null]
+                    if (!featureId) {
+                        const existingByName = await client.query(
+                            "SELECT id FROM features WHERE LOWER(name) = LOWER($1)",
+                            [trimmed]
                         );
-                        featureId = newFeat.rows[0].id;
+                        if (existingByName.rows.length > 0) {
+                            featureId = existingByName.rows[0].id;
+                        } else {
+                            const baseSlug = trimmed.toLowerCase()
+                                .replace(/[^a-z0-9]+/g, '-')
+                                .replace(/(^-|-$)/g, '');
+
+                            let featureSlug = baseSlug || 'feature';
+                            let counter = 1;
+                            while (true) {
+                                const existingSlug = await client.query("SELECT id FROM features WHERE slug = $1", [featureSlug]);
+                                if (existingSlug.rows.length === 0) break;
+                                featureSlug = `${baseSlug}-${counter++}`;
+                            }
+
+                            const newFeat = await client.query(
+                                "INSERT INTO features (name, slug, description) VALUES ($1, $2, $3) RETURNING id",
+                                [trimmed, featureSlug, feat.description || null]
+                            );
+                            featureId = newFeat.rows[0].id;
+                        }
                     }
 
                     await client.query(`

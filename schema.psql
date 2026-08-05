@@ -96,6 +96,8 @@ CREATE TABLE IF NOT EXISTS products (
   slug TEXT UNIQUE NOT NULL,
   description TEXT,
   demo_url TEXT,
+  price INT DEFAULT 0,
+  discount INT DEFAULT 0,
   is_featured BOOLEAN DEFAULT TRUE,
   is_published BOOLEAN DEFAULT TRUE,
   created_by INT REFERENCES teams(id) ON DELETE SET NULL,

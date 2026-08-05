@@ -32,38 +32,47 @@ const ProductEditPage = ({ params }) => {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-8">
+    <div className="p-6 w-full space-y-6">
       <Toaster position="top-center" />
 
       <div className="flex items-center justify-between">
         <Link
           href="/team/products"
-          className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors font-medium"
+          className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors font-semibold text-sm"
         >
-          <FiArrowLeft /> Back to Products
+          <FiArrowLeft size={16} /> Back to Products
         </Link>
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden">
-        <div className="p-10 border-b border-slate-50 bg-slate-50/30">
-          <div className="flex items-center gap-4 mb-2">
-            <div className="w-12 h-12 rounded-2xl bg-sky-500 text-white flex items-center justify-center shadow-lg shadow-sky-500/20">
-              <FiPackage size={24} />
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="p-6 sm:p-8 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-sky-500 text-white flex items-center justify-center shadow-md shadow-sky-500/20 shrink-0">
+              <FiPackage size={20} />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">Edit Product Details</h1>
-              <p className="text-slate-500 font-medium">
-                {loading ? 'Loading...' : `Currently editing: ${product?.name || slug}`}
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Edit Product</h1>
+                {product && (
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                    product.is_published ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                  }`}>
+                    {product.is_published ? 'Published' : 'Draft'}
+                  </span>
+                )}
+              </div>
+              <p className="text-slate-500 text-xs sm:text-sm mt-0.5">
+                {loading ? 'Loading product details...' : product?.name === 'enter title' ? 'Editing new demo product details' : product?.name || slug}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="p-10">
+        <div className="p-6 sm:p-8">
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-20 space-y-4">
-              <div className="w-12 h-12 border-4 border-sky-500/20 border-t-sky-500 rounded-full animate-spin"></div>
-              <p className="text-slate-400 font-bold animate-pulse">Fetching product data...</p>
+            <div className="flex flex-col items-center justify-center py-20 space-y-3">
+              <div className="w-10 h-10 border-4 border-sky-500/20 border-t-sky-500 rounded-full animate-spin"></div>
+              <p className="text-slate-400 text-sm font-semibold animate-pulse">Fetching product details...</p>
             </div>
           ) : product ? (
             <ProductForm
@@ -71,11 +80,11 @@ const ProductEditPage = ({ params }) => {
               onCancel={() => window.history.back()}
             />
           ) : (
-            <div className="text-center py-20 text-slate-400">
-              <FiPackage size={48} className="mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-bold">Product not found</p>
-              <Link href="/team/products" className="text-sky-500 hover:underline text-sm mt-2 inline-block">
-                Back to Products
+            <div className="text-center py-16 text-slate-400">
+              <FiPackage size={40} className="mx-auto mb-3 opacity-40" />
+              <p className="text-base font-bold text-slate-700">Product not found</p>
+              <Link href="/team/products" className="text-sky-600 hover:underline text-xs font-semibold mt-2 inline-block">
+                Return to Products List
               </Link>
             </div>
           )}

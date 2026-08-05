@@ -27,12 +27,14 @@ const ImageUpload = ({ onUpload, label = "Upload Image" }) => {
 
       if (res.data.success) {
         onUpload(res.data.data);
+        setPreview(null);
       }
     } catch (error) {
       console.error('Upload failed', error);
       setPreview(null);
     } finally {
       setUploading(false);
+      e.target.value = '';
     }
   };
 

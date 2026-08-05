@@ -29,7 +29,7 @@ export default function PartnerManagementPage() {
     const fetchPartners = async () => {
         setLoading(true);
         try {
-            const res = await axios.get("/api/partner");
+            const res = await axios.get("/api/public/partner");
             if (res.data.success) setPartners(res.data.data);
         } catch { toast.error("Failed to load partners"); }
         finally { setLoading(false); }
@@ -81,14 +81,14 @@ export default function PartnerManagementPage() {
         setSaving(true);
         try {
             if (editing) {
-                const res = await axios.patch("/api/partner", { partnerId: editing.partner_id, ...form });
+                const res = await axios.patch("/api/public/partner", { partnerId: editing.partner_id, ...form });
                 if (res.data.success) {
                     toast.success("Partner updated");
                     setPartners(prev => prev.map(p => p.partner_id === editing.partner_id ? res.data.data : p));
                     closeForm();
                 } else toast.error(res.data.message);
             } else {
-                const res = await axios.post("/api/partner", form);
+                const res = await axios.post("/api/public/partner", form);
                 if (res.data.success) {
                     toast.success("Partner added");
                     setPartners(prev => [...prev, res.data.data]);
@@ -103,7 +103,7 @@ export default function PartnerManagementPage() {
         if (!confirm(`Remove "${p.name}" from partners? This will also delete the logo from Cloudinary.`)) return;
         setDeleting(p.partner_id);
         try {
-            const res = await axios.delete(`/api/partner?id=${p.partner_id}`);
+            const res = await axios.delete(`/api/public/partner?id=${p.partner_id}`);
             if (res.data.success) {
                 toast.success("Partner removed");
                 setPartners(prev => prev.filter(x => x.partner_id !== p.partner_id));

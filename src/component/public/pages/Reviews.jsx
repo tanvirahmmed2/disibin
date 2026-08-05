@@ -12,7 +12,7 @@ const Reviews = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await axios.get('/api/review');
+        const res = await axios.get('/api/public/review');
         if (res.data.success) {
           setReviews(res.data.data);
         }

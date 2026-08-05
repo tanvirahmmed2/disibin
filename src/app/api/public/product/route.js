@@ -11,6 +11,8 @@ export async function GET() {
                 p.slug,
                 p.description,
                 p.demo_url,
+                p.price,
+                p.discount,
                 p.is_featured,
                 p.is_published,
                 p.created_at,

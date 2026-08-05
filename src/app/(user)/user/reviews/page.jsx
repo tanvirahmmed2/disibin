@@ -15,7 +15,7 @@ const UserReviewPage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('/api/review?type=user');
+      const res = await axios.get('/api/public/review?type=user');
       if (res.data.success && res.data.data) setReview(res.data.data);
     } catch {
       toast.error('Failed to load data');
@@ -28,7 +28,7 @@ const UserReviewPage = () => {
     if (!window.confirm('Delete your review?')) return;
     setDeleteLoad(true);
     try {
-      const res = await axios.delete(`/api/review/${review.review_id}`);
+      const res = await axios.delete(`/api/public/review/${review.review_id}`);
       if (res.data.success) {
         toast.success('Review deleted');
         setReview(null);

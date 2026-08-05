@@ -22,7 +22,7 @@ const ReviewForm = ({ onSuccess }) => {
 
     setSubmitting(true);
     try {
-      const res = await axios.post('/api/review', formData);
+      const res = await axios.post('/api/public/review', formData);
       if (res.data.success) {
         toast.success('Review submitted successfully!');
         onSuccess?.(res.data.data);

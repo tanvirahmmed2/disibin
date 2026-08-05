@@ -5,7 +5,7 @@ export async function GET() {
     try {
         // Fetch actual counts from the database to make it dynamic
         const usersRes = await dbQuery("SELECT COUNT(*) as count FROM users", []);
-        const projectsRes = await dbQuery("SELECT COUNT(*) as count FROM internal_projects", []);
+        const projectsRes = await dbQuery("SELECT COUNT(*) as count FROM projects", []);
 
         const usersCount = parseInt(usersRes.rows[0].count) || 0;
         const projectsCount = parseInt(projectsRes.rows[0].count) || 0;
