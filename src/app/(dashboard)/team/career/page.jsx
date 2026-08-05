@@ -1,273 +1,448 @@
 'use client';
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
+import Link from 'next/link';
 import {
-  FiBriefcase, FiPlus, FiEdit2, FiTrash2, FiSearch, FiX,
-  FiMapPin, FiClock, FiCheckCircle, FiXCircle
+  FiBriefcase, FiPlus, FiEdit2, FiTrash2, FiEye,
+  FiEyeOff, FiMapPin, FiLoader, FiX, FiRefreshCw, FiCheckCircle
 } from 'react-icons/fi';
-import CareerModal from '@/component/forms/CareerModal';
-import DeleteCareerModal from '@/component/forms/DeleteCareerModal';
 
-const CareerManagement = () => {
+export default function TeamCareerPage() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
 
-  // Modal state
-  const [showCreate, setShowCreate] = useState(false);
-  const [editTarget, setEditTarget] = useState(null); // job | null
-  const [deleteTarget, setDeleteTarget] = useState(null); // job | null
-  const [deleteLoading, setDeleteLoading] = useState(false);
+  // Modal / Form state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingJob, setEditingJob] = useState(null);
+  const [form, setForm] = useState({
+    title: '',
+    location: 'Remote',
+    job_type: 'Full-time',
+    level: 'Mid-Level',
+    compensation: '',
+    description: '',
+    responsibilities: '',
+    skills: '',
+    nice_to_have: '',
+    is_published: true
+  });
+  const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
-  useEffect(() => { fetchJobs(); }, []);
+  useEffect(() => {
+    fetchJobs();
+  }, []);
 
   const fetchJobs = async () => {
+    setLoading(true);
     try {
-      // ?all=true to fetch both published and unpublished jobs
-      const res = await axios.get('/api/career?all=true');
-      if (res.data.success) setJobs(res.data.data);
+      const res = await axios.get('/api/public/career?all=true');
+      if (res.data.success) {
+        setJobs(res.data.data);
+      }
     } catch {
-      toast.error('Failed to fetch jobs');
+      toast.error('Failed to load career postings');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCreateSuccess = (newJob) => {
-    setJobs((prev) => [newJob, ...prev]);
+  const openAddModal = () => {
+    setEditingJob(null);
+    setForm({
+      title: '',
+      location: 'Remote',
+      job_type: 'Full-time',
+      level: 'Mid-Level',
+      compensation: '',
+      description: '',
+      responsibilities: '',
+      skills: '',
+      nice_to_have: '',
+      is_published: true
+    });
+    setIsModalOpen(true);
   };
 
-  const handleUpdateSuccess = (updated) => {
-    setJobs((prev) =>
-      prev.map((j) => (j.job_id === updated.job_id ? updated : j))
-    );
+  const openEditModal = (job) => {
+    setEditingJob(job);
+    setForm({
+      title: job.title || '',
+      location: job.location || 'Remote',
+      job_type: job.job_type || 'Full-time',
+      level: job.level || 'Mid-Level',
+      compensation: job.compensation || '',
+      description: job.description || '',
+      responsibilities: Array.isArray(job.responsibilities) ? job.responsibilities.join(', ') : (job.responsibilities || ''),
+      skills: Array.isArray(job.skills) ? job.skills.join(', ') : (job.skills || ''),
+      nice_to_have: Array.isArray(job.nice_to_have) ? job.nice_to_have.join(', ') : (job.nice_to_have || ''),
+      is_published: job.is_published !== undefined ? job.is_published : true
+    });
+    setIsModalOpen(true);
   };
 
-  const handleDelete = async () => {
-    if (!deleteTarget) return;
-    setDeleteLoading(true);
+  const togglePublished = async (job) => {
     try {
-      const res = await axios.delete(`/api/career?id=${deleteTarget.job_id}`);
+      const res = await axios.patch('/api/public/career', {
+        jobId: job.job_id,
+        is_published: !job.is_published
+      });
       if (res.data.success) {
-        setJobs((prev) => prev.filter((j) => j.job_id !== deleteTarget.job_id));
-        toast.success('Job listing deleted');
-        setDeleteTarget(null);
+        toast.success(`Job ${!job.is_published ? 'published' : 'unpublished'}`);
+        setJobs(prev => prev.map(j => j.job_id === job.job_id ? res.data.data : j));
       }
     } catch {
-      toast.error('Failed to delete job listing');
-    } finally {
-      setDeleteLoading(false);
+      toast.error('Failed to toggle publish status');
     }
   };
 
-  // Derived values
-  const totalJobs = jobs.length;
-  const publishedJobs = jobs.filter((j) => j.is_published).length;
-  const draftJobs = totalJobs - publishedJobs;
+  const handleSave = async (e) => {
+    e.preventDefault();
+    if (!form.title.trim()) return toast.error('Job title is required');
 
-  const filtered = jobs.filter((j) => {
-    const matchSearch =
-      j.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      j.location.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchStatus =
-      filterStatus === 'all' ||
-      (filterStatus === 'published' && j.is_published) ||
-      (filterStatus === 'draft' && !j.is_published);
-    return matchSearch && matchStatus;
-  });
+    setSaving(true);
+    try {
+      if (editingJob) {
+        const res = await axios.patch('/api/public/career', { jobId: editingJob.job_id, ...form });
+        if (res.data.success) {
+          toast.success('Job posting updated');
+          setJobs(prev => prev.map(j => j.job_id === editingJob.job_id ? res.data.data : j));
+          setIsModalOpen(false);
+        } else {
+          toast.error(res.data.message || 'Failed to update job');
+        }
+      } else {
+        const res = await axios.post('/api/public/career', form);
+        if (res.data.success) {
+          toast.success('Job posting created');
+          setJobs(prev => [res.data.data, ...prev]);
+          setIsModalOpen(false);
+        } else {
+          toast.error(res.data.message || 'Failed to create job');
+        }
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Error saving job posting');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (job) => {
+    if (!window.confirm(`Delete job posting "${job.title}"?`)) return;
+
+    setDeletingId(job.job_id);
+    try {
+      const res = await axios.delete(`/api/public/career?id=${job.job_id}`);
+      if (res.data.success) {
+        toast.success('Job deleted');
+        setJobs(prev => prev.filter(j => j.job_id !== job.job_id));
+      } else {
+        toast.error(res.data.message || 'Failed to delete job');
+      }
+    } catch {
+      toast.error('Failed to delete job posting');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   return (
-    <div className="p-6 space-y-6 min-h-screen bg-slate-50/50">
+    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-6">
       <Toaster position="top-center" />
 
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-            <span className="w-9 h-9 rounded-xl bg-violet-100 flex items-center justify-center">
-              <FiBriefcase className="text-violet-600" size={18} />
+      {/* Header Banner */}
+      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
+            <span className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
+              <FiBriefcase size={20} />
             </span>
-            Career Management
+            Career Positions & Openings
           </h1>
-          <p className="text-slate-500 text-sm mt-1">Manage job listings and applications</p>
+          <p className="text-slate-500 text-sm pl-11">
+            Manage job vacancies, specifications, requirements, and publishing status
+          </p>
         </div>
-        <button
-          onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-violet-600 text-white text-sm font-bold hover:bg-violet-700 transition-all shadow-lg shadow-violet-200 active:scale-95"
-        >
-          <FiPlus size={16} /> Add Job
-        </button>
-      </div>
 
-      {/* Stats Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          { icon: <FiBriefcase className="text-violet-600" size={20} />, label: 'Total Listings', value: totalJobs, bg: 'bg-violet-50' },
-          { icon: <FiCheckCircle className="text-emerald-600" size={20} />, label: 'Published', value: publishedJobs, bg: 'bg-emerald-50' },
-          { icon: <FiXCircle className="text-amber-600" size={20} />, label: 'Drafts', value: draftJobs, bg: 'bg-amber-50' },
-        ].map(({ icon, label, value, bg }) => (
-          <div key={label} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex items-center gap-4">
-            <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${bg}`}>{icon}</div>
-            <div>
-              <p className="text-2xl font-extrabold text-slate-900">{value}</p>
-              <p className="text-xs text-slate-400 font-medium mt-0.5">{label}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Table Card */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-        
-        {/* Toolbar */}
-        <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row gap-3">
-          <div className="flex items-center gap-2 flex-1 bg-slate-50 rounded-xl px-4 py-2.5 border border-slate-100">
-            <FiSearch className="text-slate-400 shrink-0" size={15} />
-            <input
-              type="text"
-              placeholder="Search title or location..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-transparent border-none outline-none text-sm w-full placeholder-slate-400"
-            />
-            {searchTerm && (
-              <button onClick={() => setSearchTerm('')} className="text-slate-400 hover:text-slate-600">
-                <FiX size={14} />
-              </button>
-            )}
-          </div>
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white outline-none focus:ring-2 focus:ring-violet-500 transition-all"
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <Link
+            href="/team/career/applications"
+            className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold text-xs sm:text-sm transition-all"
           >
-            <option value="all">All Status</option>
-            <option value="published">Published</option>
-            <option value="draft">Draft</option>
-          </select>
-        </div>
-
-        {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 text-slate-400 text-xs uppercase tracking-widest font-bold border-b border-slate-100">
-              <tr>
-                <th className="px-6 py-4">Job Title</th>
-                <th className="px-6 py-4">Location</th>
-                <th className="px-6 py-4">Type / Level</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
-              {loading ? (
-                <tr>
-                  <td colSpan="5" className="px-6 py-16 text-center">
-                    <div className="flex flex-col items-center gap-3 text-slate-400">
-                      <div className="w-8 h-8 border-2 border-violet-300 border-t-violet-600 rounded-full animate-spin" />
-                      <span className="text-sm">Loading jobs...</span>
-                    </div>
-                  </td>
-                </tr>
-              ) : filtered.length === 0 ? (
-                <tr>
-                  <td colSpan="5" className="px-6 py-16 text-center">
-                    <div className="flex flex-col items-center gap-3 text-slate-400">
-                      <FiBriefcase size={32} className="text-slate-200" />
-                      <span className="text-sm">No jobs found</span>
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                filtered.map((j) => (
-                  <tr key={j.job_id} className="hover:bg-slate-50/60 transition-colors group">
-                    {/* Title */}
-                    <td className="px-6 py-4">
-                      <div className="font-bold text-slate-900">{j.title}</div>
-                      <div className="text-xs text-slate-400">{j.compensation || 'No compensation specified'}</div>
-                    </td>
-
-                    {/* Location */}
-                    <td className="px-6 py-4 text-slate-600">
-                      <div className="flex items-center gap-1">
-                        <FiMapPin size={14} className="text-slate-400" />
-                        {j.location}
-                      </div>
-                    </td>
-
-                    {/* Type / Level */}
-                    <td className="px-6 py-4 text-slate-600">
-                      <div className="flex items-center gap-2">
-                        <span className="px-2 py-0.5 bg-slate-100 rounded text-xs font-medium">{j.job_type}</span>
-                        <span className="px-2 py-0.5 bg-slate-100 rounded text-xs font-medium">{j.level}</span>
-                      </div>
-                    </td>
-
-                    {/* Status */}
-                    <td className="px-6 py-4">
-                      {j.is_published ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-600">
-                          <FiCheckCircle size={11} /> Published
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-500">
-                          <FiClock size={11} /> Draft
-                        </span>
-                      )}
-                    </td>
-
-                    {/* Actions */}
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => setEditTarget(j)}
-                          title="Edit Job"
-                          className="p-2 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 transition-all"
-                        >
-                          <FiEdit2 size={15} />
-                        </button>
-                        <button
-                          onClick={() => setDeleteTarget(j)}
-                          title="Delete Job"
-                          className="p-2 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all"
-                        >
-                          <FiTrash2 size={15} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+            Review Candidates →
+          </Link>
+          <button
+            onClick={openAddModal}
+            className="flex items-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md shrink-0"
+          >
+            <FiPlus size={16} />
+            Create Job Vacancy
+          </button>
         </div>
       </div>
 
-      {/* Modals */}
-      <CareerModal
-        isOpen={showCreate}
-        onClose={() => setShowCreate(false)}
-        onSuccess={handleCreateSuccess}
-      />
+      {/* Job Grid / List */}
+      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        {loading ? (
+          <div className="py-16 text-center text-slate-400 space-y-3">
+            <FiLoader className="animate-spin mx-auto text-sky-500" size={28} />
+            <p className="text-sm font-medium">Loading job vacancies...</p>
+          </div>
+        ) : jobs.length === 0 ? (
+          <div className="py-16 text-center space-y-4 px-4">
+            <FiBriefcase className="mx-auto text-slate-300" size={32} />
+            <div className="space-y-1 max-w-sm mx-auto">
+              <h3 className="font-bold text-slate-800 text-base">No career positions created</h3>
+              <p className="text-xs text-slate-500">Click "Create Job Vacancy" to add your first job opening.</p>
+            </div>
+            <button
+              onClick={openAddModal}
+              className="text-xs text-sky-600 font-bold hover:underline"
+            >
+              + Create First Job
+            </button>
+          </div>
+        ) : (
+          <div className="divide-y divide-slate-100">
+            {jobs.map((job) => (
+              <div key={job.job_id} className="p-6 hover:bg-slate-50/50 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-2 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-slate-900 truncate">{job.title}</h3>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
+                      job.is_published ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'
+                    }`}>
+                      {job.is_published ? 'Published' : 'Draft'}
+                    </span>
+                  </div>
 
-      <CareerModal
-        isOpen={!!editTarget}
-        initialData={editTarget}
-        onClose={() => setEditTarget(null)}
-        onSuccess={handleUpdateSuccess}
-      />
+                  <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500">
+                    <span className="bg-slate-100 px-2.5 py-1 rounded-lg text-slate-700">{job.job_type}</span>
+                    <span className="bg-slate-100 px-2.5 py-1 rounded-lg text-slate-700">{job.level}</span>
+                    <span className="bg-sky-50 px-2.5 py-1 rounded-lg text-sky-600 flex items-center gap-1">
+                      <FiMapPin size={12} /> {job.location}
+                    </span>
+                    {job.compensation && (
+                      <span className="bg-emerald-50 px-2.5 py-1 rounded-lg text-emerald-700 font-bold">{job.compensation}</span>
+                    )}
+                  </div>
+                </div>
 
-      <DeleteCareerModal
-        isOpen={!!deleteTarget}
-        job={deleteTarget}
-        onConfirm={handleDelete}
-        onCancel={() => setDeleteTarget(null)}
-        loading={deleteLoading}
-      />
+                <div className="flex items-center gap-2 self-start sm:self-auto">
+                  <button
+                    onClick={() => togglePublished(job)}
+                    className="p-2 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded-xl transition-all"
+                    title={job.is_published ? 'Unpublish Job' : 'Publish Job'}
+                  >
+                    {job.is_published ? <FiEye size={16} /> : <FiEyeOff size={16} />}
+                  </button>
+
+                  <button
+                    onClick={() => openEditModal(job)}
+                    className="p-2 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded-xl transition-all"
+                    title="Edit Job"
+                  >
+                    <FiEdit2 size={16} />
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(job)}
+                    disabled={deletingId === job.job_id}
+                    className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all disabled:opacity-40"
+                    title="Delete Job"
+                  >
+                    {deletingId === job.job_id ? <FiLoader className="animate-spin" size={16} /> : <FiTrash2 size={16} />}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Add / Edit Job Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <FiBriefcase className="text-sky-500" size={18} />
+                {editingJob ? 'Edit Job Opening' : 'Create New Job Vacancy'}
+              </h3>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="w-8 h-8 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-all"
+              >
+                <FiX size={16} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSave} className="p-6 flex-1 overflow-y-auto space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Job Title *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={form.title}
+                  onChange={e => setForm({ ...form, title: e.target.value })}
+                  placeholder="E.g. Senior Frontend Engineer"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Location *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={form.location}
+                    onChange={e => setForm({ ...form, location: e.target.value })}
+                    placeholder="Remote / On-site"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Job Type *
+                  </label>
+                  <select
+                    value={form.job_type}
+                    onChange={e => setForm({ ...form, job_type: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  >
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                    <option value="Contract">Contract</option>
+                    <option value="Internship">Internship</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Experience Level *
+                  </label>
+                  <select
+                    value={form.level}
+                    onChange={e => setForm({ ...form, level: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  >
+                    <option value="Junior">Junior</option>
+                    <option value="Mid-Level">Mid-Level</option>
+                    <option value="Senior">Senior</option>
+                    <option value="Lead">Lead</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Compensation / Salary Range
+                </label>
+                <input
+                  type="text"
+                  value={form.compensation}
+                  onChange={e => setForm({ ...form, compensation: e.target.value })}
+                  placeholder="E.g. $80,000 - $110,000 / year"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Role Description *
+                </label>
+                <textarea
+                  rows={3}
+                  required
+                  value={form.description}
+                  onChange={e => setForm({ ...form, description: e.target.value })}
+                  placeholder="Provide an overview of the position, mission, and team structure..."
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all resize-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Responsibilities (Comma-separated or lines)
+                </label>
+                <input
+                  type="text"
+                  value={form.responsibilities}
+                  onChange={e => setForm({ ...form, responsibilities: e.target.value })}
+                  placeholder="Lead engineering team, Manage Next.js architecture, Conduct code reviews"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Required Skills (Comma-separated)
+                </label>
+                <input
+                  type="text"
+                  value={form.skills}
+                  onChange={e => setForm({ ...form, skills: e.target.value })}
+                  placeholder="React, Next.js, Node.js, PostgreSQL, TailwindCSS"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Nice to Have (Comma-separated)
+                </label>
+                <input
+                  type="text"
+                  value={form.nice_to_have}
+                  onChange={e => setForm({ ...form, nice_to_have: e.target.value })}
+                  placeholder="Docker, Cloudinary, Brevo API, Microservices"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 pt-2">
+                <input
+                  type="checkbox"
+                  id="is_published"
+                  checked={form.is_published}
+                  onChange={e => setForm({ ...form, is_published: e.target.checked })}
+                  className="w-4 h-4 text-sky-600 rounded focus:ring-sky-500"
+                />
+                <label htmlFor="is_published" className="text-xs font-bold text-slate-700 cursor-pointer">
+                  Publish vacancy immediately on career page
+                </label>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shadow-md flex items-center gap-2"
+                >
+                  {saving ? <FiLoader className="animate-spin" size={14} /> : null}
+                  {saving ? 'Saving...' : editingJob ? 'Update Vacancy' : 'Create Vacancy'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
-};
-
-export default CareerManagement;
+}

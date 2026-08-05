@@ -34,8 +34,8 @@ const Sidebar = () => {
     {
       label: 'Support & Comms',
       links: [
-        { name: 'Tickets',       href: '/user/tickets',       icon: <FiLifeBuoy /> },
-        { name: 'Reviews',       href: '/user/reviews',       icon: <FiStar /> },
+        { name: 'Support Tickets', href: '/user/tickets',    icon: <FiLifeBuoy /> },
+        { name: 'My Review',      href: '/user/reviews',    icon: <FiStar /> },
         { name: 'Notifications', href: '/user/notifications', icon: <FiBell /> },
       ],
     },
@@ -49,7 +49,11 @@ const Sidebar = () => {
     },
   ]
 
-  const isActive = (href) => pathname === href
+  const isActive = (href) => {
+    if (href === '/user') return pathname === '/user'
+    return pathname === href || pathname.startsWith(href + '/')
+  }
+
   const closeMenu = () => setUserSidebar(false)
 
   return (
@@ -80,9 +84,9 @@ const Sidebar = () => {
                     key={link.href}
                     href={link.href}
                     onClick={closeMenu}
-                    className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    className={`flex items-center gap-3 px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
                       isActive(link.href)
-                        ? 'bg-sky-50 text-sky-600'
+                        ? 'bg-sky-50 text-sky-600 font-bold shadow-sm'
                         : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                     }`}
                   >
@@ -99,11 +103,11 @@ const Sidebar = () => {
         <div className="px-4 py-4 border-t border-slate-100 space-y-2">
           <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
             <p className="text-xs font-bold text-slate-900 truncate">{userData?.name || 'Customer Account'}</p>
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">{userData?.email || 'User'}</p>
+            <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5 truncate">{userData?.email || 'User'}</p>
           </div>
           <button 
             onClick={logout}
-            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-all duration-200"
+            className="w-full flex items-center gap-3 px-4 py-2 rounded-xl text-xs font-bold text-rose-500 hover:bg-rose-50 transition-all duration-200"
           >
             <FiLogOut className="text-base flex-shrink-0" />
             <span>Log Out</span>
