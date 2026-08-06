@@ -26,6 +26,7 @@ import {
   FiAlertCircle,
   FiSettings,
   FiTag,
+  FiHelpCircle,
 } from 'react-icons/fi'
 import { FaGlobeAsia, FaHandshake } from 'react-icons/fa'
 
@@ -60,6 +61,10 @@ const roleLinks = {
         { name: 'Payments',      href: '/team/payments',              icon: <FiCreditCard /> },
         { name: 'Reports',       href: '/team/reports',               icon: <FiFileText /> },
         { name: 'Agreements',    href: '/team/agreements',            icon: <FiBookOpen /> },
+        { name: 'Privacy Policy', href: '/team/privacy-policy',        icon: <FiFileText /> },
+        { name: 'Terms of Service', href: '/team/terms-of-service',    icon: <FiFileText /> },
+        { name: 'Refund Policy', href: '/team/refund-policy',          icon: <FiFileText /> },
+        { name: 'FAQs',          href: '/team/faqs',                  icon: <FiHelpCircle /> },
       ],
     },
     {

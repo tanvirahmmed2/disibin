@@ -3,31 +3,31 @@ import { dbQuery } from '@/lib/database/pg';
 import { initLegalTables } from '@/lib/database/initLegalTables';
 
 export const metadata = {
-  title: 'Privacy Policy | Disibin',
-  description: 'Learn how Disibin collects, manages, and protects user data and privacy across our platforms.',
+  title: 'Refund Policy | Disibin',
+  description: 'Understand the refund conditions, SLA commitments, and terms for Disibin enterprise software and services.',
 };
 
-async function getPrivacyPolicy() {
+async function getRefundPolicy() {
   try {
     await initLegalTables();
     const res = await dbQuery(`
       SELECT id, title, content, updated_at
-      FROM privacy_policies
+      FROM refund_conditions
       WHERE is_published = true
       ORDER BY id DESC
       LIMIT 1
     `);
     if (res.rows.length > 0) return res.rows[0];
   } catch (error) {
-    console.error('Error loading Privacy Policy:', error);
+    console.error('Error loading Refund Policy:', error);
   }
   return null;
 }
 
-export default async function PrivacyPolicyPage() {
-  const policy = await getPrivacyPolicy();
+export default async function RefundPolicyPage() {
+  const policy = await getRefundPolicy();
 
-  const title = policy?.title || 'Privacy Policy';
+  const title = policy?.title || 'Refund Policy';
   const content = policy?.content;
   const lastUpdated = policy?.updated_at
     ? new Date(policy.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
@@ -60,7 +60,7 @@ export default async function PrivacyPolicyPage() {
       ) : (
         <div className="text-center py-16 px-4 bg-slate-50 rounded-3xl border border-slate-100">
           <p className="text-slate-500 text-sm font-medium">
-            No Privacy Policy document has been published yet.
+            No Refund Policy document has been published yet.
           </p>
         </div>
       )}
