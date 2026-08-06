@@ -16,34 +16,31 @@ const Footer = () => {
 
 
           <div className='space-y-6'>
-            <h4 className='text-xs font-semibold uppercase tracking-widest text-slate-50'>Platform</h4>
+            <h4 className='text-xs font-semibold uppercase tracking-widest text-slate-50'>Company</h4>
             <div className='flex flex-col gap-3 text-sm text-tertiary-light'>
               <Link href='/products' className='hover:text-secondary transition-colors'>Products</Link>
               <Link href='/about' className='hover:text-secondary transition-colors'>Our Vision</Link>
-              <Link href='/team' className='hover:text-secondary transition-colors'>Dedicated Team</Link>
+              <Link href='/board' className='hover:text-secondary transition-colors'>Advisory Board</Link>
               <Link href='/career' className='hover:text-secondary transition-colors'>Careers</Link>
+              <Link href='/join-us' className='hover:text-secondary transition-colors'>Join Us</Link>
             </div>
           </div>
 
-
           <div className='space-y-6'>
-            <h4 className='text-xs font-semibold uppercase tracking-widest text-slate-50'>Resources</h4>
+            <h4 className='text-xs font-semibold uppercase tracking-widest text-slate-50'>Resources & Support</h4>
             <div className='flex flex-col gap-3 text-sm text-tertiary-light'>
               <Link href='/faq' className='hover:text-secondary transition-colors'>FAQ</Link>
-              <Link href='/board' className='hover:text-secondary transition-colors'>Notice Board</Link>
-              <Link href='/report' className='hover:text-secondary transition-colors'>Report Issue</Link>
               <Link href='/contact' className='hover:text-secondary transition-colors'>Support Desk</Link>
+              <Link href='/report' className='hover:text-secondary transition-colors'>Report Issue</Link>
             </div>
           </div>
 
           <div className='space-y-6'>
-            <h4 className='text-xs font-semibold uppercase tracking-widest text-slate-50'>Legal & Help</h4>
+            <h4 className='text-xs font-semibold uppercase tracking-widest text-slate-50'>Legal Policies</h4>
             <div className='flex flex-col gap-3 text-sm text-tertiary-light'>
               <Link href='/privacy-policy' className='hover:text-secondary transition-colors'>Privacy Policy</Link>
               <Link href='/terms-of-service' className='hover:text-secondary transition-colors'>Terms of Service</Link>
               <Link href='/refund-policy' className='hover:text-secondary transition-colors'>Refund Policy</Link>
-              <Link href='/faq' className='hover:text-secondary transition-colors'>FAQ</Link>
-              <Link href='/contact' className='hover:text-secondary transition-colors'>Support Desk</Link>
             </div>
           </div>
 

@@ -11,12 +11,12 @@ export async function GET() {
         if (!auth.success) return NextResponse.json(auth, { status: 401 });
 
         const res = await dbQuery(`
-            SELECT t.id, t.title, t.content, t.is_published, t.created_at, t.updated_at,
+            SELECT t.id, t.title, t.content, t.is_published, t.order_num, t.created_at, t.updated_at,
                    t1.name as creator_name, t2.name as updater_name
             FROM terms_and_conditions t
             LEFT JOIN teams t1 ON t.created_by = t1.id
             LEFT JOIN teams t2 ON t.updated_by = t2.id
-            ORDER BY t.id DESC
+            ORDER BY t.order_num ASC, t.id ASC
         `);
 
         return NextResponse.json({ success: true, data: res.rows });
@@ -25,7 +25,7 @@ export async function GET() {
     }
 }
 
-// POST — Create Terms & Conditions (Manager Only)
+// POST — Create Terms & Conditions Item (Manager Only)
 export async function POST(req) {
     try {
         await initLegalTables();
@@ -33,7 +33,7 @@ export async function POST(req) {
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
         const body = await req.json();
-        const { title, content, is_published } = body;
+        const { title, content, is_published, order_num } = body;
 
         if (!title || !title.trim()) {
             return NextResponse.json({ success: false, message: "Title is required" }, { status: 400 });
@@ -43,12 +43,13 @@ export async function POST(req) {
         }
 
         const publishedState = is_published !== undefined ? Boolean(is_published) : true;
+        const orderVal = Number(order_num) || 0;
 
         const res = await dbQuery(`
-            INSERT INTO terms_and_conditions (title, content, is_published, created_by, updated_by)
-            VALUES ($1, $2, $3, $4, $4)
+            INSERT INTO terms_and_conditions (title, content, is_published, order_num, created_by, updated_by)
+            VALUES ($1, $2, $3, $4, $5, $5)
             RETURNING *
-        `, [title.trim(), content.trim(), publishedState, auth.data.id]);
+        `, [title.trim(), content.trim(), publishedState, orderVal, auth.data.id]);
 
         const record = res.rows[0];
 
@@ -56,15 +57,15 @@ export async function POST(req) {
         await dbQuery(`
             INSERT INTO activity_logs (team_id, action, entity_type, entity_id, description)
             VALUES ($1, 'TERMS_CONDITION_CREATE', 'terms_and_conditions', $2, $3)
-        `, [auth.data.id, record.id, `Created Terms & Conditions "${record.title}"`]).catch(() => {});
+        `, [auth.data.id, record.id, `Created Terms & Conditions item "${record.title}"`]).catch(() => {});
 
-        return NextResponse.json({ success: true, message: "Terms & Conditions created successfully", data: record }, { status: 201 });
+        return NextResponse.json({ success: true, message: "Terms & Conditions item created successfully", data: record }, { status: 201 });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
 
-// PUT — Update Terms & Conditions (Manager Only)
+// PUT — Update Terms & Conditions Item (Manager Only)
 export async function PUT(req) {
     try {
         await initLegalTables();
@@ -72,7 +73,7 @@ export async function PUT(req) {
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
         const body = await req.json();
-        const { id, title, content, is_published } = body;
+        const { id, title, content, is_published, order_num } = body;
 
         if (!id) {
             return NextResponse.json({ success: false, message: "ID is required" }, { status: 400 });
@@ -83,14 +84,16 @@ export async function PUT(req) {
             SET title = COALESCE(NULLIF($1, ''), title),
                 content = COALESCE(NULLIF($2, ''), content),
                 is_published = COALESCE($3, is_published),
-                updated_by = $4,
+                order_num = COALESCE($4, order_num),
+                updated_by = $5,
                 updated_at = now()
-            WHERE id = $5
+            WHERE id = $6
             RETURNING *
         `, [
             title?.trim() || '',
             content?.trim() || '',
             is_published !== undefined ? Boolean(is_published) : null,
+            order_num !== undefined ? Number(order_num) : null,
             auth.data.id,
             id
         ]);
@@ -105,7 +108,7 @@ export async function PUT(req) {
         await dbQuery(`
             INSERT INTO activity_logs (team_id, action, entity_type, entity_id, description)
             VALUES ($1, 'TERMS_CONDITION_UPDATE', 'terms_and_conditions', $2, $3)
-        `, [auth.data.id, record.id, `Updated Terms & Conditions "${record.title}"`]).catch(() => {});
+        `, [auth.data.id, record.id, `Updated Terms & Conditions item "${record.title}"`]).catch(() => {});
 
         return NextResponse.json({ success: true, message: "Terms & Conditions updated successfully", data: record });
     } catch (error) {
@@ -113,7 +116,7 @@ export async function PUT(req) {
     }
 }
 
-// DELETE — Delete Terms & Conditions (Manager Only)
+// DELETE — Delete Terms & Conditions Item (Manager Only)
 export async function DELETE(req) {
     try {
         await initLegalTables();
@@ -139,9 +142,9 @@ export async function DELETE(req) {
         await dbQuery(`
             INSERT INTO activity_logs (team_id, action, entity_type, entity_id, description)
             VALUES ($1, 'TERMS_CONDITION_DELETE', 'terms_and_conditions', $2, $3)
-        `, [auth.data.id, deleted.id, `Deleted Terms & Conditions "${deleted.title}"`]).catch(() => {});
+        `, [auth.data.id, deleted.id, `Deleted Terms & Conditions item "${deleted.title}"`]).catch(() => {});
 
-        return NextResponse.json({ success: true, message: "Terms & Conditions deleted successfully", data: deleted });
+        return NextResponse.json({ success: true, message: "Terms & Conditions item deleted successfully", data: deleted });
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }

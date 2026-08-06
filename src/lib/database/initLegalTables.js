@@ -12,6 +12,7 @@ export async function initLegalTables() {
         title TEXT NOT NULL,
         content TEXT NOT NULL,
         is_published BOOLEAN DEFAULT true,
+        order_num INT DEFAULT 0,
         created_by INT REFERENCES teams(id) ON DELETE SET NULL,
         updated_by INT REFERENCES teams(id) ON DELETE SET NULL,
         created_at TIMESTAMP DEFAULT now(),
@@ -23,6 +24,7 @@ export async function initLegalTables() {
         title TEXT NOT NULL,
         content TEXT NOT NULL,
         is_published BOOLEAN DEFAULT true,
+        order_num INT DEFAULT 0,
         created_by INT REFERENCES teams(id) ON DELETE SET NULL,
         updated_by INT REFERENCES teams(id) ON DELETE SET NULL,
         created_at TIMESTAMP DEFAULT now(),
@@ -34,6 +36,7 @@ export async function initLegalTables() {
         title TEXT NOT NULL,
         content TEXT NOT NULL,
         is_published BOOLEAN DEFAULT true,
+        order_num INT DEFAULT 0,
         created_by INT REFERENCES teams(id) ON DELETE SET NULL,
         updated_by INT REFERENCES teams(id) ON DELETE SET NULL,
         created_at TIMESTAMP DEFAULT now(),
@@ -52,6 +55,10 @@ export async function initLegalTables() {
         created_at TIMESTAMP DEFAULT now(),
         updated_at TIMESTAMP DEFAULT now()
       );
+
+      ALTER TABLE privacy_policies ADD COLUMN IF NOT EXISTS order_num INT DEFAULT 0;
+      ALTER TABLE terms_and_conditions ADD COLUMN IF NOT EXISTS order_num INT DEFAULT 0;
+      ALTER TABLE refund_conditions ADD COLUMN IF NOT EXISTS order_num INT DEFAULT 0;
     `);
     initialized = true;
   } catch (error) {

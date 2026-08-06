@@ -4,65 +4,49 @@ import { initLegalTables } from '@/lib/database/initLegalTables';
 
 export const metadata = {
   title: 'Terms of Service | Disibin',
-  description: 'Review the legal terms and operational guidelines governing the use of Disibin platforms and services.',
+  description: 'Terms of Service for Disibin platforms and services.',
 };
 
 async function getTermsOfService() {
   try {
     await initLegalTables();
     const res = await dbQuery(`
-      SELECT id, title, content, updated_at
+      SELECT id, title, content, order_num, updated_at
       FROM terms_and_conditions
       WHERE is_published = true
-      ORDER BY id DESC
-      LIMIT 1
+      ORDER BY order_num ASC, id ASC
     `);
-    if (res.rows.length > 0) return res.rows[0];
+    return res.rows || [];
   } catch (error) {
-    console.error('Error loading Terms of Service:', error);
+    console.error('Error loading Terms of Service items:', error);
+    return [];
   }
-  return null;
 }
 
 export default async function TermsOfServicePage() {
-  const terms = await getTermsOfService();
-
-  const title = terms?.title || 'Terms of Service';
-  const content = terms?.content;
-  const lastUpdated = terms?.updated_at
-    ? new Date(terms.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-    : null;
+  const items = await getTermsOfService();
 
   return (
-    <div className="max-w-5xl mx-auto py-24 px-6 sm:px-10 min-h-screen">
-      {/* Header */}
-      <div className="mb-16 border-b border-slate-100 pb-10">
-        <p className="uppercase tracking-[0.3em] text-xs text-sky-600 font-semibold mb-4">
-          Legal Documentation
-        </p>
+    <div className="max-w-4xl mx-auto py-20 px-6 font-sans min-h-screen">
+      <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-8 border-b border-slate-200 pb-4">
+        Terms of Service
+      </h1>
 
-        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-slate-900 leading-tight">
-          {title}
-        </h1>
-
-        {lastUpdated && (
-          <p className="mt-4 text-xs font-semibold text-slate-400 uppercase tracking-widest">
-            Last Updated: {lastUpdated}
-          </p>
-        )}
-      </div>
-
-      {/* Content */}
-      {content ? (
-        <div className="prose prose-slate max-w-none space-y-8 text-slate-600 leading-relaxed whitespace-pre-line text-base">
-          {content}
+      {items.length > 0 ? (
+        <div className="space-y-8">
+          {items.map((item) => (
+            <div key={item.id} className="space-y-2">
+              <h2 className="text-xl font-semibold text-slate-900">
+                {item.title}
+              </h2>
+              <div className="text-slate-700 leading-relaxed whitespace-pre-line text-base">
+                {item.content}
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
-        <div className="text-center py-16 px-4 bg-slate-50 rounded-3xl border border-slate-100">
-          <p className="text-slate-500 text-sm font-medium">
-            No Terms of Service document has been published yet.
-          </p>
-        </div>
+        <p className="text-slate-500 text-sm">No Terms of Service items available.</p>
       )}
     </div>
   );
