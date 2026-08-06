@@ -82,7 +82,6 @@ const roleLinks = {
       links: [
         { name: 'Team Login Logs', href: '/team/team-login-logs',     icon: <FiInbox /> },
         { name: 'User Login Logs', href: '/team/user-login-logs',     icon: <FiInbox /> },
-        { name: 'Security',        href: '/team/security',            icon: <FiShield /> },
       ],
     },
   ],
@@ -150,7 +149,10 @@ const Sidebar = () => {
 
   const isActive = (href) => {
     if (href === '/team') return pathname === '/team'
-    if (href === '/team/career') return pathname === '/team/career'
+    if (href === '/team/products') return pathname === '/team/products' || (pathname.startsWith('/team/products/') && !pathname.startsWith('/team/products/features'))
+    if (href === '/team/career') return pathname === '/team/career' || (pathname.startsWith('/team/career/') && !pathname.startsWith('/team/career/applications'))
+    if (href === '/team/leads/clients') return pathname === '/team/leads/clients' || pathname.startsWith('/team/leads/clients/')
+    if (href === '/team/leads/business') return pathname === '/team/leads/business' || pathname.startsWith('/team/leads/business/')
     return pathname === href || pathname.startsWith(href + '/')
   }
   const closeMenu = () => setDashboardSidebar(false)
@@ -185,11 +187,11 @@ const Sidebar = () => {
                     onClick={closeMenu}
                     className={`flex items-center gap-3 px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
                       isActive(link.href)
-                        ? 'bg-sky-50 text-sky-600 font-bold shadow-sm'
+                        ? 'bg-primary/10 text-primary font-bold shadow-sm'
                         : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                     }`}
                   >
-                    <span className="text-base flex-shrink-0">{link.icon}</span>
+                    <span className="text-base shrink-0">{link.icon}</span>
                     <span>{link.name}</span>
                   </Link>
                 ))}
@@ -208,7 +210,7 @@ const Sidebar = () => {
                 onClick={closeMenu}
                 className={`flex items-center gap-3 px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
                   isActive('/team/profile')
-                    ? 'bg-sky-50 text-sky-600 font-bold shadow-sm'
+                    ? 'bg-primary/10 text-primary font-bold shadow-sm'
                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
@@ -220,7 +222,7 @@ const Sidebar = () => {
                 onClick={closeMenu}
                 className={`flex items-center gap-3 px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
                   isActive('/team/settings')
-                    ? 'bg-sky-50 text-sky-600 font-bold shadow-sm'
+                    ? 'bg-primary/10 text-primary font-bold shadow-sm'
                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
@@ -232,7 +234,7 @@ const Sidebar = () => {
                 onClick={closeMenu}
                 className={`flex items-center gap-3 px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
                   isActive('/team/security')
-                    ? 'bg-sky-50 text-sky-600 font-bold shadow-sm'
+                    ? 'bg-primary/10 text-primary font-bold shadow-sm'
                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
