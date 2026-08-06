@@ -140,7 +140,7 @@ const TiptapEditor = ({ value, onChange, placeholder = "Write something...", hid
   }
 
   return (
-    <div className={`w-full ${hideToolbar ? 'rounded-2xl' : 'rounded-[2rem]'} border border-slate-200 focus-within:ring-2 focus-within:ring-sky-500 focus-within:border-sky-500 transition-all overflow-hidden bg-white`}>
+    <div className="input-style p-0 overflow-hidden bg-white focus-within:border-sky-400 focus-within:ring-2 focus-within:ring-sky-400/20 transition-all">
       {!hideToolbar && <MenuBar editor={editor} />}
       <EditorContent editor={editor} />
     </div>

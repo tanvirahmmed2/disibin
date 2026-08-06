@@ -133,3 +133,38 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.75);
 }
+
+/* ── Form Controls & Inputs ────────────────────────── */
+.input-style {
+  width: 100%;
+  padding: 0.875rem 1.25rem;
+  border-radius: 1rem;
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  border: 1px solid #e2e8f0;
+  outline: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+}
+
+.input-style::placeholder {
+  color: #94a3b8;
+}
+
+.input-style:focus,
+.input-style:focus-within {
+  background-color: #ffffff;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+}
+
+.input-style:disabled,
+.input-style:read-only {
+  background-color: #f1f5f9;
+  color: #64748b;
+  cursor: not-allowed;
+  border-color: #e2e8f0;
+  box-shadow: none;
+}

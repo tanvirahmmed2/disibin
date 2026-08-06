@@ -221,6 +221,27 @@ CREATE INDEX idx_supports_email ON supports(email);
 CREATE INDEX idx_supports_status ON supports(status);
 CREATE INDEX idx_supports_responded_by ON supports(responded_by);
 
+CREATE TABLE IF NOT EXISTS reports (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  description TEXT NOT NULL,
+  reply TEXT,                 
+  status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'replied')),
+  responded_by INT REFERENCES teams(id) ON DELETE SET NULL,
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);
+
+CREATE TRIGGER update_reports_modtime 
+BEFORE UPDATE ON reports 
+FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
+
+CREATE INDEX idx_reports_email ON reports(email);
+CREATE INDEX idx_reports_status ON reports(status);
+CREATE INDEX idx_reports_responded_by ON reports(responded_by);
+
 CREATE TABLE IF NOT EXISTS tickets (
   id SERIAL PRIMARY KEY,
   title TEXT NOT NULL,
