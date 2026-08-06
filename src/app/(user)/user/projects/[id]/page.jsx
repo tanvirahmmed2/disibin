@@ -205,13 +205,13 @@ export default function UserProjectDetailPage() {
                   value={message}
                   onChange={e => setMessage(e.target.value)}
                   placeholder="Type message or question..."
-                  className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  className="input-style text-sm py-2"
                 />
                 <input
                   type="file"
                   ref={fileInputRef}
                   onChange={e => setAttachmentFile(e.target.files[0])}
-                  className="hidden"
+                  className="input-style"
                 />
                 <button
                   type="button"

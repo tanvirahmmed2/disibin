@@ -68,7 +68,7 @@ function CreateFeatureModal({ onClose, onCreate }) {
               value={name}
               onChange={e => setName(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleCreate(); } if (e.key === 'Escape') onClose(); }}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-light outline-none text-sm font-semibold text-slate-900 transition-all"
+              className="input-style font-semibold"
               placeholder="e.g. 24/7 Support"
             />
           </div>
@@ -78,7 +78,7 @@ function CreateFeatureModal({ onClose, onCreate }) {
               value={description}
               onChange={e => setDescription(e.target.value)}
               rows={3}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-light outline-none text-sm text-slate-600 resize-none transition-all"
+              className="input-style resize-none"
               placeholder="Brief description of this feature..."
             />
           </div>
@@ -279,7 +279,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-light outline-none transition-all font-semibold text-slate-900"
+                className="input-style font-semibold"
                 placeholder="E.g. Enterprise Bundle"
               />
             </div>
@@ -294,7 +294,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
                   min="0"
                   value={formData.price}
                   onChange={handleChange}
-                  className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-light outline-none transition-all font-semibold"
+                  className="input-style font-semibold"
                   placeholder="0"
                 />
               </div>
@@ -307,7 +307,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
                   min="0"
                   value={formData.discount}
                   onChange={handleChange}
-                  className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-light outline-none transition-all font-semibold text-emerald-600"
+                  className="input-style font-semibold text-emerald-600"
                   placeholder="0"
                 />
               </div>
@@ -320,7 +320,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
                 name="demo_url"
                 value={formData.demo_url || ''}
                 onChange={handleChange}
-                className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-light outline-none transition-all"
+                className="input-style"
                 placeholder="https://demo.example.com"
               />
             </div>
@@ -336,7 +336,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
                   name="is_featured"
                   checked={!!formData.is_featured}
                   onChange={handleChange}
-                  className="sr-only peer"
+                  className="input-style"
                 />
                 <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-light"></div>
               </label>
@@ -397,7 +397,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
                   placeholder="Filter features..."
                   value={featureSearch}
                   onChange={(e) => setFeatureSearch(e.target.value)}
-                  className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary-light outline-none w-36 sm:w-48"
+                  className="input-style text-xs py-1.5"
                 />
               )}
               <button

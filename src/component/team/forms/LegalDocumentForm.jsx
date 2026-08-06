@@ -41,7 +41,7 @@ export default function LegalDocumentForm({
               placeholder={`e.g. 01 — Data Collection & Privacy Standards`}
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm font-medium"
+              className="input-style font-medium"
             />
           </div>
 
@@ -53,7 +53,7 @@ export default function LegalDocumentForm({
               type="number"
               value={formData.order_num || 0}
               onChange={(e) => setFormData({ ...formData, order_num: parseInt(e.target.value) || 0 })}
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm"
+              className="input-style"
             />
           </div>
         </div>
@@ -68,7 +68,7 @@ export default function LegalDocumentForm({
             placeholder={`Enter full details for this ${documentName.toLowerCase()} section...`}
             value={formData.content}
             onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm leading-relaxed"
+            className="input-style leading-relaxed"
           />
         </div>
 
@@ -78,7 +78,7 @@ export default function LegalDocumentForm({
             id="legal_is_published"
             checked={formData.is_published}
             onChange={(e) => setFormData({ ...formData, is_published: e.target.checked })}
-            className="w-4 h-4 text-sky-600 rounded focus:ring-sky-500 cursor-pointer"
+            className="input-style cursor-pointer"
           />
           <label htmlFor="legal_is_published" className="text-sm font-medium text-slate-700 cursor-pointer">
             Publish Item (Make visible on public website)

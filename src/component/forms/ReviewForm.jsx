@@ -63,7 +63,7 @@ const ReviewForm = ({ onSuccess }) => {
           rows={4}
           value={formData.comment}
           onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
-          className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none transition-all resize-none"
+          className="input-style resize-none"
           placeholder="Tell us what you think..."
         />
       </div>

@@ -39,7 +39,7 @@ export default function FaqForm({
             placeholder="e.g. Which tech stacks do you use for web applications?"
             value={formData.question}
             onChange={(e) => setFormData({ ...formData, question: e.target.value })}
-            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm font-medium"
+            className="input-style font-medium"
           />
         </div>
 
@@ -53,7 +53,7 @@ export default function FaqForm({
             placeholder="Enter detailed answer..."
             value={formData.answer}
             onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
-            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm leading-relaxed"
+            className="input-style leading-relaxed"
           />
         </div>
 
@@ -67,7 +67,7 @@ export default function FaqForm({
               placeholder="e.g. General, Web Development, Web Management"
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
+              className="input-style"
             />
           </div>
 
@@ -79,7 +79,7 @@ export default function FaqForm({
               type="number"
               value={formData.order_num}
               onChange={(e) => setFormData({ ...formData, order_num: parseInt(e.target.value) || 0 })}
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
+              className="input-style"
             />
           </div>
         </div>
@@ -90,7 +90,7 @@ export default function FaqForm({
             id="faq_is_published_inline"
             checked={formData.is_published}
             onChange={(e) => setFormData({ ...formData, is_published: e.target.checked })}
-            className="w-4 h-4 text-sky-600 rounded focus:ring-sky-500 cursor-pointer"
+            className="input-style cursor-pointer"
           />
           <label htmlFor="faq_is_published_inline" className="text-sm font-medium text-slate-700 cursor-pointer">
             Publish FAQ (Make visible on public website)

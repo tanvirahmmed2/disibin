@@ -64,7 +64,7 @@ const RecoverAccountForm = () => {
     }
   };
 
-  const inputCls = 'w-full px-4 py-2.5 rounded-lg border border-slate-200 outline-none focus:border-slate-400 transition-colors bg-white text-slate-900';
+  const inputCls = 'input-style';
   const labelCls = 'text-xs font-semibold uppercase tracking-wider text-slate-500 ml-1';
 
   // Step 2 — Password reset form (token present in URL)

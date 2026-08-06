@@ -190,7 +190,7 @@ export default function ClientLeadsPage() {
               placeholder="Search leads by name, email, phone..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-9 py-2 bg-white rounded-xl border border-slate-200 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm"
+              className="input-style pl-10 pr-9 py-2 text-sm shadow-sm"
             />
             {search && (
               <button
@@ -257,7 +257,7 @@ export default function ClientLeadsPage() {
                             type="text"
                             value={editForm.name}
                             onChange={e => setEditForm({ ...editForm, name: e.target.value })}
-                            className="w-full px-3 py-1.5 bg-white border border-sky-300 rounded-lg text-xs text-slate-900 font-bold focus:outline-none focus:ring-2 focus:ring-sky-500"
+                            className="input-style py-1.5 text-xs font-bold"
                             placeholder="Name *"
                           />
                         </td>
@@ -266,14 +266,14 @@ export default function ClientLeadsPage() {
                             type="email"
                             value={editForm.email}
                             onChange={e => setEditForm({ ...editForm, email: e.target.value })}
-                            className="w-full px-3 py-1.5 bg-white border border-sky-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                            className="input-style py-1.5 text-xs"
                             placeholder="Email *"
                           />
                           <input
                             type="text"
                             value={editForm.phone}
                             onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
-                            className="w-full px-3 py-1.5 bg-white border border-sky-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                            className="input-style py-1.5 text-xs"
                             placeholder="Phone"
                           />
                         </td>
@@ -282,7 +282,7 @@ export default function ClientLeadsPage() {
                             type="text"
                             value={editForm.address}
                             onChange={e => setEditForm({ ...editForm, address: e.target.value })}
-                            className="w-full px-3 py-1.5 bg-white border border-sky-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                            className="input-style py-1.5 text-xs"
                             placeholder="Address"
                           />
                         </td>
@@ -291,7 +291,7 @@ export default function ClientLeadsPage() {
                             type="text"
                             value={editForm.note}
                             onChange={e => setEditForm({ ...editForm, note: e.target.value })}
-                            className="w-full px-3 py-1.5 bg-white border border-sky-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                            className="input-style py-1.5 text-xs"
                             placeholder="Note"
                           />
                         </td>

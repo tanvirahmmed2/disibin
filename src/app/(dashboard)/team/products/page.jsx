@@ -132,7 +132,7 @@ const ProductsManagement = () => {
             <input
               type="text"
               placeholder="Search products by name or slug..."
-              className="bg-transparent border-none outline-none text-sm w-full text-slate-700 placeholder:text-slate-400"
+              className="input-style text-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />

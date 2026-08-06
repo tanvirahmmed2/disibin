@@ -35,7 +35,7 @@ const RegisterForm = () => {
     }
   };
 
-  const inputCls = 'w-full px-4 p-2 rounded-lg outline-none border border-black/20';
+  const inputCls = 'input-style';
   const labelCls = 'text-xs font-bold uppercase tracking-wider text-slate-400 ml-1';
 
   return (

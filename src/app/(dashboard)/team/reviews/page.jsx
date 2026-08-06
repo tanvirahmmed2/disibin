@@ -295,7 +295,7 @@ export default function TeamReviewsPage() {
                   onChange={e => setReplyText(e.target.value)}
                   placeholder="Thank the user or address their feedback..."
                   rows={4}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all resize-none"
+                  className="input-style text-sm resize-none"
                 />
               </div>
 

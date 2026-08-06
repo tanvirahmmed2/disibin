@@ -201,7 +201,7 @@ export default function UserReviewsPage() {
                 onChange={e => setComment(e.target.value)}
                 placeholder="Share detail about your project, service quality, and teamwork experience..."
                 rows={4}
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all resize-none"
+                className="input-style text-sm resize-none"
               />
             </div>
 

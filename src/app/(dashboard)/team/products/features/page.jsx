@@ -88,7 +88,7 @@ function FeatureItem({ feature, onUpdate, onDelete }) {
               value={description}
               onChange={e => setDescription(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') handleSave(); if (e.key === 'Escape') cancelEdit(); }}
-              className="w-full px-3 py-1.5 rounded-lg outline-none text-xs text-slate-600"
+              className="input-style text-xs py-1.5"
               placeholder="Description (optional)"
             />
           </div>
@@ -295,7 +295,7 @@ const FeaturesPage = () => {
               placeholder="Short description (optional)"
               value={form.description}
               onChange={e => setForm({ ...form, description: e.target.value })}
-              className="px-3.5 py-2 rounded-lg border border-slate-200 bg-white  outline-none text-xs"
+              className="input-style text-xs py-2"
             />
           </div>
           <div className="flex justify-end gap-2 pt-1">
@@ -325,7 +325,7 @@ const FeaturesPage = () => {
           placeholder="Search features..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full pl-10 pr-9 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-700 outline-none focus:ring-2 "
+          className="input-style pl-10 pr-9 text-xs py-2"
         />
         {search && (
           <button

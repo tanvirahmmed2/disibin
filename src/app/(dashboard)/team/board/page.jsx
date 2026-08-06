@@ -252,7 +252,7 @@ export default function TeamBoardPage() {
                   value={form.email}
                   onChange={e => setForm({ ...form, email: e.target.value })}
                   placeholder="eleanor@disibin.com"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all"
+                  className="input-style text-sm py-2"
                 />
               </div>
 
@@ -265,7 +265,7 @@ export default function TeamBoardPage() {
                   ref={fileInputRef}
                   onChange={handleImageChange}
                   accept="image/*"
-                  className="hidden"
+                  className="input-style"
                 />
                 <div className="flex items-center gap-3">
                   <button
@@ -296,7 +296,7 @@ export default function TeamBoardPage() {
                 value={form.bio}
                 onChange={e => setForm({ ...form, bio: e.target.value })}
                 placeholder="Short background summary, achievements, or domain expertise..."
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all resize-none"
+                className="input-style text-sm resize-none py-2"
               />
             </div>
 
@@ -332,7 +332,7 @@ export default function TeamBoardPage() {
               placeholder="Search by name, post title, email..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-9 py-2 bg-white rounded-xl border border-slate-200 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all shadow-sm"
+              className="input-style pl-10 pr-9 text-sm py-2"
             />
             {search && (
               <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">

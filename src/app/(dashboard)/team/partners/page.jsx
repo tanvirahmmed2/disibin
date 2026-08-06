@@ -190,7 +190,7 @@ export default function TeamPartnersManagement() {
               placeholder="Search partner by name or email..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-9 py-2 bg-white rounded-xl border border-slate-200 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm"
+              className="input-style pl-10 pr-9 text-sm py-2"
             />
             {search && (
               <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
@@ -362,7 +362,7 @@ export default function TeamPartnersManagement() {
                   ref={fileInputRef}
                   onChange={handleImageUpload}
                   accept="image/*"
-                  className="hidden"
+                  className="input-style"
                 />
 
                 <div className="flex items-center gap-3">

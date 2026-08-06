@@ -163,7 +163,7 @@ export default function TeamCareerApplicationsPage() {
             placeholder="Search candidate name, email..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+            className="input-style text-xs py-1.5"
           />
         </div>
       </div>
@@ -228,7 +228,7 @@ export default function TeamCareerApplicationsPage() {
                       value={app.status}
                       disabled={updatingId === app.app_id}
                       onChange={(e) => handleStatusChange(app.app_id, e.target.value)}
-                      className="px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all cursor-pointer disabled:opacity-50"
+                      className="input-style text-xs font-bold cursor-pointer py-2"
                     >
                       <option value="applied">Applied</option>
                       <option value="interviewing">Interviewing</option>

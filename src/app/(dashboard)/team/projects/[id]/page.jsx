@@ -255,7 +255,7 @@ export default function TeamProjectDetailPage() {
               value={project.status}
               disabled={updatingStatus}
               onChange={(e) => handleStatusChange(e.target.value)}
-              className="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 cursor-pointer disabled:opacity-50"
+              className="input-style text-xs font-bold cursor-pointer py-1.5"
             >
               <option value="pending">Pending</option>
               <option value="working">Working</option>
@@ -324,13 +324,13 @@ export default function TeamProjectDetailPage() {
                   value={message}
                   onChange={e => setMessage(e.target.value)}
                   placeholder="Type staff response..."
-                  className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  className="input-style text-sm py-2"
                 />
                 <input
                   type="file"
                   ref={fileInputRef}
                   onChange={e => setAttachmentFile(e.target.files[0])}
-                  className="hidden"
+                  className="input-style"
                 />
                 <button
                   type="button"
@@ -389,7 +389,7 @@ export default function TeamProjectDetailPage() {
                   <select
                     value={purProductId}
                     onChange={e => setPurProductId(e.target.value)}
-                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl font-semibold text-slate-800"
+                    className="input-style font-semibold py-2"
                   >
                     <option value="">-- Custom Service Proposal --</option>
                     {products.map(p => (
@@ -417,7 +417,7 @@ export default function TeamProjectDetailPage() {
                       value={purDiscount}
                       onChange={e => setPurDiscount(e.target.value)}
                       placeholder="0"
-                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl font-semibold text-slate-800"
+                      className="input-style font-semibold py-2"
                     />
                   </div>
                 </div>
@@ -518,7 +518,7 @@ export default function TeamProjectDetailPage() {
                     ref={agrFileInputRef}
                     onChange={e => setAgrFile(e.target.files[0])}
                     accept=".pdf,.doc,.docx"
-                    className="hidden"
+                    className="input-style"
                   />
                   <button
                     type="button"

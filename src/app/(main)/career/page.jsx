@@ -288,7 +288,7 @@ export default function PublicCareerPage() {
                   ref={fileInputRef}
                   onChange={e => setResumeFile(e.target.files[0])}
                   accept=".pdf,.doc,.docx"
-                  className="hidden"
+                  className="input-style"
                 />
                 <div className="flex items-center gap-3">
                   <button
@@ -316,7 +316,7 @@ export default function PublicCareerPage() {
                   value={coverLetter}
                   onChange={e => setCoverLetter(e.target.value)}
                   placeholder="Introduce yourself and describe why you are a great fit for this role..."
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all resize-none"
+                  className="input-style text-sm resize-none py-2"
                 />
               </div>
 

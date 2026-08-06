@@ -190,7 +190,7 @@ export default function BoardMemberDetailPage() {
                 ref={fileInputRef}
                 onChange={handleImageChange}
                 accept="image/*"
-                className="hidden"
+                className="input-style"
               />
               <button
                 type="button"
@@ -214,7 +214,7 @@ export default function BoardMemberDetailPage() {
                 required
                 value={form.name}
                 onChange={e => setForm({ ...form, name: e.target.value })}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all"
+                className="input-style text-sm py-2"
               />
             </div>
 
@@ -227,7 +227,7 @@ export default function BoardMemberDetailPage() {
                 required
                 value={form.post}
                 onChange={e => setForm({ ...form, post: e.target.value })}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all"
+                className="input-style text-sm py-2"
               />
             </div>
           </div>
@@ -240,7 +240,7 @@ export default function BoardMemberDetailPage() {
               type="email"
               value={form.email}
               onChange={e => setForm({ ...form, email: e.target.value })}
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all"
+              className="input-style text-sm py-2"
             />
           </div>
 
@@ -252,7 +252,7 @@ export default function BoardMemberDetailPage() {
               rows={4}
               value={form.bio}
               onChange={e => setForm({ ...form, bio: e.target.value })}
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all resize-none"
+              className="input-style text-sm resize-none py-2"
             />
           </div>
 

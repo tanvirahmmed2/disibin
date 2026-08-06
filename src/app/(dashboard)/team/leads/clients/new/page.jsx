@@ -77,7 +77,7 @@ export default function NewClientLeadPage() {
             value={form.name}
             onChange={e => setForm({ ...form, name: e.target.value })}
             placeholder="e.g. Acme Corporation / Sarah Connor"
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none text-sm font-semibold text-slate-900 transition-all"
+            className="input-style font-semibold"
           />
         </div>
 
@@ -90,7 +90,7 @@ export default function NewClientLeadPage() {
               value={form.email}
               onChange={e => setForm({ ...form, email: e.target.value })}
               placeholder="client@company.com"
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none text-sm font-semibold text-slate-900 transition-all"
+              className="input-style font-semibold"
             />
           </div>
 
@@ -101,7 +101,7 @@ export default function NewClientLeadPage() {
               value={form.phone}
               onChange={e => setForm({ ...form, phone: e.target.value })}
               placeholder="+1 (555) 234-5678"
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none text-sm font-semibold text-slate-900 transition-all"
+              className="input-style font-semibold"
             />
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function NewClientLeadPage() {
             value={form.address}
             onChange={e => setForm({ ...form, address: e.target.value })}
             placeholder="e.g. 100 Main St, San Francisco, CA"
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none text-sm text-slate-800 transition-all"
+            className="input-style"
           />
         </div>
 
@@ -124,7 +124,7 @@ export default function NewClientLeadPage() {
             value={form.note}
             onChange={e => setForm({ ...form, note: e.target.value })}
             placeholder="Write any relevant lead notes, custom project requirements, or outreach history..."
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500 outline-none text-sm text-slate-800 resize-none transition-all"
+            className="input-style resize-none"
           />
         </div>
 

@@ -61,7 +61,7 @@ const ProfileForm = ({ onSaved }) => {
     }
   };
 
-  const inputCls = 'w-full px-5 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-sky-500 transition-all outline-none';
+  const inputCls = 'input-style';
   const labelCls = 'text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 ml-1';
 
   return (
@@ -83,7 +83,7 @@ const ProfileForm = ({ onSaved }) => {
         <div className="space-y-1.5 opacity-60">
           <label className={labelCls}>Email (Locked)</label>
           <div className="relative">
-            <input type="email" value={userData?.email || ''} disabled className="w-full pl-12 pr-5 py-4 rounded-2xl bg-slate-100 border-none cursor-not-allowed outline-none" />
+            <input type="email" value={userData?.email || ''} disabled className="input-style pl-12" />
             <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
           </div>
         </div>

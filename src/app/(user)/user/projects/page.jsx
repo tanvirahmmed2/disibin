@@ -140,7 +140,7 @@ export default function UserProjectsPage() {
               <select
                 value={productId}
                 onChange={e => setProductId(e.target.value)}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                className="input-style text-sm py-2"
               >
                 <option value="">-- No specific base product --</option>
                 {products.map(p => (
@@ -158,7 +158,7 @@ export default function UserProjectsPage() {
                 value={initialMessage}
                 onChange={e => setInitialMessage(e.target.value)}
                 placeholder="Describe your goals, requirements, desired timeline, or custom features..."
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all resize-none"
+                className="input-style text-sm resize-none py-2"
               />
             </div>
 

@@ -122,7 +122,7 @@ const ContactPage = () => {
                 onChange={handleChange}
                 placeholder="Full Name"
                 required
-                className="w-full px-5 py-4 rounded-2xl  bg-slate-100 outline-none focus:border-sky-400 transition-all duration-300"
+                className="input-style"
               />
 
               <input
@@ -132,7 +132,7 @@ const ContactPage = () => {
                 onChange={handleChange}
                 placeholder="Email Address"
                 required
-                className="w-full px-5 py-4 rounded-2xl bg-slate-100 outline-none focus:border-sky-400 transition-all duration-300"
+                className="input-style"
               />
 
             </div>
@@ -143,7 +143,8 @@ const ContactPage = () => {
               value={formData.subject}
               onChange={handleChange}
               placeholder="Subject"
-              className="w-full px-5 py-4 rounded-2xl bg-slate-100 outline-none focus:border-sky-400 transition-all duration-300"
+              required
+              className="input-style"
             />
 
             <TiptapEditor

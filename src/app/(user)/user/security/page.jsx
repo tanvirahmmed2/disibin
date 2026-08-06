@@ -168,8 +168,7 @@ export default function UserSecurityPage() {
     }
   };
 
-  const inputCls =
-    'w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-medium text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all';
+  const inputCls = 'input-style';
   const labelCls = 'text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 block';
 
   return (

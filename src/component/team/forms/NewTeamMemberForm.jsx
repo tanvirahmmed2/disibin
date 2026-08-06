@@ -36,8 +36,7 @@ const ROLES = [
   },
 ];
 
-const inputCls =
-  'w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-900 text-sm outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all placeholder-slate-400';
+const inputCls = 'input-style';
 const labelCls = 'text-xs font-bold uppercase tracking-wider text-slate-500';
 
 const NewTeamMemberForm = () => {

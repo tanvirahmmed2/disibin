@@ -78,7 +78,7 @@ export default function NewBusinessLeadPage() {
             value={form.name}
             onChange={e => setForm({ ...form, name: e.target.value })}
             placeholder="e.g. Nexus Software Solutions Inc."
-            className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-amber-500 outline-none text-sm font-semibold text-slate-900 transition-all"
+            className="input-style font-semibold"
           />
         </div>
 
@@ -91,7 +91,7 @@ export default function NewBusinessLeadPage() {
               value={form.email}
               onChange={e => setForm({ ...form, email: e.target.value })}
               placeholder="contact@company.com"
-              className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-amber-500 outline-none text-sm font-semibold text-slate-900 transition-all"
+              className="input-style font-semibold"
             />
           </div>
 
@@ -102,7 +102,7 @@ export default function NewBusinessLeadPage() {
               value={form.phone}
               onChange={e => setForm({ ...form, phone: e.target.value })}
               placeholder="+1 (555) 987-6543"
-              className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-amber-500 outline-none text-sm font-semibold text-slate-900 transition-all"
+              className="input-style font-semibold"
             />
           </div>
         </div>
@@ -114,7 +114,7 @@ export default function NewBusinessLeadPage() {
             value={form.address}
             onChange={e => setForm({ ...form, address: e.target.value })}
             placeholder="e.g. 500 Silicon Valley Blvd, CA"
-            className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-amber-500 outline-none text-sm text-slate-800 transition-all"
+            className="input-style"
           />
         </div>
 
@@ -125,7 +125,7 @@ export default function NewBusinessLeadPage() {
             value={form.note}
             onChange={e => setForm({ ...form, note: e.target.value })}
             placeholder="Write details regarding partnership interest, project budget, custom software scope..."
-            className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-amber-500 outline-none text-sm text-slate-800 resize-none transition-all"
+            className="input-style resize-none"
           />
         </div>
 

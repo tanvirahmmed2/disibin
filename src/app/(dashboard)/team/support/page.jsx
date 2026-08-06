@@ -147,7 +147,7 @@ export default function SupportsManagement() {
               placeholder="Search by name, email, subject..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-9 py-2 bg-white rounded-xl border border-slate-200 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all shadow-sm"
+              className="input-style pl-10 pr-9 text-sm py-2"
             />
             {search && (
               <button

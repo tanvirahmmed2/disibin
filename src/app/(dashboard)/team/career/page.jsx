@@ -317,7 +317,7 @@ export default function TeamCareerPage() {
                   <select
                     value={form.job_type}
                     onChange={e => setForm({ ...form, job_type: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                    className="input-style text-sm py-2"
                   >
                     <option value="Full-time">Full-time</option>
                     <option value="Part-time">Part-time</option>
@@ -333,7 +333,7 @@ export default function TeamCareerPage() {
                   <select
                     value={form.level}
                     onChange={e => setForm({ ...form, level: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                    className="input-style text-sm py-2"
                   >
                     <option value="Junior">Junior</option>
                     <option value="Mid-Level">Mid-Level</option>
@@ -352,7 +352,7 @@ export default function TeamCareerPage() {
                   value={form.compensation}
                   onChange={e => setForm({ ...form, compensation: e.target.value })}
                   placeholder="E.g. $80,000 - $110,000 / year"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  className="input-style text-sm py-2"
                 />
               </div>
 
@@ -379,7 +379,7 @@ export default function TeamCareerPage() {
                   value={form.responsibilities}
                   onChange={e => setForm({ ...form, responsibilities: e.target.value })}
                   placeholder="Lead engineering team, Manage Next.js architecture, Conduct code reviews"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  className="input-style text-sm py-2"
                 />
               </div>
 
@@ -392,7 +392,7 @@ export default function TeamCareerPage() {
                   value={form.skills}
                   onChange={e => setForm({ ...form, skills: e.target.value })}
                   placeholder="React, Next.js, Node.js, PostgreSQL, TailwindCSS"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  className="input-style text-sm py-2"
                 />
               </div>
 
@@ -405,7 +405,7 @@ export default function TeamCareerPage() {
                   value={form.nice_to_have}
                   onChange={e => setForm({ ...form, nice_to_have: e.target.value })}
                   placeholder="Docker, Cloudinary, Brevo API, Microservices"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  className="input-style text-sm py-2"
                 />
               </div>
 
@@ -415,7 +415,7 @@ export default function TeamCareerPage() {
                   id="is_published"
                   checked={form.is_published}
                   onChange={e => setForm({ ...form, is_published: e.target.checked })}
-                  className="w-4 h-4 text-sky-600 rounded focus:ring-sky-500"
+                  className="input-style"
                 />
                 <label htmlFor="is_published" className="text-xs font-bold text-slate-700 cursor-pointer">
                   Publish vacancy immediately on career page

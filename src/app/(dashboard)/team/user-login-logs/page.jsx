@@ -110,7 +110,7 @@ export default function UserLoginLogsPage() {
             placeholder="Search user name or email..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+            className="input-style text-xs py-2"
           />
         </div>
       </div>

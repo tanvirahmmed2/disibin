@@ -76,7 +76,7 @@ const RecoverAccountForm = () => {
               <input
                 type="password"
                 placeholder="Enter new password"
-                className="w-full px-4 p-2 border border-black/20 rounded-lg outline-none"
+                className="input-style"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
@@ -87,7 +87,7 @@ const RecoverAccountForm = () => {
               <input
                 type="password"
                 placeholder="Confirm new password"
-                className="w-full px-4 p-2 border border-black/20 rounded-lg outline-none"
+                className="input-style"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
@@ -127,7 +127,7 @@ const RecoverAccountForm = () => {
               <input
                 type="email"
                 placeholder="name@company.com"
-                className="w-full px-4 p-2 border border-black/20 rounded-lg outline-none"
+                className="input-style"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required

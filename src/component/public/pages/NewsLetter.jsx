@@ -46,7 +46,7 @@ const NewsLetter = () => {
                     value={email}
                     placeholder="ENTER YOUR EMAIL"
                     required
-                    className="w-full text-slate-800 bg-white px-4 py-3 outline-none rounded-xl text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-secondary transition-all shadow-sm"
+                    className="input-style"
                 />
                 <button
                     type="submit"

@@ -161,7 +161,7 @@ const TeamMemberManagement = () => {
               placeholder="Search member by name or email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-transparent border-none outline-none text-sm w-full placeholder-slate-400"
+              className="input-style text-sm"
             />
             {searchTerm && (
               <button onClick={() => setSearchTerm('')} className="text-slate-400 hover:text-slate-600">
@@ -172,7 +172,7 @@ const TeamMemberManagement = () => {
           <select
             value={filterRole}
             onChange={(e) => setFilterRole(e.target.value)}
-            className="px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 bg-white outline-none focus:ring-2 focus:ring-slate-400 transition-all"
+            className="input-style text-sm py-2"
           >
             <option value="all">All Roles</option>
             {roles.map((r) => (

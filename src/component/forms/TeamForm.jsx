@@ -111,7 +111,7 @@ const TeamForm = ({ initialData, onSuccess, onCancel }) => {
     }
   };
 
-  const inputCls = 'w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-violet-500 outline-none transition-all text-sm';
+  const inputCls = 'input-style';
   const labelCls = 'text-xs font-bold uppercase tracking-wider text-slate-400 ml-1';
 
   return (

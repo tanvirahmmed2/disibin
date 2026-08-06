@@ -66,7 +66,7 @@ const UserRoleModal = ({ isOpen, user, onClose, onSuccess }) => {
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 outline-none text-slate-800 font-medium focus:border-blue-500"
+              className="input-style cursor-pointer font-medium"
             >
               <option value="support">Support</option>
               <option value="manager">Manager</option>
