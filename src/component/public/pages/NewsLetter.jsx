@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
-import { FiLoader, FiSend, FiCheckCircle } from 'react-icons/fi';
+import { FiSend, FiLoader } from 'react-icons/fi';
 
 const NewsLetter = () => {
     const [email, setEmail] = useState('');
@@ -32,32 +32,38 @@ const NewsLetter = () => {
     };
 
     return (
-        <form onSubmit={handleSubscribe} className="w-full flex flex-col md:flex-row items-center justify-center gap-6">
+        <div className="w-full flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-white/10">
             <Toaster position="top-center" />
-            <p className="text-tertiary-light text-2xl sm:text-3xl font-extrabold text-center tracking-tight">
-                Receive Latest Updates!
-            </p>
-            <div className="w-full max-w-xl flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="text-center md:text-left space-y-1">
+                <h3 className="text-white text-xl sm:text-2xl font-bold font-poppins">
+                    Subscribe to Our Newsletter
+                </h3>
+                <p className="text-slate-300 text-xs sm:text-sm font-poppins">
+                    Get the latest updates and insights directly to your inbox.
+                </p>
+            </div>
+
+            <form onSubmit={handleSubscribe} className="w-full md:w-auto flex items-center gap-2 max-w-md">
                 <input
                     type="email"
                     name="email"
                     id="email"
                     onChange={(e) => setEmail(e.target.value)}
                     value={email}
-                    placeholder="ENTER YOUR EMAIL"
+                    placeholder="Enter your email address"
                     required
                     className="input-style"
                 />
                 <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full sm:w-auto px-6 py-3 text-white bg-secondary hover:bg-emerald-600 rounded-xl font-bold text-sm transition-all shadow-md shrink-0 disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="px-6 py-3 bg-secondary hover:bg-secondary-dark text-white rounded-xl font-semibold text-sm transition-all shadow-md shrink-0 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer font-poppins"
                 >
                     {submitting ? <FiLoader className="animate-spin" size={16} /> : <FiSend size={16} />}
-                    {submitting ? 'Subscribing...' : 'Subscribe'}
+                    <span>{submitting ? 'Subscribing...' : 'Subscribe'}</span>
                 </button>
-            </div>
-        </form>
+            </form>
+        </div>
     );
 };
 

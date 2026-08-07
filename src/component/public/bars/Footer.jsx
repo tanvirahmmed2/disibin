@@ -56,20 +56,67 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className='flex flex-col md:flex-row items-center justify-between'>
-          <div className='w-full flex flex-row items-center justify-center gap-4'>
-            <Link href="/" className='text-3xl font-bold tracking-tight text-white'>Disibin</Link>
-            <p className='flex flex-row items-center justify-center gap-4 text-xs'>
-              <MdCopyright/> Digital Solutions & Business Innovation Network
+        {/* Lowest Footer Bar */}
+        <div className='pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6'>
+          {/* Brand & Copyright */}
+          <div className='flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left'>
+            <Link href="/" className='text-2xl font-bold tracking-tight text-white font-poppins hover:text-secondary transition-colors'>
+              Disibin
+            </Link>
+            <span className='hidden sm:inline text-white/30'>|</span>
+            <p className='text-xs text-slate-300 font-poppins flex items-center gap-1.5'>
+              <MdCopyright className="text-slate-400 shrink-0" size={15} />
+              <span>{currentYear} Disibin — Digital Solutions & Business Innovation Network. All rights reserved.</span>
             </p>
           </div>
 
-          <div className='w-full flex flex-row items-center justify-center gap-4'>
-            <Link href="https://x.com/disibin" className='hover:text-secondary transition-colors'><FaTwitter size={20} /></Link>
-            <Link href="https://www.instagram.com/disibin_ltd/" className='hover:text-secondary transition-colors'><FaInstagram size={20} /></Link>
-            <Link href="https://www.youtube.com/@Disibin" className='hover:text-secondary transition-colors'><FaYoutube size={20} /></Link>
-            <Link href="https://t.me/disibin" className='hover:text-secondary transition-colors'><FaTelegram size={20} /></Link>
-            <Link href="https://www.facebook.com/disibin" className='hover:text-secondary transition-colors'><FaFacebook size={20} /></Link>
+          {/* Social Links */}
+          <div className='flex items-center gap-3'>
+            <Link
+              href="https://x.com/disibin"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter X"
+              className='w-9 h-9 rounded-xl bg-white/5 hover:bg-secondary text-slate-200 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-xs'
+            >
+              <FaTwitter size={16} />
+            </Link>
+            <Link
+              href="https://www.instagram.com/disibin_ltd/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className='w-9 h-9 rounded-xl bg-white/5 hover:bg-secondary text-slate-200 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-xs'
+            >
+              <FaInstagram size={16} />
+            </Link>
+            <Link
+              href="https://www.youtube.com/@Disibin"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="YouTube"
+              className='w-9 h-9 rounded-xl bg-white/5 hover:bg-secondary text-slate-200 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-xs'
+            >
+              <FaYoutube size={16} />
+            </Link>
+            <Link
+              href="https://t.me/disibin"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Telegram"
+              className='w-9 h-9 rounded-xl bg-white/5 hover:bg-secondary text-slate-200 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-xs'
+            >
+              <FaTelegram size={16} />
+            </Link>
+            <Link
+              href="https://www.facebook.com/disibin"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              className='w-9 h-9 rounded-xl bg-white/5 hover:bg-secondary text-slate-200 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-xs'
+            >
+              <FaFacebook size={16} />
+            </Link>
           </div>
         </div>
       </div>
