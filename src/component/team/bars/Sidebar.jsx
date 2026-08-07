@@ -199,7 +199,6 @@ const Sidebar = () => {
             </div>
           ))}
 
-          {/* Account section */}
           <div>
             <p className="px-4 mb-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
               Account Settings
