@@ -37,11 +37,8 @@ export default function ReviewsPage() {
   return (
     <div className="w-full min-h-screen py-16 px-4 md:px-8 space-y-12">
       
-      {/* Header Banner */}
       <div className="text-center w-full space-y-4">
-        <span className="text-xs font-semibold uppercase tracking-[0.25em] text-primary font-poppins bg-primary/10 px-4 py-1.5 rounded-full inline-block border border-primary/20">
-          Client Feedback & Testimonials
-        </span>
+       
         <h1 className="text-4xl sm:text-6xl font-poppins font-semibold text-slate-900 leading-tight">
           What Our <span className="gradient-text font-bold">Clients & Partners</span> Say
         </h1>
@@ -49,7 +46,6 @@ export default function ReviewsPage() {
           Read authentic feedback from organizations and creators who build their digital products and business innovation systems with Disibin.
         </p>
 
-        {/* Rating Summary Bar */}
         <div className="inline-flex items-center gap-6 bg-slate-900 text-white px-6 py-3.5 rounded-2xl shadow-lg mt-4">
           <div className="flex items-center gap-2">
             <span className="text-2xl font-bold font-poppins text-amber-400">{avgRating}</span>
