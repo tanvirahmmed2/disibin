@@ -41,13 +41,13 @@ export async function GET(req, { params }) {
 
         // Attachments
         const attachmentsRes = await dbQuery(`
-            SELECT pa.id, pa.project_id, pa.user_id, pa.team_id, pa.file_url, pa.file_id, pa.created_at,
+            SELECT pa.id, pa.project_id, pa.user_id, pa.team_id, pa.message_id, pa.file_url, pa.file_id, pa.created_at,
                    u.name as user_name, t.name as team_name
             FROM project_attachments pa
             LEFT JOIN users u ON pa.user_id = u.id
             LEFT JOIN teams t ON pa.team_id = t.id
             WHERE pa.project_id = $1
-            ORDER BY pa.created_at DESC
+            ORDER BY pa.created_at ASC
         `, [projectId]);
 
         // Purchases & Payments
@@ -118,14 +118,24 @@ export async function POST(req, { params }) {
                 });
                 file_url = uploadResult.secure_url;
                 file_id = uploadResult.public_id;
-
-                await dbQuery(`
-                    INSERT INTO project_attachments (project_id, team_id, file_url, file_id)
-                    VALUES ($1, $2, $3, $4)
-                `, [projectId, teamId, file_url, file_id]);
             }
 
-            if (messageText && messageText.trim()) {
+            // Insert message first (to anchor attachment), then insert attachment linked to message
+            if (file_url) {
+                // Upload happened — insert message row and link attachment to it
+                const msgForFile = await dbQuery(`
+                    INSERT INTO project_messages (project_id, team_id, message)
+                    VALUES ($1, $2, $3)
+                    RETURNING id
+                `, [projectId, teamId, (messageText && messageText.trim()) || '']);
+                const parentMessageId = msgForFile.rows[0].id;
+
+                await dbQuery(`
+                    INSERT INTO project_attachments (project_id, team_id, message_id, file_url, file_id)
+                    VALUES ($1, $2, $3, $4, $5)
+                `, [projectId, teamId, parentMessageId, file_url, file_id]);
+            } else if (messageText && messageText.trim()) {
+                // Text-only message, no file
                 await dbQuery(`
                     INSERT INTO project_messages (project_id, team_id, message)
                     VALUES ($1, $2, $3)

@@ -21,26 +21,46 @@ export default function UserProjectDetailPage() {
   const [attachmentFile, setAttachmentFile] = useState(null);
   const [sending, setSending] = useState(false);
   const [updatingAgreementId, setUpdatingAgreementId] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
 
   const fileInputRef = useRef(null);
+  const prevMsgCountRef = useRef(0);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    if (projectId) fetchProjectWorkspace();
+    if (!projectId) return;
+
+    fetchProjectWorkspace(false);
+
+    // Live polling for continuous messaging without page refresh
+    const interval = setInterval(() => {
+      fetchProjectWorkspace(true);
+    }, 3000);
+
+    return () => clearInterval(interval);
   }, [projectId]);
 
-  const fetchProjectWorkspace = async () => {
-    setLoading(true);
+  useEffect(() => {
+    const currentCount = projectData?.messages?.length || 0;
+    if (currentCount > prevMsgCountRef.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+    prevMsgCountRef.current = currentCount;
+  }, [projectData?.messages]);
+
+  const fetchProjectWorkspace = async (isSilent = false) => {
+    if (!isSilent) setLoading(true);
     try {
       const res = await axios.get(`/api/user/project/${projectId}`);
       if (res.data.success) {
         setProjectData(res.data.data);
-      } else {
+      } else if (!isSilent) {
         toast.error(res.data.message || 'Project not found');
       }
     } catch {
-      toast.error('Failed to load project');
+      if (!isSilent) toast.error('Failed to load project');
     } finally {
-      setLoading(false);
+      if (!isSilent) setLoading(false);
     }
   };
 
@@ -61,7 +81,7 @@ export default function UserProjectDetailPage() {
       if (res.data.success) {
         setMessage('');
         setAttachmentFile(null);
-        fetchProjectWorkspace();
+        fetchProjectWorkspace(true);
       } else {
         toast.error(res.data.message || 'Failed to send message');
       }
@@ -81,7 +101,7 @@ export default function UserProjectDetailPage() {
       });
       if (res.data.success) {
         toast.success(`Agreement marked as ${newStatus}`);
-        fetchProjectWorkspace();
+        fetchProjectWorkspace(true);
       } else {
         toast.error(res.data.message || 'Failed to update agreement');
       }
@@ -135,8 +155,9 @@ export default function UserProjectDetailPage() {
           </Link>
           <div>
             <h1 className="text-base font-bold text-slate-900">{project.title}</h1>
-            <p className="text-xs text-slate-400">
-              {project.product_name ? `Base: ${project.product_name} · ` : ''}Created {new Date(project.created_at).toLocaleDateString()}
+            <p className="text-xs text-slate-400 flex items-center gap-2">
+              <span>{project.product_name ? `Base: ${project.product_name} · ` : ''}Created {new Date(project.created_at).toLocaleDateString()}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" title="Live Auto Sync" />
             </p>
           </div>
         </div>
@@ -162,6 +183,7 @@ export default function UserProjectDetailPage() {
               ) : (
                 messages.map((m) => {
                   const isMe = !!m.user_id;
+                  const msgAtts = attachments?.filter(att => att.message_id === m.id) || [];
                   return (
                     <div
                       key={m.id}
@@ -170,10 +192,23 @@ export default function UserProjectDetailPage() {
                       <div className="text-[11px] font-semibold text-slate-500 mb-0.5 px-1">
                         {isMe ? 'You' : `${m.team_name || 'Staff'} (${m.team_role || 'Support'})`}
                       </div>
-                      <div className={`p-3 rounded-xl text-xs leading-relaxed max-w-md ${
+                      <div className={`p-3 rounded-xl text-xs leading-relaxed max-w-md space-y-2 ${
                         isMe ? 'bg-primary text-white' : 'bg-slate-100 text-slate-800 border border-slate-200'
                       }`}>
-                        <p className="whitespace-pre-wrap">{m.message}</p>
+                        {m.message && <p className="whitespace-pre-wrap">{m.message}</p>}
+                        {msgAtts.length > 0 && (
+                          <div className="grid grid-cols-2 gap-1.5 pt-1">
+                            {msgAtts.map(att => (
+                              <img
+                                key={att.id}
+                                src={att.file_url}
+                                alt="Attachment"
+                                onClick={() => setPreviewImage(att.file_url)}
+                                className="w-full h-24 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity border border-black/10"
+                              />
+                            ))}
+                          </div>
+                        )}
                       </div>
                       <span className="text-[10px] text-slate-400 mt-0.5 px-1">
                         {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -182,6 +217,7 @@ export default function UserProjectDetailPage() {
                   );
                 })
               )}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Input */}
@@ -301,6 +337,16 @@ export default function UserProjectDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Lightbox Preview */}
+      {previewImage && (
+        <div
+          onClick={() => setPreviewImage(null)}
+          className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4"
+        >
+          <img src={previewImage} alt="Preview" className="max-w-full max-h-[85vh] object-contain rounded-lg" />
+        </div>
+      )}
     </div>
   );
 }

@@ -25,28 +25,42 @@ export default function UserTicketDetailPage() {
 
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const prevMsgCountRef = useRef(0);
 
   useEffect(() => {
-    if (ticketId) fetchThread();
+    if (!ticketId) return;
+
+    fetchThread(false);
+
+    // Live polling for continuous messaging without page refresh
+    const interval = setInterval(() => {
+      fetchThread(true);
+    }, 3000);
+
+    return () => clearInterval(interval);
   }, [ticketId]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [thread]);
+    const currentCount = thread?.messages?.length || 0;
+    if (currentCount > prevMsgCountRef.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+    prevMsgCountRef.current = currentCount;
+  }, [thread?.messages]);
 
-  const fetchThread = async () => {
-    setLoading(true);
+  const fetchThread = async (isSilent = false) => {
+    if (!isSilent) setLoading(true);
     try {
       const res = await axios.get(`/api/user/ticket/${ticketId}`);
       if (res.data.success) {
         setThread(res.data.data);
-      } else {
+      } else if (!isSilent) {
         toast.error(res.data.message || 'Failed to load ticket');
       }
     } catch {
-      toast.error('Failed to load conversation thread');
+      if (!isSilent) toast.error('Failed to load conversation thread');
     } finally {
-      setLoading(false);
+      if (!isSilent) setLoading(false);
     }
   };
 
@@ -101,7 +115,7 @@ export default function UserTicketDetailPage() {
       if (res.data.success) {
         setMessageText('');
         setAttachedImages([]);
-        fetchThread();
+        fetchThread(true);
       } else {
         toast.error(res.data.message || 'Failed to send message');
       }
@@ -123,7 +137,7 @@ export default function UserTicketDetailPage() {
 
   if (!thread || !thread.ticket) {
     return (
-      <div className="p-6 w-full text-center space-y-3">
+      <div className="p-6 max-w-xl mx-auto text-center space-y-3">
         <Toaster position="top-center" />
         <FiAlertCircle className="mx-auto text-amber-500" size={32} />
         <h2 className="text-base font-bold text-slate-800">Ticket Not Found</h2>
@@ -157,8 +171,9 @@ export default function UserTicketDetailPage() {
               <span>{ticket.title}</span>
               <span className="text-xs font-mono font-normal text-slate-400">#{ticket.id}</span>
             </h1>
-            <p className="text-xs text-slate-400">
-              Created {new Date(ticket.created_at).toLocaleString()}
+            <p className="text-xs text-slate-400 flex items-center gap-2">
+              <span>Created {new Date(ticket.created_at).toLocaleString()}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" title="Live Auto Sync" />
             </p>
           </div>
         </div>
@@ -173,9 +188,8 @@ export default function UserTicketDetailPage() {
           ) : (
             messages.map((msg) => {
               const isUserMsg = Boolean(msg.user_id);
-              const msgAttachments = attachments?.filter(att => 
-                (isUserMsg && att.user_id === msg.user_id) || (!isUserMsg && att.team_id === msg.team_id)
-              ) || [];
+              // Match attachments to this specific message by message_id
+              const msgAttachments = attachments?.filter(att => att.message_id === msg.id) || [];
 
               return (
                 <div

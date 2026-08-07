@@ -24,28 +24,42 @@ export default function TeamTicketDetailPage() {
 
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const prevMsgCountRef = useRef(0);
 
   useEffect(() => {
-    if (ticketId) fetchThread();
+    if (!ticketId) return;
+
+    fetchThread(false);
+
+    // Live polling for continuous messaging without page refresh
+    const interval = setInterval(() => {
+      fetchThread(true);
+    }, 3000);
+
+    return () => clearInterval(interval);
   }, [ticketId]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [thread]);
+    const currentCount = thread?.messages?.length || 0;
+    if (currentCount > prevMsgCountRef.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+    prevMsgCountRef.current = currentCount;
+  }, [thread?.messages]);
 
-  const fetchThread = async () => {
-    setLoading(true);
+  const fetchThread = async (isSilent = false) => {
+    if (!isSilent) setLoading(true);
     try {
       const res = await axios.get(`/api/team/ticket/${ticketId}`);
       if (res.data.success) {
         setThread(res.data.data);
-      } else {
+      } else if (!isSilent) {
         toast.error(res.data.message || 'Failed to load ticket');
       }
     } catch {
-      toast.error('Failed to load conversation thread');
+      if (!isSilent) toast.error('Failed to load conversation thread');
     } finally {
-      setLoading(false);
+      if (!isSilent) setLoading(false);
     }
   };
 
@@ -100,7 +114,7 @@ export default function TeamTicketDetailPage() {
       if (res.data.success) {
         setMessageText('');
         setAttachedImages([]);
-        fetchThread();
+        fetchThread(true);
       } else {
         toast.error(res.data.message || 'Failed to send reply');
       }
@@ -156,8 +170,9 @@ export default function TeamTicketDetailPage() {
               <span>{ticket.title}</span>
               <span className="text-xs font-mono font-normal text-slate-400">#{ticket.id}</span>
             </h1>
-            <p className="text-xs text-slate-500">
-              Customer: <strong className="text-slate-800">{user?.name || 'Customer'}</strong> ({user?.email || 'N/A'}) · Created {new Date(ticket.created_at).toLocaleDateString()}
+            <p className="text-xs text-slate-500 flex items-center gap-2">
+              <span>Customer: <strong className="text-slate-800">{user?.name || 'Customer'}</strong> ({user?.email || 'N/A'}) · Created {new Date(ticket.created_at).toLocaleDateString()}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" title="Live Auto Sync" />
             </p>
           </div>
         </div>
@@ -173,9 +188,8 @@ export default function TeamTicketDetailPage() {
           ) : (
             messages.map((msg) => {
               const isStaff = Boolean(msg.team_id);
-              const msgAttachments = attachments?.filter(att => 
-                (isStaff && att.team_id === msg.team_id) || (!isStaff && att.user_id === msg.user_id)
-              ) || [];
+              // Match attachments to this specific message by message_id
+              const msgAttachments = attachments?.filter(att => att.message_id === msg.id) || [];
 
               return (
                 <div

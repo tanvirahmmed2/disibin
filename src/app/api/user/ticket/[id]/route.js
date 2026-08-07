@@ -50,7 +50,7 @@ export async function GET(req, { params }) {
 
         // Fetch attachments
         const attachmentsRes = await dbQuery(
-            `SELECT id, ticket_id, user_id, team_id, file_url, file_id, created_at
+            `SELECT id, ticket_id, user_id, team_id, message_id, file_url, file_id, created_at
              FROM ticket_attachments
              WHERE ticket_id = $1
              ORDER BY created_at ASC`,
@@ -105,26 +105,29 @@ export async function POST(req, { params }) {
             return NextResponse.json({ success: false, message: "Cannot send empty message" }, { status: 400 });
         }
 
+        // msgText may be empty when only images are sent — we'll insert a placeholder row
+
         let newMessage = null;
-        if (msgText) {
-            const msgRes = await dbQuery(
-                `INSERT INTO ticket_messages (ticket_id, user_id, message) 
-                 VALUES ($1, $2, $3) 
-                 RETURNING id, ticket_id, user_id, message, created_at`,
-                [ticketId, userId, msgText]
-            );
-            newMessage = { ...msgRes.rows[0], user_name: auth.data.name || "You" };
-        }
+
+        // Always create a message row (empty string if image-only) to anchor attachments
+        const msgRes = await dbQuery(
+            `INSERT INTO ticket_messages (ticket_id, user_id, message) 
+             VALUES ($1, $2, $3) 
+             RETURNING id, ticket_id, user_id, message, created_at`,
+            [ticketId, userId, msgText]
+        );
+        newMessage = { ...msgRes.rows[0], user_name: auth.data.name || "You" };
+        const parentMessageId = msgRes.rows[0].id;
 
         const newAttachments = [];
         if (hasImages) {
             for (const img of images) {
                 if (img.file_url) {
                     const attRes = await dbQuery(
-                        `INSERT INTO ticket_attachments (ticket_id, user_id, file_url, file_id) 
-                         VALUES ($1, $2, $3, $4) 
-                         RETURNING id, ticket_id, user_id, file_url, file_id, created_at`,
-                        [ticketId, userId, img.file_url, img.file_id || null]
+                        `INSERT INTO ticket_attachments (ticket_id, user_id, message_id, file_url, file_id) 
+                         VALUES ($1, $2, $3, $4, $5) 
+                         RETURNING id, ticket_id, user_id, message_id, file_url, file_id, created_at`,
+                        [ticketId, userId, parentMessageId, img.file_url, img.file_id || null]
                     );
                     newAttachments.push(attRes.rows[0]);
                 }

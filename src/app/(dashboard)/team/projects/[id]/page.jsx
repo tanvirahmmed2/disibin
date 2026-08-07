@@ -32,6 +32,9 @@ export default function TeamProjectDetailPage() {
   const [purDiscount, setPurDiscount] = useState('0');
   const [creatingPurchase, setCreatingPurchase] = useState(false);
 
+  // Preview
+  const [previewImage, setPreviewImage] = useState(null);
+
   // Payment Status
   const [updatingPaymentId, setUpdatingPaymentId] = useState(null);
 
@@ -43,25 +46,44 @@ export default function TeamProjectDetailPage() {
 
   const fileInputRef = useRef(null);
   const agrFileInputRef = useRef(null);
+  const prevMsgCountRef = useRef(0);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    if (projectId) fetchWorkspace();
+    if (!projectId) return;
+
+    fetchWorkspace(false);
     fetchProducts();
+
+    // Live polling for continuous messaging without page refresh
+    const interval = setInterval(() => {
+      fetchWorkspace(true);
+    }, 3000);
+
+    return () => clearInterval(interval);
   }, [projectId]);
 
-  const fetchWorkspace = async () => {
-    setLoading(true);
+  useEffect(() => {
+    const currentCount = projectData?.messages?.length || 0;
+    if (currentCount > prevMsgCountRef.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+    prevMsgCountRef.current = currentCount;
+  }, [projectData?.messages]);
+
+  const fetchWorkspace = async (isSilent = false) => {
+    if (!isSilent) setLoading(true);
     try {
       const res = await axios.get(`/api/team/projects/${projectId}`);
       if (res.data.success) {
         setProjectData(res.data.data);
-      } else {
+      } else if (!isSilent) {
         toast.error(res.data.message || 'Project not found');
       }
     } catch {
-      toast.error('Failed to load project workspace');
+      if (!isSilent) toast.error('Failed to load project workspace');
     } finally {
-      setLoading(false);
+      if (!isSilent) setLoading(false);
     }
   };
 
@@ -109,7 +131,7 @@ export default function TeamProjectDetailPage() {
       if (res.data.success) {
         setMessage('');
         setAttachmentFile(null);
-        fetchWorkspace();
+        fetchWorkspace(true);
       } else {
         toast.error(res.data.message || 'Failed to send message');
       }
@@ -137,7 +159,7 @@ export default function TeamProjectDetailPage() {
         toast.success('Purchase created!');
         setShowPurchaseForm(false);
         setPurPrice('');
-        fetchWorkspace();
+        fetchWorkspace(true);
       } else {
         toast.error(res.data.message || 'Failed to create purchase');
       }
@@ -159,7 +181,7 @@ export default function TeamProjectDetailPage() {
 
       if (res.data.success) {
         toast.success(res.data.message);
-        fetchWorkspace();
+        fetchWorkspace(true);
       } else {
         toast.error(res.data.message || 'Failed to update payment');
       }
@@ -192,7 +214,7 @@ export default function TeamProjectDetailPage() {
         setShowAgreementForm(false);
         setAgrTitle('');
         setAgrFile(null);
-        fetchWorkspace();
+        fetchWorkspace(true);
       } else {
         toast.error(res.data.message || 'Failed to create agreement');
       }
@@ -246,9 +268,9 @@ export default function TeamProjectDetailPage() {
           </Link>
           <div>
             <h1 className="text-base font-bold text-slate-900">{project.title}</h1>
-            <p className="text-xs text-slate-500">
-              Customer: <strong className="text-slate-800">{project.user_name || 'Customer'}</strong> ({project.user_email})
-              {project.product_name && <span> · Base: {project.product_name}</span>}
+            <p className="text-xs text-slate-500 flex items-center gap-2">
+              <span>Customer: <strong className="text-slate-800">{project.user_name || 'Customer'}</strong> ({project.user_email}){project.product_name ? ` · Base: ${project.product_name}` : ''}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" title="Live Auto Sync" />
             </p>
           </div>
         </div>
@@ -287,6 +309,7 @@ export default function TeamProjectDetailPage() {
               ) : (
                 messages.map((m) => {
                   const isStaff = !!m.team_id;
+                  const msgAtts = attachments?.filter(att => att.message_id === m.id) || [];
                   return (
                     <div
                       key={m.id}
@@ -295,10 +318,23 @@ export default function TeamProjectDetailPage() {
                       <div className="text-[11px] font-semibold text-slate-500 mb-0.5 px-1">
                         {isStaff ? `${m.team_name || 'Staff'} (${m.team_role || 'Staff'})` : (m.user_name || 'Customer')}
                       </div>
-                      <div className={`p-3 rounded-xl text-xs leading-relaxed max-w-md ${
+                      <div className={`p-3 rounded-xl text-xs leading-relaxed max-w-md space-y-2 ${
                         isStaff ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-800 border border-slate-200'
                       }`}>
-                        <p className="whitespace-pre-wrap">{m.message}</p>
+                        {m.message && <p className="whitespace-pre-wrap">{m.message}</p>}
+                        {msgAtts.length > 0 && (
+                          <div className="grid grid-cols-2 gap-1.5 pt-1">
+                            {msgAtts.map(att => (
+                              <img
+                                key={att.id}
+                                src={att.file_url}
+                                alt="Attachment"
+                                onClick={() => setPreviewImage(att.file_url)}
+                                className="w-full h-24 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity border border-black/10"
+                              />
+                            ))}
+                          </div>
+                        )}
                       </div>
                       <span className="text-[10px] text-slate-400 mt-0.5 px-1">
                         {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -307,6 +343,7 @@ export default function TeamProjectDetailPage() {
                   );
                 })
               )}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Staff Reply Form */}
@@ -534,6 +571,16 @@ export default function TeamProjectDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Lightbox Preview */}
+      {previewImage && (
+        <div
+          onClick={() => setPreviewImage(null)}
+          className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4"
+        >
+          <img src={previewImage} alt="Preview" className="max-w-full max-h-[85vh] object-contain rounded-lg" />
+        </div>
+      )}
     </div>
   );
 }
