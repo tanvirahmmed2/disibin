@@ -58,7 +58,7 @@ export default function TeamUserProfilePage() {
 
   if (!profileData || !profileData.user) {
     return (
-      <div className="p-6 max-w-3xl mx-auto space-y-4 text-center">
+      <div className="p-4 w-full space-y-4 text-center">
         <Toaster position="top-center" />
         <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm space-y-4">
           <FiAlertCircle className="mx-auto text-amber-500" size={36} />
@@ -78,10 +78,9 @@ export default function TeamUserProfilePage() {
   const { user, tickets, reviews, loginLogs } = profileData;
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto space-y-6">
+    <div className="p-4 w-full space-y-6">
       <Toaster position="top-center" />
 
-      {/* Top Header Card */}
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
         <div className="flex items-center justify-between gap-4">
           <Link

@@ -51,11 +51,10 @@ export default function TeamProfilePage() {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-6">
+    <div className="p-4 w-full space-y-6">
       <Toaster position="top-center" />
 
-      {/* Header Banner */}
-      <div className="relative overflow-hidden bg-slate-900 rounded-3xl p-8 text-white shadow-xl">
+      <div className="relative overflow-hidden bg-primary rounded-3xl p-8 text-white shadow-xl">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-5">
             <div className="w-20 h-20 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-md flex items-center justify-center text-3xl font-extrabold text-white shadow-lg">

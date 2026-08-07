@@ -4,7 +4,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Context } from '@/component/helper/Context';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -45,6 +45,7 @@ const LoginForm = () => {
 
   return (
     <div className="flex w-full items-center justify-center min-h-screen p-4">
+      <Toaster position="top-center" />
       <div className="w-full max-w-sm flex flex-col p-6 rounded-2xl items-center justify-center gap-3">
 
         <div className='w-full flex flex-col gap-2 mb-4 items-center justify-center'>
@@ -99,7 +100,7 @@ const LoginForm = () => {
             disabled={loading}
             className="w-full py-3 rounded-xl cursor-pointer bg-slate-900 text-white font-bold hover:bg-slate-700 transition-all duration-200 mt-2 shadow-lg shadow-slate-900/20 disabled:bg-slate-300 disabled:cursor-not-allowed"
           >
-            {loading ? 'Signing In...' : 'Sign In'}
+            {loading ? 'Logging in...' : 'Login'}
           </button>
 
           <p className="mt-2 text-center text-sm text-slate-500 font-medium">

@@ -55,10 +55,9 @@ export default function TeamSettingsPage() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-6">
+    <div className="p-4 w-full space-y-6">
       <Toaster position="top-center" />
 
-      {/* Header Card */}
       <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex items-center gap-4">
         <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white flex-shrink-0">
           <FiSettings size={22} />

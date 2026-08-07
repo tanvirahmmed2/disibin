@@ -37,7 +37,22 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${lora.variable}  ${jersey.variable} ${silkscreen.variable} ${poppins.variable} scroll-smooth antialiased bg-gray-100 w-full`}>
         <ContextProvider>
-          <Toaster position="top-right" />
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+            gutter={8}
+            containerStyle={{ zIndex: 99999 }}
+            toastOptions={{
+              duration: 4000,
+              style: {
+                borderRadius: '12px',
+                background: '#0f172a',
+                color: '#fff',
+                fontSize: '14px',
+                fontWeight: '500',
+              },
+            }}
+          />
           <main>{children}</main>
         </ContextProvider>
       </body>

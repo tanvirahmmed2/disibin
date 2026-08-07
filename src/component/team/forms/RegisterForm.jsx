@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', password: '' });
@@ -14,8 +14,8 @@ const RegisterForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, phone, password } = formData;
-    if (!name || !email || !phone || !password) return toast.error('Please fill all fields');
+    const { name, email, password } = formData;
+    if (!name || !email || !password) return toast.error('Please fill all required fields');
 
     setLoading(true);
     try {
@@ -26,7 +26,7 @@ const RegisterForm = () => {
         toast.success(data.message, { duration: 6000 });
         router.push('/login');
       } else {
-        toast.error(data.message);
+        toast.error(data.message || 'Registration failed');
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Something went wrong');
@@ -40,6 +40,7 @@ const RegisterForm = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
+      <Toaster position="top-center" />
       <div className="w-full max-w-4xl bg-white flex flex-col md:flex-row items-center justify-center gap-4 p-4">
 
         <div className='w-full flex flex-col items-center justify-center gap-2'>

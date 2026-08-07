@@ -15,7 +15,6 @@ export default function TeamTermsOfServicePage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
-  // Form State
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [formData, setFormData] = useState({
@@ -146,24 +145,20 @@ export default function TeamTermsOfServicePage() {
   );
 
   return (
-    <div className="p-4 sm:p-8 max-w-7xl mx-auto min-h-screen pb-24">
+    <div className="p-4 w-full min-h-screen pb-24">
       <Toaster position="top-right" />
 
-      {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-gradient-to-r from-slate-900 via-primary to-slate-800 p-6 sm:p-8 rounded-3xl text-white shadow-xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8  p-6 sm:p-8 rounded-3xl text-primary shadow-sm">
         <div>
-          <div className="flex items-center gap-2 text-sky-400 text-xs font-semibold uppercase tracking-widest mb-2">
-            <FiShield className="w-4 h-4" /> Manager Operations
-          </div>
           <h1 className="text-2xl sm:text-4xl font-bold tracking-tight">Terms of Service Management</h1>
-          <p className="text-slate-300 text-sm mt-1 max-w-xl">
+          <p className=" text-sm mt-1 max-w-xl">
             Create, update, and publish official Terms of Service items. Restricted exclusively to authorized managers.
           </p>
         </div>
 
         <button
           onClick={handleOpenCreate}
-          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white text-slate-900 hover:bg-sky-50 text-sm font-semibold transition-all shadow-lg shrink-0"
+          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white text-slate-900 hover:bg-sky-50 text-sm font-semibold transition-all shadow-sm cursor-pointer shrink-0"
         >
           <FiPlus className="w-5 h-5 text-primary" /> Create Terms Item
         </button>

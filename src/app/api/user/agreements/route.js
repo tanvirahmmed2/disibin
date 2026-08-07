@@ -2,11 +2,37 @@ import { NextResponse } from "next/server";
 import { isUserLogin } from "@/lib/auth/user";
 import { dbQuery } from "@/lib/database/pg";
 
+let tableInitialized = false;
+
+async function ensureAgreementsTable() {
+    if (tableInitialized) return;
+    try {
+        await dbQuery(`
+            CREATE TABLE IF NOT EXISTS agreements (
+                id SERIAL PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                project_id INT,
+                user_id INT,
+                file_url TEXT NOT NULL,
+                file_id TEXT,
+                status VARCHAR(50) DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT NOW(),
+                updated_at TIMESTAMP DEFAULT NOW()
+            );
+        `);
+        tableInitialized = true;
+    } catch (error) {
+        console.error("Failed to initialize agreements table:", error);
+    }
+}
+
 // GET — Fetch agreements for customer user
 export async function GET() {
     try {
         const auth = await isUserLogin();
         if (!auth.success) return NextResponse.json(auth, { status: 401 });
+
+        await ensureAgreementsTable();
 
         const userId = auth.data.id;
 
@@ -21,6 +47,7 @@ export async function GET() {
 
         return NextResponse.json({ success: true, data: res.rows });
     } catch (error) {
+        console.error("GET /api/user/agreements Error:", error);
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
@@ -30,6 +57,8 @@ export async function PATCH(req) {
     try {
         const auth = await isUserLogin();
         if (!auth.success) return NextResponse.json(auth, { status: 401 });
+
+        await ensureAgreementsTable();
 
         const userId = auth.data.id;
         const { agreement_id, status } = await req.json();

@@ -4,7 +4,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Context } from '@/component/helper/Context';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -45,6 +45,7 @@ const LoginForm = () => {
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-screen p-4">
+      <Toaster position="top-center" />
       <div className="w-full max-w-sm flex flex-col p-6 rounded-2xl items-center justify-center gap-3">
 
         <div className='w-full flex flex-col gap-2 mb-4 items-center justify-center'>

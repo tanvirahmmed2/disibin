@@ -13,21 +13,17 @@ export default function TeamSecurityPage() {
   const router = useRouter();
   const { teamData, setTeamData, teamLogout } = useContext(Context);
 
-  // 2FA State
   const [is2faActive, setIs2faActive] = useState(false);
   const [tfaLoading, setTfaLoading] = useState(false);
 
-  // Password state
   const [pwdForm, setPwdForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [pwdLoading, setPwdLoading] = useState(false);
 
-  // Email change state
   const [emailForm, setEmailForm] = useState({ newEmail: '', code: '' });
-  const [emailStep, setEmailStep] = useState('request'); // 'request' | 'verify'
+  const [emailStep, setEmailStep] = useState('request'); 
   const [emailLoading, setEmailLoading] = useState(false);
   const [pendingTargetEmail, setPendingTargetEmail] = useState('');
 
-  // Delete account state
   const [deletePassword, setDeletePassword] = useState('');
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -38,7 +34,6 @@ export default function TeamSecurityPage() {
     }
   }, [teamData]);
 
-  // Handle 2FA Toggle
   const handleToggle2fa = async (newValue) => {
     setTfaLoading(true);
     try {
@@ -61,7 +56,6 @@ export default function TeamSecurityPage() {
     }
   };
 
-  // Handle password change
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     if (pwdForm.newPassword !== pwdForm.confirmPassword) {
@@ -92,7 +86,6 @@ export default function TeamSecurityPage() {
     }
   };
 
-  // Step 1: Request email change (code sent to current old email)
   const handleRequestEmailChange = async (e) => {
     e.preventDefault();
     if (!emailForm.newEmail) return toast.error('Please enter a new email address');
@@ -172,12 +165,11 @@ export default function TeamSecurityPage() {
   const labelCls = 'text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 block';
 
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-6">
+    <div className="p-4 w-full space-y-6">
       <Toaster position="top-center" />
 
-      {/* Header Card */}
       <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex items-center gap-4">
-        <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white flex-shrink-0">
+        <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white shrink-0">
           <FiShield size={22} />
         </div>
         <div>
@@ -188,11 +180,10 @@ export default function TeamSecurityPage() {
         </div>
       </div>
 
-      {/* 2FA Toggle Card */}
       <div className="bg-white rounded-3xl p-7 border border-slate-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-start gap-4">
           <div
-            className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${
+            className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${
               is2faActive ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-400'
             }`}
           >
@@ -218,7 +209,7 @@ export default function TeamSecurityPage() {
         <button
           onClick={() => handleToggle2fa(!is2faActive)}
           disabled={tfaLoading}
-          className={`relative inline-flex h-8 w-14 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+          className={`relative inline-flex h-8 w-14 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
             is2faActive ? 'bg-slate-900' : 'bg-slate-300'
           } ${tfaLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >

@@ -81,11 +81,10 @@ const NewTeamMemberForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/50 p-6">
+    <div className="min-h-screen w-full bg-slate-50/50 p-6">
       <Toaster position="top-center" />
 
-      {/* Back + Header */}
-      <div className="max-w-2xl mx-auto">
+      <div className="w-full">
         <button
           onClick={() => router.back()}
           className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors mb-6"
@@ -94,12 +93,10 @@ const NewTeamMemberForm = () => {
           Back to Team Members
         </button>
 
-        {/* Card */}
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
-          {/* Card Header */}
           <div className="px-8 py-6 border-b border-slate-100 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center shrink-0">
               <FiUserPlus className="text-white" size={22} />
             </div>
             <div>

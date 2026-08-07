@@ -3,11 +3,37 @@ import { isTeamLogin } from "@/lib/auth/team";
 import { dbQuery } from "@/lib/database/pg";
 import cloudinary from "@/lib/database/cloudinary";
 
+let tableInitialized = false;
+
+async function ensureAgreementsTable() {
+    if (tableInitialized) return;
+    try {
+        await dbQuery(`
+            CREATE TABLE IF NOT EXISTS agreements (
+                id SERIAL PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                project_id INT,
+                user_id INT,
+                file_url TEXT NOT NULL,
+                file_id TEXT,
+                status VARCHAR(50) DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT NOW(),
+                updated_at TIMESTAMP DEFAULT NOW()
+            );
+        `);
+        tableInitialized = true;
+    } catch (error) {
+        console.error("Failed to initialize agreements table:", error);
+    }
+}
+
 // GET — List all agreements for staff
 export async function GET() {
     try {
         const auth = await isTeamLogin();
         if (!auth.success) return NextResponse.json(auth, { status: 401 });
+
+        await ensureAgreementsTable();
 
         const res = await dbQuery(`
             SELECT a.id, a.title, a.project_id, a.user_id, a.file_url, a.file_id, a.status, a.created_at, a.updated_at,
@@ -20,6 +46,7 @@ export async function GET() {
 
         return NextResponse.json({ success: true, data: res.rows });
     } catch (error) {
+        console.error("GET /api/team/agreements Error:", error);
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
@@ -29,6 +56,8 @@ export async function POST(req) {
     try {
         const auth = await isTeamLogin();
         if (!auth.success) return NextResponse.json(auth, { status: 401 });
+
+        await ensureAgreementsTable();
 
         const formData = await req.formData();
         const title = formData.get("title");

@@ -112,10 +112,9 @@ export default function TeamChatListPage() {
   );
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 max-w-5xl mx-auto space-y-6">
+    <div className="p-4 w-full space-y-6">
       <Toaster position="top-center" />
 
-      {/* Header Banner */}
       <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">

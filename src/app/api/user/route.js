@@ -44,28 +44,37 @@ export async function POST(req) {
         const body = await req.json();
         const { name, email, phone, password } = body;
 
-        if (!name || !email || !password || !phone) {
+        const cleanName = name ? name.trim() : "";
+        const cleanEmail = email ? email.trim().toLowerCase() : "";
+        const cleanPhone = phone ? phone.trim() : null;
+
+        if (!cleanName || !cleanEmail || !password) {
+            console.warn("POST /api/user 400 Bad Request: Missing required fields", { name: !!cleanName, email: !!cleanEmail, password: !!password });
             return NextResponse.json(
-                { success: false, message: "Missing required fields (Name, Email, Phone, Password)" },
+                { success: false, message: "Missing required fields (Name, Email, Password)" },
                 { status: 400 }
             );
         }
 
-        const emailRes = await dbQuery("SELECT id FROM users WHERE email = $1", [email]);
+        const emailRes = await dbQuery("SELECT id FROM users WHERE LOWER(email) = $1", [cleanEmail]);
         if (emailRes.rows.length > 0) {
-            return NextResponse.json({ success: false, message: "Email already registered" }, { status: 400 });
+            console.warn(`POST /api/user 400 Bad Request: Email '${cleanEmail}' is already registered`);
+            return NextResponse.json({ success: false, message: "Email is already registered" }, { status: 400 });
         }
 
-        const phoneRes = await dbQuery("SELECT id FROM users WHERE phone = $1", [phone]);
-        if (phoneRes.rows.length > 0) {
-            return NextResponse.json({ success: false, message: "Phone number already registered" }, { status: 400 });
+        if (cleanPhone) {
+            const phoneRes = await dbQuery("SELECT id FROM users WHERE phone = $1", [cleanPhone]);
+            if (phoneRes.rows.length > 0) {
+                console.warn(`POST /api/user 400 Bad Request: Phone '${cleanPhone}' is already registered`);
+                return NextResponse.json({ success: false, message: "Phone number is already registered" }, { status: 400 });
+            }
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const userRes = await dbQuery(
             `INSERT INTO users (name, email, phone, password) VALUES ($1, $2, $3, $4) RETURNING id, name, email, created_at`,
-            [name, email, phone, hashedPassword]
+            [cleanName, cleanEmail, cleanPhone, hashedPassword]
         );
         const user = userRes.rows[0];
 
@@ -82,7 +91,7 @@ export async function POST(req) {
         try {
             await dbQuery(
                 `INSERT INTO client_leads (name, email, phone, note) VALUES ($1, $2, $3, $4)`,
-                [name, email, phone || null, "Auto-generated from user registration"]
+                [cleanName, cleanEmail, cleanPhone, "Auto-generated from user registration"]
             );
         } catch (leadError) {
             console.error("Auto client_leads insertion failed:", leadError.message);
@@ -98,7 +107,9 @@ export async function POST(req) {
             </div>
         `;
 
-        await sendEmail({ to: email, subject: "Verify Your Account - Disibin", htmlContent });
+        await sendEmail({ to: cleanEmail, subject: "Verify Your Account - Disibin", htmlContent }).catch((emailErr) => {
+            console.error("Email sending failed during user registration:", emailErr.message);
+        });
 
         return NextResponse.json(
             { success: true, message: "User registered successfully. Please check your email to verify your account." },
