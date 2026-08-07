@@ -9,7 +9,9 @@ import {
   FiChevronDown, 
   FiLayers, 
   FiExternalLink, 
-  FiArrowRight
+  FiArrowRight,
+  FiChevronLeft,
+  FiChevronRight
 } from 'react-icons/fi';
 
 const stripHtml = (html) => {
@@ -21,12 +23,8 @@ const stripHtml = (html) => {
 };
 
 const ProductCard = ({ product }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [mainIndex, setMainIndex] = useState(0);
   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false);
-  const [isMouseDown, setIsMouseDown] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeftState, setScrollLeftState] = useState(0);
-  const sliderRef = useRef(null);
 
   const images = product.images && product.images.length > 0 ? product.images : [];
   const features = product.features && product.features.length > 0 ? product.features : [];
@@ -35,53 +33,32 @@ const ProductCard = ({ product }) => {
   const isDescriptionLong = plainDescription.length > 100;
   const shortDescription = isDescriptionLong ? `${plainDescription.slice(0, 100).trim()}...` : plainDescription;
 
-  const handleScroll = () => {
-    if (!sliderRef.current) return;
-    const { scrollLeft, clientWidth } = sliderRef.current;
-    if (clientWidth > 0) {
-      const index = Math.round(scrollLeft / clientWidth);
-      if (index !== currentSlide) {
-        setCurrentSlide(index);
-      }
+  // Calculate before (previous) and next image indices
+  const N = images.length;
+  const prevIndex = N > 1 ? (mainIndex - 1 + N) % N : null;
+  const nextIndex = N > 1 ? (mainIndex + 1) % N : null;
+
+  const handlePanEnd = (event, info) => {
+    const threshold = 30;
+    if (info.offset.x < -threshold) {
+      if (nextIndex !== null) setMainIndex(nextIndex);
+    } else if (info.offset.x > threshold) {
+      if (prevIndex !== null) setMainIndex(prevIndex);
     }
   };
 
-  const scrollToSlide = (index) => {
-    if (!sliderRef.current) return;
-    const targetIndex = Math.max(0, Math.min(index, images.length - 1));
-    sliderRef.current.scrollTo({
-      left: targetIndex * sliderRef.current.clientWidth,
-      behavior: 'smooth',
-    });
-    setCurrentSlide(targetIndex);
-  };
-
-  const handleMouseDown = (e) => {
-    if (!sliderRef.current) return;
-    setIsMouseDown(true);
-    setStartX(e.pageX - sliderRef.current.offsetLeft);
-    setScrollLeftState(sliderRef.current.scrollLeft);
-  };
-
-  const handleMouseLeaveOrUp = () => {
-    setIsMouseDown(false);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isMouseDown || !sliderRef.current) return;
-    e.preventDefault();
-    const x = e.pageX - sliderRef.current.offsetLeft;
-    const walk = (x - startX) * 1.5;
-    sliderRef.current.scrollLeft = scrollLeftState - walk;
-  };
-
   return (
-    <div className="w-full flex flex-col transition-all gap-5 md:gap-6 even:bg-tertiary-light p-4 sm:p-6 md:p-8">
-      
-      <div className="flex flex-col gap-2 pb-3 ">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: false, amount: 0.15 }}
+      transition={{ duration: 0.5 }}
+      className="w-full flex flex-col transition-all gap-5 md:gap-6 even:bg-tertiary-light p-4 sm:p-6 md:p-8 odd:bg-primary-light odd:text-tertiary-light"
+    >
+      <div className="flex flex-col gap-2 pb-3 border-b border-slate-100">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Link href={`/products/${product.slug}`} className="group">
-            <h2 className="text-2xl sm:text-5xl font-bold  group-hover:text-primary transition-colors font-poppins flex items-center gap-2.5">
+            <h2 className="text-2xl sm:text-4xl font-bold group-hover:text-primary transition-colors font-poppins flex items-center gap-2.5">
               {product.name}
               {product.is_featured && (
                 <span className="text-xs bg-amber-100 text-amber-800 font-semibold px-2.5 py-0.5 rounded-full border border-amber-200 shrink-0">
@@ -92,10 +69,10 @@ const ProductCard = ({ product }) => {
           </Link>
           {product.price && (
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-extrabold text-primary">${product.price}</span>
+              <span className="text-2xl font-extrabold ">${product.price - product.discount}</span>
               {product.discount > 0 && (
                 <span className="text-xs font-semibold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
-                  {product.discount}% OFF
+                  ${product.discount} OFF
                 </span>
               )}
             </div>
@@ -103,76 +80,109 @@ const ProductCard = ({ product }) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <div className="relative w-full aspect-video overflow-hidden  group">
-          {images.length > 0 ? (
-            <>
-              <div
-                ref={sliderRef}
-                onScroll={handleScroll}
-                onMouseDown={handleMouseDown}
-                onMouseLeave={handleMouseLeaveOrUp}
-                onMouseUp={handleMouseLeaveOrUp}
-                onMouseMove={handleMouseMove}
-                className={`flex w-full h-full overflow-x-auto scrollbar-none touch-pan-x select-none ${
-                  isMouseDown ? 'cursor-grabbing' : 'cursor-grab snap-x snap-mandatory scroll-smooth'
-                }`}
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      {/* Product Image Showcase with In-Place Stationary Swap */}
+      <div className="w-full flex flex-col gap-3">
+        {images.length > 0 ? (
+          <>
+            {/* Desktop 3-in-a-row Layout (md+) */}
+            <div className="hidden md:flex items-center justify-center gap-3 sm:gap-4 h-[340px] lg:h-[380px] w-full select-none">
+              {/* Left / Before Image (Stationary) */}
+              {prevIndex !== null ? (
+                <div className="w-1/4 h-[85%] relative rounded-2xl overflow-hidden bg-slate-900/5 border border-slate-200/80 opacity-75 shrink-0 select-none">
+                  <Image
+                    src={images[prevIndex]?.image}
+                    alt={images[prevIndex]?.title || 'Previous image'}
+                    fill
+                    sizes="25vw"
+                    className="object-cover object-center select-none pointer-events-none"
+                  />
+                  <div className="absolute bottom-2 left-2 bg-slate-900/70 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-md pointer-events-none">
+                    Before
+                  </div>
+                </div>
+              ) : null}
+
+              <motion.div
+                onPanEnd={handlePanEnd}
+                className="w-1/2 h-full relative rounded-2xl overflow-hidden bg-slate-900/5 border-2 border-primary/30 shadow-md select-none touch-pan-y"
               >
-                {images.map((img, index) => (
-                  <div
-                    key={img.id || index}
-                    className="min-w-full w-full h-full shrink-0 snap-center relative"
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={mainIndex}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="w-full h-full relative"
                   >
                     <Image
-                      src={img.image}
-                      alt={img.title || product.name}
+                      src={images[mainIndex]?.image}
+                      alt={images[mainIndex]?.title || product.name}
                       fill
-                      sizes="(max-width: 768px) 100vw, 80vw"
+                      sizes="50vw"
                       className="object-cover object-center select-none pointer-events-none"
-                      priority={index === 0}
+                      priority
                     />
-                    
-                  </div>
-                ))}
-              </div>
+                  </motion.div>
+                </AnimatePresence>
+              </motion.div>
 
-              {images.length > 1 && (
-                <>
-                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10 bg-slate-900/40 backdrop-blur-md px-3 py-1.5 rounded-full">
-                    {images.map((_, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => scrollToSlide(idx)}
-                        className={`h-2 rounded-full transition-all cursor-pointer ${
-                          currentSlide === idx ? 'w-5 bg-white' : 'w-2 bg-white/50 hover:bg-white/75'
-                        }`}
-                        aria-label={`Go to slide ${idx + 1}`}
-                      />
-                    ))}
+              {nextIndex !== null ? (
+                <div className="w-1/4 h-[85%] relative rounded-2xl overflow-hidden bg-slate-900/5 border border-slate-200/80 opacity-75 shrink-0 select-none">
+                  <Image
+                    src={images[nextIndex]?.image}
+                    alt={images[nextIndex]?.title || 'Next image'}
+                    fill
+                    sizes="25vw"
+                    className="object-cover object-center select-none pointer-events-none"
+                  />
+                  <div className="absolute bottom-2 right-2 bg-slate-900/70 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-md pointer-events-none">
+                    Next
                   </div>
-
-                  <div className="absolute top-3 right-3 bg-slate-900/60 backdrop-blur-sm text-white/90 text-[10px] px-2 py-0.5 rounded-full pointer-events-none">
-                    Drag / Swipe ↔
-                  </div>
-                </>
-              )}
-            </>
-          ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400">
-              <span className="text-sm">No images available</span>
+                </div>
+              ) : null}
             </div>
-          )}
-        </div>
+
+            {/* Mobile Single Image Display (< md) */}
+            <motion.div
+              onPanEnd={handlePanEnd}
+              className="block md:hidden relative w-full h-[260px] sm:h-[320px] rounded-2xl overflow-hidden bg-slate-900/5 border border-slate-200/80 select-none touch-pan-y"
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={mainIndex}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full h-full relative"
+                >
+                  <Image
+                    src={images[mainIndex]?.image}
+                    alt={images[mainIndex]?.title || product.name}
+                    fill
+                    sizes="100vw"
+                    className="object-cover object-center select-none pointer-events-none"
+                    priority
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
+          </>
+        ) : (
+          <div className="w-full aspect-video rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 text-sm font-poppins">
+            No preview images available
+          </div>
+        )}
       </div>
 
-      <div className="flex flex-col gap-1 ">
-        <p className="text-sm sm:text-base leading-relaxed">
+      <div className="flex flex-col gap-1">
+        <p className="text-sm sm:text-base leading-relaxed  font-poppins">
           {shortDescription || 'No description available for this product.'}
           {isDescriptionLong && (
             <Link
               href={`/products/${product.slug}`}
-              className="ml-1.5 hover:underline text-xs font-semibold inline-flex items-center gap-0.5"
+              className="ml-1.5 hover:underline text-xs font-semibold text-primary inline-flex items-center gap-0.5"
             >
               Read details
             </Link>
@@ -182,7 +192,6 @@ const ProductCard = ({ product }) => {
 
       {features.length > 0 && (
         <div className="flex flex-col w-full border border-slate-200/80 rounded-2xl overflow-hidden bg-slate-50/50">
-         
           <button
             onClick={() => setIsFeaturesOpen(!isFeaturesOpen)}
             className="flex items-center justify-between w-full px-4 py-3.5 bg-slate-100/70 hover:bg-slate-100 text-slate-800 font-semibold text-sm sm:text-base transition-colors cursor-pointer"
@@ -190,12 +199,12 @@ const ProductCard = ({ product }) => {
           >
             <div className="flex items-center gap-2.5">
               <FiLayers className="text-primary w-5 h-5 shrink-0" />
-              <span>Features & Specifications</span>
-              <span className="text-xs font-normal bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+              <span className="font-poppins">Features & Specifications</span>
+              <span className="text-xs font-normal bg-primary/10 text-primary px-2 py-0.5 rounded-full font-poppins">
                 {features.length}
               </span>
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
+            <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium font-poppins">
               <span>{isFeaturesOpen ? 'Hide features' : 'Show features'}</span>
               <FiChevronDown
                 className={`w-5 h-5 text-slate-600 transition-transform duration-300 ${
@@ -220,7 +229,7 @@ const ProductCard = ({ product }) => {
                       key={feature.id || idx}
                       className="flex flex-col gap-1.5 p-3.5 rounded-xl bg-slate-50 border border-slate-100"
                     >
-                      <div className="flex items-center justify-between gap-2 text-sm font-semibold text-slate-800">
+                      <div className="flex items-center justify-between gap-2 text-sm font-semibold text-slate-800 font-poppins">
                         <div className="flex items-center gap-2">
                           <FiCheck className="text-emerald-500 shrink-0 w-4 h-4" />
                           <span>{feature.name}</span>
@@ -232,7 +241,7 @@ const ProductCard = ({ product }) => {
                         )}
                       </div>
                       {feature.description && (
-                        <p className="text-xs text-slate-600 pl-6 leading-relaxed">
+                        <p className="text-xs text-slate-600 pl-6 leading-relaxed font-poppins">
                           {feature.description}
                         </p>
                       )}
@@ -248,7 +257,7 @@ const ProductCard = ({ product }) => {
       <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 mt-1">
         <Link
           href={`/products/${product.slug}`}
-          className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white font-medium text-sm transition-colors shadow-xs"
+          className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white font-medium text-sm transition-colors shadow-xs font-poppins"
         >
           <span>View Details</span>
           <FiArrowRight className="w-4 h-4" />
@@ -258,15 +267,14 @@ const ProductCard = ({ product }) => {
             href={product.demo_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-primary transition-colors px-3 py-2"
+            className="flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-primary transition-colors px-3 py-2 font-poppins"
           >
             <span>Live Demo</span>
             <FiExternalLink className="w-4 h-4" />
           </a>
         )}
       </div>
-      
-    </div>
+    </motion.div>
   );
 };
 
@@ -311,7 +319,7 @@ const ProductsPage = () => {
           </p>
         </div>
 
-        <div className="w-full flex flex-col gap-8 md:gap-10">
+        <div className="w-full flex flex-col">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
