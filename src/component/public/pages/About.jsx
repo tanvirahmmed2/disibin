@@ -17,7 +17,7 @@ const About = () => {
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.03]"
-        style={{ backgroundImage: 'radial-gradient(circle, #0ea5e9 1px, transparent 1px)', backgroundSize: '32px 32px' }}
+        style={{ backgroundImage: 'radial-gradient(circle, #008080 1px, transparent 1px)', backgroundSize: '32px 32px' }}
       />
 
       <div className="relative z-10 flex flex-col md:flex-row items-center gap-12 px-4 max-w-7xl mx-auto">
@@ -63,7 +63,7 @@ const About = () => {
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.2 }}>
             <Link
               href="/about"
-              className="inline-flex items-center gap-2 font-poppins font-semibold text-sm bg-slate-900 text-white px-8 py-3.5 rounded-xl hover:bg-primary shadow-md shadow-slate-200 transition-all duration-300 animate-pulse-glow"
+              className="inline-flex items-center gap-2 font-poppins font-semibold text-sm bg-primary text-white px-8 py-3.5 rounded-xl hover:bg-primary-dark shadow-md shadow-primary/20 transition-all duration-300 animate-pulse-glow"
             >
               About Us →
             </Link>

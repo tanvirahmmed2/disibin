@@ -59,7 +59,7 @@ const Bio = () => {
               aria-hidden='true'
               className='pointer-events-none absolute -top-10 -left-10 w-40 h-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700'
               style={{
-                background: 'radial-gradient(circle, rgba(14,165,233,0.12) 0%, transparent 70%)',
+                background: 'radial-gradient(circle, rgba(0,128,128,0.15) 0%, transparent 70%)',
               }}
             />
 

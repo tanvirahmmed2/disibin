@@ -62,15 +62,14 @@ const AboutPage = () => {
   ];
 
   return (
-    <div className="text-slate-900 w-full antialiased">
+    <div className="text-slate-900 w-full antialiased p-4 md:p-10 lg:p-20">
 
-      {/* Hero Section */}
-      <section className="w-full max-w-7xl mx-auto px-6 pt-16 pb-24 md:pt-24 md:pb-32">
+      <section className="w-full ">
         <motion.div
           initial="hidden"
           animate="visible"
           variants={stagger}
-          className="max-w-4xl"
+          className="w-full"
         >
           <motion.span
             variants={fadeUp}
@@ -91,7 +90,7 @@ const AboutPage = () => {
 
           <motion.p
             variants={fadeUp}
-            className="text-2xl md:text-3xl font-medium leading-snug text-slate-650 mb-10 max-w-3xl"
+            className="text-2xl md:text-3xl font-medium leading-snug text-slate-650 mb-10 "
           >
             We build technology that{' '}
             <span className="text-slate-900 font-semibold">works, scales, and performs.</span>
@@ -99,7 +98,7 @@ const AboutPage = () => {
 
           <motion.p
             variants={fadeUp}
-            className="text-lg text-slate-500 leading-relaxed max-w-2xl mb-14"
+            className="text-lg text-slate-500 leading-relaxed  mb-14"
           >
             From concept to premium digital solutions — crafting fast, scalable web
             applications that seamlessly combine design, development, and management
@@ -125,8 +124,7 @@ const AboutPage = () => {
 
       <div className="w-full h-px bg-slate-100" />
 
-      {/* NEW SECTION 1: Core Architectural Engineering Principles */}
-      <section className="w-full py-24 px-6 max-w-7xl mx-auto">
+      <section className="w-full py-24 px-6  mx-auto">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -151,7 +149,7 @@ const AboutPage = () => {
       {/* Dark Mid-Section Banner */}
       <section className="w-full py-32 px-6 bg-slate-900">
         <motion.div
-          className="max-w-4xl mx-auto text-center flex flex-col items-center"
+          className=" mx-auto text-center flex flex-col items-center"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
@@ -160,13 +158,13 @@ const AboutPage = () => {
           <h2 className="text-5xl sm:text-7xl font-extrabold tracking-tighter leading-[1.05] text-white mb-8">
             every day,<br />for years.
           </h2>
-          <p className="text-xl md:text-2xl text-slate-400 font-medium mb-14 max-w-2xl leading-relaxed">
+          <p className="text-xl md:text-2xl text-slate-400 font-medium mb-14 leading-relaxed">
             We don&apos;t build tools to impress. We build tools to perform. Reliable software creates value quietly.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href="/career"
-              className="inline-flex items-center justify-center px-10 py-5 bg-white text-slate-900 text-lg font-bold rounded-full hover:bg-primary/10 transition-colors shadow-xl"
+              className="inline-flex items-center justify-center px-10 py-5 bg-white text-slate-900 text-lg font-bold rounded-full hover:bg-secondary hover:text-tertiary-light transition-colors shadow-xl"
             >
               Join our team
             </Link>
@@ -184,7 +182,7 @@ const AboutPage = () => {
 
       {/* Metrics Section */}
       <section className="w-full py-20 px-6">
-        <div className="max-w-7xl mx-auto">
+        <div className=" mx-auto">
           <motion.div
             className="grid grid-cols-2 md:grid-cols-4 gap-10"
             initial="hidden"
@@ -209,7 +207,7 @@ const AboutPage = () => {
       <div className="w-full h-px bg-slate-100" />
 
       {/* NEW SECTION 2: Stack Blueprint Matrix Row */}
-      <section className="w-full py-24 px-6 max-w-7xl mx-auto">
+      <section className="w-full py-24 px-6 mx-auto">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -220,7 +218,7 @@ const AboutPage = () => {
           <motion.div variants={fadeUp}>
             <span className="text-xs font-bold tracking-widest text-indigo-600 uppercase block mb-2">Technical Standards</span>
             <h3 className="text-3xl font-extrabold tracking-tight text-slate-900">Our Stack Infrastructure</h3>
-            <p className="text-sm text-slate-500 mt-3 leading-relaxed max-w-xs">
+            <p className="text-sm text-slate-500 mt-3 leading-relaxed ">
               We operate exclusively on fully typed, optimized modern languages that decouple safely and run seamlessly at scale.
             </p>
           </motion.div>
@@ -240,7 +238,7 @@ const AboutPage = () => {
 
       {/* Evolving Timeline Section */}
       <section className="w-full py-24 px-6 bg-slate-50">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-[1fr_2fr] gap-20 items-start">
+        <div className=" mx-auto grid md:grid-cols-[1fr_2fr] gap-20 items-start">
 
           <motion.div
             className="md:sticky md:top-28"
@@ -252,7 +250,7 @@ const AboutPage = () => {
             <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
               Constantly <br />Evolving
             </h2>
-            <p className="text-lg text-slate-500 leading-relaxed max-w-xs">
+            <p className="text-lg text-slate-500 leading-relaxed ">
               The web moves fast, and so do we. We continuously refine our stack to ensure we are delivering the most secure, maintainable, and performant codebases possible.
             </p>
           </motion.div>
@@ -272,7 +270,7 @@ const AboutPage = () => {
               >
                 <div className="absolute left-[-9px] top-1 w-4 h-4 rounded-full bg-white border-2 border-slate-300 group-hover:border-primary group-hover:bg-primary/10 transition-all duration-300" />
                 <h3 className="text-2xl font-bold text-slate-900 mb-3">{item.title}</h3>
-                <p className="text-base text-slate-500 leading-relaxed max-w-lg">{item.desc}</p>
+                <p className="text-base text-slate-500 leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -283,7 +281,7 @@ const AboutPage = () => {
       <div className="w-full h-px bg-slate-100" />
 
       {/* NEW SECTION 3: Long-term Web Management & Guardrails */}
-      <section className="w-full py-24 px-6 max-w-5xl mx-auto">
+      <section className="w-full py-24 px-6 ">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -319,7 +317,7 @@ const AboutPage = () => {
 
       {/* Philosophy Callout Footer */}
       <section className="w-full py-32 px-6">
-        <div className="max-w-5xl mx-auto flex flex-col gap-24 text-center">
+        <div className=" mx-auto flex flex-col gap-24 text-center">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -329,7 +327,7 @@ const AboutPage = () => {
             <h2 className="text-3xl md:text-5xl font-semibold leading-tight text-slate-900 mb-8">
               We believe growth happens through real work. People here learn by building, experimenting, failing, and improving.
             </h2>
-            <p className="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl text-slate-500  mx-auto leading-relaxed">
               We support learning through mentorship, knowledge sharing, and giving people ownership early. Growth is not a ladder. It&apos;s a journey.
             </p>
           </motion.div>

@@ -62,7 +62,6 @@ export default function ProductDetailPage() {
     fetchProduct();
   }, [slug, router]);
 
-  // Auto slider effect for multi-image products
   useEffect(() => {
     if (!product || !product.images || product.images.length <= 1) return;
 
@@ -77,27 +76,27 @@ export default function ProductDetailPage() {
     return (
       <div className="min-h-screen w-full bg-slate-50/50 p-4 sm:p-6 lg:p-8 flex flex-col items-center justify-start">
         <div className="w-full max-w-7xl mx-auto space-y-8 animate-pulse pt-4">
-          <div className="h-6 bg-slate-200 rounded-md w-36"></div>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 bg-white/60 border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm">
+          <div className="h-6 bg-primary/10 rounded-md w-36"></div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 bg-white/60 border border-primary/10 rounded-3xl p-6 sm:p-8 shadow-sm">
             <div className="lg:col-span-7 space-y-4">
-              <div className="aspect-video bg-slate-200 rounded-2xl"></div>
+              <div className="aspect-video bg-primary/10 rounded-2xl"></div>
               <div className="grid grid-cols-4 gap-3">
-                <div className="aspect-video bg-slate-200 rounded-xl"></div>
-                <div className="aspect-video bg-slate-200 rounded-xl"></div>
-                <div className="aspect-video bg-slate-200 rounded-xl"></div>
-                <div className="aspect-video bg-slate-200 rounded-xl"></div>
+                <div className="aspect-video bg-primary/10 rounded-xl"></div>
+                <div className="aspect-video bg-primary/10 rounded-xl"></div>
+                <div className="aspect-video bg-primary/10 rounded-xl"></div>
+                <div className="aspect-video bg-primary/10 rounded-xl"></div>
               </div>
             </div>
             <div className="lg:col-span-5 space-y-6 flex flex-col justify-between py-2">
               <div className="space-y-4">
-                <div className="h-6 bg-slate-200 rounded-md w-28"></div>
-                <div className="h-10 bg-slate-200 rounded-md w-3/4"></div>
+                <div className="h-6 bg-primary/10 rounded-md w-28"></div>
+                <div className="h-10 bg-primary/10 rounded-md w-3/4"></div>
                 <div className="h-4 bg-slate-200 rounded-md w-full"></div>
                 <div className="h-4 bg-slate-200 rounded-md w-5/6"></div>
               </div>
               <div className="space-y-3">
-                <div className="h-12 bg-slate-200 rounded-xl w-full"></div>
-                <div className="h-12 bg-slate-200 rounded-xl w-full"></div>
+                <div className="h-12 bg-primary/10 rounded-xl w-full"></div>
+                <div className="h-12 bg-primary/10 rounded-xl w-full"></div>
               </div>
             </div>
           </div>
@@ -110,25 +109,21 @@ export default function ProductDetailPage() {
 
   const images = product.images || [];
   const activeImage = images[activeIndex]?.image || null;
-
-  // Price calculations
   const originalPrice = Number(product.price) || 0;
-  const discountPercent = Number(product.discount) || 0;
-  const finalPrice = discountPercent > 0
-    ? Math.round(originalPrice * (1 - discountPercent / 100))
+  const discountAmount = Number(product.discount) || 0;
+  const finalPrice = discountAmount > 0
+    ? Math.max(0, originalPrice - discountAmount)
     : originalPrice;
 
   return (
-    <div className="min-h-screen w-full bg-slate-50/30 relative overflow-hidden pb-16 pt-20">
+    <div className="min-h-screen w-full bg-slate-50/30 relative overflow-hidden p-4 md:p-8">
       <Toaster position="top-center" />
 
-      {/* Decorative Blur Orbs */}
-      <div className="absolute top-10 left-10 w-72 h-72 bg-sky-200/20 rounded-full filter blur-3xl pointer-events-none -z-10 animate-pulse"></div>
-      <div className="absolute top-1/3 right-10 w-96 h-96 bg-indigo-200/10 rounded-full filter blur-3xl pointer-events-none -z-10 animate-pulse delay-1000"></div>
+      <div className="absolute top-10 left-10 w-72 h-72 bg-primary/10 rounded-full filter blur-3xl pointer-events-none -z-10 animate-pulse"></div>
+      <div className="absolute top-1/3 right-10 w-96 h-96 bg-secondary/5 rounded-full filter blur-3xl pointer-events-none -z-10 animate-pulse delay-1000"></div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+      <div className="w-full">
 
-        {/* Breadcrumb Navigation */}
         <div className="flex items-center gap-2 mb-8 animate-fade-in">
           <Link
             href="/products"
@@ -234,14 +229,14 @@ export default function ProductDetailPage() {
               {/* Featured Badge & Pricing Header */}
               <div className="flex items-center justify-between gap-3">
                 {product.is_featured && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-600 border border-amber-100 text-xs font-bold uppercase tracking-wider">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 text-secondary border border-secondary/20 text-xs font-bold uppercase tracking-wider">
                     <FiTag size={13} /> Featured Product
                   </span>
                 )}
 
                 {/* Price Tag */}
                 <div className="ml-auto flex items-baseline gap-2">
-                  {discountPercent > 0 && (
+                  {discountAmount > 0 && (
                     <span className="text-slate-400 text-sm line-through font-semibold">
                       ${originalPrice.toLocaleString()}
                     </span>
@@ -249,9 +244,9 @@ export default function ProductDetailPage() {
                   <span className="text-3xl font-extrabold text-slate-900">
                     {finalPrice > 0 ? `$${finalPrice.toLocaleString()}` : 'Free / Contact'}
                   </span>
-                  {discountPercent > 0 && (
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-100">
-                      {discountPercent}% OFF
+                  {discountAmount > 0 && (
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-secondary/10 text-secondary border border-secondary/20">
+                      -${discountAmount.toLocaleString()} OFF
                     </span>
                   )}
                 </div>
@@ -264,11 +259,11 @@ export default function ProductDetailPage() {
               {/* Core Features Highlights */}
               {product.features && product.features.length > 0 && (
                 <div className="pt-4 space-y-2.5 border-t border-slate-100">
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Key Highlights</h3>
+                  <h3 className="text-xs font-bold text-primary/70 uppercase tracking-widest">Key Highlights</h3>
                   <div className="space-y-2">
                     {product.features.slice(0, 4).map((f, idx) => (
                       <div key={idx} className="flex items-center gap-2.5 text-slate-700">
-                        <div className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
+                        <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 border border-primary/20">
                           <FiCheck size={12} />
                         </div>
                         <span className="text-xs font-bold text-slate-800">{f.name}</span>
@@ -286,7 +281,7 @@ export default function ProductDetailPage() {
                   href={product.demo_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-bold py-3.5 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 group shadow-md shadow-sky-500/20"
+                  className="w-full bg-gradient-to-r from-primary to-primary-dark hover:from-primary-dark hover:to-primary-dark text-white font-bold py-3.5 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 group shadow-md shadow-primary/20"
                 >
                   <FiExternalLink className="group-hover:scale-105 transition-transform" size={16} />
                   Launch Live Product Demo
@@ -296,7 +291,7 @@ export default function ProductDetailPage() {
               {isLoggedIn ? (
                 <Link
                   href="/user/tickets"
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md"
+                  className="w-full bg-secondary hover:bg-secondary-dark text-white font-bold py-3.5 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md shadow-secondary/20"
                 >
                   <FiShoppingCart size={16} />
                   Request Custom Implementation
@@ -304,7 +299,7 @@ export default function ProductDetailPage() {
               ) : (
                 <Link
                   href="/contact"
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md"
+                  className="w-full bg-secondary hover:bg-secondary-dark text-white font-bold py-3.5 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md shadow-secondary/20"
                 >
                   <FiMessageSquare size={16} />
                   Inquire Support & Purchase
@@ -382,9 +377,9 @@ export default function ProductDetailPage() {
                       {product.features.map((feature, idx) => (
                         <div
                           key={idx}
-                          className="flex items-start gap-4 p-4 bg-slate-50 border border-slate-100 rounded-2xl"
+                          className="flex items-start gap-4 p-4 bg-primary/5 border border-primary/10 rounded-2xl"
                         >
-                          <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0">
+                          <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center shrink-0">
                             <FiCheck size={16} />
                           </div>
                           <div>
@@ -419,7 +414,7 @@ export default function ProductDetailPage() {
 
                     <Link
                       href={isLoggedIn ? "/user/tickets" : "/contact"}
-                      className="inline-flex w-full items-center justify-center gap-2 px-6 py-3.5 bg-primary hover:bg-sky-400 text-white font-extrabold text-xs rounded-xl transition-all shadow-md"
+                      className="inline-flex w-full items-center justify-center gap-2 px-6 py-3.5 bg-primary hover:bg-primary-dark text-white font-extrabold text-xs rounded-xl transition-all shadow-md shadow-primary/20"
                     >
                       <FiMessageSquare size={14} />
                       {isLoggedIn ? "Open Support Ticket" : "Contact Sales & Support"}
@@ -443,21 +438,24 @@ export default function ProductDetailPage() {
               {
                 icon: <FiCpu className="text-primary" size={24} />,
                 title: "High Performance Architecture",
-                desc: "Optimized database queries, caching, and clean code for seamless user experience."
+                desc: "Optimized database queries, caching, and clean code for seamless user experience.",
+                bg: "bg-primary/10 border-primary/20"
               },
               {
-                icon: <FiShield className="text-indigo-500" size={24} />,
+                icon: <FiShield className="text-primary-light" size={24} />,
                 title: "Enterprise Security",
-                desc: "Sanitized data structures, encrypted auth sessions, and strict access controls."
+                desc: "Sanitized data structures, encrypted auth sessions, and strict access controls.",
+                bg: "bg-primary/5 border-primary/10"
               },
               {
-                icon: <FiActivity className="text-emerald-500" size={24} />,
+                icon: <FiActivity className="text-secondary" size={24} />,
                 title: "Reliability & Support",
-                desc: "Full technical assistance, continuous updates, and structured support tickets."
+                desc: "Full technical assistance, continuous updates, and structured support tickets.",
+                bg: "bg-secondary/10 border-secondary/20"
               }
             ].map((pillar, idx) => (
-              <div key={idx} className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm space-y-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center">
+              <div key={idx} className="bg-white border border-primary/10 rounded-2xl p-5 shadow-sm space-y-3 hover:shadow-md hover:border-primary/20 transition-all duration-300">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${pillar.bg}`}>
                   {pillar.icon}
                 </div>
                 <h4 className="font-extrabold text-slate-900 text-sm">{pillar.title}</h4>

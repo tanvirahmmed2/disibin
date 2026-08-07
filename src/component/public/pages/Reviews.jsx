@@ -62,7 +62,7 @@ const Reviews = () => {
       <div className="pt-2">
         <Link
           href="/reviews"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 text-white text-xs font-semibold font-poppins hover:bg-primary transition-colors shadow-sm"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white text-xs font-semibold font-poppins hover:bg-primary-dark transition-colors shadow-sm shadow-primary/20"
         >
           <span>View All Client Reviews</span>
           <FiArrowRight size={14} />
