@@ -51,14 +51,13 @@ export default function UserProfilePage() {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-6">
+    <div className="p-4 w-full space-y-6">
       <Toaster position="top-center" />
 
-      {/* Header Banner */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 rounded-3xl p-8 text-white shadow-xl">
+      <div className="relative overflow-hidden bg-primary rounded-3xl p-8 text-white shadow-sm">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-5">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-3xl font-extrabold text-white shadow-lg shadow-sky-500/20">
+            <div className="w-20 h-20 rounded-2xl  flex items-center justify-center text-3xl font-extrabold text-white shadow-lg shadow-sky-500/20">
               {(user?.name || 'U').charAt(0).toUpperCase()}
             </div>
             <div>

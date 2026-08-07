@@ -75,10 +75,9 @@ export default function UserReviewsPage() {
   };
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 max-w-4xl mx-auto space-y-6">
+    <div className="p-4 w-full space-y-6">
       <Toaster position="top-center" />
 
-      {/* Header Card */}
       <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-1">
         <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
           <span className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">

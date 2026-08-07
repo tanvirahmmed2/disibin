@@ -14,7 +14,7 @@ const Navbar = () => {
                     userSidebar? <CiMenuFries size={20} /> : <CiMenuBurger size={20} />
                 }
                 </button>
-        <Link href={'/'} className='text-xl'>Home</Link>
+        <Link href={'/user'} className='text-xl'>Panel</Link>
         </div>
         <button className='px-6 p-1 rounded-2xl cursor-pointer bg-sky-500 text-white' onClick={()=>logout()}>Logout</button>
         
