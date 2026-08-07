@@ -213,7 +213,7 @@ const Sidebar = () => {
                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
-                <FiUser className="text-base flex-shrink-0" />
+                <FiUser className="text-base shrink-0" />
                 <span>My Profile</span>
               </Link>
               <Link
@@ -225,7 +225,7 @@ const Sidebar = () => {
                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
-                <FiSettings className="text-base flex-shrink-0" />
+                <FiSettings className="text-base shrink-0" />
                 <span>Settings</span>
               </Link>
               <Link
@@ -237,7 +237,7 @@ const Sidebar = () => {
                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
-                <FiShield className="text-base flex-shrink-0" />
+                <FiShield className="text-base shrink-0" />
                 <span>Security</span>
               </Link>
               <Link
@@ -245,7 +245,7 @@ const Sidebar = () => {
                 onClick={closeMenu}
                 className="flex items-center gap-3 px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all duration-200"
               >
-                <FaGlobeAsia className="text-base flex-shrink-0" />
+                <FaGlobeAsia className="text-base shrink-0" />
                 <span>Web Home</span>
               </Link>
             </div>
@@ -264,7 +264,7 @@ const Sidebar = () => {
             onClick={teamLogout}
             className="w-full flex items-center gap-3 px-4 py-2 rounded-xl text-xs font-bold text-rose-500 hover:bg-rose-50 transition-all duration-200"
           >
-            <FiLogOut className="text-base flex-shrink-0" />
+            <FiLogOut className="text-base shrink-0" />
             <span>Log Out</span>
           </button>
         </div>
