@@ -60,7 +60,7 @@ const Footer = () => {
           <div className='w-full flex flex-row items-center justify-center gap-4'>
             <Link href="/" className='text-3xl font-bold tracking-tight text-white'>Disibin</Link>
             <p className='flex flex-row items-center justify-center gap-4 text-xs'>
-              <MdCopyright/> Disibin International Ltd 2026
+              <MdCopyright/> Digital Solutions & Business Innovation Network
             </p>
           </div>
 

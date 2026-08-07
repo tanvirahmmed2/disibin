@@ -32,12 +32,12 @@ const NewsLetter = () => {
     };
 
     return (
-        <form onSubmit={handleSubscribe} className="w-full flex flex-col items-center justify-center gap-6">
+        <form onSubmit={handleSubscribe} className="w-full flex flex-col md:flex-row items-center justify-center gap-6">
             <Toaster position="top-center" />
             <p className="text-tertiary-light text-2xl sm:text-3xl font-extrabold text-center tracking-tight">
                 Receive Latest Updates!
             </p>
-            <div className="w-full max-w-md flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="w-full max-w-xl flex flex-col sm:flex-row items-center justify-center gap-3">
                 <input
                     type="email"
                     name="email"

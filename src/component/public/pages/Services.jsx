@@ -1,179 +1,242 @@
 'use client'
 import React from 'react'
 import { motion } from 'framer-motion'
-import { FiMonitor, FiSmartphone, FiCpu, FiLayers, FiTerminal, FiDatabase, FiCheckCircle } from 'react-icons/fi'
+import {
+  FiMonitor,
+  FiSmartphone,
+  FiTrendingUp,
+  FiCloud,
+  FiShield,
+  FiCheckCircle,
+  FiArrowRight,
+  FiLayers,
+  FiCpu,
+  FiGitBranch
+} from 'react-icons/fi'
 
 const coreServices = [
   {
     icon: FiMonitor,
     title: 'Enterprise Web Apps',
-    focus: 'Multi-tenant dashboards, complex permission roles, secure financial transactions, and real-time data streaming.',
-    ideal: 'SaaS platforms, multi-branch e-commerce, and business portals.',
-    color: 'sky',
+    badge: 'Core Platform',
+    desc: 'Multi-tenant dashboards, complex permission management, secure financial transactions, and real-time data streaming.',
+    ideal: 'SaaS platforms, e-commerce, and business portals.',
   },
   {
     icon: FiSmartphone,
-    title: 'Mobile & Cross-Platform',
-    focus: 'Native-feeling performance, offline capabilities, secure biometrics, and push notification systems.',
-    ideal: 'Consumer apps, delivery tracking, and on-the-go business tools.',
-    color: 'indigo',
+    title: 'Mobile Applications',
+    badge: 'Mobile Systems',
+    desc: 'Native-feeling cross-platform mobile apps built with offline synchronization, biometric security, and push notifications.',
+    ideal: 'Consumer apps, field operations, and mobile tools.',
   },
   {
-    icon: FiCpu,
-    title: 'System Automation & IoT',
-    focus: 'Connecting hardware with cloud backends, cron-scheduled tasks, queue management, and central data monitoring dashboards.',
-    ideal: 'Robotics control, automated workflows, and smart systems.',
-    color: 'sky',
+    icon: FiTrendingUp,
+    title: 'Business Innovation',
+    badge: 'Growth Engine',
+    desc: 'AI-assisted process automation, executive decision dashboards, and legacy system modernization without downtime.',
+    ideal: 'Scaling enterprises and digital transformations.',
+  },
+  {
+    icon: FiCloud,
+    title: 'Cloud Architecture',
+    badge: 'Infrastructure',
+    desc: 'High-availability microservices, automated CI/CD deployment pipelines, cloud cost optimization, and secure API gateways.',
+    ideal: 'High-traffic applications and scalable backends.',
   },
 ]
 
-const techStack = [
-  { icon: FiLayers, title: 'Frontend Ecosystem', desc: 'Next.js App Router, React, Tailwind CSS, TypeScript, State Management.' },
-  { icon: FiTerminal, title: 'Backend & APIs', desc: 'Node.js, Express.js, NestJS, Secure RESTful APIs, Realtime WebSockets.' },
-  { icon: FiDatabase, title: 'Databases & Storage', desc: 'PostgreSQL (multi-branch), MongoDB, Redis, Supabase.' },
-  { icon: FiCpu, title: 'Infrastructure & IoT', desc: 'Docker, GitHub Actions CI/CD, AWS/Vercel, MQTT IoT protocols.' },
-]
-
-const steps = [
-  { phase: '01', title: 'Discovery & Database Architecture', desc: 'We map the entire system — PostgreSQL schema relationships, API endpoints, and multi-tenant boundaries — before writing a single line of code.' },
-  { phase: '02', title: 'UI/UX Design & Prototyping', desc: 'Concepts become clickable, interactive prototypes. You see exactly how the app will look and flow before engineering begins.' },
-  { phase: '03', title: 'Agile Sprints & Development', desc: 'Bi-weekly milestones with concurrent front/backend development. Live staging access throughout the build.' },
-  { phase: '04', title: 'Rigorous Testing & QA', desc: 'Stress-test queries, security boundaries, responsive layouts, and automated tasks before any deployment.' },
-  { phase: '05', title: 'Deployment & Continuous Integration', desc: 'Production launch with automated CI/CD pipelines and hardware-to-cloud sync for IoT/automation systems.' },
+const treeSteps = [
+  {
+    phase: '01',
+    title: 'Discovery & Business Architecture',
+    subtitle: 'System Blueprint & Schema Design',
+    desc: 'We map PostgreSQL database relationships, multi-tenant boundaries, role-based access control (RBAC), and security requirements before writing code.',
+    activities: [
+      'Database ERD & Schema Mapping',
+      'API Contract & Endpoints Design',
+      'Multi-tenant Boundary Definition',
+      'Security & Risk Assessment'
+    ],
+    deliverable: 'Complete Architecture Blueprint',
+  },
+  {
+    phase: '02',
+    title: 'UI/UX Strategy & Interactive Prototyping',
+    subtitle: 'Clickable Prototypes & Design Tokens',
+    desc: 'Transforming requirements into clickable high-fidelity prototypes. You validate user journeys, admin dashboards, and component design tokens early.',
+    activities: [
+      'Responsive Component Specs',
+      'High-Fidelity Wireframing',
+      'Interactive User Flow Simulation',
+      'Design Token Standardization'
+    ],
+    deliverable: 'Interactive Staging Prototype',
+  },
+  {
+    phase: '03',
+    title: 'Agile Innovation & Sprint Engineering',
+    subtitle: 'Parallel Front & Backend Execution',
+    desc: 'Bi-weekly sprint milestones with continuous integration. Clean modular codebase, type safety, and real-time staging preview access throughout the build.',
+    activities: [
+      'Concurrent API & UI Development',
+      'Type-Safe TypeScript Implementation',
+      'Automated CI/CD Pipeline Setup',
+      'Bi-Weekly Milestone Demonstrations'
+    ],
+    deliverable: 'Production-Ready Staging Code',
+  },
+  {
+    phase: '04',
+    title: 'Rigorous QA & Security Boundary Testing',
+    subtitle: 'Stress Testing & Rate-Limiting Audits',
+    desc: 'Comprehensive performance and security validation. Query load testing, multi-role permission isolation checks, and responsive design audits.',
+    activities: [
+      'SQL Query Indexing & Load Tests',
+      'Role Isolation & Security Audit',
+      'Cross-Device & Browser Testing',
+      'API Rate Limiting & Auth Checks'
+    ],
+    deliverable: 'QA & Security Certificate',
+  },
+  {
+    phase: '05',
+    title: 'Production Deployment & Continuous Growth',
+    subtitle: 'Zero-Downtime Launch & Telemetry',
+    desc: 'Production release using automated database migrations, cloud edge caching, live performance telemetry, and descriptive architecture documentation.',
+    activities: [
+      'Zero-Downtime Pipeline Launch',
+      'Edge Cache & DNS Optimization',
+      'Real-Time Telemetry & Monitoring',
+      'Technical Documentation Hand-off'
+    ],
+    deliverable: 'Live Production Platform',
+  },
 ]
 
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 28 },
+  initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true },
-  transition: { duration: 0.6, ease: 'easeOut', delay },
+  transition: { duration: 0.5, ease: 'easeOut', delay },
 })
 
 export default function Services() {
   return (
-    <div className="w-full antialiased space-y-6">
+    <div className="w-full antialiased space-y-16 py-6">
 
-      <motion.section
-        {...fadeUp()}
-        className="w-full text-center py-20 px-4 rounded-[2.5rem] shadow-xl shadow-slate-100 flex flex-col items-center gap-5"
-      >
-        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500 font-poppins">Our Services</span>
-        <h2 className="font-poppins text-4xl md:text-5xl lg:text-6xl font-semibold text-slate-900 leading-tight max-w-4xl">
-          We engineer{' '}
-          <span className="gradient-text">high-performance</span>{' '}
-          digital products from the ground up
+      <motion.section {...fadeUp()} className="w-full text-center max-w-3xl mx-auto px-4 space-y-4">
+        
+        <h2 className="font-poppins text-3xl sm:text-5xl font-semibold text-slate-900 leading-tight">
+          We engineer <span className="gradient-text font-bold">high-performance</span> digital products
         </h2>
-        <p className="text-slate-500 font-poppins text-base max-w-xl leading-relaxed">
-          Whether you need a massive multi-branch system or a real-time automation tool, we build with scalability, speed, and clean code in mind.
+        <p className="text-slate-500 font-poppins text-base max-w-xl mx-auto leading-relaxed">
+          From enterprise web applications to business process innovation, we engineer software designed for speed, scale, and long-term performance.
         </p>
       </motion.section>
 
-      <motion.section {...fadeUp(0.1)} className="w-full px-4 py-16">
-        <div className="mb-10">
-          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500 font-poppins block mb-2">Capabilities</span>
-          <h3 className="font-poppins text-3xl font-semibold text-slate-900">What We Build</h3>
-          <p className="text-slate-500 font-poppins text-sm mt-2 max-w-md">Tailored technical solutions backed by rock-solid architecture.</p>
+      <motion.section {...fadeUp(0.1)} className="w-full px-2">
+        <div className="mb-8 text-center sm:text-left">
+         <h3 className="font-poppins text-2xl sm:text-3xl font-semibold text-slate-900">What We Build</h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {coreServices.map((s, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {coreServices.map((s, i) => {
+            const Icon = s.icon
+            return (
+              <motion.div
+                key={s.title}
+                {...fadeUp(i * 0.08 + 0.1)}
+                className="glass rounded-2xl p-6 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between border border-slate-200/80 group"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
+                      {s.badge}
+                    </span>
+                  </div>
+
+                  <h4 className="font-poppins font-bold text-slate-900 text-lg mb-2 group-hover:text-primary transition-colors">{s.title}</h4>
+                  <p className="text-slate-500 text-xs leading-relaxed mb-4 font-poppins">{s.desc}</p>
+                </div>
+
+                <div className="pt-3 border-t border-slate-100">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Ideal For</span>
+                  <p className="text-slate-800 font-medium text-xs font-poppins">{s.ideal}</p>
+                </div>
+              </motion.div>
+            )
+          })}
+        </div>
+      </motion.section>
+
+      <motion.section {...fadeUp(0.1)} className="w-full px-2">
+        <div className="mb-12 text-center">
+          
+          <h3 className="font-poppins text-2xl sm:text-4xl font-semibold text-slate-900">How We Work & Launch</h3>
+          <p className="text-slate-500 text-sm mt-2 max-w-lg mx-auto font-poppins">
+            A structured 5-phase engineering tree designed to deliver high-quality software predictably.
+          </p>
+        </div>
+
+        <div className="relative pl-6 sm:pl-10 space-y-10">
+          <div className="absolute left-3.5 sm:left-5 top-3 bottom-3 w-0.5 bg-linear-to-b from-primary via-primary-light to-transparent" />
+
+          {treeSteps.map((step, i) => (
             <motion.div
-              key={s.title}
-              {...fadeUp(i * 0.1 + 0.2)}
-              className="group glass rounded-2xl p-6 shadow-sm hover:shadow-lg hover:shadow-sky-100/40 hover:-translate-y-1 transition-all duration-400 cursor-default"
+              key={step.phase}
+              {...fadeUp(i * 0.1 + 0.1)}
+              className="relative flex flex-col sm:flex-row items-start gap-6 group"
             >
-              <div className="w-11 h-11 rounded-xl bg-sky-50 flex items-center justify-center mb-4 group-hover:bg-sky-100 transition-colors">
-                <s.icon className="w-5 h-5 text-sky-500" />
+              {/* Tree Node Marker */}
+              <div className="absolute -left-6 sm:-left-10 top-1.5 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white border-3 border-primary shadow-sm flex items-center justify-center group-hover:scale-110 group-hover:bg-primary transition-all duration-300 z-10">
+                <span className="text-[10px] font-bold text-primary group-hover:text-white transition-colors">{step.phase}</span>
               </div>
-              <h4 className="font-poppins font-bold text-slate-900 text-lg mb-2">{s.title}</h4>
-              <p className="text-slate-500 text-sm leading-relaxed mb-3">{s.focus}</p>
-              <div className="pt-3 border-t border-slate-100">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block mb-1">Ideal For</span>
-                <p className="text-sky-700 font-medium text-sm font-poppins">{s.ideal}</p>
+
+              {/* Step Card Content */}
+              <div className="w-full glass rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-300 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-primary font-poppins block">
+                      Phase {step.phase} • {step.subtitle}
+                    </span>
+                    <h4 className="font-poppins font-bold text-slate-900 text-lg sm:text-xl">{step.title}</h4>
+                  </div>
+                  <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-full shrink-0 font-poppins self-start sm:self-auto">
+                    {step.deliverable}
+                  </span>
+                </div>
+
+                <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-poppins">{step.desc}</p>
+
+                {/* Key Activities List */}
+                <div className="pt-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-poppins block mb-2.5">
+                    Core Engineering Activities
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {step.activities.map((act) => (
+                      <div key={act} className="flex items-center gap-2 text-xs font-medium text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                        <FiCheckCircle className="w-3.5 h-3.5 text-primary shrink-0" />
+                        <span>{act}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
-      </motion.section>
 
-      <motion.section
-        {...fadeUp(0.1)}
-        className="w-full bg-slate-900 text-white py-16 px-6 rounded-[2.5rem] shadow-xl"
-      >
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col lg:flex-row lg:items-center gap-12">
-            <div className="lg:w-80 shrink-0">
-              <span className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-400 font-poppins block mb-3">Our Capabilities</span>
-              <h3 className="font-poppins text-3xl font-semibold text-white mb-4">Tech Stack & Architecture</h3>
-              <p className="text-slate-400 text-sm leading-relaxed font-poppins">
-                Lightweight, feature-packed stacks built for speed and heavy parallel data access. No bloat — just highly optimised frameworks that stay performant as you scale.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
-              {techStack.map((t, i) => (
-                <motion.div
-                  key={t.title}
-                  {...fadeUp(i * 0.08 + 0.2)}
-                  className="group bg-slate-800/60 border border-slate-700/50 rounded-2xl p-5 hover:border-sky-500/40 hover:bg-slate-800 transition-all duration-300"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-8 h-8 rounded-lg bg-sky-500/10 flex items-center justify-center">
-                      <t.icon className="w-4 h-4 text-sky-400" />
-                    </div>
-                    <h4 className="font-poppins font-semibold text-slate-100 text-sm">{t.title}</h4>
-                  </div>
-                  <p className="text-slate-400 text-xs leading-relaxed">{t.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+        {/* Commitment Banner */}
+        <div className="mt-12 glass border border-primary/20 bg-primary/5 rounded-2xl p-5 flex items-center gap-4">
+          <FiShield className="w-6 h-6 text-primary shrink-0" />
+          <p className="text-slate-700 text-xs leading-relaxed font-poppins">
+            <strong className="text-slate-900">Production Guarantee:</strong> Clean, modular codebases with full technical documentation and type safety, ensuring seamless scalability for your team.
+          </p>
         </div>
-      </motion.section>
-
-      <motion.section {...fadeUp(0.1)} className="w-full py-16">
-        <div className="text-center mb-16">
-          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500 font-poppins block mb-3">Our Process</span>
-          <h3 className="font-poppins text-3xl font-semibold text-slate-900">Development System & How We Work</h3>
-          <p className="mt-3 text-slate-500 text-sm font-poppins max-w-xl mx-auto">A systematic, multi-step pipeline built to launch projects predictably and securely.</p>
-        </div>
-
-        <div className="relative w-full">
-          {/* Vertical line */}
-          <div className="absolute left-6 top-0 bottom-0 w-px bg-linear-to-b from-sky-200 via-slate-200 to-transparent" />
-
-          <div className="space-y-10 pl-16">
-            {steps.map((step, i) => (
-              <motion.div
-                key={step.phase}
-                {...fadeUp(i * 0.08 + 0.1)}
-                className="group relative"
-              >
-                {/* Phase bubble */}
-                <div className="absolute -left-[2.6rem] top-0.5 w-7 h-7 rounded-full bg-sky-500 border-4 border-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <span className="text-[8px] font-bold text-white">{step.phase}</span>
-                </div>
-
-                <div className="glass rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-                  <h4 className="font-poppins font-bold text-slate-900 mb-2">{step.title}</h4>
-                  <p className="text-slate-500 text-sm leading-relaxed">{step.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        <motion.div
-          {...fadeUp(0.3)}
-          className="mt-14 w-full flex flex-col sm:flex-row items-start gap-4 bg-sky-50 border border-sky-100 rounded-2xl p-6 shadow-sm"
-        >
-          <FiCheckCircle className="w-6 h-6 text-sky-500 shrink-0 mt-0.5" />
-          <div className='w-full'>
-            <h4 className="font-poppins font-bold text-slate-900 text-base mb-1">The Production Guarantee</h4>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              All code we deliver is cleanly decoupled, type-safe, and shipped with descriptive markdown architecture documentation — so your engineers can safely inherit and scale it.
-            </p>
-          </div>
-        </motion.div>
       </motion.section>
 
     </div>
