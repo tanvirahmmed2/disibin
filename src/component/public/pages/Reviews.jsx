@@ -12,7 +12,7 @@ const Reviews = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await axios.get('/api/public/review?type=public&limit=10');
+        const res = await axios.get('/api/public/review?type=public&limit=8');
         if (res.data.success && Array.isArray(res.data.data)) {
           setReviews(res.data.data.slice(0, 10));
         } else {
@@ -33,10 +33,8 @@ const Reviews = () => {
 
   return (
     <section className="w-full py-16 rounded-[2.5rem] shadow-xl shadow-slate-100 my-8 flex flex-col items-center justify-center gap-8">
-      <div className="text-center space-y-2">
-        <span className="text-xs font-semibold uppercase tracking-[0.25em] text-primary font-poppins bg-primary/10 px-3.5 py-1.5 rounded-full border border-primary/20">
-          Client Feedback
-        </span>
+      <div className="text-center space-y-5">
+        
         <h2 className="text-3xl md:text-5xl font-poppins text-slate-900 font-semibold">
           What Our <span className="gradient-text font-bold">Clients</span> Say
         </h2>
