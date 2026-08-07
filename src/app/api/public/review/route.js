@@ -53,16 +53,24 @@ export async function GET(req) {
     try {
         const { searchParams } = new URL(req.url);
         const type = searchParams.get('type');
+        const limitParam = searchParams.get('limit');
+        const limit = limitParam ? parseInt(limitParam) : null;
 
         // Public showcase — approved reviews with user name
         if (type === 'public') {
-            const res = await dbQuery(`
+            let sql = `
                 SELECT r.id, r.user_id, r.rating, r.comment, r.reply, r.is_approved, r.created_at, u.name as user_name
                 FROM reviews r
                 JOIN users u ON r.user_id = u.id
                 WHERE r.is_approved = true
                 ORDER BY r.created_at DESC
-            `);
+            `;
+            let params = [];
+            if (limit && limit > 0) {
+                sql += ` LIMIT $1`;
+                params.push(limit);
+            }
+            const res = await dbQuery(sql, params);
             return NextResponse.json({ success: true, data: res.rows });
         }
 
@@ -96,13 +104,19 @@ export async function GET(req) {
         }
 
         // Fallback for non-logged in GET requests without type
-        const res = await dbQuery(`
+        let sql = `
             SELECT r.id, r.user_id, r.rating, r.comment, r.reply, r.is_approved, r.created_at, u.name as user_name
             FROM reviews r
             JOIN users u ON r.user_id = u.id
             WHERE r.is_approved = true
             ORDER BY r.created_at DESC
-        `);
+        `;
+        let params = [];
+        if (limit && limit > 0) {
+            sql += ` LIMIT $1`;
+            params.push(limit);
+        }
+        const res = await dbQuery(sql, params);
         return NextResponse.json({ success: true, data: res.rows });
 
     } catch (error) {
