@@ -43,7 +43,6 @@ const Navbar = () => {
 
   const links = [
     { label: 'Products', href: '/products' },
-    { label: 'Designs', href: '/designs' },
     { label: 'Career', href: '/career' },
     { label: 'Contact', href: '/contact' },
     { label: 'About', href: '/about' },
