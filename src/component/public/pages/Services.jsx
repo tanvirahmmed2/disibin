@@ -116,18 +116,18 @@ const treeSteps = [
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
+  viewport: { once: false, amount: 0.2 },
   transition: { duration: 0.5, ease: 'easeOut', delay },
 })
 
 export default function Services() {
   return (
-    <div className="w-full antialiased space-y-16 py-6">
+    <div className="w-full antialiased space-y-16 p-4 md:p-8 ">
 
       <motion.section {...fadeUp()} className="w-full text-center max-w-3xl mx-auto px-4 space-y-4">
         
         <h2 className="font-poppins text-3xl sm:text-5xl font-semibold text-slate-900 leading-tight">
-          We engineer <span className="gradient-text font-bold">high-performance</span> digital products
+          We engineer <span className="text-primary font-bold">high-performance</span> digital products
         </h2>
         <p className="text-slate-500 font-poppins text-base max-w-xl mx-auto leading-relaxed">
           From enterprise web applications to business process innovation, we engineer software designed for speed, scale, and long-term performance.

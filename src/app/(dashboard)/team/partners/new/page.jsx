@@ -118,7 +118,6 @@ export default function NewPartnerPage() {
             <div className="flex flex-col sm:flex-row sm:items-center gap-6 p-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/50">
               <div className="w-24 h-24 rounded-2xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden flex-shrink-0 relative shadow-sm">
                 {form.image ? (
-                  /* eslint-disable-next-line @next/next/no-img-element */
                   <img src={form.image} alt="Logo preview" className="w-full h-full object-contain p-2" />
                 ) : (
                   <FaHandshake className="text-slate-300" size={32} />

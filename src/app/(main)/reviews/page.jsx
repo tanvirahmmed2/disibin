@@ -40,7 +40,7 @@ export default function ReviewsPage() {
       <div className="text-center w-full space-y-4">
        
         <h1 className="text-4xl sm:text-6xl font-poppins font-semibold text-slate-900 leading-tight">
-          What Our <span className="gradient-text font-bold">Clients & Partners</span> Say
+          What Our <span className="text-primary font-bold">Clients & Partners</span> Say
         </h1>
         <p className="text-slate-500 font-poppins text-base leading-relaxed max-w-2xl mx-auto">
           Read authentic feedback from organizations and creators who build their digital products and business innovation systems with Disibin.

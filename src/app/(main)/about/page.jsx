@@ -62,9 +62,9 @@ const AboutPage = () => {
   ];
 
   return (
-    <div className="text-slate-900 w-full antialiased p-4 md:p-10 lg:p-20">
+    <div className="text-slate-900 w-full antialiased  pt-20">
 
-      <section className="w-full ">
+      <section className="w-full p-4 md:p-10 lg:p-20">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -80,11 +80,11 @@ const AboutPage = () => {
 
           <motion.h1
             variants={fadeUp}
-            className="text-5xl sm:text-7xl lg:text-8xl font-extrabold leading-[1.05] tracking-tight text-slate-900 mb-10"
+            className="text-4xl sm:text-5xl lg:text-8xl font-extrabold leading-[1.05] tracking-tight text-slate-900 mb-10"
           >
-            We Are<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-sky-600 to-indigo-600">
-              Developers
+            Digital Solutions &<br />
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-slate-900 via-primary to-secondary">
+              Business Innovation Network
             </span>
           </motion.h1>
 
@@ -128,7 +128,7 @@ const AboutPage = () => {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-40px' }}
+          viewport={{ once: false, margin: '-40px' }}
           variants={stagger}
           className="grid grid-cols-1 md:grid-cols-3 gap-12"
         >
@@ -152,7 +152,7 @@ const AboutPage = () => {
           className=" mx-auto text-center flex flex-col items-center"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
+          viewport={{ once: false }}
           variants={fadeUp}
         >
           <h2 className="text-5xl sm:text-7xl font-extrabold tracking-tighter leading-[1.05] text-white mb-8">
@@ -187,7 +187,7 @@ const AboutPage = () => {
             className="grid grid-cols-2 md:grid-cols-4 gap-10"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: '-80px' }}
+            viewport={{ once: false, margin: '-80px' }}
             variants={stagger}
           >
             {metrics.map((m, i) => (
@@ -211,7 +211,7 @@ const AboutPage = () => {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-40px' }}
+          viewport={{ once: false, margin: '-40px' }}
           variants={stagger}
           className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12"
         >
@@ -244,7 +244,7 @@ const AboutPage = () => {
             className="md:sticky md:top-28"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             variants={fadeUp}
           >
             <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
@@ -259,7 +259,7 @@ const AboutPage = () => {
             className="flex flex-col gap-0"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: '-80px' }}
+            viewport={{ once: false, margin: '-80px' }}
             variants={stagger}
           >
             {timeline.map((item, idx) => (
@@ -285,7 +285,7 @@ const AboutPage = () => {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
+          viewport={{ once: false }}
           variants={stagger}
           className="text-center mb-16"
         >
@@ -299,7 +299,7 @@ const AboutPage = () => {
               key={index}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               variants={fadeUp}
               className="border-t border-slate-200 pt-6 space-y-2"
             >
@@ -321,7 +321,7 @@ const AboutPage = () => {
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             variants={fadeUp}
           >
             <h2 className="text-3xl md:text-5xl font-semibold leading-tight text-slate-900 mb-8">

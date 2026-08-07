@@ -49,7 +49,7 @@ const TeamPage = () => {
       {/* Header */}
       <div className="flex flex-col items-center justify-center max-w-3xl px-4 text-center mb-10 animate-fade-in">
         <h1 className="text-4xl sm:text-6xl font-bold mb-4 text-slate-900  tracking-tight">
-          Meet Our <span className="gradient-text">Dedicated Team</span>
+          Meet Our <span className="text-primary font-bold">Dedicated Team</span>
         </h1>
         <p className="text-slate-500 text-base sm:text-lg leading-relaxed font-poppins max-w-2xl">
           A collective of specialized systems architects, UI designers, and developer engineers committed to building high-performance systems and digital experiences.

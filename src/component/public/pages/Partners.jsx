@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { FaHandshake, FaExternalLinkAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 export default function Partners() {
   const [partners, setPartners] = useState([]);
@@ -54,7 +55,13 @@ export default function Partners() {
   if (loading || partners.length === 0) return null;
 
   return (
-    <section className="py-16 bg-slate-50/50 border-y border-slate-100 overflow-hidden">
+    <motion.section
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: false, amount: 0.2 }}
+      transition={{ duration: 0.6 }}
+      className="py-16 bg-slate-50/50 border-y border-slate-100 overflow-hidden"
+    >
       <div className="w-full px-4 sm:px-6 lg:px-8">
 
         <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
@@ -109,7 +116,7 @@ export default function Partners() {
         </div>
 
       </div>
-    </section>
+    </motion.section>
   );
 }
 

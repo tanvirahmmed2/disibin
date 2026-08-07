@@ -105,11 +105,8 @@ export default function PublicCareerPage() {
     <div className="w-full min-h-screen flex flex-col pt-24 pb-16 px-4 max-w-5xl mx-auto space-y-12">
       <Toaster position="top-center" />
 
-      {/* Hero Banner */}
       <section className="text-center space-y-4 max-w-3xl mx-auto">
-        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-bold uppercase tracking-wider">
-          <FiBriefcase size={14} /> Careers at Disibin
-        </span>
+        
         <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
           Shape the Future of Digital Innovation
         </h1>
@@ -118,7 +115,6 @@ export default function PublicCareerPage() {
         </p>
       </section>
 
-      {/* Open Positions List */}
       <section className="space-y-6">
         <h2 className="text-2xl font-extrabold text-slate-900">Open Positions</h2>
 
@@ -128,7 +124,7 @@ export default function PublicCareerPage() {
             <p className="text-sm font-medium">Loading career openings...</p>
           </div>
         ) : jobs.length === 0 ? (
-          <div className="bg-white p-12 rounded-3xl border border-slate-100 shadow-sm text-center text-slate-500 space-y-2">
+          <div className=" p-12 rounded-3xl text-center text-slate-500 space-y-2">
             <FiBriefcase size={36} className="mx-auto text-slate-300" />
             <h3 className="text-lg font-bold text-slate-800">No Open Positions Currently</h3>
             <p className="text-xs text-slate-400">There are no open job roles at this time. Please check back later!</p>

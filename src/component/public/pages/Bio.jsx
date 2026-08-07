@@ -1,6 +1,27 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { motion } from 'framer-motion'
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+}
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.96 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.5, ease: 'easeOut' },
+  },
+}
 
 const Bio = () => {
   const [stats, setStats] = useState([
@@ -30,31 +51,40 @@ const Bio = () => {
   }, [])
 
   return (
-    <section className='w-full flex flex-col items-center justify-center gap-12 py-16'>
+    <section className='w-full flex flex-col items-center justify-center gap-12 p-4 md:p-8 py-20 '>
 
-      <div className='w-full flex flex-col gap-3 animate-fade-up'>
-        <span className='text-xs font-semibold uppercase tracking-[0.3em] text-primary font-poppins'>
-          Our Impact
-        </span>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.3 }}
+        transition={{ duration: 0.6 }}
+        className='w-full flex flex-col gap-3'
+      >
         <h2 className='font-poppins text-3xl sm:text-5xl font-semibold text-slate-900 leading-tight max-w-2xl'>
           A High-Care Studio Built On{' '}
-          <span className='gradient-text'>Clarity &amp; Impact</span>
+          <span className='text-primary font-bold'>Clarity &amp; Impact</span>
         </h2>
-      </div>
+      </motion.div>
 
-      <div className='w-full grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 font-poppins'>
-        {stats.map((s, i) => (
-          <div
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.2 }}
+        className='w-full grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 font-poppins'
+      >
+        {stats.map((s) => (
+          <motion.div
             key={s.label}
+            variants={cardVariants}
+            whileHover={{ y: -6, transition: { duration: 0.2 } }}
             className={`
               group relative w-full p-8 rounded-2xl
               glass shadow-sm hover:shadow-xl hover:shadow-primary/10
-              transition-all duration-500 cursor-default
-              animate-count-up delay-${(i + 1) * 100}
+              transition-all duration-300 cursor-default
               overflow-hidden
             `}
           >
-
             <div
               aria-hidden='true'
               className='pointer-events-none absolute -top-10 -left-10 w-40 h-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700'
@@ -68,12 +98,12 @@ const Bio = () => {
             </p>
             <p className='text-sm font-semibold text-slate-700 mb-1'>{s.label}</p>
             <p className='text-xs text-slate-400'>{s.desc}</p>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
     </section>
   )
 }
 
-export default Bio
+export default Bio

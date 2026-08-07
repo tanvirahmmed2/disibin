@@ -3,7 +3,22 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import { FiStar, FiArrowRight } from 'react-icons/fi';
-import { MdVerifiedUser } from "react-icons/md";
+import { motion } from 'framer-motion';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+};
 
 const Reviews = () => {
   const [reviews, setReviews] = useState([]);
@@ -32,17 +47,33 @@ const Reviews = () => {
   if (!reviews || !Array.isArray(reviews) || reviews.length === 0) return null;
 
   return (
-    <section className="w-full py-16 rounded-[2.5rem] shadow-xl shadow-slate-100 my-8 flex flex-col items-center justify-center gap-8">
-      <div className="text-center space-y-5">
-        
-        <h2 className="text-3xl md:text-5xl font-poppins text-slate-900 font-semibold">
-          What Our <span className="gradient-text font-bold">Clients</span> Say
+    <section className="w-full bg-secondary p-4 md:p-8 flex flex-col items-center justify-center gap-8">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.3 }}
+        transition={{ duration: 0.6 }}
+        className="text-center space-y-5"
+      >
+        <h2 className="text-3xl md:text-5xl font-poppins text-tertiary-light font-semibold">
+          What Our <span className=" font-bold">Clients</span> Say
         </h2>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.15 }}
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full"
+      >
         {reviews.map((r) => (
-          <div key={r.id} className="p-5 bg-white rounded-2xl border border-slate-100 flex flex-col justify-between space-y-4 shadow-sm hover:shadow-md transition-all duration-300">
+          <motion.div
+            key={r.id}
+            variants={cardVariants}
+            whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            className="p-5 bg-white rounded-2xl border border-slate-100 flex flex-col justify-between space-y-4 shadow-sm hover:shadow-md transition-all duration-300"
+          >
             <div className="flex flex-col gap-3">
               <p className="text-slate-600 text-xs sm:text-sm italic leading-relaxed">&quot;{r.comment || 'Great service!'}&quot;</p>
               <div className="flex gap-1 text-amber-400">
@@ -51,25 +82,31 @@ const Reviews = () => {
                 ))}
               </div>
               <div className="flex flex-row items-center gap-2 pt-2 border-t border-slate-50">
-                <MdVerifiedUser className="text-primary shrink-0" size={16} />
                 <p className="font-bold text-slate-900 text-xs font-poppins truncate">{r.user_name || 'Verified Client'}</p>
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
-      <div className="pt-2">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.3 }}
+        transition={{ duration: 0.5 }}
+        className="pt-2"
+      >
         <Link
           href="/reviews"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white text-xs font-semibold font-poppins hover:bg-primary-dark transition-colors shadow-sm shadow-primary/20"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-tertiary-light text-tertiary-dark text-xs font-semibold font-poppins hover:bg-primary-dark transition-colors shadow-sm shadow-primary/20"
         >
           <span>View All Client Reviews</span>
           <FiArrowRight size={14} />
         </Link>
-      </div>
+      </motion.div>
     </section>
   );
 };
 
 export default Reviews;
+

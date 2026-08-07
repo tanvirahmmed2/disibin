@@ -1,5 +1,6 @@
 import About from '@/component/public/pages/About'
 import Bio from '@/component/public/pages/Bio'
+import Hero from '@/component/public/pages/Hero'
 import Intro from '@/component/public/pages/Intro'
 import Partners from '@/component/public/pages/Partners'
 import Reviews from '@/component/public/pages/Reviews'
@@ -14,7 +15,8 @@ export const metadata = {
 const MainPage = () => {
 
   return (
-    <main className='w-full min-h-200 p-4 md:p-8 flex flex-col gap-4 pb-20'>
+    <main className='w-full min-h-200  flex flex-col '>
+      <Hero/>
       <Intro />
       <Bio />
       <About />

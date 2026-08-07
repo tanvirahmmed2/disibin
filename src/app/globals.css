@@ -116,17 +116,6 @@
 .delay-700 { animation-delay: 0.7s; }
 
 /* ── Custom Utilities ───────────────────────────────── */
-.gradient-text {
-  display: inline-block;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 50%, var(--color-primary-light) 100%);
-  background-size: 200% auto;
-  color: transparent;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer 4s linear infinite;
-}
-
 .glass {
   background: var(--color-tertiary);
   backdrop-filter: blur(16px);

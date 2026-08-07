@@ -1,61 +1,58 @@
+'use client'
 import React from 'react'
-import Link from 'next/link'
+import { motion } from 'framer-motion'
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.1,
+    },
+  },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 36 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+  },
+}
 
 const Intro = () => {
   return (
-    <section className='w-full relative flex flex-col gap-12 items-start justify-center py-28 min-h-200 px-2 overflow-hidden'>
-
-
-
-      <div 
-        className="absolute inset-0 z-0 pointer-events-none"
-        style={{
-          backgroundColor: 'transparent',
-          backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)',
-          backgroundSize: '20px 20px'
-        }}
-      />
-
+    <motion.section
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, amount: 0.2 }}
+      className='w-full relative flex flex-col gap-12 items-start bg-primary text-tertiary-light justify-center p-4 md:p-8 py-40 overflow-hidden'
+    >
       <div className="relative z-10 w-full flex flex-col gap-12">
-        <div className='w-full flex flex-col gap-4 animate-fade-up delay-100'>
+        <motion.div variants={itemVariants} className='w-full flex flex-col gap-4'>
           <p className='font-poppins text-lg sm:text-xl tracking-wide'>
             We build technology
           </p>
-          <h1 className='font-poppins text-5xl sm:text-7xl lg:text-8xl font-semibold leading-[1.08] tracking-tight text-slate-900'>
+          <h1 className='font-poppins text-5xl sm:text-7xl lg:text-8xl font-semibold leading-[1.08] tracking-tight '>
             that{' '}
-            <span className='gradient-text'>works,</span>
+            <span className=''>works,</span>
             <br />
             scales, and{' '}
-            <span className='gradient-text'>performs</span>
+            <span className=''>performs</span>
           </h1>
-        </div>
+        </motion.div>
 
-        <div className='w-full flex flex-col sm:flex-row items-start sm:items-end justify-between gap-8 animate-fade-up delay-300'>
-          <p className='max-w-md font-poppins text-sm sm:text-base text-slate-500 leading-relaxed'>
-            From concept to premium digital solutions — crafting fast, scalable web
-            applications that seamlessly combine design, development, and automation
-            into one powerful ecosystem. Long-term partnerships, continuous growth.
+        <motion.div variants={itemVariants} className='w-full flex flex-col sm:flex-row items-start sm:items-end justify-between gap-8'>
+          <p className='max-w-md font-poppins text-sm sm:text-base leading-relaxed'>
+            Digital Solutions &amp; Business Innovation Network
           </p>
-
-          <div className='flex flex-row items-center gap-3 shrink-0'>
-            <Link
-              href='/contact'
-              className='px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-all duration-300 animate-pulse-glow shadow-md shadow-primary/20'
-            >
-              Get Started
-            </Link>
-            <Link
-              href='/products'
-              className='px-6 py-3 rounded-xl border border-primary/30 text-primary text-sm font-semibold hover:border-primary hover:bg-primary/10 transition-all duration-300'
-            >
-              View Work →
-            </Link>
-          </div>
-        </div>
+        </motion.div>
       </div>
-
-    </section>
+    </motion.section>
   )
 }
 
-export default Intro
+export default Intro

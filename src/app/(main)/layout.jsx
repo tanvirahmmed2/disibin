@@ -10,7 +10,7 @@ export const metadata={
 
 const  HomeLayout = async({children}) => {
   return (
-    <div className='w-full relative pt-24 flex flex-col items-center justify-between min-h-screen font-lora'
+    <div className='w-full relative flex flex-col items-center justify-between min-h-screen font-lora'
       
     >
       <Navbar/>

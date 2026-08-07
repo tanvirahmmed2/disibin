@@ -5,5 +5,5 @@ export const metadata = {
 };
 
 export default function Layout({ children }) {
-  return <>{children}</>;
+  return <div className={'w-full pt-20'}>{children}</div>;
 }

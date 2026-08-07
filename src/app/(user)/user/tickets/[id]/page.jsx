@@ -32,7 +32,6 @@ export default function UserTicketDetailPage() {
 
     fetchThread(false);
 
-    // Live polling for continuous messaging without page refresh
     const interval = setInterval(() => {
       fetchThread(true);
     }, 3000);
