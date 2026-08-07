@@ -118,7 +118,7 @@ export default function TeamChatListPage() {
       <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-            <span className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
+            <span className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <FiMessageSquare size={20} />
             </span>
             Team Messages
@@ -139,7 +139,7 @@ export default function TeamChatListPage() {
           </button>
           <button
             onClick={openNewChatModal}
-            className="flex items-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md shrink-0"
+            className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md shrink-0"
           >
             <FiPlus size={16} />
             New Conversation
@@ -171,7 +171,7 @@ export default function TeamChatListPage() {
         {/* Content */}
         {loading ? (
           <div className="py-16 text-center text-slate-400 space-y-3">
-            <FiLoader className="animate-spin mx-auto text-sky-500" size={28} />
+            <FiLoader className="animate-spin mx-auto text-primary" size={28} />
             <p className="text-sm font-medium">Loading conversations...</p>
           </div>
         ) : filteredInbox.length === 0 ? (
@@ -187,7 +187,7 @@ export default function TeamChatListPage() {
             </div>
             <button
               onClick={openNewChatModal}
-              className="text-xs text-sky-600 font-bold hover:underline"
+              className="text-xs text-primary font-bold hover:underline"
             >
               + Start a Conversation
             </button>
@@ -204,18 +204,18 @@ export default function TeamChatListPage() {
                 >
                   <div className="flex items-center gap-4 min-w-0">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 font-bold text-lg ${
-                      chat.is_group ? 'bg-amber-50 text-amber-600' : 'bg-sky-50 text-sky-600'
+                      chat.is_group ? 'bg-secondary/10 text-secondary' : 'bg-primary/10 text-primary'
                     }`}>
                       {chat.is_group ? <FiUsers size={22} /> : <FiUser size={22} />}
                     </div>
 
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-base font-bold text-slate-900 group-hover:text-sky-600 transition-colors truncate">
+                        <h3 className="text-base font-bold text-slate-900 group-hover:text-primary transition-colors truncate">
                           {displayName}
                         </h3>
                         <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
-                          chat.is_group ? 'bg-amber-100 text-amber-700' : 'bg-sky-100 text-sky-700'
+                          chat.is_group ? 'bg-secondary/20 text-secondary' : 'bg-primary/20 text-primary-dark'
                         }`}>
                           {chat.is_group ? 'Group' : (chat.other_participant_role || 'Staff')}
                         </span>
@@ -237,7 +237,7 @@ export default function TeamChatListPage() {
                         {new Date(chat.last_message_time).toLocaleDateString()}
                       </p>
                     )}
-                    <span className="inline-block mt-2 text-xs font-bold text-sky-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="inline-block mt-2 text-xs font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
                       Open Chat →
                     </span>
                   </div>
@@ -254,7 +254,7 @@ export default function TeamChatListPage() {
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[85vh]">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
               <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                <FiUsers className="text-sky-500" size={18} />
+                <FiUsers className="text-primary" size={18} />
                 New Team Conversation
               </h3>
               <button
@@ -292,7 +292,7 @@ export default function TeamChatListPage() {
                       onClick={() => toggleMemberSelection(member.id)}
                       className={`flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition-all ${
                         isSelected
-                          ? 'bg-sky-50 border-sky-300 text-sky-900'
+                          ? 'bg-primary/10 border-primary-light text-sky-900'
                           : 'bg-white border-slate-100 hover:border-slate-300 hover:bg-slate-50'
                       }`}
                     >
@@ -307,7 +307,7 @@ export default function TeamChatListPage() {
                       </div>
 
                       <div className={`w-5 h-5 rounded-lg border flex items-center justify-center transition-colors ${
-                        isSelected ? 'bg-sky-600 border-sky-600 text-white' : 'border-slate-300'
+                        isSelected ? 'bg-primary border-sky-600 text-white' : 'border-slate-300'
                       }`}>
                         {isSelected && <FiCheckCircle size={12} />}
                       </div>
@@ -345,7 +345,7 @@ export default function TeamChatListPage() {
                 type="button"
                 onClick={createNewChat}
                 disabled={selectedMemberIds.length === 0 || creatingChat}
-                className="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-40 shadow-md flex items-center gap-2"
+                className="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-bold transition-all disabled:opacity-40 shadow-md flex items-center gap-2"
               >
                 {creatingChat ? <FiLoader className="animate-spin" size={14} /> : null}
                 {creatingChat

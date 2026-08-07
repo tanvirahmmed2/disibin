@@ -156,7 +156,7 @@ const ContactPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-4 rounded-2xl bg-slate-900 text-white font-semibold hover:bg-sky-600 transition-all duration-300 flex items-center justify-center gap-3 ${loading
+              className={`w-full py-4 rounded-2xl bg-slate-900 text-white font-semibold hover:bg-primary transition-all duration-300 flex items-center justify-center gap-3 ${loading
                 ? 'opacity-70 cursor-not-allowed'
                 : 'cursor-pointer'
                 }`}

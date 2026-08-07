@@ -69,7 +69,7 @@ const ProfileForm = ({ onSaved }) => {
       {/* Personal Info card */}
       <div className="space-y-6 bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm">
         <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 mb-4">
-          <FiUser className="text-sky-500" /> Personal Info
+          <FiUser className="text-primary" /> Personal Info
         </h2>
 
         <div className="space-y-1.5">
@@ -100,7 +100,7 @@ const ProfileForm = ({ onSaved }) => {
       {/* Address card */}
       <div className="space-y-6 bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm">
         <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 mb-4">
-          <FiMapPin className="text-sky-500" /> Address Details
+          <FiMapPin className="text-primary" /> Address Details
         </h2>
 
         <div className="space-y-1.5">
@@ -140,7 +140,7 @@ const ProfileForm = ({ onSaved }) => {
       <div className="md:col-span-2 flex justify-end mt-4">
         <button
           disabled={loading}
-          className="flex items-center gap-2 px-10 py-4 rounded-2xl bg-slate-900 text-white font-bold hover:bg-sky-600 transition-all duration-300 shadow-xl shadow-slate-900/10 disabled:bg-slate-400"
+          className="flex items-center gap-2 px-10 py-4 rounded-2xl bg-slate-900 text-white font-bold hover:bg-primary transition-all duration-300 shadow-xl shadow-slate-900/10 disabled:bg-slate-400"
         >
           <FiSave /> {loading ? 'Saving Changes...' : 'Save Changes'}
         </button>

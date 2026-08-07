@@ -160,7 +160,7 @@ export default function TeamPartnersManagement() {
       <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-            <span className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
+            <span className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <FaHandshake size={20} />
             </span>
             Partners Management
@@ -172,7 +172,7 @@ export default function TeamPartnersManagement() {
 
         <button
           onClick={openAddModal}
-          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-2xl font-bold text-xs sm:text-sm transition-all shadow-md shrink-0 self-start sm:self-auto"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-2xl font-bold text-xs sm:text-sm transition-all shadow-md shrink-0 self-start sm:self-auto"
         >
           <FaPlus size={14} />
           Add New Partner
@@ -203,7 +203,7 @@ export default function TeamPartnersManagement() {
         {/* Content */}
         {loading ? (
           <div className="py-16 text-center text-slate-400 space-y-3">
-            <FiLoader className="animate-spin mx-auto text-sky-500" size={28} />
+            <FiLoader className="animate-spin mx-auto text-primary" size={28} />
             <p className="text-sm font-medium">Loading partner list...</p>
           </div>
         ) : filteredPartners.length === 0 ? (
@@ -219,7 +219,7 @@ export default function TeamPartnersManagement() {
             </div>
             <button
               onClick={openAddModal}
-              className="text-xs text-sky-600 font-bold hover:underline"
+              className="text-xs text-primary font-bold hover:underline"
             >
               + Add First Partner
             </button>
@@ -237,12 +237,12 @@ export default function TeamPartnersManagement() {
                       {p.image ? (
                         <img src={p.image} alt={p.company_name} className="w-full h-full object-contain p-1" />
                       ) : (
-                        <span className="font-bold text-sky-600 text-lg">{p.company_name?.charAt(0)}</span>
+                        <span className="font-bold text-primary text-lg">{p.company_name?.charAt(0)}</span>
                       )}
                     </div>
 
                     <div className="min-w-0">
-                      <h3 className="font-bold text-slate-900 text-sm truncate group-hover:text-sky-600 transition-colors">
+                      <h3 className="font-bold text-slate-900 text-sm truncate group-hover:text-primary transition-colors">
                         {p.company_name}
                       </h3>
                       <p className="text-[11px] text-slate-400 truncate">/{p.slug}</p>
@@ -252,7 +252,7 @@ export default function TeamPartnersManagement() {
                   <div className="flex items-center gap-1 shrink-0">
                     <button
                       onClick={() => openEditModal(p)}
-                      className="p-1.5 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-all"
+                      className="p-1.5 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                       title="Edit Partner"
                     >
                       <FaEdit size={14} />
@@ -273,7 +273,7 @@ export default function TeamPartnersManagement() {
                     href={p.business_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 hover:text-sky-600 truncate font-medium"
+                    className="flex items-center gap-2 hover:text-primary truncate font-medium"
                   >
                     <FaGlobe size={12} className="text-slate-400 shrink-0" />
                     <span className="truncate">{p.business_url}</span>
@@ -295,7 +295,7 @@ export default function TeamPartnersManagement() {
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
               <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                <FaHandshake className="text-sky-500" size={18} />
+                <FaHandshake className="text-primary" size={18} />
                 {editingPartner ? 'Edit Partner' : 'Add New Partner'}
               </h3>
               <button
@@ -317,7 +317,7 @@ export default function TeamPartnersManagement() {
                   onChange={e => setForm(p => ({ ...p, company_name: e.target.value }))}
                   placeholder="E.g. Acme Corporation"
                   required
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
               </div>
 
@@ -332,7 +332,7 @@ export default function TeamPartnersManagement() {
                     onChange={e => setForm(p => ({ ...p, business_url: e.target.value }))}
                     placeholder="https://example.com"
                     required
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                   />
                 </div>
 
@@ -346,7 +346,7 @@ export default function TeamPartnersManagement() {
                     onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
                     placeholder="partner@example.com"
                     required
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                   />
                 </div>
               </div>
@@ -402,7 +402,7 @@ export default function TeamPartnersManagement() {
                 <button
                   type="submit"
                   disabled={saving || uploadingImage}
-                  className="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shadow-md flex items-center gap-2"
+                  className="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shadow-md flex items-center gap-2"
                 >
                   {saving ? <FiLoader className="animate-spin" size={14} /> : null}
                   {saving ? 'Saving...' : editingPartner ? 'Update Partner' : 'Save Partner'}

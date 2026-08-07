@@ -40,11 +40,11 @@ const NewProductPage = () => {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4 p-6">
       <Toaster position="top-center" />
-      <div className="w-12 h-12 rounded-2xl bg-sky-500 text-white flex items-center justify-center shadow-lg shadow-sky-500/20">
+      <div className="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center shadow-lg shadow-sky-500/20">
         <FiPackage size={24} />
       </div>
       <div className="flex items-center gap-3 text-slate-600 font-semibold">
-        <FiLoader className="animate-spin text-sky-500" size={20} />
+        <FiLoader className="animate-spin text-primary" size={20} />
         <span>Initializing new demo product...</span>
       </div>
     </div>

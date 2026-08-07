@@ -45,13 +45,13 @@ const ImageUpload = ({ onUpload, label = "Upload Image" }) => {
         <div className={`
           relative w-full h-40 rounded-2xl border-2 border-dashed transition-all
           flex flex-col items-center justify-center cursor-pointer overflow-hidden
-          ${preview ? 'border-sky-500' : 'border-slate-200 hover:border-sky-400 bg-slate-50/50'}
+          ${preview ? 'border-primary' : 'border-slate-200 hover:border-primary-light bg-slate-50/50'}
         `}>
           {preview ? (
             <Image width={500} height={500} src={preview} alt="Preview" className="w-full h-full object-cover" />
           ) : (
             <>
-              <FiUploadCloud className="w-8 h-8 text-slate-400 group-hover:text-sky-500 transition-colors mb-2" />
+              <FiUploadCloud className="w-8 h-8 text-slate-400 group-hover:text-primary transition-colors mb-2" />
               <p className="text-xs text-slate-500 font-medium">Click or drag to upload</p>
             </>
           )}
@@ -66,8 +66,8 @@ const ImageUpload = ({ onUpload, label = "Upload Image" }) => {
 
           {uploading && (
             <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center">
-              <FiLoader className="w-8 h-8 text-sky-500 animate-spin mb-2" />
-              <p className="text-xs font-bold text-sky-600">Uploading...</p>
+              <FiLoader className="w-8 h-8 text-primary animate-spin mb-2" />
+              <p className="text-xs font-bold text-primary">Uploading...</p>
             </div>
           )}
 

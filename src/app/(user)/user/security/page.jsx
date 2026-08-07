@@ -177,7 +177,7 @@ export default function UserSecurityPage() {
 
       {/* Header Card */}
       <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex items-center gap-4">
-        <div className="w-12 h-12 rounded-2xl bg-sky-50 flex items-center justify-center text-sky-600 flex-shrink-0">
+        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
           <FiShield size={22} />
         </div>
         <div>
@@ -291,13 +291,13 @@ export default function UserSecurityPage() {
         {/* Email Address Update Card */}
         <div className="bg-white rounded-3xl p-7 border border-slate-100 shadow-sm space-y-5">
           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2 pb-3 border-b border-slate-100">
-            <span className="w-8 h-8 rounded-xl bg-sky-50 flex items-center justify-center text-sky-600">
+            <span className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
               <FiMail size={16} />
             </span>
             Update Email Address
           </h2>
 
-          <div className="p-3.5 rounded-2xl bg-sky-50/70 border border-sky-100 text-xs text-sky-800 leading-relaxed">
+          <div className="p-3.5 rounded-2xl bg-primary/10/70 border border-primary/20 text-xs text-primary-dark leading-relaxed">
             <strong>Security Notice:</strong> When you update your email, a 6-digit verification code will be sent to your{' '}
             <strong>current registered email ({userData?.email})</strong> to confirm ownership before applying the change.
           </div>
@@ -329,7 +329,7 @@ export default function UserSecurityPage() {
               <button
                 type="submit"
                 disabled={emailLoading}
-                className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-sky-600 text-white font-bold text-sm hover:bg-sky-500 transition-all shadow-md shadow-sky-600/20 disabled:opacity-50"
+                className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-primary text-white font-bold text-sm hover:bg-primary transition-all shadow-md shadow-primary/20 disabled:opacity-50"
               >
                 <FiSend size={15} />
                 {emailLoading ? 'Sending Verification Code...' : 'Send Verification Code to Current Email'}

@@ -159,7 +159,7 @@ export default function TeamPrivacyPolicyPage() {
 
         <button
           onClick={handleOpenCreate}
-          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl  text-slate-900 hover:bg-sky-50 text-sm font-semibold transition-all shadow-sm cursor-pointer shrink-0"
+          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl  text-slate-900 hover:bg-primary/10 text-sm font-semibold transition-all shadow-sm cursor-pointer shrink-0"
         >
           <FiPlus className="w-5 h-5 text-primary" /> Create Privacy Policy Item
         </button>
@@ -202,7 +202,7 @@ export default function TeamPrivacyPolicyPage() {
       {/* Main Table */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm">
-          <FiRefreshCw className="w-8 h-8 text-sky-500 animate-spin mb-3" />
+          <FiRefreshCw className="w-8 h-8 text-primary animate-spin mb-3" />
           <p className="text-slate-500 font-medium text-sm">Loading Privacy Policy entries...</p>
         </div>
       ) : filteredData.length === 0 ? (
@@ -245,8 +245,8 @@ export default function TeamPrivacyPolicyPage() {
                         onClick={() => handleTogglePublish(item)}
                         className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all ${
                           item.is_published
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
-                            : 'bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100'
+                            ? 'bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20'
+                            : 'bg-secondary/10 text-secondary border border-secondary/20 hover:bg-secondary/20'
                         }`}
                       >
                         {item.is_published ? (
@@ -275,7 +275,7 @@ export default function TeamPrivacyPolicyPage() {
                         href="/privacy-policy"
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center p-2 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded-xl transition-colors"
+                        className="inline-flex items-center p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-xl transition-colors"
                         title="View Public Page"
                       >
                         <FiEye className="w-4 h-4" />

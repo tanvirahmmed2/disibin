@@ -1,10 +1,9 @@
-import { dbQuery } from "@/lib/database/pg";
+import { getProductMetadataBySlug } from "@/lib/services/publicLegal";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   try {
-    const res = await dbQuery("SELECT name, description FROM products WHERE slug = $1", [slug]);
-    const product = res.rows[0];
+    const product = await getProductMetadataBySlug(slug);
 
     if (!product) {
       return {

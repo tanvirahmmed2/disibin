@@ -96,7 +96,7 @@ export default function NewPartnerPage() {
       {/* Main Form Container */}
       <div className="bg-white rounded-3xl border border-slate-100 p-6 sm:p-10 shadow-sm space-y-8">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 text-sky-600 border border-sky-100 text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-bold uppercase tracking-wider mb-2">
             <FaHandshake size={14} /> Partner Ecosystem
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -137,7 +137,7 @@ export default function NewPartnerPage() {
                   type="button"
                   disabled={uploading}
                   onClick={() => fileInputRef.current?.click()}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-sky-600 transition-colors disabled:bg-slate-400 cursor-pointer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-primary transition-colors disabled:bg-slate-400 cursor-pointer"
                 >
                   <FiUpload size={14} /> {uploading ? 'Uploading...' : 'Upload Logo'}
                 </button>
@@ -161,7 +161,7 @@ export default function NewPartnerPage() {
                 placeholder="e.g. Acme Tech Global"
                 value={form.company_name}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:border-sky-500 transition-colors"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:border-primary transition-colors"
                 required
               />
             </div>
@@ -178,7 +178,7 @@ export default function NewPartnerPage() {
                   placeholder="partner@company.com"
                   value={form.email}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:border-sky-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:border-primary transition-colors"
                   required
                 />
               </div>
@@ -198,7 +198,7 @@ export default function NewPartnerPage() {
                 placeholder="https://company.com"
                 value={form.business_url}
                 onChange={handleChange}
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:border-sky-500 transition-colors"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:border-primary transition-colors"
               />
             </div>
           </div>
@@ -214,7 +214,7 @@ export default function NewPartnerPage() {
             <button
               type="submit"
               disabled={saving || uploading}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-sky-600 transition-colors disabled:bg-slate-400 cursor-pointer shadow-lg shadow-slate-900/10"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-primary transition-colors disabled:bg-slate-400 cursor-pointer shadow-lg shadow-slate-900/10"
             >
               <FiCheck size={16} /> {saving ? 'Saving Partner...' : 'Create Partner'}
             </button>

@@ -28,7 +28,7 @@ const ProductsPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -51,7 +51,7 @@ const ProductsPage = () => {
             <div key={product.id} className="bg-white flex flex-col gap-4 md:even:flex-col-reverse overflow-hidden">
 
               <Link href={`/products/${product.slug}`} className="p-6 grow flex flex-col">
-                <h2 className="text-2xl font-bold text-slate-900 group-hover:text-sky-600 transition-colors">
+                <h2 className="text-2xl font-bold text-slate-900 group-hover:text-primary transition-colors">
                   {product.name}
                 </h2>
 

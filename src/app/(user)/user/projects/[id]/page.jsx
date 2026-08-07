@@ -6,9 +6,8 @@ import { toast, Toaster } from 'react-hot-toast';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
-  FiArrowLeft, FiFolder, FiSend, FiPaperclip,
-  FiCheckCircle, FiClock, FiCreditCard, FiFileText,
-  FiLoader, FiExternalLink, FiDollarSign, FiAlertCircle, FiMessageSquare
+  FiArrowLeft, FiSend, FiPaperclip,
+  FiCreditCard, FiFileText, FiLoader, FiExternalLink, FiAlertCircle
 } from 'react-icons/fi';
 
 export default function UserProjectDetailPage() {
@@ -39,7 +38,7 @@ export default function UserProjectDetailPage() {
         toast.error(res.data.message || 'Project not found');
       }
     } catch {
-      toast.error('Failed to load project workspace');
+      toast.error('Failed to load project');
     } finally {
       setLoading(false);
     }
@@ -95,28 +94,25 @@ export default function UserProjectDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[65vh] flex flex-col items-center justify-center space-y-3 p-6 text-slate-400">
-        <FiLoader className="animate-spin text-sky-500" size={28} />
-        <p className="text-sm font-medium">Loading project workspace...</p>
+      <div className="py-16 flex flex-col items-center justify-center space-y-2 text-slate-400">
+        <FiLoader className="animate-spin text-primary" size={24} />
+        <p className="text-xs">Loading project...</p>
       </div>
     );
   }
 
   if (!projectData || !projectData.project) {
     return (
-      <div className="p-6 max-w-3xl mx-auto space-y-4 text-center">
+      <div className="p-6 max-w-xl mx-auto text-center space-y-3">
         <Toaster position="top-center" />
-        <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-          <FiAlertCircle className="mx-auto text-amber-500" size={36} />
-          <h2 className="text-lg font-bold text-slate-800">Project Not Found</h2>
-          <p className="text-xs text-slate-500">The requested project workspace could not be located.</p>
-          <Link
-            href="/user/projects"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-sky-600 transition-all shadow-md"
-          >
-            <FiArrowLeft size={14} /> Back to My Projects
-          </Link>
-        </div>
+        <FiAlertCircle className="mx-auto text-amber-500" size={32} />
+        <h2 className="text-base font-bold text-slate-800">Project Not Found</h2>
+        <Link
+          href="/user/projects"
+          className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-semibold hover:bg-slate-900"
+        >
+          <FiArrowLeft size={14} /> Back to My Projects
+        </Link>
       </div>
     );
   }
@@ -124,53 +120,44 @@ export default function UserProjectDetailPage() {
   const { project, messages, attachments, purchases, agreements } = projectData;
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 max-w-6xl mx-auto space-y-6">
+    <div className="p-4 max-w-5xl mx-auto space-y-4">
       <Toaster position="top-center" />
 
-      {/* Top Header Card */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-        <div className="flex items-center justify-between gap-4">
+      {/* Clean Header */}
+      <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div className="flex items-center gap-3">
           <Link
             href="/user/projects"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-sky-600 transition-colors"
+            className="p-1.5 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg transition-colors"
+            title="Back to Projects"
           >
-            <FiArrowLeft size={16} /> Back to My Projects
+            <FiArrowLeft size={16} />
           </Link>
-
-          <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
-            project.status === 'approved' || project.status === 'ready'
-              ? 'bg-emerald-100 text-emerald-700'
-              : project.status === 'working' || project.status === 'ontest' || project.status === 'fixing'
-              ? 'bg-sky-100 text-sky-700'
-              : 'bg-amber-100 text-amber-700'
-          }`}>
-            Status: {project.status}
-          </span>
+          <div>
+            <h1 className="text-base font-bold text-slate-900">{project.title}</h1>
+            <p className="text-xs text-slate-400">
+              {project.product_name ? `Base: ${project.product_name} · ` : ''}Created {new Date(project.created_at).toLocaleDateString()}
+            </p>
+          </div>
         </div>
 
-        <div className="space-y-1">
-          <h1 className="text-2xl font-extrabold text-slate-900">{project.title}</h1>
-          <p className="text-xs text-slate-500">
-            {project.product_name ? `Linked Product: ${project.product_name}` : 'Custom Project Workspace'}
-            <span> · Created {new Date(project.created_at).toLocaleDateString()}</span>
-          </p>
-        </div>
+        <span className="text-xs font-semibold px-2.5 py-0.5 rounded border border-slate-200 bg-slate-50 uppercase text-slate-700">
+          {project.status}
+        </span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Main Conversation Thread (8 cols) */}
-        <div className="lg:col-span-8 space-y-4">
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-4 flex flex-col min-h-[480px]">
-            <h2 className="text-base font-extrabold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-              <FiMessageSquare className="text-sky-500" size={18} />
-              Project Discussion & Inquiries
-            </h2>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* Messages */}
+        <div className="lg:col-span-8 space-y-3">
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col h-[460px]">
+            <div className="p-3 border-b border-slate-100 bg-slate-50 font-bold text-xs text-slate-700">
+              Discussion Thread
+            </div>
 
-            {/* Messages Thread */}
-            <div className="flex-1 overflow-y-auto space-y-3 pr-1 max-h-[420px]">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {messages.length === 0 ? (
                 <div className="text-center py-12 text-slate-400 text-xs">
-                  No discussion messages sent yet. Send your first inquiry below!
+                  No discussion messages yet. Type your first message below.
                 </div>
               ) : (
                 messages.map((m) => {
@@ -180,144 +167,113 @@ export default function UserProjectDetailPage() {
                       key={m.id}
                       className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
                     >
-                      <div className={`p-4 rounded-2xl max-w-lg space-y-1 text-xs shadow-sm ${
-                        isMe
-                          ? 'bg-sky-600 text-white rounded-br-none'
-                          : 'bg-slate-100 text-slate-800 rounded-bl-none'
-                      }`}>
-                        <div className="flex items-center justify-between gap-4 text-[10px] opacity-80 border-b border-white/20 pb-1 mb-1">
-                          <span className="font-bold">{isMe ? 'You' : `${m.team_name || 'Staff'} (${m.team_role || 'Support'})`}</span>
-                          <span>{new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                        </div>
-                        <p className="leading-relaxed whitespace-pre-wrap">{m.message}</p>
+                      <div className="text-[11px] font-semibold text-slate-500 mb-0.5 px-1">
+                        {isMe ? 'You' : `${m.team_name || 'Staff'} (${m.team_role || 'Support'})`}
                       </div>
+                      <div className={`p-3 rounded-xl text-xs leading-relaxed max-w-md ${
+                        isMe ? 'bg-primary text-white' : 'bg-slate-100 text-slate-800 border border-slate-200'
+                      }`}>
+                        <p className="whitespace-pre-wrap">{m.message}</p>
+                      </div>
+                      <span className="text-[10px] text-slate-400 mt-0.5 px-1">
+                        {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
                     </div>
                   );
                 })
               )}
             </div>
 
-            {/* Reply Form */}
-            <form onSubmit={handleSendMessage} className="pt-3 border-t border-slate-100 space-y-2">
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={message}
-                  onChange={e => setMessage(e.target.value)}
-                  placeholder="Type message or question..."
-                  className="input-style text-sm py-2"
-                />
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={e => setAttachmentFile(e.target.files[0])}
-                  className="input-style"
-                />
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`p-2.5 rounded-xl border transition-all text-xs font-semibold flex items-center gap-1 ${
-                    attachmentFile
-                      ? 'bg-sky-50 border-sky-300 text-sky-600'
-                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
-                  }`}
-                  title="Attach file"
-                >
-                  <FiPaperclip size={16} />
-                </button>
-                <button
-                  type="submit"
-                  disabled={sending || (!message.trim() && !attachmentFile)}
-                  className="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs transition-all disabled:opacity-50 shadow-md flex items-center gap-1.5 shrink-0"
-                >
-                  {sending ? <FiLoader className="animate-spin" size={14} /> : <FiSend size={14} />}
-                  Send
-                </button>
-              </div>
+            {/* Input */}
+            <form onSubmit={handleSendMessage} className="p-3 border-t border-slate-200 bg-slate-50 flex items-center gap-2">
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={e => setAttachmentFile(e.target.files[0])}
+                className="hidden"
+              />
 
-              {attachmentFile && (
-                <p className="text-[11px] text-sky-600 font-semibold truncate pl-1">
-                  Attached file: {attachmentFile.name}
-                </p>
-              )}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="p-2 border border-slate-200 hover:bg-white text-slate-500 rounded-lg text-xs"
+                title="Attach File"
+              >
+                <FiPaperclip size={15} />
+              </button>
+
+              <input
+                type="text"
+                value={message}
+                onChange={e => setMessage(e.target.value)}
+                placeholder="Write a message..."
+                className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:border-primary"
+              />
+
+              <button
+                type="submit"
+                disabled={sending || (!message.trim() && !attachmentFile)}
+                className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white rounded-lg text-xs font-semibold transition-colors disabled:opacity-50 flex items-center gap-1"
+              >
+                {sending ? <FiLoader className="animate-spin" size={13} /> : <FiSend size={13} />}
+                Send
+              </button>
             </form>
           </div>
         </div>
 
-        {/* Right Sidebar Column: Purchases, Payments & Agreements (4 cols) */}
-        <div className="lg:col-span-4 space-y-4">
-          {/* Purchase & Payment Details Card */}
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-3">
-            <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-              <FiCreditCard className="text-emerald-500" size={16} />
-              Billing & Purchase Status
+        {/* Sidebar Info */}
+        <div className="lg:col-span-4 space-y-3 text-xs">
+          {/* Billing */}
+          <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-2">
+            <h3 className="font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+              <FiCreditCard size={14} className="text-slate-500" /> Billing Details
             </h3>
 
             {purchases.length === 0 ? (
-              <p className="text-xs text-slate-400">No invoice or purchase generated yet. Discussion in progress.</p>
+              <p className="text-slate-400">No invoice issued yet.</p>
             ) : (
               purchases.map(pur => (
-                <div key={pur.purchase_id} className="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-2 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-700">Proposal Price</span>
-                    <span className="font-extrabold text-slate-900">${pur.price}</span>
+                <div key={pur.purchase_id} className="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-1">
+                  <div className="flex justify-between font-semibold">
+                    <span>Price</span>
+                    <span>${pur.price}</span>
                   </div>
-                  {pur.discount > 0 && (
-                    <div className="flex items-center justify-between text-rose-600 font-semibold">
-                      <span>Discount ({pur.discount}%)</span>
-                      <span>-${Math.round(pur.price * (pur.discount / 100))}</span>
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between pt-2 border-t border-slate-200">
-                    <span className="font-bold text-slate-800">Payment Status</span>
-                    <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] uppercase ${
-                      pur.payment_status === 'paid'
-                        ? 'bg-emerald-100 text-emerald-700'
-                        : pur.payment_status === 'due'
-                        ? 'bg-amber-100 text-amber-700'
-                        : 'bg-rose-100 text-rose-700'
-                    }`}>
-                      {pur.payment_status || 'unpaid'}
-                    </span>
+                  <div className="flex justify-between text-slate-500">
+                    <span>Status</span>
+                    <span className="font-semibold uppercase">{pur.payment_status || 'unpaid'}</span>
                   </div>
                 </div>
               ))
             )}
           </div>
 
-          {/* Agreements Card */}
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-3">
-            <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-              <FiFileText className="text-sky-500" size={16} />
-              Project Agreements
+          {/* Agreements */}
+          <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-2">
+            <h3 className="font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+              <FiFileText size={14} className="text-slate-500" /> Agreements
             </h3>
 
             {agreements.length === 0 ? (
-              <p className="text-xs text-slate-400">No project agreement document assigned yet.</p>
+              <p className="text-slate-400">No agreement attached.</p>
             ) : (
               agreements.map(agr => (
-                <div key={agr.id} className="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3 text-xs">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-bold text-slate-900 truncate">{agr.title}</span>
-                    <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] uppercase shrink-0 ${
-                      agr.status === 'signed'
-                        ? 'bg-emerald-100 text-emerald-700'
-                        : agr.status === 'rejected'
-                        ? 'bg-rose-100 text-rose-700'
-                        : 'bg-amber-100 text-amber-700'
-                    }`}>
+                <div key={agr.id} className="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-slate-800 truncate">{agr.title}</span>
+                    <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded border border-slate-200">
                       {agr.status}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-200">
+                  <div className="flex items-center justify-between pt-1">
                     <a
                       href={agr.file_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sky-600 font-bold hover:underline inline-flex items-center gap-1"
+                      className="text-primary font-semibold hover:underline inline-flex items-center gap-1"
                     >
-                      <FiExternalLink size={12} /> View Document
+                      <FiExternalLink size={11} /> Document
                     </a>
 
                     {agr.status === 'pending' && (
@@ -325,14 +281,14 @@ export default function UserProjectDetailPage() {
                         <button
                           onClick={() => handleSignAgreement(agr.id, 'signed')}
                           disabled={updatingAgreementId === agr.id}
-                          className="px-3 py-1 bg-emerald-600 text-white font-bold rounded-lg hover:bg-emerald-700 transition-all text-[11px]"
+                          className="px-2 py-0.5 bg-emerald-600 text-white rounded font-semibold text-[11px]"
                         >
                           Sign
                         </button>
                         <button
                           onClick={() => handleSignAgreement(agr.id, 'rejected')}
                           disabled={updatingAgreementId === agr.id}
-                          className="px-2.5 py-1 bg-rose-100 text-rose-700 font-bold rounded-lg hover:bg-rose-200 transition-all text-[11px]"
+                          className="px-2 py-0.5 bg-rose-600 text-white rounded font-semibold text-[11px]"
                         >
                           Reject
                         </button>

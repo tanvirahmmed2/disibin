@@ -86,7 +86,7 @@ const Sidebar = () => {
                     onClick={closeMenu}
                     className={`flex items-center gap-3 px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
                       isActive(link.href)
-                        ? 'bg-sky-50 text-sky-600 font-bold shadow-sm'
+                        ? 'bg-primary/10 text-primary font-bold shadow-sm'
                         : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                     }`}
                   >

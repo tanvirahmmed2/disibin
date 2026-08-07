@@ -56,7 +56,7 @@ export default function UserLoginLogsPage() {
       <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-            <span className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+            <span className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <FiUsers size={20} />
             </span>
             Registered User Login Audit Logs
@@ -119,7 +119,7 @@ export default function UserLoginLogsPage() {
       <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
         {loading ? (
           <div className="py-16 text-center text-slate-400 space-y-3">
-            <FiLoader className="animate-spin mx-auto text-emerald-500" size={28} />
+            <FiLoader className="animate-spin mx-auto text-primary" size={28} />
             <p className="text-sm font-medium">Loading user login audit trail...</p>
           </div>
         ) : filteredLogs.length === 0 ? (
@@ -150,7 +150,7 @@ export default function UserLoginLogsPage() {
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
                         log.status === 'success'
-                          ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                          ? 'bg-primary/10 text-primary border border-primary/20'
                           : 'bg-rose-50 text-rose-600 border border-rose-100'
                       }`}>
                         {log.status === 'success' ? <FiCheckCircle size={12} /> : <FiXCircle size={12} />}

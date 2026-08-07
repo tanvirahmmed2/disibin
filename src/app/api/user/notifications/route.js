@@ -18,6 +18,9 @@ async function ensureNotificationsTable() {
                 link TEXT,
                 created_at TIMESTAMP DEFAULT NOW()
             );
+            ALTER TABLE notifications ADD COLUMN IF NOT EXISTS type VARCHAR(50) DEFAULT 'info';
+            ALTER TABLE notifications ADD COLUMN IF NOT EXISTS link TEXT;
+            ALTER TABLE notifications ADD COLUMN IF NOT EXISTS is_read BOOLEAN DEFAULT false;
         `);
         tableInitialized = true;
     } catch (err) {
@@ -34,27 +37,30 @@ export async function GET() {
         await ensureNotificationsTable();
 
         const res = await dbQuery(`
-            SELECT id, title, message, type, is_read, link, created_at
+            SELECT id, title, message, type, COALESCE(is_read, false) as is_read, link, created_at
             FROM notifications
             WHERE user_id = $1
             ORDER BY created_at DESC
             LIMIT 50
         `, [auth.data.id]).catch(() => ({ rows: [] }));
 
-        // Fallback default system notification if list is empty
+        // Seed default welcome notification into database if user has no notifications
         let notifications = res.rows;
         if (notifications.length === 0) {
-            notifications = [
-                {
-                    id: 1,
-                    title: "Welcome to Disibin Platform!",
-                    message: "Explore your projects, track support tickets, and view agreement documents in your dashboard.",
-                    type: "system",
-                    is_read: false,
-                    link: "/user/projects",
-                    created_at: new Date().toISOString()
-                }
-            ];
+            const welcomeRes = await dbQuery(`
+                INSERT INTO notifications (user_id, title, message, type, is_read, link)
+                VALUES ($1, $2, $3, $4, $5, $6)
+                RETURNING id, title, message, type, is_read, link, created_at
+            `, [
+                auth.data.id,
+                "Welcome to Disibin Platform!",
+                "Explore your projects, track support tickets, and view agreement documents in your dashboard.",
+                "system",
+                false,
+                "/user/projects"
+            ]).catch(() => ({ rows: [] }));
+
+            notifications = welcomeRes.rows.length > 0 ? welcomeRes.rows : [];
         }
 
         return NextResponse.json({ success: true, data: notifications });

@@ -30,7 +30,7 @@ const Navbar = () => {
         )}
         <button
           onClick={teamLogout}
-          className="px-4 py-1.5 rounded-xl cursor-pointer bg-slate-900 text-white text-sm font-medium hover:bg-slate-700 transition-colors"
+          className="px-4 py-1.5 rounded-xl cursor-pointer bg-primary hover:bg-primary-dark text-white text-xs font-bold transition-all shadow-md shadow-primary/20"
         >
           Logout
         </button>

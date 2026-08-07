@@ -57,7 +57,7 @@ const Sidebar = () => {
                 key={link.href}
                 href={link.href}
                 onClick={closeSidebar}
-                className='w-full px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-sky-50 hover:text-sky-600 transition-all duration-300 text-center'
+                className='w-full px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-primary/10 hover:text-primary transition-all duration-300 text-center'
               >
                 {link.name}
               </Link>
@@ -71,7 +71,7 @@ const Sidebar = () => {
               <Link
                 href={userData?.role === 'user' ? '/user' : '/dashboard'}
                 onClick={closeSidebar}
-                className='w-full px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-sky-50 hover:text-sky-600 transition-all duration-300 text-center'
+                className='w-full px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-primary/10 hover:text-primary transition-all duration-300 text-center'
               >
                 Dashboard
               </Link>
@@ -79,7 +79,7 @@ const Sidebar = () => {
               <Link
                 href='/user/profile'
                 onClick={closeSidebar}
-                className='w-full px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-sky-50 hover:text-sky-600 transition-all duration-300 text-center'
+                className='w-full px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-primary/10 hover:text-primary transition-all duration-300 text-center'
               >
                 Profile
               </Link>

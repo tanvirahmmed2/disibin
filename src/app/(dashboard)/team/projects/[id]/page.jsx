@@ -6,9 +6,8 @@ import { toast, Toaster } from 'react-hot-toast';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
-  FiArrowLeft, FiFolder, FiSend, FiPaperclip,
-  FiCheckCircle, FiClock, FiCreditCard, FiFileText,
-  FiLoader, FiExternalLink, FiDollarSign, FiPlus, FiAlertCircle, FiTag, FiMessageSquare
+  FiArrowLeft, FiSend, FiPaperclip,
+  FiCreditCard, FiFileText, FiLoader, FiExternalLink, FiPlus, FiAlertCircle
 } from 'react-icons/fi';
 
 export default function TeamProjectDetailPage() {
@@ -20,23 +19,23 @@ export default function TeamProjectDetailPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Chat message & file state
+  // Chat & file state
   const [message, setMessage] = useState('');
   const [attachmentFile, setAttachmentFile] = useState(null);
   const [sending, setSending] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
 
-  // Manual Purchase Form State
+  // Purchase Form
   const [showPurchaseForm, setShowPurchaseForm] = useState(false);
   const [purProductId, setPurProductId] = useState('');
   const [purPrice, setPurPrice] = useState('');
   const [purDiscount, setPurDiscount] = useState('0');
   const [creatingPurchase, setCreatingPurchase] = useState(false);
 
-  // Payment Completion State
+  // Payment Status
   const [updatingPaymentId, setUpdatingPaymentId] = useState(null);
 
-  // Agreement Form State
+  // Agreement Form
   const [showAgreementForm, setShowAgreementForm] = useState(false);
   const [agrTitle, setAgrTitle] = useState('');
   const [agrFile, setAgrFile] = useState(null);
@@ -57,7 +56,7 @@ export default function TeamProjectDetailPage() {
       if (res.data.success) {
         setProjectData(res.data.data);
       } else {
-        toast.error(res.data.message || 'Project workspace not found');
+        toast.error(res.data.message || 'Project not found');
       }
     } catch {
       toast.error('Failed to load project workspace');
@@ -135,7 +134,7 @@ export default function TeamProjectDetailPage() {
       });
 
       if (res.data.success) {
-        toast.success('Manual purchase and payment record generated!');
+        toast.success('Purchase created!');
         setShowPurchaseForm(false);
         setPurPrice('');
         fetchWorkspace();
@@ -143,7 +142,7 @@ export default function TeamProjectDetailPage() {
         toast.error(res.data.message || 'Failed to create purchase');
       }
     } catch {
-      toast.error('Failed to generate manual purchase');
+      toast.error('Failed to create purchase');
     } finally {
       setCreatingPurchase(false);
     }
@@ -165,7 +164,7 @@ export default function TeamProjectDetailPage() {
         toast.error(res.data.message || 'Failed to update payment');
       }
     } catch {
-      toast.error('Error updating payment status');
+      toast.error('Error updating payment');
     } finally {
       setUpdatingPaymentId(null);
     }
@@ -173,8 +172,8 @@ export default function TeamProjectDetailPage() {
 
   const handleCreateAgreement = async (e) => {
     e.preventDefault();
-    if (!agrTitle.trim()) return toast.error('Agreement title is required');
-    if (!agrFile) return toast.error('Please attach agreement document PDF');
+    if (!agrTitle.trim()) return toast.error('Title is required');
+    if (!agrFile) return toast.error('Please select document PDF');
 
     setCreatingAgreement(true);
     const formData = new FormData();
@@ -189,7 +188,7 @@ export default function TeamProjectDetailPage() {
       });
 
       if (res.data.success) {
-        toast.success('Agreement document created and sent to customer!');
+        toast.success('Agreement document created!');
         setShowAgreementForm(false);
         setAgrTitle('');
         setAgrFile(null);
@@ -198,7 +197,7 @@ export default function TeamProjectDetailPage() {
         toast.error(res.data.message || 'Failed to create agreement');
       }
     } catch {
-      toast.error('Error creating agreement document');
+      toast.error('Error creating agreement');
     } finally {
       setCreatingAgreement(false);
     }
@@ -206,28 +205,25 @@ export default function TeamProjectDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[65vh] flex flex-col items-center justify-center space-y-3 p-6 text-slate-400">
-        <FiLoader className="animate-spin text-sky-500" size={28} />
-        <p className="text-sm font-medium">Loading project workspace...</p>
+      <div className="py-16 flex flex-col items-center justify-center space-y-2 text-slate-400">
+        <FiLoader className="animate-spin text-primary" size={24} />
+        <p className="text-xs">Loading project...</p>
       </div>
     );
   }
 
   if (!projectData || !projectData.project) {
     return (
-      <div className="p-6 max-w-3xl mx-auto space-y-4 text-center">
+      <div className="p-6 max-w-xl mx-auto text-center space-y-3">
         <Toaster position="top-center" />
-        <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-          <FiAlertCircle className="mx-auto text-amber-500" size={36} />
-          <h2 className="text-lg font-bold text-slate-800">Project Workspace Not Found</h2>
-          <p className="text-xs text-slate-500">The requested project record does not exist.</p>
-          <Link
-            href="/team/projects"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-sky-600 transition-all shadow-md"
-          >
-            <FiArrowLeft size={14} /> Back to Projects
-          </Link>
-        </div>
+        <FiAlertCircle className="mx-auto text-amber-500" size={32} />
+        <h2 className="text-base font-bold text-slate-800">Project Not Found</h2>
+        <Link
+          href="/team/projects"
+          className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-semibold hover:bg-slate-900"
+        >
+          <FiArrowLeft size={14} /> Back to Projects
+        </Link>
       </div>
     );
   }
@@ -235,61 +231,58 @@ export default function TeamProjectDetailPage() {
   const { project, messages, attachments, purchases, agreements } = projectData;
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-6">
+    <div className="p-4 max-w-6xl mx-auto space-y-4">
       <Toaster position="top-center" />
 
-      {/* Header Card */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Clean Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+        <div className="flex items-center gap-3">
           <Link
             href="/team/projects"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-sky-600 transition-colors"
+            className="p-1.5 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg transition-colors"
+            title="Back to Projects"
           >
-            <FiArrowLeft size={16} /> Back to Customer Projects
+            <FiArrowLeft size={16} />
           </Link>
-
-          {/* Status Dropdown */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Project Status:</span>
-            <select
-              value={project.status}
-              disabled={updatingStatus}
-              onChange={(e) => handleStatusChange(e.target.value)}
-              className="input-style text-xs font-bold cursor-pointer py-1.5"
-            >
-              <option value="pending">Pending</option>
-              <option value="working">Working</option>
-              <option value="ready">Ready</option>
-              <option value="ontest">Quality Control (On Test)</option>
-              <option value="fixing">Fixing</option>
-              <option value="approved">Approved / Completed</option>
-            </select>
+          <div>
+            <h1 className="text-base font-bold text-slate-900">{project.title}</h1>
+            <p className="text-xs text-slate-500">
+              Customer: <strong className="text-slate-800">{project.user_name || 'Customer'}</strong> ({project.user_email})
+              {project.product_name && <span> · Base: {project.product_name}</span>}
+            </p>
           </div>
         </div>
 
-        <div className="space-y-1">
-          <h1 className="text-2xl font-extrabold text-slate-900">{project.title}</h1>
-          <p className="text-xs text-slate-500">
-            Client: <span className="font-bold text-slate-800">{project.user_name || 'Customer'} ({project.user_email})</span>
-            {project.product_name && <span> · Base Product: <strong>{project.product_name}</strong></span>}
-          </p>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium text-slate-500">Status:</span>
+          <select
+            value={project.status}
+            disabled={updatingStatus}
+            onChange={(e) => handleStatusChange(e.target.value)}
+            className="px-2 py-1 bg-white border border-slate-200 rounded-lg text-xs font-semibold focus:outline-none focus:border-primary"
+          >
+            <option value="pending">Pending</option>
+            <option value="working">Working</option>
+            <option value="ready">Ready</option>
+            <option value="ontest">Testing</option>
+            <option value="fixing">Fixing</option>
+            <option value="approved">Approved</option>
+          </select>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Discussion Thread (7 cols) */}
-        <div className="lg:col-span-7 space-y-4">
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-4 flex flex-col min-h-[500px]">
-            <h2 className="text-base font-extrabold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-              <FiMessageSquare className="text-sky-500" size={18} />
-              Project Live Discussion Workspace
-            </h2>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* Messages */}
+        <div className="lg:col-span-7 space-y-3">
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col h-[480px]">
+            <div className="p-3 border-b border-slate-100 bg-slate-50 font-bold text-xs text-slate-700">
+              Live Discussion Workspace
+            </div>
 
-            {/* Chat Thread */}
-            <div className="flex-1 overflow-y-auto space-y-3 pr-1 max-h-[440px]">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {messages.length === 0 ? (
                 <div className="text-center py-12 text-slate-400 text-xs">
-                  No discussion messages recorded. Send your staff response below!
+                  No discussion messages recorded. Send your staff response below.
                 </div>
               ) : (
                 messages.map((m) => {
@@ -297,19 +290,19 @@ export default function TeamProjectDetailPage() {
                   return (
                     <div
                       key={m.id}
-                      className={`flex flex-col ${isStaff ? 'items-end' : 'items-start'}`}
+                      className={`flex flex-col ${isStaff ? 'items-end ml-auto' : 'items-start mr-auto'} max-w-[85%] sm:max-w-[75%]`}
                     >
-                      <div className={`p-4 rounded-2xl max-w-lg space-y-1 text-xs shadow-sm ${
-                        isStaff
-                          ? 'bg-slate-900 text-white rounded-br-none'
-                          : 'bg-slate-100 text-slate-800 rounded-bl-none'
-                      }`}>
-                        <div className="flex items-center justify-between gap-4 text-[10px] opacity-80 border-b border-white/20 pb-1 mb-1">
-                          <span className="font-bold">{isStaff ? `${m.team_name || 'Staff'} (${m.team_role || 'Staff'})` : `${m.user_name || 'Customer'}`}</span>
-                          <span>{new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                        </div>
-                        <p className="leading-relaxed whitespace-pre-wrap">{m.message}</p>
+                      <div className="text-[11px] font-semibold text-slate-500 mb-0.5 px-1">
+                        {isStaff ? `${m.team_name || 'Staff'} (${m.team_role || 'Staff'})` : (m.user_name || 'Customer')}
                       </div>
+                      <div className={`p-3 rounded-xl text-xs leading-relaxed max-w-md ${
+                        isStaff ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-800 border border-slate-200'
+                      }`}>
+                        <p className="whitespace-pre-wrap">{m.message}</p>
+                      </div>
+                      <span className="text-[10px] text-slate-400 mt-0.5 px-1">
+                        {new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
                     </div>
                   );
                 })
@@ -317,81 +310,69 @@ export default function TeamProjectDetailPage() {
             </div>
 
             {/* Staff Reply Form */}
-            <form onSubmit={handleSendMessage} className="pt-3 border-t border-slate-100 space-y-2">
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={message}
-                  onChange={e => setMessage(e.target.value)}
-                  placeholder="Type staff response..."
-                  className="input-style text-sm py-2"
-                />
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={e => setAttachmentFile(e.target.files[0])}
-                  className="input-style"
-                />
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`p-2.5 rounded-xl border transition-all text-xs font-semibold flex items-center gap-1 ${
-                    attachmentFile
-                      ? 'bg-sky-50 border-sky-300 text-sky-600'
-                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
-                  }`}
-                  title="Attach file"
-                >
-                  <FiPaperclip size={16} />
-                </button>
-                <button
-                  type="submit"
-                  disabled={sending || (!message.trim() && !attachmentFile)}
-                  className="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs transition-all disabled:opacity-50 shadow-md flex items-center gap-1.5 shrink-0"
-                >
-                  {sending ? <FiLoader className="animate-spin" size={14} /> : <FiSend size={14} />}
-                  Reply
-                </button>
-              </div>
+            <form onSubmit={handleSendMessage} className="p-3 border-t border-slate-200 bg-slate-50 flex items-center gap-2">
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={e => setAttachmentFile(e.target.files[0])}
+                className="hidden"
+              />
 
-              {attachmentFile && (
-                <p className="text-[11px] text-sky-600 font-semibold truncate pl-1">
-                  Attached file: {attachmentFile.name}
-                </p>
-              )}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="p-2 border border-slate-200 hover:bg-white text-slate-500 rounded-lg text-xs"
+                title="Attach File"
+              >
+                <FiPaperclip size={15} />
+              </button>
+
+              <input
+                type="text"
+                value={message}
+                onChange={e => setMessage(e.target.value)}
+                placeholder="Type staff response..."
+                className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:border-primary"
+              />
+
+              <button
+                type="submit"
+                disabled={sending || (!message.trim() && !attachmentFile)}
+                className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white rounded-lg text-xs font-semibold transition-colors disabled:opacity-50 flex items-center gap-1"
+              >
+                {sending ? <FiLoader className="animate-spin" size={13} /> : <FiSend size={13} />}
+                Reply
+              </button>
             </form>
           </div>
         </div>
 
-        {/* Manual Purchases, Payments & Agreements Column (5 cols) */}
-        <div className="lg:col-span-5 space-y-4">
-          {/* Manual Purchase Card */}
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                <FiCreditCard className="text-emerald-500" size={16} />
-                Billing & Manual Purchase
+        {/* Sidebar Controls (5 cols) */}
+        <div className="lg:col-span-5 space-y-3 text-xs">
+          {/* Billing & Purchase */}
+          <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h3 className="font-bold text-slate-800 flex items-center gap-1.5">
+                <FiCreditCard size={14} className="text-slate-500" /> Billing & Purchases
               </h3>
-
               <button
                 onClick={() => setShowPurchaseForm(!showPurchaseForm)}
-                className="text-xs font-bold text-emerald-600 hover:underline flex items-center gap-1"
+                className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
               >
-                <FiPlus size={14} /> Create Purchase
+                <FiPlus size={13} /> New Purchase
               </button>
             </div>
 
-            {/* Manual Purchase Creator Form */}
             {showPurchaseForm && (
-              <form onSubmit={handleCreatePurchase} className="bg-emerald-50/60 p-4 rounded-2xl border border-emerald-100 space-y-3 text-xs">
+              <form onSubmit={handleCreatePurchase} className="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Select Product</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Product</label>
                   <select
                     value={purProductId}
                     onChange={e => setPurProductId(e.target.value)}
-                    className="input-style font-semibold py-2"
+                    className="w-full px-2.5 py-1 bg-white border border-slate-200 rounded text-xs"
                   >
-                    <option value="">-- Custom Service Proposal --</option>
+                    <option value="">Custom Service Proposal</option>
                     {products.map(p => (
                       <option key={p.id} value={p.id}>{p.name} (${p.price})</option>
                     ))}
@@ -400,181 +381,152 @@ export default function TeamProjectDetailPage() {
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1">Proposal Price ($) *</label>
+                    <label className="block font-semibold text-slate-700 mb-1">Price ($) *</label>
                     <input
                       type="number"
                       required
                       value={purPrice}
                       onChange={e => setPurPrice(e.target.value)}
-                      placeholder="E.g. 500"
-                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl font-semibold text-slate-800"
+                      placeholder="Price"
+                      className="w-full px-2.5 py-1 bg-white border border-slate-200 rounded text-xs"
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1">Discount (%)</label>
+                    <label className="block font-semibold text-slate-700 mb-1">Discount (%)</label>
                     <input
                       type="number"
                       value={purDiscount}
                       onChange={e => setPurDiscount(e.target.value)}
                       placeholder="0"
-                      className="input-style font-semibold py-2"
+                      className="w-full px-2.5 py-1 bg-white border border-slate-200 rounded text-xs"
                     />
                   </div>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-1">
+                <div className="flex justify-end gap-2 pt-1">
                   <button
                     type="button"
                     onClick={() => setShowPurchaseForm(false)}
-                    className="px-3 py-1.5 text-slate-500 font-semibold"
+                    className="px-2.5 py-1 text-slate-500 font-medium"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={creatingPurchase}
-                    className="px-4 py-1.5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all shadow-sm"
+                    className="px-3 py-1 bg-emerald-600 text-white font-semibold rounded"
                   >
-                    {creatingPurchase ? 'Creating...' : 'Generate Invoice'}
+                    {creatingPurchase ? 'Saving...' : 'Create Invoice'}
                   </button>
                 </div>
               </form>
             )}
 
-            {/* List Existing Purchases & Payments */}
             {purchases.length === 0 ? (
-              <p className="text-xs text-slate-400">No manual purchases generated yet.</p>
+              <p className="text-slate-400">No purchases generated yet.</p>
             ) : (
               purchases.map(pur => (
-                <div key={pur.purchase_id} className="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-700">Proposal Amount</span>
-                    <span className="font-extrabold text-slate-900">${pur.price} ({pur.discount}% Discount)</span>
+                <div key={pur.purchase_id} className="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-1.5">
+                  <div className="flex justify-between">
+                    <span className="font-semibold text-slate-700">Proposal</span>
+                    <span className="font-bold text-slate-900">${pur.price}</span>
                   </div>
-
-                  <div className="flex items-center justify-between text-xs">
-                    <span>Paid: <strong>${pur.paid || 0}</strong></span>
-                    <span>Due: <strong>${pur.due || pur.price}</strong></span>
-                    <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] uppercase ${
-                      pur.payment_status === 'paid'
-                        ? 'bg-emerald-100 text-emerald-700'
-                        : 'bg-amber-100 text-amber-700'
-                    }`}>
-                      {pur.payment_status || 'unpaid'}
-                    </span>
+                  <div className="flex justify-between text-slate-500">
+                    <span>Payment Status</span>
+                    <span className="font-semibold uppercase">{pur.payment_status || 'unpaid'}</span>
                   </div>
-
-                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
-                    {pur.payment_status !== 'paid' && (
+                  {pur.payment_status !== 'paid' && (
+                    <div className="pt-1 text-right">
                       <button
                         onClick={() => handleUpdatePaymentStatus(pur.payment_id, 'paid', pur.payment_price || pur.price)}
                         disabled={updatingPaymentId === pur.payment_id}
-                        className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all shadow-sm text-[11px]"
+                        className="px-2.5 py-1 bg-emerald-600 text-white rounded font-semibold text-[11px]"
                       >
-                        Mark Completed & Paid
+                        Mark Paid
                       </button>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               ))
             )}
           </div>
 
-          {/* Agreements Card */}
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                <FiFileText className="text-sky-500" size={16} />
-                Project Agreements
+          {/* Agreements */}
+          <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h3 className="font-bold text-slate-800 flex items-center gap-1.5">
+                <FiFileText size={14} className="text-slate-500" /> Agreements
               </h3>
-
               <button
                 onClick={() => setShowAgreementForm(!showAgreementForm)}
-                className="text-xs font-bold text-sky-600 hover:underline flex items-center gap-1"
+                className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
               >
-                <FiPlus size={14} /> Add Agreement
+                <FiPlus size={13} /> Add Document
               </button>
             </div>
 
-            {/* Agreement Creator Form */}
             {showAgreementForm && (
-              <form onSubmit={handleCreateAgreement} className="bg-sky-50/60 p-4 rounded-2xl border border-sky-100 space-y-3 text-xs">
+              <form onSubmit={handleCreateAgreement} className="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Agreement Document Title *</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Title *</label>
                   <input
                     type="text"
                     required
                     value={agrTitle}
                     onChange={e => setAgrTitle(e.target.value)}
-                    placeholder="E.g. Service Level Agreement & Scope"
-                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl font-semibold text-slate-800"
+                    placeholder="E.g. Scope of Work"
+                    className="w-full px-2.5 py-1 bg-white border border-slate-200 rounded text-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Attach PDF Document *</label>
+                  <label className="block font-semibold text-slate-700 mb-1">PDF File *</label>
                   <input
                     type="file"
                     ref={agrFileInputRef}
                     onChange={e => setAgrFile(e.target.files[0])}
                     accept=".pdf,.doc,.docx"
-                    className="input-style"
+                    className="w-full text-xs"
                   />
-                  <button
-                    type="button"
-                    onClick={() => agrFileInputRef.current?.click()}
-                    className="px-3 py-2 bg-white border border-slate-200 rounded-xl font-semibold text-slate-700 flex items-center gap-1.5"
-                  >
-                    <FiPaperclip size={14} />
-                    {agrFile ? agrFile.name : 'Select PDF Document'}
-                  </button>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-1">
+                <div className="flex justify-end gap-2 pt-1">
                   <button
                     type="button"
                     onClick={() => setShowAgreementForm(false)}
-                    className="px-3 py-1.5 text-slate-500 font-semibold"
+                    className="px-2.5 py-1 text-slate-500 font-medium"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={creatingAgreement}
-                    className="px-4 py-1.5 bg-sky-600 text-white font-bold rounded-xl hover:bg-sky-700 transition-all shadow-sm"
+                    className="px-3 py-1 bg-primary text-white font-semibold rounded"
                   >
-                    {creatingAgreement ? 'Uploading...' : 'Send Agreement'}
+                    {creatingAgreement ? 'Uploading...' : 'Send Document'}
                   </button>
                 </div>
               </form>
             )}
 
-            {/* List Existing Agreements */}
             {agreements.length === 0 ? (
-              <p className="text-xs text-slate-400">No project agreement generated yet.</p>
+              <p className="text-slate-400">No agreement document added.</p>
             ) : (
               agreements.map(agr => (
-                <div key={agr.id} className="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-2 text-xs">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-bold text-slate-900 truncate">{agr.title}</span>
-                    <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] uppercase ${
-                      agr.status === 'signed'
-                        ? 'bg-emerald-100 text-emerald-700'
-                        : agr.status === 'rejected'
-                        ? 'bg-rose-100 text-rose-700'
-                        : 'bg-amber-100 text-amber-700'
-                    }`}>
+                <div key={agr.id} className="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-1">
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-slate-800 truncate">{agr.title}</span>
+                    <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded border border-slate-200">
                       {agr.status}
                     </span>
                   </div>
-
                   <a
                     href={agr.file_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sky-600 font-bold hover:underline inline-flex items-center gap-1 text-[11px]"
+                    className="text-primary font-semibold hover:underline inline-flex items-center gap-1 text-[11px]"
                   >
-                    <FiExternalLink size={12} /> View Document
+                    <FiExternalLink size={11} /> View Document
                   </a>
                 </div>
               ))

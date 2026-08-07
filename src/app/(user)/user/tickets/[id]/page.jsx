@@ -6,8 +6,8 @@ import { toast, Toaster } from 'react-hot-toast';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
-  FiArrowLeft, FiUser, FiCalendar, FiShield,
-  FiPaperclip, FiSend, FiLoader, FiX, FiAlertCircle
+  FiArrowLeft, FiPaperclip, FiSend,
+  FiLoader, FiX, FiAlertCircle
 } from 'react-icons/fi';
 
 export default function UserTicketDetailPage() {
@@ -41,7 +41,7 @@ export default function UserTicketDetailPage() {
       if (res.data.success) {
         setThread(res.data.data);
       } else {
-        toast.error(res.data.message || 'Failed to load ticket thread');
+        toast.error(res.data.message || 'Failed to load ticket');
       }
     } catch {
       toast.error('Failed to load conversation thread');
@@ -58,7 +58,7 @@ export default function UserTicketDetailPage() {
     try {
       for (const file of files) {
         if (!file.type.startsWith('image/')) {
-          toast.error('Only image files are allowed');
+          toast.error('Only images allowed');
           continue;
         }
         const formData = new FormData();
@@ -71,7 +71,7 @@ export default function UserTicketDetailPage() {
         if (res.data.success) {
           setAttachedImages(prev => [...prev, { file_url: res.data.data.url, file_id: res.data.data.public_id }]);
         } else {
-          toast.error(res.data.message || 'Image upload failed');
+          toast.error(res.data.message || 'Upload failed');
         }
       }
     } catch {
@@ -114,27 +114,25 @@ export default function UserTicketDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[65vh] flex flex-col items-center justify-center space-y-3 p-6 text-slate-400">
-        <FiLoader className="animate-spin text-sky-500" size={28} />
-        <p className="text-sm font-medium">Loading ticket thread...</p>
+      <div className="py-16 flex flex-col items-center justify-center space-y-2 text-slate-400">
+        <FiLoader className="animate-spin text-primary" size={24} />
+        <p className="text-xs">Loading ticket...</p>
       </div>
     );
   }
 
   if (!thread || !thread.ticket) {
     return (
-      <div className="p-6 max-w-3xl mx-auto space-y-4 text-center">
+      <div className="p-6 w-full text-center space-y-3">
         <Toaster position="top-center" />
-        <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-          <FiAlertCircle className="mx-auto text-amber-500" size={36} />
-          <h2 className="text-lg font-bold text-slate-800">Ticket Not Found</h2>
-          <Link
-            href="/user/tickets"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-sky-600 transition-all shadow-md"
-          >
-            <FiArrowLeft size={14} /> Back to My Tickets
-          </Link>
-        </div>
+        <FiAlertCircle className="mx-auto text-amber-500" size={32} />
+        <h2 className="text-base font-bold text-slate-800">Ticket Not Found</h2>
+        <Link
+          href="/user/tickets"
+          className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-semibold hover:bg-slate-900"
+        >
+          <FiArrowLeft size={14} /> Back to My Tickets
+        </Link>
       </div>
     );
   }
@@ -142,38 +140,35 @@ export default function UserTicketDetailPage() {
   const { ticket, messages, attachments } = thread;
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 max-w-4xl mx-auto space-y-4">
+    <div className="p-4 w-full space-y-4">
       <Toaster position="top-center" />
 
-      {/* Header Card */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-2">
-        <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div className="flex items-center gap-3">
           <Link
             href="/user/tickets"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-sky-600 transition-colors"
+            className="p-1.5 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg transition-colors"
+            title="Back to Tickets"
           >
-            <FiArrowLeft size={16} /> Back to My Tickets
+            <FiArrowLeft size={16} />
           </Link>
-          <span className="text-xs font-mono text-slate-400 bg-slate-100 px-2.5 py-1 rounded-md">
-            Ticket #{ticket.id}
-          </span>
-        </div>
-
-        <div>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900">{ticket.title}</h1>
-          <p className="text-xs text-slate-400 flex items-center gap-1 mt-1">
-            <FiCalendar size={12} /> Created {new Date(ticket.created_at).toLocaleString()}
-          </p>
+          <div>
+            <h1 className="text-base font-bold text-slate-900 flex items-center gap-2">
+              <span>{ticket.title}</span>
+              <span className="text-xs font-mono font-normal text-slate-400">#{ticket.id}</span>
+            </h1>
+            <p className="text-xs text-slate-400">
+              Created {new Date(ticket.created_at).toLocaleString()}
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Main Chat Thread */}
-      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-18rem)] min-h-[460px]">
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-slate-50/30">
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col h-[calc(100vh-14rem)] min-h-[400px]">
+        <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {messages.length === 0 ? (
-            <div className="py-16 text-center text-slate-400 text-xs font-medium">
-              No messages in this thread yet. Send a message below to start the conversation.
+            <div className="py-12 text-center text-slate-400 text-xs">
+              No messages yet. Send a message below.
             </div>
           ) : (
             messages.map((msg) => {
@@ -185,53 +180,37 @@ export default function UserTicketDetailPage() {
               return (
                 <div
                   key={msg.id}
-                  className={`flex flex-col ${isUserMsg ? 'items-end ml-auto' : 'items-start mr-auto'} max-w-[88%] sm:max-w-[78%]`}
+                  className={`flex flex-col ${isUserMsg ? 'items-end ml-auto' : 'items-start mr-auto'} max-w-[85%] sm:max-w-[75%]`}
                 >
-                  {/* Sender Label */}
-                  <div className="flex items-center gap-1.5 mb-1 px-1 text-[11px] font-bold">
-                    {isUserMsg ? (
-                      <span className="text-sky-600">You</span>
-                    ) : (
-                      <span className="text-slate-700 flex items-center gap-1">
-                        <FiShield className="text-sky-500" size={12} />
-                        {msg.team_name || 'Support Staff'}
-                        <span className="text-[10px] text-slate-400 uppercase font-semibold">({msg.team_role || 'Staff'})</span>
-                      </span>
-                    )}
+                  <div className="text-[11px] font-semibold text-slate-500 mb-0.5 px-1">
+                    {isUserMsg ? 'You' : (msg.team_name || 'Support Staff')}
                   </div>
 
-                  {/* Bubble */}
                   <div
-                    className={`p-4 rounded-3xl shadow-sm text-sm space-y-2 ${
+                    className={`p-3 rounded-xl text-xs leading-relaxed space-y-2 ${
                       isUserMsg
-                        ? 'bg-slate-900 text-white rounded-br-none'
-                        : 'bg-white border border-slate-100 text-slate-800 rounded-bl-none'
+                        ? 'bg-primary text-white'
+                        : 'bg-slate-100 text-slate-800 border border-slate-200'
                     }`}
                   >
-                    <p className="leading-relaxed whitespace-pre-wrap">{msg.message}</p>
+                    <p className="whitespace-pre-wrap">{msg.message}</p>
 
-                    {/* Attachments */}
                     {msgAttachments.length > 0 && (
-                      <div className="grid grid-cols-2 gap-2 pt-1">
+                      <div className="grid grid-cols-2 gap-1.5 pt-1">
                         {msgAttachments.map((att) => (
-                          <div
+                          <img
                             key={att.id}
+                            src={att.file_url}
+                            alt="Attachment"
                             onClick={() => setPreviewImage(att.file_url)}
-                            className="relative group cursor-pointer rounded-2xl overflow-hidden border border-slate-200/40 bg-black/5"
-                          >
-                            <img
-                              src={att.file_url}
-                              alt="Attachment"
-                              className="w-full h-28 object-cover group-hover:scale-105 transition-transform duration-200"
-                            />
-                          </div>
+                            className="w-full h-24 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity border border-black/10"
+                          />
                         ))}
                       </div>
                     )}
                   </div>
 
-                  {/* Time */}
-                  <span className="text-[10px] text-slate-400 mt-1 px-1 font-medium">
+                  <span className="text-[10px] text-slate-400 mt-0.5 px-1">
                     {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
@@ -241,27 +220,26 @@ export default function UserTicketDetailPage() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* User Reply Form */}
-        <div className="border-t border-slate-100 bg-white/80 backdrop-blur-md p-3 sm:p-4 space-y-3">
-          {/* Image Preview Strip */}
+        {/* Input Bar */}
+        <div className="border-t border-slate-200 p-3 bg-slate-50 space-y-2">
           {attachedImages.length > 0 && (
             <div className="flex items-center gap-2 overflow-x-auto pb-1">
               {attachedImages.map((img, idx) => (
-                <div key={idx} className="relative group shrink-0 w-16 h-16 rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50">
+                <div key={idx} className="relative shrink-0 w-12 h-12 rounded-md overflow-hidden border border-slate-200">
                   <img src={img.file_url} alt="Attachment" className="w-full h-full object-cover" />
                   <button
                     type="button"
                     onClick={() => removeAttachedImage(idx)}
-                    className="absolute top-1 right-1 w-5 h-5 rounded-full bg-slate-900/80 text-white flex items-center justify-center text-xs hover:bg-rose-600 transition-colors"
+                    className="absolute top-0.5 right-0.5 w-4 h-4 bg-slate-800 text-white rounded-full flex items-center justify-center text-[10px]"
                   >
-                    <FiX size={12} />
+                    <FiX size={10} />
                   </button>
                 </div>
               ))}
             </div>
           )}
 
-          <form onSubmit={handleSendMessage} className="flex items-end gap-2">
+          <form onSubmit={handleSendMessage} className="flex items-center gap-2">
             <input
               type="file"
               ref={fileInputRef}
@@ -275,53 +253,40 @@ export default function UserTicketDetailPage() {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadingImage || sendingMsg}
-              className="p-3 text-slate-400 hover:text-sky-600 hover:bg-sky-50/80 rounded-2xl transition-all disabled:opacity-50 shrink-0"
-              title="Attach image"
+              className="p-2 border border-slate-200 hover:bg-white text-slate-500 rounded-lg text-xs transition-colors"
+              title="Attach Image"
             >
-              {uploadingImage ? <FiLoader className="animate-spin text-sky-500" size={19} /> : <FiPaperclip size={19} />}
+              {uploadingImage ? <FiLoader className="animate-spin text-primary" size={16} /> : <FiPaperclip size={16} />}
             </button>
 
-            <div className="flex-1 bg-slate-100/70 focus-within:bg-white rounded-2xl border border-transparent focus-within:border-sky-500 focus-within:ring-4 focus-within:ring-sky-500/10 transition-all p-2.5 shadow-inner">
-              <textarea
-                value={messageText}
-                onChange={e => setMessageText(e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSendMessage();
-                  }
-                }}
-                placeholder="Write your message... (Shift + Enter for new line)"
-                rows={1}
-                className="w-full bg-transparent border-0 resize-none text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none max-h-32 px-1 py-0.5"
-              />
-            </div>
+            <input
+              type="text"
+              value={messageText}
+              onChange={e => setMessageText(e.target.value)}
+              placeholder="Type your message..."
+              className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:border-primary"
+            />
 
             <button
               type="submit"
               disabled={(!messageText.trim() && attachedImages.length === 0) || uploadingImage || sendingMsg}
-              className="p-3.5 bg-sky-600 hover:bg-sky-700 text-white rounded-2xl font-bold transition-all disabled:opacity-30 shrink-0 shadow-md flex items-center justify-center"
+              className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white rounded-lg text-xs font-semibold transition-colors disabled:opacity-50 flex items-center gap-1"
             >
-              {sendingMsg ? <FiLoader className="animate-spin" size={18} /> : <FiSend size={18} />}
+              {sendingMsg ? <FiLoader className="animate-spin" size={14} /> : <FiSend size={14} />}
+              Send
             </button>
           </form>
         </div>
       </div>
 
-      {/* Lightbox Image Preview Modal */}
+      {/* Lightbox Preview */}
       {previewImage && (
         <div
           onClick={() => setPreviewImage(null)}
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in"
+          className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4"
         >
-          <div className="relative max-w-4xl max-h-[90vh] overflow-hidden rounded-3xl shadow-2xl">
-            <button
-              onClick={() => setPreviewImage(null)}
-              className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-rose-600 transition-colors"
-            >
-              <FiX size={18} />
-            </button>
-            <img src={previewImage} alt="Attachment detail" className="max-w-full max-h-[85vh] object-contain" />
+          <div className="relative max-w-3xl max-h-[90vh]">
+            <img src={previewImage} alt="Preview" className="max-w-full max-h-[85vh] object-contain rounded-lg" />
           </div>
         </div>
       )}

@@ -30,7 +30,7 @@ const About = () => {
           className="w-full flex flex-col items-center text-center gap-8 max-w-4xl mx-auto"
         >
           {/* Eyebrow */}
-          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500 font-poppins">
+          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary font-poppins">
             Who We Are
           </span>
 
@@ -63,7 +63,7 @@ const About = () => {
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.2 }}>
             <Link
               href="/about"
-              className="inline-flex items-center gap-2 font-poppins font-semibold text-sm bg-slate-900 text-white px-8 py-3.5 rounded-xl hover:bg-sky-600 shadow-md shadow-slate-200 transition-all duration-300 animate-pulse-glow"
+              className="inline-flex items-center gap-2 font-poppins font-semibold text-sm bg-slate-900 text-white px-8 py-3.5 rounded-xl hover:bg-primary shadow-md shadow-slate-200 transition-all duration-300 animate-pulse-glow"
             >
               About Us →
             </Link>

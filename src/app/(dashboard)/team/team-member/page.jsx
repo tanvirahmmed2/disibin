@@ -135,9 +135,9 @@ const TeamMemberManagement = () => {
       {/* Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { icon: <FiUsers className="text-sky-600" size={20} />, label: 'Total Members', value: totalMembers, bg: 'bg-sky-50' },
-          { icon: <FiUserCheck className="text-emerald-600" size={20} />, label: 'Active Members', value: activeMembers, bg: 'bg-emerald-50' },
-          { icon: <FiBriefcase className="text-amber-600" size={20} />, label: 'Active Managers', value: managerCount, bg: 'bg-amber-50' },
+          { icon: <FiUsers className="text-primary" size={20} />, label: 'Total Members', value: totalMembers, bg: 'bg-primary/10' },
+          { icon: <FiUserCheck className="text-primary" size={20} />, label: 'Active Members', value: activeMembers, bg: 'bg-primary/10' },
+          { icon: <FiBriefcase className="text-secondary" size={20} />, label: 'Active Managers', value: managerCount, bg: 'bg-secondary/10' },
         ].map(({ icon, label, value, bg }) => (
           <div key={label} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex items-center gap-4">
             <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${bg}`}>{icon}</div>
@@ -220,7 +220,7 @@ const TeamMemberManagement = () => {
                       <div>
                         <div className="font-bold text-slate-900 flex items-center gap-1.5">
                           {m.name}
-                          {m.is_verified && <FiShield size={14} className="text-sky-500" title="Verified" />}
+                          {m.is_verified && <FiShield size={14} className="text-primary" title="Verified" />}
                         </div>
                         <div className="text-xs text-slate-400">{m.email}</div>
                         {m.phone && <div className="text-[11px] text-slate-400">{m.phone}</div>}
@@ -233,9 +233,9 @@ const TeamMemberManagement = () => {
                         value={m.role}
                         onChange={(e) => updateRole(m, e.target.value)}
                         className={`px-2.5 py-1 rounded-lg text-xs font-bold capitalize border outline-none cursor-pointer transition-colors ${
-                          m.role === 'manager' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                          m.role === 'developer' ? 'bg-violet-50 text-violet-700 border-violet-200' :
-                          'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          m.role === 'manager' ? 'bg-secondary/10 text-secondary border-secondary/20' :
+                          m.role === 'developer' ? 'bg-primary/10 text-violet-700 border-primary/20' :
+                          'bg-primary/10 text-primary border-primary/20'
                         }`}
                       >
                         {roles.map((r) => (
@@ -249,7 +249,7 @@ const TeamMemberManagement = () => {
                     {/* Status */}
                     <td className="px-6 py-4">
                       {m.is_active ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-600">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-primary/10 text-primary">
                           <FiCheckCircle size={11} /> Active
                         </span>
                       ) : (
@@ -273,8 +273,8 @@ const TeamMemberManagement = () => {
                           title={m.is_active ? 'Deactivate Member' : 'Activate Member'}
                           className={`p-2 rounded-lg transition-all ${
                             m.is_active
-                              ? 'text-slate-400 hover:text-amber-600 hover:bg-amber-50'
-                              : 'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50'
+                              ? 'text-slate-400 hover:text-secondary hover:bg-secondary/10'
+                              : 'text-slate-400 hover:text-primary hover:bg-primary/10'
                           }`}
                         >
                           {statusLoading === m.id ? (

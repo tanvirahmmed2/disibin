@@ -42,7 +42,7 @@ export default function LeadsOverviewPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
-            <FiUserCheck className="text-sky-600" /> Leads & Sales Inquiries
+            <FiUserCheck className="text-primary" /> Leads & Sales Inquiries
           </h1>
           <p className="text-slate-500 text-sm mt-1 font-medium">
             Manage captured customer inquiries, enterprise leads, and sales pipelines
@@ -52,13 +52,13 @@ export default function LeadsOverviewPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/team/leads/clients/new"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-sky-600 transition-all shadow-md"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-white font-bold text-xs hover:bg-primary-dark transition-all shadow-md shadow-primary/20"
           >
             <FiPlus size={14} /> New Client Lead
           </Link>
           <Link
             href="/team/leads/business/new"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-50 text-sky-600 border border-sky-100 font-bold text-xs hover:bg-sky-100 transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20 font-bold text-xs hover:bg-primary/20 transition-all"
           >
             <FiPlus size={14} /> New Business Lead
           </Link>
@@ -68,7 +68,7 @@ export default function LeadsOverviewPage() {
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="p-3.5 rounded-xl bg-sky-50 text-sky-600">
+          <div className="p-3.5 rounded-xl bg-primary/10 text-primary">
             <FiUsers size={22} />
           </div>
           <div>
@@ -80,7 +80,7 @@ export default function LeadsOverviewPage() {
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="p-3.5 rounded-xl bg-emerald-50 text-emerald-600">
+          <div className="p-3.5 rounded-xl bg-primary/10 text-primary">
             <FiUserCheck size={22} />
           </div>
           <div>
@@ -92,7 +92,7 @@ export default function LeadsOverviewPage() {
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="p-3.5 rounded-xl bg-indigo-50 text-indigo-600">
+          <div className="p-3.5 rounded-xl bg-primary/10 text-primary">
             <FiBriefcase size={22} />
           </div>
           <div>
@@ -110,7 +110,7 @@ export default function LeadsOverviewPage() {
         {/* Client Leads Card */}
         <div className="bg-white rounded-3xl border border-slate-100 p-6 sm:p-8 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-6">
           <div className="space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
               <FiUserCheck size={24} />
             </div>
             <h2 className="text-xl font-extrabold text-slate-900">Client Leads Directory</h2>
@@ -125,7 +125,7 @@ export default function LeadsOverviewPage() {
             </span>
             <Link
               href="/team/leads/clients"
-              className="inline-flex items-center gap-2 text-sky-600 font-extrabold text-sm hover:gap-3 transition-all"
+              className="inline-flex items-center gap-2 text-primary font-extrabold text-sm hover:gap-3 transition-all"
             >
               Manage Client Leads <FiArrowRight size={16} />
             </Link>
@@ -135,7 +135,7 @@ export default function LeadsOverviewPage() {
         {/* Business Leads Card */}
         <div className="bg-white rounded-3xl border border-slate-100 p-6 sm:p-8 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-6">
           <div className="space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
               <FiBriefcase size={24} />
             </div>
             <h2 className="text-xl font-extrabold text-slate-900">Business & Enterprise Leads</h2>
@@ -150,7 +150,7 @@ export default function LeadsOverviewPage() {
             </span>
             <Link
               href="/team/leads/business"
-              className="inline-flex items-center gap-2 text-indigo-600 font-extrabold text-sm hover:gap-3 transition-all"
+              className="inline-flex items-center gap-2 text-primary font-extrabold text-sm hover:gap-3 transition-all"
             >
               Manage Business Leads <FiArrowRight size={16} />
             </Link>

@@ -443,7 +443,7 @@ const ProductForm = ({ initialData, onSuccess, onCancel }) => {
                       onClick={() => toggleFeature(feature.id)}
                       className={`relative text-left p-2 rounded-2xl border-2 transition-all duration-150 ${
                         selected
-                          ? 'border-primary-light bg-sky-50 shadow-sm shadow-tertiary'
+                          ? 'border-primary-light bg-primary/10 shadow-sm shadow-tertiary'
                           : 'border-slate-100 bg-white hover:border-slate-200 hover:shadow-sm'
                       }`}
                     >

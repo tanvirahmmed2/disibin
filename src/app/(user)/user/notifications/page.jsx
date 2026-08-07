@@ -40,17 +40,18 @@ export default function UserNotificationsPage() {
         setNotifications((prev) =>
           prev.map((item) => (id === null || item.id === id ? { ...item, is_read: true } : item))
         );
+        fetchNotifications();
       }
     } catch {
       toast.error('Failed to update notification status');
     }
   };
 
-  const unreadCount = notifications.filter((n) => !n.is_read).length;
+  const unreadCount = notifications.filter((n) => !Boolean(n.is_read)).length;
 
   const filteredNotifications = notifications.filter((n) => {
-    if (filter === 'unread') return !n.is_read;
-    if (filter === 'system') return n.type === 'system' || n.type === 'info';
+    if (filter === 'unread') return !Boolean(n.is_read);
+    if (filter === 'system') return n.type === 'system' || n.type === 'info' || n.type === 'review';
     if (filter === 'projects') return n.type === 'project' || n.type === 'ticket';
     return true;
   });
@@ -61,9 +62,9 @@ export default function UserNotificationsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
-            <FiBell className="text-sky-600" /> Notifications
+            <FiBell className="text-primary" /> Notifications
             {unreadCount > 0 && (
-              <span className="px-2.5 py-0.5 rounded-full bg-sky-500 text-white text-xs font-extrabold">
+              <span className="px-2.5 py-0.5 rounded-full bg-primary text-white text-xs font-extrabold shadow-sm">
                 {unreadCount} New
               </span>
             )}
@@ -76,7 +77,7 @@ export default function UserNotificationsPage() {
         {unreadCount > 0 && (
           <button
             onClick={() => handleMarkAsRead(null)}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-sky-600 transition-all cursor-pointer shadow-md shadow-slate-900/10"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-dark transition-all cursor-pointer shadow-md shadow-primary/20"
           >
             <FiCheckCircle size={14} /> Mark All as Read
           </button>
@@ -96,7 +97,7 @@ export default function UserNotificationsPage() {
             onClick={() => setFilter(tab.key)}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
               filter === tab.key
-                ? 'bg-sky-50 text-sky-600 border border-sky-100 shadow-sm'
+                ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
                 : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
             }`}
           >
@@ -108,12 +109,12 @@ export default function UserNotificationsPage() {
       {/* Content */}
       {loading ? (
         <div className="bg-white p-12 rounded-2xl border border-slate-100 shadow-sm text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-sky-500 border-t-transparent mb-3"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent mb-3"></div>
           <p className="text-slate-500 text-sm font-medium">Loading notifications...</p>
         </div>
       ) : filteredNotifications.length === 0 ? (
         <div className="bg-white p-12 rounded-2xl border border-slate-100 shadow-sm text-center space-y-3">
-          <div className="w-14 h-14 rounded-2xl bg-sky-50 text-sky-600 mx-auto flex items-center justify-center">
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary mx-auto flex items-center justify-center">
             <FiBell size={24} />
           </div>
           <h3 className="text-lg font-bold text-slate-900">No Notifications</h3>
@@ -128,7 +129,7 @@ export default function UserNotificationsPage() {
               key={n.id}
               className={`p-5 rounded-2xl border transition-all flex items-start justify-between gap-4 ${
                 !n.is_read
-                  ? 'bg-sky-50/40 border-sky-100 shadow-sm'
+                  ? 'bg-primary/5 border-primary/20 shadow-sm'
                   : 'bg-white border-slate-100 text-slate-600'
               }`}
             >
@@ -139,7 +140,7 @@ export default function UserNotificationsPage() {
                       ? 'bg-emerald-50 text-emerald-600'
                       : n.type === 'ticket'
                       ? 'bg-amber-50 text-amber-600'
-                      : 'bg-sky-50 text-sky-600'
+                      : 'bg-primary/10 text-primary'
                   }`}
                 >
                   {n.type === 'project' ? (
@@ -155,7 +156,7 @@ export default function UserNotificationsPage() {
                   <div className="flex items-center gap-2">
                     <h4 className="font-bold text-slate-900 text-sm">{n.title}</h4>
                     {!n.is_read && (
-                      <span className="w-2 h-2 rounded-full bg-sky-500 inline-block"></span>
+                      <span className="w-2 h-2 rounded-full bg-primary inline-block"></span>
                     )}
                   </div>
                   <p className="text-slate-600 text-xs leading-relaxed">{n.message}</p>
@@ -169,7 +170,8 @@ export default function UserNotificationsPage() {
                 {n.link && (
                   <Link
                     href={n.link}
-                    className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-sky-600 hover:border-sky-200 text-xs font-bold transition-all"
+                    onClick={() => !n.is_read && handleMarkAsRead(n.id)}
+                    className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-primary hover:border-primary/30 text-xs font-bold transition-all"
                   >
                     <FiExternalLink size={14} />
                   </Link>
@@ -177,7 +179,7 @@ export default function UserNotificationsPage() {
                 {!n.is_read && (
                   <button
                     onClick={() => handleMarkAsRead(n.id)}
-                    className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-600 hover:text-sky-600 hover:border-sky-200 transition-all cursor-pointer"
+                    className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-600 hover:text-primary hover:border-primary/30 transition-all cursor-pointer"
                   >
                     Mark Read
                   </button>

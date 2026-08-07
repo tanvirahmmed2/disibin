@@ -49,7 +49,7 @@ const UserRoleModal = ({ isOpen, user, onClose, onSuccess }) => {
         </button>
 
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
+          <div className="p-3 bg-primary/10 text-primary rounded-xl">
             <FiShield size={24} />
           </div>
           <div>
@@ -85,7 +85,7 @@ const UserRoleModal = ({ isOpen, user, onClose, onSuccess }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-1/2 py-2.5 rounded-xl bg-slate-900 text-white font-bold hover:bg-blue-600 transition-colors disabled:opacity-50"
+              className="w-1/2 py-2.5 rounded-xl bg-slate-900 text-white font-bold hover:bg-primary transition-colors disabled:opacity-50"
             >
               {loading ? 'Saving...' : 'Save Role'}
             </button>

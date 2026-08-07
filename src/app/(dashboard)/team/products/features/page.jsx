@@ -141,7 +141,7 @@ function FeatureItem({ feature, onUpdate, onDelete }) {
             <>
               <button
                 onClick={startEdit}
-                className="p-1.5 text-primary-light hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-all"
+                className="p-1.5 text-primary-light hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                 title="Edit Feature"
               >
                 <FiEdit2 size={15} />
@@ -166,7 +166,7 @@ function FeatureItem({ feature, onUpdate, onDelete }) {
               <Link
                 key={p.id}
                 href={`/team/products/${p.slug}`}
-                className="inline-flex items-center gap-1 text-xs text-slate-700 bg-tertiary hover:bg-sky-50 hover:text-sky-600 px-2.5 py-1 rounded-md font-medium transition-colors"
+                className="inline-flex items-center gap-1 text-xs text-slate-700 bg-tertiary hover:bg-primary/10 hover:text-primary px-2.5 py-1 rounded-md font-medium transition-colors"
               >
                 <FiPackage size={10} /> {p.name}
               </Link>
@@ -261,7 +261,7 @@ const FeaturesPage = () => {
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-              <FiTag className="text-sky-500" /> Features
+              <FiTag className="text-primary" /> Features
             </h1>
             <p className="text-slate-500 text-xs sm:text-sm">Manage feature tags used across products</p>
           </div>
@@ -269,7 +269,7 @@ const FeaturesPage = () => {
 
         <button
           onClick={showAdd ? () => setShowAdd(false) : handleOpenAdd}
-          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-sky-600 transition-all shadow-md shrink-0"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-primary transition-all shadow-md shrink-0"
         >
           {showAdd ? <FiX size={14} /> : <FiPlus size={14} />}
           {showAdd ? 'Cancel' : 'Add Feature'}
@@ -309,7 +309,7 @@ const FeaturesPage = () => {
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-1.5 rounded-lg bg-sky-600 text-white text-xs font-bold hover:bg-sky-700 transition-all flex items-center gap-1 disabled:opacity-50"
+              className="px-5 py-1.5 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary-dark transition-all flex items-center gap-1 disabled:opacity-50"
             >
               {submitting ? <FiLoader size={12} className="animate-spin" /> : <FiCheck size={12} />}
               {submitting ? 'Creating...' : 'Save Feature'}
@@ -339,7 +339,7 @@ const FeaturesPage = () => {
 
       {loading ? (
         <div className="flex items-center justify-center py-16 text-primary-light text-xs font-semibold gap-2">
-          <FiLoader size={16} className="animate-spin text-sky-500" />
+          <FiLoader size={16} className="animate-spin text-primary" />
           <span>Loading features...</span>
         </div>
       ) : filteredFeatures.length === 0 ? (
@@ -351,7 +351,7 @@ const FeaturesPage = () => {
           {!search && (
             <button
               onClick={handleOpenAdd}
-              className="mt-3 inline-flex items-center gap-1 text-xs text-sky-600 font-bold hover:underline"
+              className="mt-3 inline-flex items-center gap-1 text-xs text-primary font-bold hover:underline"
             >
               <FiPlus size={13} /> Create your first feature
             </button>

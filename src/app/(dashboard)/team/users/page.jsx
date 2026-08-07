@@ -59,7 +59,7 @@ export default function RegisteredUsersPage() {
       <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-            <span className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
+            <span className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <FiUsers size={20} />
             </span>
             Registered Platform Accounts
@@ -83,7 +83,7 @@ export default function RegisteredUsersPage() {
       <form onSubmit={handleEmailLookup} className="bg-gradient-to-r from-slate-900 to-slate-800 p-6 rounded-3xl text-white shadow-md space-y-3">
         <div className="space-y-1">
           <h2 className="text-base font-bold flex items-center gap-2">
-            <FiMail className="text-sky-400" size={18} />
+            <FiMail className="text-primary-light" size={18} />
             Direct Email Profile Lookup
           </h2>
           <p className="text-xs text-slate-300">
@@ -98,11 +98,11 @@ export default function RegisteredUsersPage() {
             onChange={e => setQuickEmail(e.target.value)}
             placeholder="Enter user email address (e.g. client@example.com)..."
             required
-            className="flex-1 px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition-all"
+            className="flex-1 px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
           />
           <button
             type="submit"
-            className="px-6 py-2.5 bg-sky-500 hover:bg-sky-400 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 shrink-0"
+            className="px-6 py-2.5 bg-primary hover:bg-sky-400 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 shrink-0"
           >
             Lookup Profile <FiArrowRight size={14} />
           </button>
@@ -136,7 +136,7 @@ export default function RegisteredUsersPage() {
         {/* Content */}
         {loading ? (
           <div className="py-16 text-center text-slate-400 space-y-3">
-            <FiLoader className="animate-spin mx-auto text-sky-500" size={28} />
+            <FiLoader className="animate-spin mx-auto text-primary" size={28} />
             <p className="text-sm font-medium">Loading user accounts...</p>
           </div>
         ) : filteredUsers.length === 0 ? (
@@ -163,7 +163,7 @@ export default function RegisteredUsersPage() {
                   <tr key={u.id} className="hover:bg-slate-50/60 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 font-bold flex items-center justify-center text-sm shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary font-bold flex items-center justify-center text-sm shrink-0">
                           {u.name?.charAt(0) || u.email?.charAt(0) || 'U'}
                         </div>
                         <div>
@@ -174,7 +174,7 @@ export default function RegisteredUsersPage() {
                     </td>
 
                     <td className="px-6 py-4">
-                      <a href={`mailto:${u.email}`} className="font-bold text-slate-800 hover:text-sky-600 transition-colors">
+                      <a href={`mailto:${u.email}`} className="font-bold text-slate-800 hover:text-primary transition-colors">
                         {u.email}
                       </a>
                       {u.phone && <p className="text-xs text-slate-400">{u.phone}</p>}
@@ -183,8 +183,8 @@ export default function RegisteredUsersPage() {
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${
                         u.is_verified
-                          ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
-                          : 'bg-amber-50 text-amber-600 border border-amber-100'
+                          ? 'bg-primary/10 text-primary border border-primary/20'
+                          : 'bg-secondary/10 text-secondary border border-secondary/20'
                       }`}>
                         {u.is_verified ? <FiUserCheck size={12} /> : <FiUserX size={12} />}
                         {u.is_verified ? 'Verified' : 'Unverified'}
@@ -212,7 +212,7 @@ export default function RegisteredUsersPage() {
                     <td className="px-6 py-4 text-right">
                       <Link
                         href={`/team/users/${encodeURIComponent(u.email)}`}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-sky-600 text-white rounded-xl text-xs font-bold transition-all shadow-sm"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-primary text-white rounded-xl text-xs font-bold transition-all shadow-sm"
                       >
                         View Profile →
                       </Link>

@@ -89,7 +89,7 @@ export default function TeamPaymentsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
-            <FiCreditCard className="text-sky-600" /> Payments & Financial Ledger
+            <FiCreditCard className="text-primary" /> Payments & Financial Ledger
           </h1>
           <p className="text-slate-500 text-sm mt-1 font-medium">
             Monitor customer payments, manage due balances, and update invoice records
@@ -100,7 +100,7 @@ export default function TeamPaymentsPage() {
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="p-3.5 rounded-xl bg-emerald-50 text-emerald-600">
+          <div className="p-3.5 rounded-xl bg-primary/10 text-primary">
             <FiDollarSign size={22} />
           </div>
           <div>
@@ -110,7 +110,7 @@ export default function TeamPaymentsPage() {
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="p-3.5 rounded-xl bg-amber-50 text-amber-600">
+          <div className="p-3.5 rounded-xl bg-secondary/10 text-secondary">
             <FiAlertCircle size={22} />
           </div>
           <div>
@@ -120,7 +120,7 @@ export default function TeamPaymentsPage() {
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="p-3.5 rounded-xl bg-sky-50 text-sky-600">
+          <div className="p-3.5 rounded-xl bg-primary/10 text-primary">
             <FiCheckCircle size={22} />
           </div>
           <div>
@@ -139,7 +139,7 @@ export default function TeamPaymentsPage() {
             placeholder="Search customer, project, email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-sky-500 transition-colors"
+            className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-primary transition-colors"
           />
         </div>
 
@@ -163,12 +163,12 @@ export default function TeamPaymentsPage() {
       {/* Transactions Table */}
       {loading ? (
         <div className="bg-white p-12 rounded-2xl border border-slate-100 shadow-sm text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-sky-500 border-t-transparent mb-3"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent mb-3"></div>
           <p className="text-slate-500 text-sm font-medium">Loading payments ledger...</p>
         </div>
       ) : filteredPayments.length === 0 ? (
         <div className="bg-white p-12 rounded-2xl border border-slate-100 shadow-sm text-center space-y-3">
-          <div className="w-14 h-14 rounded-2xl bg-sky-50 text-sky-600 mx-auto flex items-center justify-center">
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary mx-auto flex items-center justify-center">
             <FiCreditCard size={24} />
           </div>
           <h3 className="text-lg font-bold text-slate-900">No Payment Records</h3>
@@ -196,7 +196,7 @@ export default function TeamPaymentsPage() {
                     <td className="py-4 px-6">
                       <div className="space-y-1">
                         <div className="font-bold text-slate-900 flex items-center gap-1.5">
-                          <FiUser className="text-sky-600" size={14} /> {item.user_name || 'Customer User'}
+                          <FiUser className="text-primary" size={14} /> {item.user_name || 'Customer User'}
                           <span className="text-slate-400 font-normal text-xs">({item.user_email || 'N/A'})</span>
                         </div>
                         <div className="text-xs text-slate-500 flex items-center gap-1">
@@ -209,11 +209,11 @@ export default function TeamPaymentsPage() {
                       ${Number(item.total_price || 0).toLocaleString()}
                     </td>
 
-                    <td className="py-4 px-6 font-bold text-emerald-600">
+                    <td className="py-4 px-6 font-bold text-primary">
                       ${Number(item.paid_amount || 0).toLocaleString()}
                     </td>
 
-                    <td className="py-4 px-6 font-bold text-amber-600">
+                    <td className="py-4 px-6 font-bold text-secondary">
                       ${Number(item.due_amount || 0).toLocaleString()}
                     </td>
 
@@ -228,7 +228,7 @@ export default function TeamPaymentsPage() {
                           setNewPaid(item.paid_amount || item.total_price || 0);
                           setNewStatus(item.payment_status || 'paid');
                         }}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 text-slate-700 hover:text-sky-600 hover:bg-sky-50 text-xs font-bold transition-all cursor-pointer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 text-slate-700 hover:text-primary hover:bg-primary/10 text-xs font-bold transition-all cursor-pointer"
                       >
                         <FiEdit2 size={13} /> Update
                       </button>
@@ -247,7 +247,7 @@ export default function TeamPaymentsPage() {
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
-                <FiCreditCard className="text-sky-600" /> Update Payment Record
+                <FiCreditCard className="text-primary" /> Update Payment Record
               </h2>
               <button
                 onClick={() => setEditingPayment(null)}
@@ -273,7 +273,7 @@ export default function TeamPaymentsPage() {
                   max={editingPayment.total_price}
                   value={newPaid}
                   onChange={(e) => setNewPaid(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-bold focus:outline-none focus:border-sky-500"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-bold focus:outline-none focus:border-primary"
                   required
                 />
               </div>
@@ -285,7 +285,7 @@ export default function TeamPaymentsPage() {
                 <select
                   value={newStatus}
                   onChange={(e) => setNewStatus(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-bold focus:outline-none focus:border-sky-500"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-bold focus:outline-none focus:border-primary"
                 >
                   <option value="paid">Paid (Fully Cleared)</option>
                   <option value="due">Partial Due</option>
@@ -304,7 +304,7 @@ export default function TeamPaymentsPage() {
                 <button
                   type="submit"
                   disabled={updating}
-                  className="w-1/2 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-sky-600 transition-colors disabled:bg-slate-400"
+                  className="w-1/2 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-primary transition-colors disabled:bg-slate-400"
                 >
                   {updating ? 'Saving...' : 'Save Record'}
                 </button>
@@ -323,14 +323,14 @@ function StatusBadge({ status }) {
 
   if (normalized === 'paid') {
     return (
-      <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-bold uppercase tracking-wider">
+      <span className="px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold uppercase tracking-wider">
         Paid
       </span>
     );
   }
   if (normalized === 'due') {
     return (
-      <span className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-600 border border-amber-100 text-[10px] font-bold uppercase tracking-wider">
+      <span className="px-2.5 py-1 rounded-full bg-secondary/10 text-secondary border border-secondary/20 text-[10px] font-bold uppercase tracking-wider">
         Due
       </span>
     );

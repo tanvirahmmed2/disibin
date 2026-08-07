@@ -50,7 +50,7 @@ export default function TeamUserProfilePage() {
   if (loading) {
     return (
       <div className="min-h-[65vh] flex flex-col items-center justify-center space-y-3 p-6 text-slate-400">
-        <FiLoader className="animate-spin text-sky-500" size={28} />
+        <FiLoader className="animate-spin text-primary" size={28} />
         <p className="text-sm font-medium">Loading user profile by email/id...</p>
       </div>
     );
@@ -61,12 +61,12 @@ export default function TeamUserProfilePage() {
       <div className="p-4 w-full space-y-4 text-center">
         <Toaster position="top-center" />
         <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-          <FiAlertCircle className="mx-auto text-amber-500" size={36} />
+          <FiAlertCircle className="mx-auto text-secondary" size={36} />
           <h2 className="text-lg font-bold text-slate-800">User Profile Not Found</h2>
           <p className="text-xs text-slate-500">No registered account matches "{rawParam}".</p>
           <Link
             href="/team/users"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-sky-600 transition-all shadow-md"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-primary transition-all shadow-md"
           >
             <FiArrowLeft size={14} /> Back to Registered Users
           </Link>
@@ -85,14 +85,14 @@ export default function TeamUserProfilePage() {
         <div className="flex items-center justify-between gap-4">
           <Link
             href="/team/users"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-sky-600 transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-primary transition-colors"
           >
             <FiArrowLeft size={16} /> Back to Registered Users
           </Link>
           <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
             user.is_verified
-              ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
-              : 'bg-amber-50 text-amber-600 border border-amber-100'
+              ? 'bg-primary/10 text-primary border border-primary/20'
+              : 'bg-secondary/10 text-secondary border border-secondary/20'
           }`}>
             {user.is_verified ? <FiUserCheck size={12} /> : <FiUserX size={12} />}
             {user.is_verified ? 'Verified Account' : 'Unverified Account'}
@@ -101,7 +101,7 @@ export default function TeamUserProfilePage() {
 
         {/* User Identity Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-sky-50 text-sky-600 font-extrabold text-2xl flex items-center justify-center shrink-0 border border-sky-100">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 text-primary font-extrabold text-2xl flex items-center justify-center shrink-0 border border-primary/20">
             {user.name?.charAt(0) || user.email?.charAt(0) || 'U'}
           </div>
 
@@ -115,16 +115,16 @@ export default function TeamUserProfilePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-100 text-xs">
           <div className="space-y-1">
             <p className="text-slate-400 font-medium flex items-center gap-1">
-              <FiMail size={12} className="text-sky-500" /> Email Address
+              <FiMail size={12} className="text-primary" /> Email Address
             </p>
-            <a href={`mailto:${user.email}`} className="font-bold text-slate-800 hover:text-sky-600 truncate block">
+            <a href={`mailto:${user.email}`} className="font-bold text-slate-800 hover:text-primary truncate block">
               {user.email}
             </a>
           </div>
 
           <div className="space-y-1">
             <p className="text-slate-400 font-medium flex items-center gap-1">
-              <FiPhone size={12} className="text-emerald-500" /> Phone Number
+              <FiPhone size={12} className="text-primary" /> Phone Number
             </p>
             <p className="font-bold text-slate-800">{user.phone || 'N/A'}</p>
           </div>
@@ -140,7 +140,7 @@ export default function TeamUserProfilePage() {
 
           <div className="space-y-1">
             <p className="text-slate-400 font-medium flex items-center gap-1">
-              <FiCalendar size={12} className="text-amber-500" /> Account Created
+              <FiCalendar size={12} className="text-secondary" /> Account Created
             </p>
             <p className="font-bold text-slate-800">{new Date(user.created_at).toLocaleDateString()}</p>
           </div>
@@ -150,7 +150,7 @@ export default function TeamUserProfilePage() {
       {/* User Support Tickets History */}
       <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-4">
         <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-          <FiLifeBuoy className="text-sky-500" size={18} />
+          <FiLifeBuoy className="text-primary" size={18} />
           Support Tickets ({tickets?.length || 0})
         </h2>
 
@@ -161,14 +161,14 @@ export default function TeamUserProfilePage() {
             {tickets.map((t) => (
               <div key={t.id} className="py-3 flex items-center justify-between gap-4">
                 <div>
-                  <Link href={`/team/tickets/${t.id}`} className="font-bold text-slate-800 text-sm hover:text-sky-600 transition-colors">
+                  <Link href={`/team/tickets/${t.id}`} className="font-bold text-slate-800 text-sm hover:text-primary transition-colors">
                     {t.title}
                   </Link>
                   <p className="text-xs text-slate-400">Created {new Date(t.created_at).toLocaleString()}</p>
                 </div>
                 <Link
                   href={`/team/tickets/${t.id}`}
-                  className="text-xs font-bold text-sky-600 hover:underline"
+                  className="text-xs font-bold text-primary hover:underline"
                 >
                   Open Ticket →
                 </Link>
@@ -182,7 +182,7 @@ export default function TeamUserProfilePage() {
       {reviews && (
         <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 space-y-3">
           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-            <FiStar className="text-amber-500" size={18} />
+            <FiStar className="text-secondary" size={18} />
             Submitted Review & Rating
           </h2>
 
@@ -195,7 +195,7 @@ export default function TeamUserProfilePage() {
             </div>
             <p className="text-slate-800 font-medium">{reviews.comment}</p>
             {reviews.reply && (
-              <p className="text-sky-700 font-semibold pt-1">
+              <p className="text-primary-dark font-semibold pt-1">
                 Staff Reply: {reviews.reply}
               </p>
             )}

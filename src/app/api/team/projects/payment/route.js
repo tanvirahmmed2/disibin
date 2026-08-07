@@ -33,6 +33,22 @@ export async function PATCH(req) {
             else newStatus = 'unpaid';
         }
 
+        // Send notification to customer user if user_id exists
+        const purUserRes = await dbQuery("SELECT user_id, project_id FROM purchases WHERE id = $1", [payment.purchase_id]).catch(() => ({ rows: [] }));
+        if (purUserRes.rows.length > 0 && purUserRes.rows[0].user_id) {
+            const userId = purUserRes.rows[0].user_id;
+            await dbQuery(`
+                INSERT INTO notifications (user_id, title, message, type, link)
+                VALUES ($1, $2, $3, $4, $5)
+            `, [
+                userId,
+                "Payment Recorded 💳",
+                `Payment of $${newPaid} recorded (Status: ${newStatus.toUpperCase()}). Thank you!`,
+                "system",
+                "/user/purchases"
+            ]).catch((err) => console.error("Payment notification failed:", err));
+        }
+
         if (newStatus === 'paid') {
             const payUpdateRes = await dbQuery(`
                 UPDATE payments

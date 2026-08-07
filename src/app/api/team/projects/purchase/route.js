@@ -41,6 +41,22 @@ export async function POST(req) {
             VALUES ($1, 'MANUAL_PURCHASE_CREATE', 'purchase', $2, $3)
         `, [auth.data.id, purchase.id, `Created manual purchase of $${finalPrice} for project #${project_id}`]).catch(() => {});
 
+        // Send in-app notification to project owner user
+        const projUserRes = await dbQuery("SELECT user_id, title FROM projects WHERE id = $1", [project_id]).catch(() => ({ rows: [] }));
+        if (projUserRes.rows.length > 0 && projUserRes.rows[0].user_id) {
+            const { user_id, title } = projUserRes.rows[0];
+            await dbQuery(`
+                INSERT INTO notifications (user_id, title, message, type, link)
+                VALUES ($1, $2, $3, $4, $5)
+            `, [
+                user_id,
+                "New Invoice Issued 💳",
+                `An invoice for $${finalPrice} was issued for project "${title || 'Workspace'}".`,
+                "system",
+                "/user/purchases"
+            ]).catch((err) => console.error("Purchase notification failed:", err));
+        }
+
         return NextResponse.json({
             success: true,
             message: "Manual purchase and payment record created!",

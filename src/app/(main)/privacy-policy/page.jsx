@@ -1,30 +1,13 @@
 import React from 'react';
-import { dbQuery } from '@/lib/database/pg';
-import { initLegalTables } from '@/lib/database/initLegalTables';
+import { getPublicPrivacyPolicy } from '@/lib/services/publicLegal';
 
 export const metadata = {
   title: 'Privacy Policy | Disibin',
   description: 'Privacy Policy of Disibin platforms and services.',
 };
 
-async function getPrivacyPolicies() {
-  try {
-    await initLegalTables();
-    const res = await dbQuery(`
-      SELECT id, title, content, order_num, updated_at
-      FROM privacy_policies
-      WHERE is_published = true
-      ORDER BY order_num ASC, id ASC
-    `);
-    return res.rows || [];
-  } catch (error) {
-    console.error('Error loading Privacy Policy items:', error);
-    return [];
-  }
-}
-
 export default async function PrivacyPolicyPage() {
-  const items = await getPrivacyPolicies();
+  const items = await getPublicPrivacyPolicy();
 
   return (
     <div className="max-w-4xl mx-auto py-20 px-6 font-sans min-h-screen">

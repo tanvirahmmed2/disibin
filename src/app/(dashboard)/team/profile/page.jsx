@@ -64,9 +64,9 @@ export default function TeamProfilePage() {
               <div className="flex items-center gap-2">
                 <h1 className="text-2xl font-black tracking-tight">{member?.name || 'Team Profile'}</h1>
                 <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold capitalize border ${
-                  member?.role === 'manager' ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' :
-                  member?.role === 'developer' ? 'bg-violet-500/20 text-violet-300 border-violet-500/30' :
-                  'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                  member?.role === 'manager' ? 'bg-secondary/100/20 text-amber-300 border-amber-500/30' :
+                  member?.role === 'developer' ? 'bg-primary/100/20 text-violet-300 border-violet-500/30' :
+                  'bg-primary/100/20 text-emerald-300 border-emerald-500/30'
                 }`}>
                   {member?.role || 'Team Member'}
                 </span>
@@ -74,7 +74,7 @@ export default function TeamProfilePage() {
               <p className="text-slate-400 text-sm mt-1">{member?.email}</p>
               <div className="flex flex-wrap items-center gap-3 mt-3 text-xs text-slate-300">
                 <span className="inline-flex items-center gap-1 bg-white/10 px-3 py-1 rounded-full">
-                  <FiBriefcase size={12} className="text-sky-400" /> Disibin Staff
+                  <FiBriefcase size={12} className="text-primary-light" /> Disibin Staff
                 </span>
                 <span className="inline-flex items-center gap-1 bg-white/10 px-3 py-1 rounded-full">
                   <FiCalendar size={12} className="text-emerald-400" /> Joined {fmtDate(member?.created_at)}
@@ -123,17 +123,17 @@ export default function TeamProfilePage() {
               <div className="flex items-center gap-2 mt-1">
                 <p className="text-sm font-bold text-slate-800">{member?.email || '—'}</p>
                 {member?.is_verified ? (
-                  <span className="text-xs text-emerald-600 font-semibold inline-flex items-center gap-1">
+                  <span className="text-xs text-primary font-semibold inline-flex items-center gap-1">
                     <FiCheckCircle size={12} /> Verified
                   </span>
                 ) : (
-                  <span className="text-xs text-amber-600 font-semibold inline-flex items-center gap-1">
+                  <span className="text-xs text-secondary font-semibold inline-flex items-center gap-1">
                     <FiXCircle size={12} /> Pending Verification
                   </span>
                 )}
               </div>
               {member?.pending_email && (
-                <p className="text-xs text-sky-600 mt-1 font-medium bg-sky-50 p-2 rounded-lg border border-sky-100">
+                <p className="text-xs text-primary mt-1 font-medium bg-primary/10 p-2 rounded-lg border border-primary/20">
                   Pending email change to: <strong>{member.pending_email}</strong> (Verification code sent to current email)
                 </p>
               )}
@@ -212,7 +212,7 @@ export default function TeamProfilePage() {
 
             <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Status</p>
-              <p className="text-sm font-bold text-emerald-600 mt-1 flex items-center gap-1">
+              <p className="text-sm font-bold text-primary mt-1 flex items-center gap-1">
                 <FiCheckCircle size={14} /> Active
               </p>
             </div>

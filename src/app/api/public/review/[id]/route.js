@@ -48,6 +48,31 @@ export async function PATCH(req, { params }) {
             VALUES ($1, $2, $3, $4, $5)
         `, [auth.data.id, 'REVIEW_UPDATE', 'review', reviewId, `Updated review #${reviewId} (approved: ${review.is_approved})`]).catch(() => {});
 
+        // Send notification to user if review was approved
+        if (Boolean(is_approved) && review.user_id) {
+            await dbQuery(`
+                INSERT INTO notifications (user_id, title, message, type, link)
+                VALUES ($1, $2, $3, $4, $5)
+            `, [
+                review.user_id,
+                "Review Approved! ⭐",
+                `Your ${review.rating}-star review has been approved and published on our platform. Thank you for your valuable feedback!`,
+                "review",
+                "/user/reviews"
+            ]).catch((err) => console.error("Notification insertion error:", err));
+        } else if (reply && review.user_id) {
+            await dbQuery(`
+                INSERT INTO notifications (user_id, title, message, type, link)
+                VALUES ($1, $2, $3, $4, $5)
+            `, [
+                review.user_id,
+                "Staff Replied to Your Review",
+                `Our team posted an official reply to your review: "${reply.substring(0, 80)}${reply.length > 80 ? '...' : ''}"`,
+                "review",
+                "/user/reviews"
+            ]).catch((err) => console.error("Notification insertion error:", err));
+        }
+
         return NextResponse.json({
             success: true,
             message: "Review updated successfully",

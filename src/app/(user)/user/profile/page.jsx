@@ -44,7 +44,7 @@ export default function UserProfilePage() {
   if (loading && !user) {
     return (
       <div className="p-8 max-w-5xl mx-auto flex flex-col items-center justify-center min-h-[400px]">
-        <div className="w-10 h-10 border-4 border-sky-200 border-t-sky-600 rounded-full animate-spin mb-4" />
+        <div className="w-10 h-10 border-4 border-primary/30 border-t-sky-600 rounded-full animate-spin mb-4" />
         <p className="text-slate-500 text-sm font-medium">Loading user profile...</p>
       </div>
     );
@@ -64,7 +64,7 @@ export default function UserProfilePage() {
               <div className="flex items-center gap-2">
                 <h1 className="text-2xl font-black tracking-tight">{user?.name || 'User Profile'}</h1>
                 {user?.is_verified && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/20 text-primary-light border border-primary/30">
                     <FiShield size={12} /> Verified
                   </span>
                 )}
@@ -72,7 +72,7 @@ export default function UserProfilePage() {
               <p className="text-slate-300 text-sm mt-1">{user?.email}</p>
               <div className="flex flex-wrap items-center gap-3 mt-3 text-xs text-slate-300">
                 <span className="inline-flex items-center gap-1 bg-white/10 px-3 py-1 rounded-full">
-                  <FiUser size={12} className="text-sky-400" /> Regular Member
+                  <FiUser size={12} className="text-primary-light" /> Regular Member
                 </span>
                 <span className="inline-flex items-center gap-1 bg-white/10 px-3 py-1 rounded-full">
                   <FiCalendar size={12} className="text-emerald-400" /> Joined {fmtDate(user?.created_at)}
@@ -84,7 +84,7 @@ export default function UserProfilePage() {
           <div className="flex flex-wrap items-center gap-3">
             <Link
               href="/user/settings"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-500 text-white font-bold text-sm hover:bg-sky-400 transition-all shadow-md shadow-sky-500/20"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white font-bold text-sm hover:bg-sky-400 transition-all shadow-md shadow-sky-500/20"
             >
               <FiEdit3 size={15} /> Edit Profile
             </Link>
@@ -104,7 +104,7 @@ export default function UserProfilePage() {
         {/* Personal & Contact Details */}
         <div className="bg-white rounded-3xl p-7 border border-slate-100 shadow-sm space-y-5">
           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2 pb-3 border-b border-slate-100">
-            <span className="w-8 h-8 rounded-xl bg-sky-50 flex items-center justify-center text-sky-600">
+            <span className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
               <FiUser size={16} />
             </span>
             Personal & Contact Details
@@ -131,7 +131,7 @@ export default function UserProfilePage() {
                 )}
               </div>
               {user?.pending_email && (
-                <p className="text-xs text-sky-600 mt-1 font-medium bg-sky-50 p-2 rounded-lg border border-sky-100">
+                <p className="text-xs text-primary mt-1 font-medium bg-primary/10 p-2 rounded-lg border border-primary/20">
                   Pending email change to: <strong>{user.pending_email}</strong> (Verification required on security page)
                 </p>
               )}

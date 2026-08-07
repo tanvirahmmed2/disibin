@@ -186,10 +186,27 @@ export async function PATCH(req, { params }) {
             return NextResponse.json({ success: false, message: "Project not found" }, { status: 404 });
         }
 
+        const project = res.rows[0];
+
+        // Send in-app notification to project owner user
+        if (project && project.user_id) {
+            const statusLabel = status.toUpperCase();
+            await dbQuery(`
+                INSERT INTO notifications (user_id, title, message, type, link)
+                VALUES ($1, $2, $3, $4, $5)
+            `, [
+                project.user_id,
+                "Project Status Updated 🚀",
+                `Your project "${project.title || 'Workspace'}" status is now ${statusLabel}.`,
+                "project",
+                `/user/projects/${projectId}`
+            ]).catch((err) => console.error("Project status notification failed:", err));
+        }
+
         return NextResponse.json({
             success: true,
             message: `Project status updated to ${status}`,
-            data: res.rows[0]
+            data: project
         });
 
     } catch (error) {

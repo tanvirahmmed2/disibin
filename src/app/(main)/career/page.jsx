@@ -107,7 +107,7 @@ export default function PublicCareerPage() {
 
       {/* Hero Banner */}
       <section className="text-center space-y-4 max-w-3xl mx-auto">
-        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 text-sky-600 border border-sky-100 text-xs font-bold uppercase tracking-wider">
+        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-bold uppercase tracking-wider">
           <FiBriefcase size={14} /> Careers at Disibin
         </span>
         <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
@@ -124,7 +124,7 @@ export default function PublicCareerPage() {
 
         {loading ? (
           <div className="py-16 text-center text-slate-400 space-y-3">
-            <FiLoader className="animate-spin mx-auto text-sky-500" size={28} />
+            <FiLoader className="animate-spin mx-auto text-primary" size={28} />
             <p className="text-sm font-medium">Loading career openings...</p>
           </div>
         ) : jobs.length === 0 ? (
@@ -144,7 +144,7 @@ export default function PublicCareerPage() {
               return (
                 <div
                   key={job.job_id}
-                  className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden transition-all hover:border-sky-200"
+                  className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden transition-all hover:border-primary/30"
                 >
                   {/* Job Header */}
                   <div
@@ -154,7 +154,7 @@ export default function PublicCareerPage() {
                     <div className="space-y-2 min-w-0">
                       <h3 className="text-xl font-extrabold text-slate-900 truncate">{job.title}</h3>
                       <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-                        <span className="px-3 py-1 bg-sky-50 text-sky-600 rounded-full">{job.job_type}</span>
+                        <span className="px-3 py-1 bg-primary/10 text-primary rounded-full">{job.job_type}</span>
                         <span className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full">{job.level}</span>
                         <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full flex items-center gap-1">
                           <FiMapPin size={12} /> {job.location}
@@ -166,7 +166,7 @@ export default function PublicCareerPage() {
                       {job.compensation && (
                         <span className="text-sm font-bold text-slate-800">{job.compensation}</span>
                       )}
-                      <div className={`p-2 rounded-xl bg-slate-100 text-slate-500 transition-transform duration-200 ${isExpanded ? 'rotate-180 bg-sky-100 text-sky-600' : ''}`}>
+                      <div className={`p-2 rounded-xl bg-slate-100 text-slate-500 transition-transform duration-200 ${isExpanded ? 'rotate-180 bg-primary/20 text-primary' : ''}`}>
                         <FiChevronDown size={18} />
                       </div>
                     </div>
@@ -216,7 +216,7 @@ export default function PublicCareerPage() {
                       <div className="pt-4 border-t border-slate-200 flex justify-end">
                         <button
                           onClick={() => openApplyModal(job)}
-                          className="px-6 py-2.5 bg-slate-900 hover:bg-sky-600 text-white rounded-2xl font-bold text-xs transition-all shadow-md flex items-center gap-2"
+                          className="px-6 py-2.5 bg-slate-900 hover:bg-primary text-white rounded-2xl font-bold text-xs transition-all shadow-md flex items-center gap-2"
                         >
                           <FiSend size={14} /> Apply for this Position
                         </button>
@@ -237,7 +237,7 @@ export default function PublicCareerPage() {
             <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
               <div>
                 <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                  <FiBriefcase className="text-sky-500" size={18} />
+                  <FiBriefcase className="text-primary" size={18} />
                   Apply for {selectedJob.title}
                 </h3>
                 <p className="text-xs text-slate-400">{selectedJob.job_type} · {selectedJob.location}</p>
@@ -261,7 +261,7 @@ export default function PublicCareerPage() {
                   value={applicantName}
                   onChange={e => setApplicantName(e.target.value)}
                   placeholder="E.g. Sarah Connor"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
               </div>
 
@@ -275,7 +275,7 @@ export default function PublicCareerPage() {
                   value={applicantEmail}
                   onChange={e => setApplicantEmail(e.target.value)}
                   placeholder="sarah@example.com"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
               </div>
 
@@ -331,7 +331,7 @@ export default function PublicCareerPage() {
                 <button
                   type="submit"
                   disabled={submittingApp}
-                  className="px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shadow-md flex items-center gap-2"
+                  className="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shadow-md flex items-center gap-2"
                 >
                   {submittingApp ? <FiLoader className="animate-spin" size={14} /> : <FiSend size={14} />}
                   {submittingApp ? 'Submitting...' : 'Submit Application'}

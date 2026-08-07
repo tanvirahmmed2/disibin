@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
 import { isTeamLogin, isManager } from "@/lib/auth/team";
 import { dbQuery } from "@/lib/database/pg";
-import { initLegalTables } from "@/lib/database/initLegalTables";
 
 // GET — List all terms & conditions entries (Team login required)
 export async function GET() {
     try {
-        await initLegalTables();
         const auth = await isTeamLogin();
         if (!auth.success) return NextResponse.json(auth, { status: 401 });
 
@@ -28,7 +26,6 @@ export async function GET() {
 // POST — Create Terms & Conditions Item (Manager Only)
 export async function POST(req) {
     try {
-        await initLegalTables();
         const auth = await isManager();
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
@@ -68,7 +65,6 @@ export async function POST(req) {
 // PUT — Update Terms & Conditions Item (Manager Only)
 export async function PUT(req) {
     try {
-        await initLegalTables();
         const auth = await isManager();
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
@@ -119,7 +115,6 @@ export async function PUT(req) {
 // DELETE — Delete Terms & Conditions Item (Manager Only)
 export async function DELETE(req) {
     try {
-        await initLegalTables();
         const auth = await isManager();
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 

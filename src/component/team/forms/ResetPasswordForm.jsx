@@ -67,13 +67,13 @@ const ResetPasswordForm = () => {
           </div>
           <button
             disabled={loading}
-            className="w-full py-2 cursor-pointer rounded-lg bg-slate-900 text-white font-bold hover:bg-sky-600 transition-all duration-300 mt-4 shadow-xl shadow-slate-900/10 disabled:bg-slate-400"
+            className="w-full py-2 cursor-pointer rounded-lg bg-slate-900 text-white font-bold hover:bg-primary transition-all duration-300 mt-4 shadow-xl shadow-slate-900/10 disabled:bg-slate-400"
           >
             {loading ? 'Resetting...' : 'Reset Password'}
           </button>
           <p className="mt-8 text-center text-sm text-slate-500 font-medium">
             Remember your password?{' '}
-            <Link href="/login" className="text-sky-500 font-bold hover:underline">Log in</Link>
+            <Link href="/login" className="text-primary font-bold hover:underline">Log in</Link>
           </p>
         </form>
 

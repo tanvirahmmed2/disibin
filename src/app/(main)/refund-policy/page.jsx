@@ -1,33 +1,16 @@
 import React from 'react';
-import { dbQuery } from '@/lib/database/pg';
-import { initLegalTables } from '@/lib/database/initLegalTables';
+import { getPublicRefundPolicy } from '@/lib/services/publicLegal';
 
 export const metadata = {
   title: 'Refund Policy | Disibin',
   description: 'Refund Policy for Disibin platforms and services.',
 };
 
-async function getRefundPolicies() {
-  try {
-    await initLegalTables();
-    const res = await dbQuery(`
-      SELECT id, title, content, order_num, updated_at
-      FROM refund_conditions
-      WHERE is_published = true
-      ORDER BY order_num ASC, id ASC
-    `);
-    return res.rows || [];
-  } catch (error) {
-    console.error('Error loading Refund Policy items:', error);
-    return [];
-  }
-}
-
 export default async function RefundPolicyPage() {
-  const items = await getRefundPolicies();
+  const items = await getPublicRefundPolicy();
 
   return (
-    <div className="max-w-4xl mx-auto py-20 px-6 font-sans min-h-screen">
+    <div className="w-full p-4 md:p-20 font-sans min-h-screen">
       <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-8 border-b border-slate-200 pb-4">
         Refund Policy
       </h1>

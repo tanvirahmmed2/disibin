@@ -157,7 +157,7 @@ export default function TeamCareerPage() {
       <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-            <span className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
+            <span className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <FiBriefcase size={20} />
             </span>
             Career Positions & Openings
@@ -176,7 +176,7 @@ export default function TeamCareerPage() {
           </Link>
           <button
             onClick={openAddModal}
-            className="flex items-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md shrink-0"
+            className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md shrink-0"
           >
             <FiPlus size={16} />
             Create Job Vacancy
@@ -188,7 +188,7 @@ export default function TeamCareerPage() {
       <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
         {loading ? (
           <div className="py-16 text-center text-slate-400 space-y-3">
-            <FiLoader className="animate-spin mx-auto text-sky-500" size={28} />
+            <FiLoader className="animate-spin mx-auto text-primary" size={28} />
             <p className="text-sm font-medium">Loading job vacancies...</p>
           </div>
         ) : jobs.length === 0 ? (
@@ -200,7 +200,7 @@ export default function TeamCareerPage() {
             </div>
             <button
               onClick={openAddModal}
-              className="text-xs text-sky-600 font-bold hover:underline"
+              className="text-xs text-primary font-bold hover:underline"
             >
               + Create First Job
             </button>
@@ -213,7 +213,7 @@ export default function TeamCareerPage() {
                   <div className="flex items-center gap-2">
                     <h3 className="text-lg font-bold text-slate-900 truncate">{job.title}</h3>
                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
-                      job.is_published ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'
+                      job.is_published ? 'bg-primary/20 text-primary' : 'bg-slate-200 text-slate-600'
                     }`}>
                       {job.is_published ? 'Published' : 'Draft'}
                     </span>
@@ -222,11 +222,11 @@ export default function TeamCareerPage() {
                   <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500">
                     <span className="bg-slate-100 px-2.5 py-1 rounded-lg text-slate-700">{job.job_type}</span>
                     <span className="bg-slate-100 px-2.5 py-1 rounded-lg text-slate-700">{job.level}</span>
-                    <span className="bg-sky-50 px-2.5 py-1 rounded-lg text-sky-600 flex items-center gap-1">
+                    <span className="bg-primary/10 px-2.5 py-1 rounded-lg text-primary flex items-center gap-1">
                       <FiMapPin size={12} /> {job.location}
                     </span>
                     {job.compensation && (
-                      <span className="bg-emerald-50 px-2.5 py-1 rounded-lg text-emerald-700 font-bold">{job.compensation}</span>
+                      <span className="bg-primary/10 px-2.5 py-1 rounded-lg text-primary font-bold">{job.compensation}</span>
                     )}
                   </div>
                 </div>
@@ -234,7 +234,7 @@ export default function TeamCareerPage() {
                 <div className="flex items-center gap-2 self-start sm:self-auto">
                   <button
                     onClick={() => togglePublished(job)}
-                    className="p-2 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded-xl transition-all"
+                    className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-xl transition-all"
                     title={job.is_published ? 'Unpublish Job' : 'Publish Job'}
                   >
                     {job.is_published ? <FiEye size={16} /> : <FiEyeOff size={16} />}
@@ -242,7 +242,7 @@ export default function TeamCareerPage() {
 
                   <button
                     onClick={() => openEditModal(job)}
-                    className="p-2 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded-xl transition-all"
+                    className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-xl transition-all"
                     title="Edit Job"
                   >
                     <FiEdit2 size={16} />
@@ -269,7 +269,7 @@ export default function TeamCareerPage() {
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
               <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                <FiBriefcase className="text-sky-500" size={18} />
+                <FiBriefcase className="text-primary" size={18} />
                 {editingJob ? 'Edit Job Opening' : 'Create New Job Vacancy'}
               </h3>
               <button
@@ -291,7 +291,7 @@ export default function TeamCareerPage() {
                   value={form.title}
                   onChange={e => setForm({ ...form, title: e.target.value })}
                   placeholder="E.g. Senior Frontend Engineer"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                 />
               </div>
 
@@ -306,7 +306,7 @@ export default function TeamCareerPage() {
                     value={form.location}
                     onChange={e => setForm({ ...form, location: e.target.value })}
                     placeholder="Remote / On-site"
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                   />
                 </div>
 
@@ -366,7 +366,7 @@ export default function TeamCareerPage() {
                   value={form.description}
                   onChange={e => setForm({ ...form, description: e.target.value })}
                   placeholder="Provide an overview of the position, mission, and team structure..."
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all resize-none"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary transition-all resize-none"
                 />
               </div>
 
@@ -433,7 +433,7 @@ export default function TeamCareerPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shadow-md flex items-center gap-2"
+                  className="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shadow-md flex items-center gap-2"
                 >
                   {saving ? <FiLoader className="animate-spin" size={14} /> : null}
                   {saving ? 'Saving...' : editingJob ? 'Update Vacancy' : 'Create Vacancy'}

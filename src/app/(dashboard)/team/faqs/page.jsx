@@ -5,8 +5,7 @@ import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
 import {
   FiHelpCircle, FiPlus, FiEdit2, FiTrash2, FiSearch,
-  FiCheckCircle, FiXCircle, FiRefreshCw, FiShield,
-  FiEye, FiLayers
+  FiCheckCircle, FiXCircle, FiRefreshCw, FiEye
 } from 'react-icons/fi';
 import FaqForm from '@/component/team/forms/FaqForm';
 
@@ -14,14 +13,12 @@ export default function TeamFaqsPage() {
   const [faqs, setFaqs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
 
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [formData, setFormData] = useState({
     question: '',
     answer: '',
-    category: 'General',
     order_num: 0,
     is_published: true
   });
@@ -50,14 +47,11 @@ export default function TeamFaqsPage() {
     }
   };
 
-  const categories = ['All', ...Array.from(new Set(faqs.map(f => f.category).filter(Boolean)))];
-
   const handleOpenCreate = () => {
     setEditingItem(null);
     setFormData({
       question: '',
       answer: '',
-      category: 'General',
       order_num: faqs.length + 1,
       is_published: true
     });
@@ -69,7 +63,6 @@ export default function TeamFaqsPage() {
     setFormData({
       question: item.question,
       answer: item.answer,
-      category: item.category || 'General',
       order_num: item.order_num || 0,
       is_published: Boolean(item.is_published)
     });
@@ -146,37 +139,34 @@ export default function TeamFaqsPage() {
   };
 
   const filteredFaqs = faqs.filter(item => {
-    const matchesSearch =
-      item.question?.toLowerCase().includes(search.toLowerCase()) ||
-      item.answer?.toLowerCase().includes(search.toLowerCase()) ||
-      item.category?.toLowerCase().includes(search.toLowerCase());
-
-    const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
-
-    return matchesSearch && matchesCategory;
+    const q = search.toLowerCase();
+    return (
+      item.question?.toLowerCase().includes(q) ||
+      item.answer?.toLowerCase().includes(q)
+    );
   });
 
   return (
     <div className="p-4 w-full min-h-screen pb-24">
       <Toaster position="top-right" />
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8  p-6 sm:p-8 rounded-3xl text-primary shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 p-6 sm:p-8 rounded-3xl text-primary shadow-sm bg-white border border-slate-100">
         <div>
-          <h1 className="text-2xl sm:text-4xl font-bold tracking-tight">Frequently Asked Questions</h1>
-          <p className=" text-sm mt-1 max-w-xl">
-            Create, update, reorder, and publish FAQs for public users. Restricted exclusively to authorized managers.
+          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900">Frequently Asked Questions</h1>
+          <p className="text-slate-500 text-sm mt-1 max-w-xl font-medium">
+            Manage FAQs for public users. Add, update, reorder, or toggle publication state.
           </p>
         </div>
 
         <button
           onClick={handleOpenCreate}
-          className="inline-flex items-center justify-center cursor-pointer gap-2 px-5 py-3 rounded-2xl text-sm font-semibold transition-all shadow-sm shrink-0"
+          className="inline-flex items-center justify-center cursor-pointer gap-2 px-5 py-3 rounded-2xl bg-primary hover:bg-primary-dark text-white text-sm font-bold transition-all shadow-md shadow-primary/20 shrink-0"
         >
-          <FiPlus className="w-5 h-5 text-primary" /> Create New FAQ
+          <FiPlus className="w-5 h-5" /> Create New FAQ
         </button>
       </div>
 
-      {/* Inline Form Component (No Popup Modal) */}
+      {/* Inline Form Component */}
       {showForm && (
         <FaqForm
           formData={formData}
@@ -188,23 +178,10 @@ export default function TeamFaqsPage() {
         />
       )}
 
-      {/* Filters and Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-slate-200 pb-4">
-        <div className="flex flex-wrap gap-2">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-2xl font-semibold text-xs transition-all ${
-                selectedCategory === cat
-                  ? 'bg-slate-900 text-white shadow-md'
-                  : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <FiLayers className="w-3.5 h-3.5" />
-              {cat}
-            </button>
-          ))}
+      {/* Controls */}
+      <div className="flex items-center justify-between gap-4 mb-6 border-b border-slate-100 pb-4">
+        <div className="text-xs font-bold text-slate-500">
+          Total FAQs: <span className="text-primary font-black">{faqs.length}</span>
         </div>
 
         <div className="flex items-center gap-3">
@@ -215,13 +192,13 @@ export default function TeamFaqsPage() {
               placeholder="Search FAQs..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="input-style pl-10 pr-4 text-sm py-2"
+              className="pl-10 pr-4 text-sm py-2 bg-white border border-slate-200 rounded-xl font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <button
             onClick={fetchFaqs}
-            className="p-2.5 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl text-sm"
+            className="p-2.5 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl text-sm cursor-pointer"
             title="Refresh list"
           >
             <FiRefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -232,7 +209,7 @@ export default function TeamFaqsPage() {
       {/* Table Data */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm">
-          <FiRefreshCw className="w-8 h-8 text-sky-500 animate-spin mb-3" />
+          <FiRefreshCw className="w-8 h-8 text-primary animate-spin mb-3" />
           <p className="text-slate-500 font-medium text-sm">Loading FAQs...</p>
         </div>
       ) : filteredFaqs.length === 0 ? (
@@ -240,11 +217,11 @@ export default function TeamFaqsPage() {
           <FiHelpCircle className="w-12 h-12 text-slate-300 mx-auto mb-3" />
           <h3 className="text-lg font-bold text-slate-800">No FAQs found</h3>
           <p className="text-slate-500 text-sm max-w-md mx-auto mt-1 mb-6">
-            There are no FAQ entries created yet. Click below to add the first FAQ.
+            There are no FAQ entries matching your search.
           </p>
           <button
             onClick={handleOpenCreate}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 transition-all shadow-md"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-all shadow-md shadow-primary/20 cursor-pointer"
           >
             <FiPlus className="w-4 h-4" /> Add First FAQ
           </button>
@@ -256,8 +233,7 @@ export default function TeamFaqsPage() {
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50/60 text-xs font-semibold uppercase tracking-wider text-slate-500">
                   <th className="py-4 px-6">Order</th>
-                  <th className="py-4 px-6">Question</th>
-                  <th className="py-4 px-6">Category</th>
+                  <th className="py-4 px-6">Question & Answer</th>
                   <th className="py-4 px-6">Status</th>
                   <th className="py-4 px-6">Creator</th>
                   <th className="py-4 px-6 text-right">Actions</th>
@@ -267,22 +243,17 @@ export default function TeamFaqsPage() {
                 {filteredFaqs.map((item) => (
                   <tr key={item.id} className="hover:bg-slate-50/70 transition-colors">
                     <td className="py-4 px-6 font-mono text-xs text-slate-500 font-bold">#{item.order_num || 0}</td>
-                    <td className="py-4 px-6 max-w-md">
-                      <p className="font-semibold text-slate-900 line-clamp-1">{item.question}</p>
-                      <p className="text-xs text-slate-400 line-clamp-1 mt-0.5">{item.answer}</p>
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700">
-                        {item.category || 'General'}
-                      </span>
+                    <td className="py-4 px-6 max-w-xl">
+                      <p className="font-bold text-slate-900">{item.question}</p>
+                      <p className="text-xs text-slate-500 line-clamp-2 mt-1 leading-relaxed">{item.answer}</p>
                     </td>
                     <td className="py-4 px-6">
                       <button
                         onClick={() => handleTogglePublish(item)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
                           item.is_published
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
-                            : 'bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100'
+                            ? 'bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20'
+                            : 'bg-secondary/10 text-secondary border border-secondary/20 hover:bg-secondary/20'
                         }`}
                       >
                         {item.is_published ? (
@@ -296,7 +267,7 @@ export default function TeamFaqsPage() {
                         )}
                       </button>
                     </td>
-                    <td className="py-4 px-6 text-slate-500 text-xs">
+                    <td className="py-4 px-6 text-slate-500 text-xs font-medium">
                       {item.creator_name || 'System'}
                     </td>
                     <td className="py-4 px-6 text-right space-x-2">
@@ -304,7 +275,7 @@ export default function TeamFaqsPage() {
                         href="/faq"
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center p-2 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded-xl transition-colors"
+                        className="inline-flex items-center p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-xl transition-colors"
                         title="View Public Page"
                       >
                         <FiEye className="w-4 h-4" />
@@ -312,7 +283,7 @@ export default function TeamFaqsPage() {
 
                       <button
                         onClick={() => handleOpenEdit(item)}
-                        className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors"
+                        className="p-2 text-slate-600 hover:text-primary hover:bg-primary/10 rounded-xl transition-colors cursor-pointer"
                         title="Edit FAQ"
                       >
                         <FiEdit2 className="w-4 h-4" />
@@ -321,7 +292,7 @@ export default function TeamFaqsPage() {
                       <button
                         onClick={() => handleDelete(item.id)}
                         disabled={deletingId === item.id}
-                        className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-xl transition-colors disabled:opacity-50"
+                        className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
                         title="Delete FAQ"
                       >
                         <FiTrash2 className="w-4 h-4" />

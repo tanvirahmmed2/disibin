@@ -102,7 +102,7 @@ const ProductsManagement = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <FiPackage className="text-sky-500" /> Product Management
+            <FiPackage className="text-primary" /> Product Management
           </h1>
           <p className="text-slate-500 text-sm">Manage your platform products and feature offerings</p>
         </div>
@@ -111,12 +111,12 @@ const ProductsManagement = () => {
             href="/team/products/features"
             className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-xl font-semibold hover:bg-slate-50 transition-all text-sm shadow-sm"
           >
-            <FiTag className="text-sky-500" /> Manage Features
+            <FiTag className="text-primary" /> Manage Features
           </Link>
           <button
             onClick={handleCreateProduct}
             disabled={creating}
-            className="flex items-center justify-center gap-2 px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold hover:bg-sky-600 transition-all shadow-lg shadow-slate-200 text-sm disabled:opacity-50"
+            className="flex items-center justify-center gap-2 px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold hover:bg-primary transition-all shadow-lg shadow-slate-200 text-sm disabled:opacity-50"
           >
             {creating ? <FiLoader className="animate-spin" size={16} /> : <FiPlus size={16} />}
             {creating ? 'Creating Draft...' : 'Create Product'}
@@ -215,7 +215,7 @@ const ProductsManagement = () => {
                                   href={product.demo_url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-slate-400 hover:text-sky-500 transition-colors"
+                                  className="text-slate-400 hover:text-primary transition-colors"
                                   title="View Demo"
                                 >
                                   <FiExternalLink size={14} />
@@ -237,14 +237,14 @@ const ProductsManagement = () => {
                           )}
                         </div>
                         {discount > 0 && (
-                          <div className="text-[10px] text-emerald-600 font-semibold">
+                          <div className="text-[10px] text-primary font-semibold">
                             -${discount} off
                           </div>
                         )}
                       </td>
 
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-50 text-sky-700">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary-dark">
                           <FiTag size={11} />
                           {product.features?.length || 0} feature{product.features?.length !== 1 ? 's' : ''}
                         </span>
@@ -258,13 +258,13 @@ const ProductsManagement = () => {
 
                       <td className="px-6 py-4">
                         <div className="flex flex-wrap items-center gap-1.5">
-                          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${product.is_published ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-100 text-slate-500'
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${product.is_published ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-slate-100 text-slate-500'
                             }`}>
                             {product.is_published ? <FiEye size={12} /> : <FiEyeOff size={12} />}
                             {product.is_published ? 'Published' : 'Draft'}
                           </span>
                           {product.is_featured && (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-50 text-amber-600 border border-amber-100">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-secondary/10 text-secondary border border-secondary/20">
                               <FiStar size={12} /> Featured
                             </span>
                           )}
@@ -274,7 +274,7 @@ const ProductsManagement = () => {
                       <td className="px-6 py-4 text-right space-x-1">
                         <Link
                           href={`/team/products/${product.slug}`}
-                          className="inline-block p-2 text-slate-400 hover:text-sky-500 hover:bg-sky-50 rounded-lg transition-all"
+                          className="inline-block p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                           title="Edit product"
                         >
                           <FiEdit2 size={16} />

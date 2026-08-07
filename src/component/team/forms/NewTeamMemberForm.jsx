@@ -17,22 +17,22 @@ const ROLES = [
     value: 'support',
     label: 'Support',
     description: 'Handles support inbox, tickets, and customer queries.',
-    color: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-    active: 'border-emerald-500 bg-emerald-500 text-white shadow-emerald-200 shadow-md',
+    color: 'border-primary/20 bg-primary/10 text-primary',
+    active: 'border-emerald-500 bg-primary/100 text-white shadow-emerald-200 shadow-md',
   },
   {
     value: 'developer',
     label: 'Developer',
     description: 'Works on projects, board tasks, and technical deliverables.',
-    color: 'border-violet-200 bg-violet-50 text-violet-700',
-    active: 'border-violet-500 bg-violet-500 text-white shadow-violet-200 shadow-md',
+    color: 'border-primary/20 bg-primary/10 text-violet-700',
+    active: 'border-violet-500 bg-primary/100 text-white shadow-violet-200 shadow-md',
   },
   {
     value: 'manager',
     label: 'Manager',
     description: 'Full access to manage team, leads, products, and operations.',
-    color: 'border-amber-200 bg-amber-50 text-amber-700',
-    active: 'border-amber-500 bg-amber-500 text-white shadow-amber-200 shadow-md',
+    color: 'border-secondary/20 bg-secondary/10 text-secondary',
+    active: 'border-amber-500 bg-secondary/100 text-white shadow-amber-200 shadow-md',
   },
 ];
 
@@ -214,9 +214,9 @@ const NewTeamMemberForm = () => {
             </div>
 
             {/* Info box */}
-            <div className="flex items-start gap-3 p-4 rounded-xl bg-sky-50 border border-sky-100">
-              <FiMail className="text-sky-500 mt-0.5 flex-shrink-0" size={15} />
-              <p className="text-xs text-sky-700 leading-relaxed">
+            <div className="flex items-start gap-3 p-4 rounded-xl bg-primary/10 border border-primary/20">
+              <FiMail className="text-primary mt-0.5 flex-shrink-0" size={15} />
+              <p className="text-xs text-primary-dark leading-relaxed">
                 A temporary password will be generated and sent to the member's email along with a
                 verification link. They should change their password after first login.
               </p>

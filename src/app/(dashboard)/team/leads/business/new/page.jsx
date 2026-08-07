@@ -47,7 +47,7 @@ export default function NewBusinessLeadPage() {
       <div className="space-y-4">
         <Link
           href="/team/leads/business"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-amber-600 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-secondary transition-colors"
         >
           <FiArrowLeft size={16} /> Back to Business Leads
         </Link>
@@ -55,7 +55,7 @@ export default function NewBusinessLeadPage() {
         <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center justify-between">
           <div className="space-y-1">
             <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-              <span className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+              <span className="w-9 h-9 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center shrink-0">
                 <FiBriefcase size={20} />
               </span>
               Add New Business Lead

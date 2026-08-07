@@ -132,7 +132,7 @@ export default function ProductDetailPage() {
         <div className="flex items-center gap-2 mb-8 animate-fade-in">
           <Link
             href="/products"
-            className="inline-flex items-center gap-2 text-slate-500 hover:text-sky-600 font-semibold text-sm transition-all duration-200 group"
+            className="inline-flex items-center gap-2 text-slate-500 hover:text-primary font-semibold text-sm transition-all duration-200 group"
           >
             <FiArrowLeft className="group-hover:-translate-x-1 transition-transform" />
             Back to Products
@@ -162,7 +162,7 @@ export default function ProductDetailPage() {
                   {/* Expand Image Button */}
                   <button
                     onClick={() => setLightboxOpen(true)}
-                    className="absolute top-4 right-4 p-3 bg-white/90 backdrop-blur-md text-slate-700 hover:text-sky-600 hover:bg-white rounded-xl shadow-lg border border-slate-100 hover:scale-110 transition-all duration-200 cursor-pointer z-10"
+                    className="absolute top-4 right-4 p-3 bg-white/90 backdrop-blur-md text-slate-700 hover:text-primary hover:bg-white rounded-xl shadow-lg border border-slate-100 hover:scale-110 transition-all duration-200 cursor-pointer z-10"
                     aria-label="Expand image"
                   >
                     <FiMaximize2 size={16} />
@@ -176,7 +176,7 @@ export default function ProductDetailPage() {
                           e.stopPropagation();
                           setActiveIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
                         }}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/90 backdrop-blur-md text-slate-700 hover:text-sky-600 hover:bg-white rounded-full shadow-lg border border-slate-100 hover:scale-110 transition-all duration-200 cursor-pointer z-10"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/90 backdrop-blur-md text-slate-700 hover:text-primary hover:bg-white rounded-full shadow-lg border border-slate-100 hover:scale-110 transition-all duration-200 cursor-pointer z-10"
                         aria-label="Previous image"
                       >
                         <FiChevronLeft size={20} />
@@ -186,7 +186,7 @@ export default function ProductDetailPage() {
                           e.stopPropagation();
                           setActiveIndex((prev) => (prev + 1) % images.length);
                         }}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/90 backdrop-blur-md text-slate-700 hover:text-sky-600 hover:bg-white rounded-full shadow-lg border border-slate-100 hover:scale-110 transition-all duration-200 cursor-pointer z-10"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/90 backdrop-blur-md text-slate-700 hover:text-primary hover:bg-white rounded-full shadow-lg border border-slate-100 hover:scale-110 transition-all duration-200 cursor-pointer z-10"
                         aria-label="Next image"
                       >
                         <FiChevronRight size={20} />
@@ -211,7 +211,7 @@ export default function ProductDetailPage() {
                     onClick={() => setActiveIndex(idx)}
                     className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
                       activeIndex === idx
-                        ? 'border-sky-500 ring-2 ring-sky-500/20 scale-105 shadow-md'
+                        ? 'border-primary ring-2 ring-primary/20 scale-105 shadow-md'
                         : 'border-slate-200/80 opacity-70 hover:opacity-100 hover:border-slate-300'
                     }`}
                   >
@@ -327,7 +327,7 @@ export default function ProductDetailPage() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2.5 pb-4 font-bold text-sm transition-all relative shrink-0 cursor-pointer ${
-                  activeTab === tab.id ? 'text-sky-600' : 'text-slate-400 hover:text-slate-600'
+                  activeTab === tab.id ? 'text-primary' : 'text-slate-400 hover:text-slate-600'
                 }`}
               >
                 {tab.icon}
@@ -335,7 +335,7 @@ export default function ProductDetailPage() {
                 {activeTab === tab.id && (
                   <motion.div
                     layoutId="activeProductTab"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-sky-500 rounded-full"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -419,7 +419,7 @@ export default function ProductDetailPage() {
 
                     <Link
                       href={isLoggedIn ? "/user/tickets" : "/contact"}
-                      className="inline-flex w-full items-center justify-center gap-2 px-6 py-3.5 bg-sky-500 hover:bg-sky-400 text-white font-extrabold text-xs rounded-xl transition-all shadow-md"
+                      className="inline-flex w-full items-center justify-center gap-2 px-6 py-3.5 bg-primary hover:bg-sky-400 text-white font-extrabold text-xs rounded-xl transition-all shadow-md"
                     >
                       <FiMessageSquare size={14} />
                       {isLoggedIn ? "Open Support Ticket" : "Contact Sales & Support"}
@@ -441,7 +441,7 @@ export default function ProductDetailPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                icon: <FiCpu className="text-sky-500" size={24} />,
+                icon: <FiCpu className="text-primary" size={24} />,
                 title: "High Performance Architecture",
                 desc: "Optimized database queries, caching, and clean code for seamless user experience."
               },

@@ -83,7 +83,7 @@ export default function SupportsManagement() {
       <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-            <span className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+            <span className="w-9 h-9 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center shrink-0">
               <FiLifeBuoy size={20} />
             </span>
             Support Inbox
@@ -106,7 +106,7 @@ export default function SupportsManagement() {
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
             <FiLifeBuoy size={22} />
           </div>
           <div>
@@ -116,7 +116,7 @@ export default function SupportsManagement() {
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center shrink-0">
             <FiClock size={22} />
           </div>
           <div>
@@ -126,7 +126,7 @@ export default function SupportsManagement() {
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
             <FiCheckCircle size={22} />
           </div>
           <div>
@@ -188,7 +188,7 @@ export default function SupportsManagement() {
         {/* Content */}
         {loading ? (
           <div className="py-16 text-center text-slate-400 space-y-3">
-            <FiLoader className="animate-spin mx-auto text-amber-500" size={28} />
+            <FiLoader className="animate-spin mx-auto text-secondary" size={28} />
             <p className="text-sm font-medium">Loading support inquiries...</p>
           </div>
         ) : filteredSupports.length === 0 ? (
@@ -241,8 +241,8 @@ export default function SupportsManagement() {
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${
                           isPending
-                            ? 'bg-amber-50 text-amber-600 border border-amber-100'
-                            : 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                            ? 'bg-secondary/10 text-secondary border border-secondary/20'
+                            : 'bg-primary/10 text-primary border border-primary/20'
                         }`}>
                           {isPending ? <FiClock size={11} /> : <FiCheckCircle size={11} />}
                           {isPending ? 'Pending' : 'Replied'}
@@ -256,7 +256,7 @@ export default function SupportsManagement() {
                       <td className="px-6 py-4 text-right space-x-1" onClick={e => e.stopPropagation()}>
                         <Link
                           href={`/team/support/${item.id}`}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-sky-600 text-white rounded-lg text-xs font-bold transition-all shadow-sm"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-primary text-white rounded-lg text-xs font-bold transition-all shadow-sm"
                         >
                           <FiMessageSquare size={13} /> {isPending ? 'Reply' : 'View Details'}
                         </Link>

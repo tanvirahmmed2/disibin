@@ -164,9 +164,9 @@ const CareerForm = ({ initialData, onSuccess, onCancel }) => {
         </div>
         <div className="flex flex-wrap gap-2 mt-2">
           {formData.responsibilities.map((item, index) => (
-            <span key={index} className="flex items-center gap-1 bg-violet-50 text-violet-700 px-3 py-1 rounded-full text-xs font-medium">
+            <span key={index} className="flex items-center gap-1 bg-primary/10 text-violet-700 px-3 py-1 rounded-full text-xs font-medium">
               {item}
-              <button type="button" onClick={() => handleRemoveArrayItem('responsibilities', index)} className="text-violet-400 hover:text-violet-600">
+              <button type="button" onClick={() => handleRemoveArrayItem('responsibilities', index)} className="text-violet-400 hover:text-primary">
                 <FiX size={14} />
               </button>
             </span>
@@ -185,9 +185,9 @@ const CareerForm = ({ initialData, onSuccess, onCancel }) => {
         </div>
         <div className="flex flex-wrap gap-2 mt-2">
           {formData.skills.map((item, index) => (
-            <span key={index} className="flex items-center gap-1 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-medium">
+            <span key={index} className="flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium">
               {item}
-              <button type="button" onClick={() => handleRemoveArrayItem('skills', index)} className="text-emerald-400 hover:text-emerald-600">
+              <button type="button" onClick={() => handleRemoveArrayItem('skills', index)} className="text-emerald-400 hover:text-primary">
                 <FiX size={14} />
               </button>
             </span>
@@ -200,15 +200,15 @@ const CareerForm = ({ initialData, onSuccess, onCancel }) => {
         <label className={labelCls}>Nice to Have</label>
         <div className="flex gap-2">
           <input type="text" value={niceInput} onChange={(e) => setNiceInput(e.target.value)} className={inputCls} placeholder="Add a nice to have..." />
-          <button type="button" onClick={() => handleAddArrayItem('nice_to_have', niceInput, setNiceInput)} className="px-4 py-2 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-all">
+          <button type="button" onClick={() => handleAddArrayItem('nice_to_have', niceInput, setNiceInput)} className="px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary-dark transition-all">
             <FiPlus />
           </button>
         </div>
         <div className="flex flex-wrap gap-2 mt-2">
           {formData.nice_to_have.map((item, index) => (
-            <span key={index} className="flex items-center gap-1 bg-sky-50 text-sky-700 px-3 py-1 rounded-full text-xs font-medium">
+            <span key={index} className="flex items-center gap-1 bg-primary/10 text-primary-dark px-3 py-1 rounded-full text-xs font-medium">
               {item}
-              <button type="button" onClick={() => handleRemoveArrayItem('nice_to_have', index)} className="text-sky-400 hover:text-sky-600">
+              <button type="button" onClick={() => handleRemoveArrayItem('nice_to_have', index)} className="text-primary-light hover:text-primary">
                 <FiX size={14} />
               </button>
             </span>
@@ -217,7 +217,7 @@ const CareerForm = ({ initialData, onSuccess, onCancel }) => {
       </div>
 
       <div className="flex items-center gap-2">
-        <input type="checkbox" name="is_published" checked={formData.is_published} onChange={handleChange} className="w-4 h-4 text-violet-600 focus:ring-violet-500 border-slate-300 rounded" />
+        <input type="checkbox" name="is_published" checked={formData.is_published} onChange={handleChange} className="w-4 h-4 text-primary focus:ring-violet-500 border-slate-300 rounded" />
         <label className="text-sm font-medium text-slate-700">Publish Immediately</label>
       </div>
 

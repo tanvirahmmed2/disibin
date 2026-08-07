@@ -184,7 +184,7 @@ export default function TeamSecurityPage() {
         <div className="flex items-start gap-4">
           <div
             className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${
-              is2faActive ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-400'
+              is2faActive ? 'bg-primary/10 text-primary' : 'bg-slate-100 text-slate-400'
             }`}
           >
             <FiSmartphone size={22} />
@@ -194,7 +194,7 @@ export default function TeamSecurityPage() {
               <h2 className="text-lg font-bold text-slate-900">Two-Factor Authentication (2FA)</h2>
               <span
                 className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                  is2faActive ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'
+                  is2faActive ? 'bg-primary/10 text-primary' : 'bg-slate-100 text-slate-500'
                 }`}
               >
                 {is2faActive ? 'Enabled' : 'Disabled'}
@@ -288,7 +288,7 @@ export default function TeamSecurityPage() {
             Update Team Email Address
           </h2>
 
-          <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-100 text-xs text-amber-900 leading-relaxed">
+          <div className="p-3.5 rounded-2xl bg-secondary/10 border border-secondary/20 text-xs text-amber-900 leading-relaxed">
             <strong>Verification Policy:</strong> A 6-digit verification code will be dispatched to your{' '}
             <strong>current email ({teamData?.email})</strong> to confirm authorization before updating.
           </div>
@@ -328,7 +328,7 @@ export default function TeamSecurityPage() {
             </form>
           ) : (
             <form onSubmit={handleVerifyEmailCode} className="space-y-4">
-              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-100 text-xs text-emerald-800">
+              <div className="p-3 rounded-xl bg-primary/10 border border-primary/20 text-xs text-emerald-800">
                 Code sent to: <strong>{teamData?.email}</strong>. Enter code below to confirm change to{' '}
                 <strong>{pendingTargetEmail}</strong>.
               </div>
@@ -357,7 +357,7 @@ export default function TeamSecurityPage() {
                 <button
                   type="submit"
                   disabled={emailLoading}
-                  className="w-2/3 inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-500 transition-all shadow-md shadow-emerald-600/20 disabled:opacity-50"
+                  className="w-2/3 inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-primary/100 transition-all shadow-md shadow-emerald-600/20 disabled:opacity-50"
                 >
                   <FiCheckCircle size={15} />
                   {emailLoading ? 'Verifying Code...' : 'Confirm & Update Email'}

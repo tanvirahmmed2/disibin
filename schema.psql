@@ -698,7 +698,6 @@ CREATE TABLE IF NOT EXISTS faqs (
   id SERIAL PRIMARY KEY,
   question TEXT NOT NULL,
   answer TEXT NOT NULL,
-  category VARCHAR(100) DEFAULT 'General',
   is_published BOOLEAN DEFAULT true,
   order_num INT DEFAULT 0,
   created_by INT REFERENCES teams(id) ON DELETE SET NULL,

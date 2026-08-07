@@ -33,7 +33,7 @@ const Bio = () => {
     <section className='w-full flex flex-col items-center justify-center gap-12 py-16'>
 
       <div className='w-full flex flex-col gap-3 animate-fade-up'>
-        <span className='text-xs font-semibold uppercase tracking-[0.3em] text-sky-500 font-poppins'>
+        <span className='text-xs font-semibold uppercase tracking-[0.3em] text-primary font-poppins'>
           Our Impact
         </span>
         <h2 className='font-poppins text-3xl sm:text-5xl font-semibold text-slate-900 leading-tight max-w-2xl'>
@@ -48,7 +48,7 @@ const Bio = () => {
             key={s.label}
             className={`
               group relative w-full p-8 rounded-2xl
-              glass shadow-sm hover:shadow-xl hover:shadow-sky-100/60
+              glass shadow-sm hover:shadow-xl hover:shadow-primary/10
               transition-all duration-500 cursor-default
               animate-count-up delay-${(i + 1) * 100}
               overflow-hidden
@@ -63,7 +63,7 @@ const Bio = () => {
               }}
             />
 
-            <p className='text-5xl sm:text-6xl font-semibold text-slate-900 group-hover:text-sky-600 transition-colors duration-300 mb-2'>
+            <p className='text-5xl sm:text-6xl font-semibold text-slate-900 group-hover:text-primary transition-colors duration-300 mb-2'>
               {s.value}
             </p>
             <p className='text-sm font-semibold text-slate-700 mb-1'>{s.label}</p>

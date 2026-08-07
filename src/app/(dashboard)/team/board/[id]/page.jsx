@@ -117,7 +117,7 @@ export default function BoardMemberDetailPage() {
   if (loading) {
     return (
       <div className="min-h-[65vh] flex flex-col items-center justify-center space-y-3 p-6 text-slate-400">
-        <FiLoader className="animate-spin text-violet-500" size={28} />
+        <FiLoader className="animate-spin text-primary" size={28} />
         <p className="text-sm font-medium">Loading board member details...</p>
       </div>
     );
@@ -128,7 +128,7 @@ export default function BoardMemberDetailPage() {
       <div className="p-6 max-w-3xl mx-auto space-y-4 text-center">
         <Toaster position="top-center" />
         <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-          <FiAlertCircle className="mx-auto text-amber-500" size={36} />
+          <FiAlertCircle className="mx-auto text-secondary" size={36} />
           <h2 className="text-lg font-bold text-slate-800">Board Member Not Found</h2>
           <p className="text-xs text-slate-500">The requested board member record does not exist.</p>
           <Link
@@ -150,7 +150,7 @@ export default function BoardMemberDetailPage() {
       <div className="flex items-center justify-between gap-4">
         <Link
           href="/team/board"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-violet-600 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-primary transition-colors"
         >
           <FiArrowLeft size={16} /> Back to Board Members
         </Link>
@@ -171,17 +171,17 @@ export default function BoardMemberDetailPage() {
             <img
               src={imagePreview}
               alt={form.name}
-              className="w-24 h-24 rounded-full object-cover border-2 border-violet-200 shadow-md shrink-0"
+              className="w-24 h-24 rounded-full object-cover border-2 border-primary/20 shadow-md shrink-0"
             />
           ) : (
-            <div className="w-24 h-24 rounded-full bg-violet-50 text-violet-600 font-extrabold text-3xl flex items-center justify-center shrink-0 border-2 border-violet-100 shadow-md">
+            <div className="w-24 h-24 rounded-full bg-primary/10 text-primary font-extrabold text-3xl flex items-center justify-center shrink-0 border-2 border-violet-100 shadow-md">
               {form.name?.charAt(0) || 'B'}
             </div>
           )}
 
           <div className="space-y-2 text-center sm:text-left">
             <h1 className="text-2xl font-extrabold text-slate-900">{form.name || 'Board Member'}</h1>
-            <p className="text-xs font-bold text-violet-600 bg-violet-50 inline-block px-3 py-1 rounded-full">
+            <p className="text-xs font-bold text-primary bg-primary/10 inline-block px-3 py-1 rounded-full">
               {form.post || 'Executive Role'}
             </p>
             <div>
@@ -195,7 +195,7 @@ export default function BoardMemberDetailPage() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="mt-1 text-xs font-bold text-slate-600 hover:text-violet-600 flex items-center gap-1.5 mx-auto sm:mx-0"
+                className="mt-1 text-xs font-bold text-slate-600 hover:text-primary flex items-center gap-1.5 mx-auto sm:mx-0"
               >
                 <FiUploadCloud size={14} /> Change Profile Photo
               </button>

@@ -50,7 +50,7 @@ export default function ActivityLogPage() {
       <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-            <span className="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center shrink-0">
+            <span className="w-9 h-9 rounded-xl bg-primary/100/10 text-purple-600 flex items-center justify-center shrink-0">
               <FiActivity size={20} />
             </span>
             System Activity Audit Logs
@@ -97,7 +97,7 @@ export default function ActivityLogPage() {
         {/* Content */}
         {loading ? (
           <div className="py-16 text-center text-slate-400 space-y-3">
-            <FiLoader className="animate-spin mx-auto text-purple-500" size={28} />
+            <FiLoader className="animate-spin mx-auto text-primary" size={28} />
             <p className="text-sm font-medium">Loading system audit trail...</p>
           </div>
         ) : filteredLogs.length === 0 ? (
@@ -121,7 +121,7 @@ export default function ActivityLogPage() {
                 {filteredLogs.map((log) => (
                   <tr key={log.id} className="hover:bg-slate-50/60 transition-colors">
                     <td className="px-6 py-4 font-mono">
-                      <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-extrabold uppercase bg-purple-50 text-purple-700 border border-purple-100">
+                      <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-extrabold uppercase bg-primary/10 text-purple-700 border border-purple-100">
                         {log.action}
                       </span>
                     </td>

@@ -55,7 +55,7 @@ const ProductEditPage = ({ params }) => {
                 <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Edit Product</h1>
                 {product && (
                   <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                    product.is_published ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                    product.is_published ? 'bg-primary/20 text-primary' : 'bg-secondary/20 text-secondary'
                   }`}>
                     {product.is_published ? 'Published' : 'Draft'}
                   </span>

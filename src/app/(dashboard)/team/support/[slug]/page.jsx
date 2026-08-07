@@ -92,7 +92,7 @@ export default function SupportDetailPage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-3 p-6 text-slate-400">
-        <FiLoader className="animate-spin text-sky-500" size={28} />
+        <FiLoader className="animate-spin text-primary" size={28} />
         <p className="text-sm font-medium">Loading support request...</p>
       </div>
     );
@@ -103,11 +103,11 @@ export default function SupportDetailPage() {
       <div className="p-6 max-w-3xl mx-auto space-y-4 text-center">
         <Toaster position="top-center" />
         <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-          <FiAlertCircle className="mx-auto text-amber-500" size={36} />
+          <FiAlertCircle className="mx-auto text-secondary" size={36} />
           <h2 className="text-lg font-bold text-slate-800">Support Request Not Found</h2>
           <Link
             href="/team/support"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-sky-600 transition-all shadow-md"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-primary transition-all shadow-md"
           >
             <FiArrowLeft size={14} /> Back to Support Inbox
           </Link>
@@ -126,7 +126,7 @@ export default function SupportDetailPage() {
       <div className="flex items-center justify-between gap-4">
         <Link
           href="/team/support"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-sky-600 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-primary transition-colors"
         >
           <FiArrowLeft size={16} /> Back to Support Inbox
         </Link>
@@ -147,7 +147,7 @@ export default function SupportDetailPage() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                isPending ? 'bg-amber-50 text-amber-600 border border-amber-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                isPending ? 'bg-secondary/10 text-secondary border border-secondary/20' : 'bg-primary/10 text-primary border border-primary/20'
               }`}>
                 {isPending ? <FiClock size={11} /> : <FiCheckCircle size={11} />}
                 {isPending ? 'Pending Reply' : 'Replied'}
@@ -161,7 +161,7 @@ export default function SupportDetailPage() {
         {/* Sender details row */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100 text-xs">
           <div className="flex items-center gap-2 text-slate-700">
-            <FiUser className="text-sky-500 shrink-0" size={14} />
+            <FiUser className="text-primary shrink-0" size={14} />
             <div>
               <p className="text-slate-400 font-medium">Submitter</p>
               <p className="font-bold">{support.name}</p>
@@ -169,7 +169,7 @@ export default function SupportDetailPage() {
           </div>
 
           <div className="flex items-center gap-2 text-slate-700">
-            <FiMail className="text-sky-500 shrink-0" size={14} />
+            <FiMail className="text-primary shrink-0" size={14} />
             <div>
               <p className="text-slate-400 font-medium">Email Address</p>
               <a href={`mailto:${support.email}`} className="font-bold hover:underline">{support.email}</a>
@@ -177,7 +177,7 @@ export default function SupportDetailPage() {
           </div>
 
           <div className="flex items-center gap-2 text-slate-700">
-            <FiCalendar className="text-sky-500 shrink-0" size={14} />
+            <FiCalendar className="text-primary shrink-0" size={14} />
             <div>
               <p className="text-slate-400 font-medium">Submitted On</p>
               <p className="font-bold">{new Date(support.created_at).toLocaleString()}</p>
@@ -197,13 +197,13 @@ export default function SupportDetailPage() {
 
       {/* Saved Reply Callout (if available) */}
       {support.reply && (
-        <div className="bg-emerald-50/60 p-6 sm:p-8 rounded-2xl border border-emerald-100 shadow-sm space-y-3">
-          <div className="flex items-center justify-between text-xs font-bold text-emerald-700">
+        <div className="bg-primary/10 p-6 sm:p-8 rounded-2xl border border-primary/20 shadow-sm space-y-3">
+          <div className="flex items-center justify-between text-xs font-bold text-primary">
             <span className="flex items-center gap-1.5 uppercase tracking-wider">
               <FiCheckCircle size={13} /> Saved Reply Sent to Submitter
             </span>
             {support.responder_name && (
-              <span className="font-normal text-emerald-600">By: {support.responder_name}</span>
+              <span className="font-normal text-primary">By: {support.responder_name}</span>
             )}
           </div>
           <div
@@ -233,7 +233,7 @@ export default function SupportDetailPage() {
             <button
               onClick={handleSendReply}
               disabled={replyLoading}
-              className="flex items-center gap-2 px-6 py-2.5 bg-slate-900 hover:bg-sky-600 text-white rounded-xl font-bold text-xs transition-all disabled:opacity-50 shadow-md shrink-0"
+              className="flex items-center gap-2 px-6 py-2.5 bg-slate-900 hover:bg-primary text-white rounded-xl font-bold text-xs transition-all disabled:opacity-50 shadow-md shrink-0"
             >
               {replyLoading ? <FiLoader className="animate-spin" size={14} /> : <FiSend size={14} />}
               {replyLoading ? 'Sending...' : 'Send Email Reply'}
@@ -242,7 +242,7 @@ export default function SupportDetailPage() {
         </div>
       ) : (
         <div className="p-4 bg-slate-100 rounded-2xl text-center text-xs font-semibold text-slate-500 flex items-center justify-center gap-2">
-          <FiCheckCircle className="text-emerald-500" size={14} />
+          <FiCheckCircle className="text-primary" size={14} />
           This support request has already been replied to.
         </div>
       )}

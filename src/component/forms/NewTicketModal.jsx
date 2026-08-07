@@ -88,7 +88,7 @@ export default function NewTicketModal({ isOpen, onClose, onSuccess }) {
         {/* Modal Header */}
         <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2">
-            <FiPlusCircle className="text-sky-500" size={20} />
+            <FiPlusCircle className="text-primary" size={20} />
             Create Support Ticket
           </h3>
           <button
@@ -139,7 +139,7 @@ export default function NewTicketModal({ isOpen, onClose, onSuccess }) {
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading || submitting}
-                className="text-xs font-bold text-sky-600 hover:underline flex items-center gap-1"
+                className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
               >
                 {uploading ? <FiLoader className="animate-spin" size={12} /> : <FiPaperclip size={12} />}
                 Add Screenshot
@@ -185,7 +185,7 @@ export default function NewTicketModal({ isOpen, onClose, onSuccess }) {
             <button
               type="submit"
               disabled={submitting || uploading}
-              className="px-5 py-2.5 bg-slate-900 hover:bg-sky-600 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shadow-md flex items-center gap-2"
+              className="px-5 py-2.5 bg-slate-900 hover:bg-primary text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shadow-md flex items-center gap-2"
             >
               {submitting ? <FiLoader className="animate-spin" size={14} /> : null}
               {submitting ? 'Creating Ticket...' : 'Submit Ticket'}

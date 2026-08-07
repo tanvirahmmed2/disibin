@@ -119,6 +119,22 @@ export async function PATCH(req) {
             ]
         ).catch((err) => console.error("Activity log failed:", err));
 
+        // Send in-app notification if user account exists with this email
+        const userMatchRes = await dbQuery("SELECT id FROM users WHERE email = $1 LIMIT 1", [support.email]).catch(() => ({ rows: [] }));
+        if (userMatchRes.rows.length > 0) {
+            const userId = userMatchRes.rows[0].id;
+            await dbQuery(`
+                INSERT INTO notifications (user_id, title, message, type, link)
+                VALUES ($1, $2, $3, $4, $5)
+            `, [
+                userId,
+                "Support Inquiry Replied 💬",
+                `We responded to your support inquiry "${support.subject}": "${reply.trim().substring(0, 80)}${reply.trim().length > 80 ? '...' : ''}"`,
+                "ticket",
+                "/user/tickets"
+            ]).catch((err) => console.error("Support notification insertion failed:", err));
+        }
+
         // Return updated record with responder name
         return NextResponse.json({
             success: true,

@@ -117,7 +117,7 @@ export default function ClientLeadsPage() {
       <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-            <span className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
+            <span className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <FiUsers size={20} />
             </span>
             Client Leads
@@ -139,7 +139,7 @@ export default function ClientLeadsPage() {
 
           <Link
             href="/team/leads/clients/new"
-            className="flex items-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md shrink-0"
+            className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md shrink-0"
           >
             <FiPlus size={16} /> Add New Client Lead
           </Link>
@@ -149,7 +149,7 @@ export default function ClientLeadsPage() {
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 font-bold">
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 font-bold">
             <FiUsers size={22} />
           </div>
           <div>
@@ -159,7 +159,7 @@ export default function ClientLeadsPage() {
         </div>
 
         <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 font-bold">
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 font-bold">
             <FiUserCheck size={22} />
           </div>
           <div>
@@ -169,7 +169,7 @@ export default function ClientLeadsPage() {
         </div>
 
         <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 font-bold">
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 font-bold">
             <FiClock size={22} />
           </div>
           <div>
@@ -209,7 +209,7 @@ export default function ClientLeadsPage() {
         {/* Content */}
         {loading ? (
           <div className="py-16 text-center text-slate-400 space-y-3">
-            <FiLoader className="animate-spin mx-auto text-sky-500" size={28} />
+            <FiLoader className="animate-spin mx-auto text-primary" size={28} />
             <p className="text-sm font-medium">Loading client leads...</p>
           </div>
         ) : filteredLeads.length === 0 ? (
@@ -226,7 +226,7 @@ export default function ClientLeadsPage() {
             {!search && (
               <Link
                 href="/team/leads/clients/new"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-sky-600 text-white font-bold rounded-xl text-xs hover:bg-sky-700 transition-all shadow-md"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-bold rounded-xl text-xs hover:bg-primary-dark transition-all shadow-md"
               >
                 <FiPlus size={14} /> Add New Client Lead
               </Link>
@@ -251,7 +251,7 @@ export default function ClientLeadsPage() {
 
                   if (isEditing) {
                     return (
-                      <tr key={lead.id} className="bg-sky-50/40">
+                      <tr key={lead.id} className="bg-primary/5">
                         <td className="px-6 py-4">
                           <input
                             type="text"
@@ -302,7 +302,7 @@ export default function ClientLeadsPage() {
                           <button
                             onClick={() => handleSaveInlineEdit(lead.id)}
                             disabled={savingEdit}
-                            className="p-2 text-white bg-sky-600 hover:bg-sky-700 rounded-lg transition-all disabled:opacity-50"
+                            className="p-2 text-white bg-primary hover:bg-primary-dark rounded-lg transition-all disabled:opacity-50"
                             title="Save Changes"
                           >
                             {savingEdit ? <FiLoader className="animate-spin" size={14} /> : <FiCheck size={14} />}
@@ -327,12 +327,12 @@ export default function ClientLeadsPage() {
 
                       <td className="px-6 py-4 space-y-1">
                         <div className="flex items-center gap-1.5 text-slate-700 text-xs">
-                          <FiMail className="text-sky-500 shrink-0" size={13} />
+                          <FiMail className="text-primary shrink-0" size={13} />
                           <a href={`mailto:${lead.email}`} className="hover:underline">{lead.email}</a>
                         </div>
                         {lead.phone && (
                           <div className="flex items-center gap-1.5 text-slate-500 text-xs">
-                            <FiPhone className="text-emerald-500 shrink-0" size={13} />
+                            <FiPhone className="text-primary shrink-0" size={13} />
                             <a href={`tel:${lead.phone}`} className="hover:underline">{lead.phone}</a>
                           </div>
                         )}
@@ -353,7 +353,7 @@ export default function ClientLeadsPage() {
                         {lead.note ? (
                           <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium ${
                             lead.note.includes('Auto-generated') || lead.note.includes('Subscribed')
-                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                              ? 'bg-primary/10 text-primary border border-primary/20'
                               : 'bg-slate-100 text-slate-700'
                           }`}>
                             <FiFileText size={11} />
@@ -374,7 +374,7 @@ export default function ClientLeadsPage() {
                       <td className="px-6 py-4 text-right space-x-1">
                         <button
                           onClick={() => startInlineEdit(lead)}
-                          className="p-2 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-all"
+                          className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                           title="Edit Lead Inline"
                         >
                           <FiEdit2 size={15} />

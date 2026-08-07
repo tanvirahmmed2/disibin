@@ -167,7 +167,7 @@ export default function TeamBoardPage() {
       <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-            <span className="w-9 h-9 rounded-xl bg-violet-500/10 text-violet-600 flex items-center justify-center shrink-0">
+            <span className="w-9 h-9 rounded-xl bg-primary/100/10 text-primary flex items-center justify-center shrink-0">
               <FiLayout size={20} />
             </span>
             Executive & Advisory Board
@@ -200,7 +200,7 @@ export default function TeamBoardPage() {
         <div className="bg-white p-6 rounded-3xl border border-violet-100 shadow-lg space-y-4 animate-fade-down">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <h2 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-              <FiBriefcase className="text-violet-500" size={18} />
+              <FiBriefcase className="text-primary" size={18} />
               {editingId ? 'Edit Board Member' : 'Add New Executive / Advisory Board Member'}
             </h2>
             <button
@@ -348,7 +348,7 @@ export default function TeamBoardPage() {
         {/* Content */}
         {loading ? (
           <div className="py-16 text-center text-slate-400 space-y-3">
-            <FiLoader className="animate-spin mx-auto text-violet-500" size={28} />
+            <FiLoader className="animate-spin mx-auto text-primary" size={28} />
             <p className="text-sm font-medium">Loading board members...</p>
           </div>
         ) : filtered.length === 0 ? (
@@ -377,11 +377,11 @@ export default function TeamBoardPage() {
                         {m.image ? (
                           <img src={m.image} alt={m.name} className="w-10 h-10 rounded-full object-cover border border-slate-200 shadow-sm shrink-0" />
                         ) : (
-                          <div className="w-10 h-10 rounded-full bg-violet-50 text-violet-600 font-bold flex items-center justify-center text-sm shrink-0 border border-violet-100">
+                          <div className="w-10 h-10 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-sm shrink-0 border border-violet-100">
                             {m.name?.charAt(0) || 'B'}
                           </div>
                         )}
-                        <Link href={`/team/board/${m.id}`} className="font-bold text-slate-900 hover:text-violet-600 transition-colors">
+                        <Link href={`/team/board/${m.id}`} className="font-bold text-slate-900 hover:text-primary transition-colors">
                           {m.name}
                         </Link>
                       </div>
@@ -395,7 +395,7 @@ export default function TeamBoardPage() {
 
                     <td className="px-6 py-4 text-xs font-semibold text-slate-600">
                       {m.email ? (
-                        <a href={`mailto:${m.email}`} className="text-violet-600 hover:underline flex items-center gap-1">
+                        <a href={`mailto:${m.email}`} className="text-primary hover:underline flex items-center gap-1">
                           <FiMail size={12} /> {m.email}
                         </a>
                       ) : (
@@ -411,14 +411,14 @@ export default function TeamBoardPage() {
                       <div className="flex items-center justify-end gap-1">
                         <Link
                           href={`/team/board/${m.id}`}
-                          className="p-2 text-slate-400 hover:text-violet-600 hover:bg-violet-50 rounded-xl transition-all"
+                          className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-xl transition-all"
                           title="View Profile Details"
                         >
                           <FiExternalLink size={16} />
                         </Link>
                         <button
                           onClick={() => openEditForm(m)}
-                          className="p-2 text-slate-400 hover:text-violet-600 hover:bg-violet-50 rounded-xl transition-all"
+                          className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-xl transition-all"
                           title="Edit Board Member"
                         >
                           <FiEdit2 size={16} />

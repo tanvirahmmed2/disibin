@@ -72,7 +72,7 @@ const ReviewForm = ({ onSuccess }) => {
         <button
           type="submit"
           disabled={submitting}
-          className="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-sky-600 transition-all shadow-lg shadow-slate-200 disabled:opacity-50"
+          className="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-primary transition-all shadow-lg shadow-slate-200 disabled:opacity-50"
         >
           {submitting ? 'Submitting...' : 'Submit Review'}
         </button>

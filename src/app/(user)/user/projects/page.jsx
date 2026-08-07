@@ -6,7 +6,7 @@ import { toast, Toaster } from 'react-hot-toast';
 import Link from 'next/link';
 import {
   FiFolder, FiPlus, FiMessageSquare, FiClock,
-  FiCheckCircle, FiLoader, FiX, FiRefreshCw, FiExternalLink
+  FiLoader, FiX
 } from 'react-icons/fi';
 
 export default function UserProjectsPage() {
@@ -34,7 +34,7 @@ export default function UserProjectsPage() {
         setProjects(res.data.data);
       }
     } catch {
-      toast.error('Failed to load your projects');
+      toast.error('Failed to load projects');
     } finally {
       setLoading(false);
     }
@@ -60,7 +60,7 @@ export default function UserProjectsPage() {
       });
 
       if (res.data.success) {
-        toast.success('Project created successfully!');
+        toast.success('Project created!');
         setTitle('');
         setProductId('');
         setInitialMessage('');
@@ -77,72 +77,55 @@ export default function UserProjectsPage() {
   };
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-6">
+    <div className="p-4 max-w-5xl mx-auto space-y-4">
       <Toaster position="top-center" />
 
-      {/* Header Banner */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-            <span className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
-              <FiFolder size={20} />
-            </span>
-            My Custom Projects & Services
-          </h1>
-          <p className="text-slate-500 text-sm pl-11">
-            Collaborate directly with our technical team, review custom proposals, and manage payments
-          </p>
+      {/* Clean Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
+        <div>
+          <h1 className="text-xl font-bold text-slate-900">My Projects</h1>
+          <p className="text-xs text-slate-500">Collaborate with our team on custom projects</p>
         </div>
 
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md shrink-0 self-start sm:self-auto"
+          className="flex items-center gap-1.5 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg font-semibold text-xs transition-colors shadow-sm self-start sm:self-auto"
         >
-          <FiPlus size={16} /> Start New Project
+          <FiPlus size={15} /> New Project
         </button>
       </div>
 
-      {/* Create Project Form Drawer */}
+      {/* Inline Form */}
       {showForm && (
-        <div className="bg-white p-6 rounded-3xl border border-sky-100 shadow-lg space-y-4 animate-fade-down">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-            <h2 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-              <FiFolder className="text-sky-500" size={18} />
-              Start New Project Inquiry
-            </h2>
-            <button
-              onClick={() => setShowForm(false)}
-              className="w-8 h-8 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-all"
-            >
+        <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-3">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h2 className="text-sm font-bold text-slate-900">Start New Project</h2>
+            <button onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-600">
               <FiX size={16} />
             </button>
           </div>
 
-          <form onSubmit={handleCreateProject} className="space-y-4">
+          <form onSubmit={handleCreateProject} className="space-y-3 text-xs">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                Project Title / Purpose *
-              </label>
+              <label className="block font-semibold text-slate-700 mb-1">Project Title *</label>
               <input
                 type="text"
                 required
                 value={title}
                 onChange={e => setTitle(e.target.value)}
-                placeholder="E.g. Custom E-Commerce Platform Setup & Integration"
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
+                placeholder="E.g. Custom Web App Development"
+                className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-primary text-xs"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                Select Base Product (Optional)
-              </label>
+              <label className="block font-semibold text-slate-700 mb-1">Base Product (Optional)</label>
               <select
                 value={productId}
                 onChange={e => setProductId(e.target.value)}
-                className="input-style text-sm py-2"
+                className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-primary text-xs"
               >
-                <option value="">-- No specific base product --</option>
+                <option value="">None</option>
                 {products.map(p => (
                   <option key={p.id} value={p.id}>{p.name} (${p.price})</option>
                 ))}
@@ -150,88 +133,74 @@ export default function UserProjectsPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                Project Requirements / Initial Message
-              </label>
+              <label className="block font-semibold text-slate-700 mb-1">Project Details / Requirements</label>
               <textarea
-                rows={3}
+                rows={2}
                 value={initialMessage}
                 onChange={e => setInitialMessage(e.target.value)}
-                placeholder="Describe your goals, requirements, desired timeline, or custom features..."
-                className="input-style text-sm resize-none py-2"
+                placeholder="Describe project requirements..."
+                className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-primary text-xs resize-none"
               />
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2">
+            <div className="flex justify-end gap-2 pt-1">
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all"
+                className="px-3 py-1.5 text-slate-600 font-medium hover:bg-slate-50 rounded-lg"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shadow-md flex items-center gap-2"
+                className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg disabled:opacity-50 flex items-center gap-1"
               >
-                {submitting ? <FiLoader className="animate-spin" size={14} /> : null}
-                {submitting ? 'Creating...' : 'Create Project'}
+                {submitting ? <FiLoader className="animate-spin" size={13} /> : null}
+                Create
               </button>
             </div>
           </form>
         </div>
       )}
 
-      {/* Projects List Container */}
-      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+      {/* Projects List */}
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
         {loading ? (
-          <div className="py-16 text-center text-slate-400 space-y-3">
-            <FiLoader className="animate-spin mx-auto text-sky-500" size={28} />
-            <p className="text-sm font-medium">Loading your projects...</p>
+          <div className="py-12 text-center text-slate-400 space-y-2">
+            <FiLoader className="animate-spin mx-auto text-primary" size={24} />
+            <p className="text-xs">Loading projects...</p>
           </div>
         ) : projects.length === 0 ? (
-          <div className="py-16 text-center space-y-3 px-4">
-            <FiFolder className="mx-auto text-slate-300" size={32} />
-            <p className="font-bold text-slate-800 text-base">No active projects found</p>
-            <p className="text-xs text-slate-500">Click "Start New Project" to initiate custom service inquiries.</p>
+          <div className="py-12 text-center space-y-2 px-4">
+            <FiFolder className="mx-auto text-slate-300" size={28} />
+            <p className="font-semibold text-slate-700 text-sm">No projects found</p>
+            <p className="text-xs text-slate-500">Click "New Project" to get started.</p>
           </div>
         ) : (
           <div className="divide-y divide-slate-100">
             {projects.map((p) => (
-              <div key={p.id} className="p-6 hover:bg-slate-50/60 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-1.5 min-w-0">
+              <div key={p.id} className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between gap-4">
+                <div className="min-w-0 space-y-1">
                   <div className="flex items-center gap-2">
-                    <Link href={`/user/projects/${p.id}`} className="text-base font-extrabold text-slate-900 hover:text-sky-600 transition-colors truncate">
+                    <Link href={`/user/projects/${p.id}`} className="text-sm font-bold text-slate-800 hover:text-primary truncate">
                       {p.title}
                     </Link>
-                    <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase ${
-                      p.status === 'approved' || p.status === 'ready'
-                        ? 'bg-emerald-100 text-emerald-700'
-                        : p.status === 'working' || p.status === 'ontest' || p.status === 'fixing'
-                        ? 'bg-sky-100 text-sky-700'
-                        : 'bg-amber-100 text-amber-700'
-                    }`}>
+                    <span className="text-[10px] px-2 py-0.5 rounded border border-slate-200 font-semibold uppercase bg-slate-50 text-slate-600">
                       {p.status}
                     </span>
                   </div>
 
-                  <p className="text-xs text-slate-500 flex flex-wrap items-center gap-3">
-                    {p.product_name && (
-                      <span className="font-semibold text-slate-700">Base: {p.product_name}</span>
-                    )}
-                    <span className="flex items-center gap-1">
-                      <FiMessageSquare size={12} /> {p.message_count || 0} messages
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <FiClock size={12} /> Updated {new Date(p.updated_at).toLocaleDateString()}
-                    </span>
+                  <p className="text-xs text-slate-500 flex items-center gap-3">
+                    {p.product_name && <span>Base: {p.product_name}</span>}
+                    <span>{p.message_count || 0} messages</span>
+                    <span>Updated {new Date(p.updated_at).toLocaleDateString()}</span>
                   </p>
                 </div>
 
                 <Link
                   href={`/user/projects/${p.id}`}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-sky-600 text-white rounded-xl text-xs font-bold transition-all shadow-sm shrink-0 self-start sm:self-auto"
+                  className="px-3 py-1.5 border border-slate-200 hover:bg-white text-slate-700 rounded-lg text-xs font-semibold shrink-0"
                 >
                   Open Workspace →
                 </Link>

@@ -56,9 +56,9 @@ const AboutPage = () => {
   ];
 
   const managementPillars = [
-    { icon: <FiShield className="w-5 h-5 text-sky-500 shrink-0 mt-1" />, title: "Continuous Security Audits", desc: "Constant code dependency checking, vulnerability tracking, and automated SSL certificate rotations." },
-    { icon: <FiSliders className="w-5 h-5 text-sky-500 shrink-0 mt-1" />, title: "Query Speed Tuning", desc: "Routine database index maintenance to prevent slowdowns as transaction logging scales upwards." },
-    { icon: <FiActivity className="w-5 h-5 text-sky-500 shrink-0 mt-1" />, title: "Observability Metrics", desc: "Live memory utilization and response latency dashboards mapping exceptions in production instantly." }
+    { icon: <FiShield className="w-5 h-5 text-primary shrink-0 mt-1" />, title: "Continuous Security Audits", desc: "Constant code dependency checking, vulnerability tracking, and automated SSL certificate rotations." },
+    { icon: <FiSliders className="w-5 h-5 text-primary shrink-0 mt-1" />, title: "Query Speed Tuning", desc: "Routine database index maintenance to prevent slowdowns as transaction logging scales upwards." },
+    { icon: <FiActivity className="w-5 h-5 text-primary shrink-0 mt-1" />, title: "Observability Metrics", desc: "Live memory utilization and response latency dashboards mapping exceptions in production instantly." }
   ];
 
   return (
@@ -109,13 +109,13 @@ const AboutPage = () => {
           <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4">
             <Link
               href="/products"
-              className="inline-flex items-center justify-center px-8 py-4 bg-slate-900 text-white font-semibold rounded-full hover:bg-sky-600 transition-all duration-300 shadow-md"
+              className="inline-flex items-center justify-center px-8 py-4 bg-slate-900 text-white font-semibold rounded-full hover:bg-primary transition-all duration-300 shadow-md"
             >
               Explore Our Products
             </Link>
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center px-8 py-4 border border-slate-200 text-slate-700 font-semibold rounded-full hover:border-sky-300 hover:text-sky-600 hover:bg-sky-50 transition-all duration-300"
+              className="inline-flex items-center justify-center px-8 py-4 border border-slate-200 text-slate-700 font-semibold rounded-full hover:border-primary-light hover:text-primary hover:bg-primary/10 transition-all duration-300"
             >
               Get in Touch →
             </Link>
@@ -166,7 +166,7 @@ const AboutPage = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href="/career"
-              className="inline-flex items-center justify-center px-10 py-5 bg-white text-slate-900 text-lg font-bold rounded-full hover:bg-sky-50 transition-colors shadow-xl"
+              className="inline-flex items-center justify-center px-10 py-5 bg-white text-slate-900 text-lg font-bold rounded-full hover:bg-primary/10 transition-colors shadow-xl"
             >
               Join our team
             </Link>
@@ -196,7 +196,7 @@ const AboutPage = () => {
               <motion.div key={i} variants={fadeUp} className="flex flex-col">
                 <span className="text-6xl md:text-8xl font-extrabold text-slate-900 tracking-tighter leading-none mb-3">
                   {m.value}
-                  <span className="text-sky-500">{m.suffix}</span>
+                  <span className="text-primary">{m.suffix}</span>
                 </span>
                 <span className="text-base font-bold text-slate-800 mb-1">{m.label}</span>
                 <span className="text-sm text-slate-400">{m.sub}</span>
@@ -270,7 +270,7 @@ const AboutPage = () => {
                 variants={fadeUp}
                 className="relative pl-10 pb-14 border-l-2 border-slate-200 last:border-transparent group"
               >
-                <div className="absolute left-[-9px] top-1 w-4 h-4 rounded-full bg-white border-2 border-slate-300 group-hover:border-sky-500 group-hover:bg-sky-50 transition-all duration-300" />
+                <div className="absolute left-[-9px] top-1 w-4 h-4 rounded-full bg-white border-2 border-slate-300 group-hover:border-primary group-hover:bg-primary/10 transition-all duration-300" />
                 <h3 className="text-2xl font-bold text-slate-900 mb-3">{item.title}</h3>
                 <p className="text-base text-slate-500 leading-relaxed max-w-lg">{item.desc}</p>
               </motion.div>

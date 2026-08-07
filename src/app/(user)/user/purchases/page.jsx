@@ -52,7 +52,7 @@ export default function UserPurchasesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
-            <FiShoppingBag className="text-sky-600" /> My Purchases & Billing
+            <FiShoppingBag className="text-primary" /> My Purchases & Billing
           </h1>
           <p className="text-slate-500 text-sm mt-1 font-medium">
             View your software licenses, service purchases, and payment receipts
@@ -60,7 +60,7 @@ export default function UserPurchasesPage() {
         </div>
         <Link
           href="/products"
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-sky-600 text-white font-bold text-sm hover:bg-sky-700 transition-all shadow-md shadow-sky-600/20"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white font-bold text-sm hover:bg-primary-dark transition-all shadow-md shadow-primary/20"
         >
           Browse Products
         </Link>
@@ -69,7 +69,7 @@ export default function UserPurchasesPage() {
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="p-3.5 rounded-xl bg-sky-50 text-sky-600">
+          <div className="p-3.5 rounded-xl bg-primary/10 text-primary">
             <FiCreditCard size={22} />
           </div>
           <div>
@@ -108,7 +108,7 @@ export default function UserPurchasesPage() {
             placeholder="Search purchases..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-sky-500 transition-colors"
+            className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-primary transition-colors"
           />
         </div>
 
@@ -132,12 +132,12 @@ export default function UserPurchasesPage() {
       {/* Content Area */}
       {loading ? (
         <div className="bg-white p-12 rounded-2xl border border-slate-100 shadow-sm text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-sky-500 border-t-transparent mb-3"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent mb-3"></div>
           <p className="text-slate-500 text-sm font-medium">Loading your purchases...</p>
         </div>
       ) : filteredPurchases.length === 0 ? (
         <div className="bg-white p-12 rounded-2xl border border-slate-100 shadow-sm text-center space-y-4">
-          <div className="w-16 h-16 rounded-2xl bg-sky-50 text-sky-600 mx-auto flex items-center justify-center">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 text-primary mx-auto flex items-center justify-center">
             <FiShoppingBag size={28} />
           </div>
           <div>
@@ -148,7 +148,7 @@ export default function UserPurchasesPage() {
           </div>
           <Link
             href="/products"
-            className="inline-block px-5 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-sky-600 transition-all"
+            className="inline-block px-5 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-primary transition-all"
           >
             Explore Services
           </Link>
@@ -202,7 +202,7 @@ export default function UserPurchasesPage() {
 
                 <button
                   onClick={() => setSelectedReceipt(item)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 text-xs font-bold transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 text-xs font-bold transition-colors cursor-pointer"
                 >
                   <FiFileText size={13} /> Receipt
                 </button>
@@ -218,7 +218,7 @@ export default function UserPurchasesPage() {
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
-                <FiFileText className="text-sky-600" /> Order Receipt
+                <FiFileText className="text-primary" /> Order Receipt
               </h2>
               <button
                 onClick={() => setSelectedReceipt(null)}
@@ -272,7 +272,7 @@ export default function UserPurchasesPage() {
 
             <button
               onClick={() => setSelectedReceipt(null)}
-              className="w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-sky-600 transition-colors cursor-pointer"
+              className="w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-primary transition-colors cursor-pointer"
             >
               Close Receipt
             </button>

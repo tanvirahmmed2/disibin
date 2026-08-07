@@ -5,8 +5,8 @@ import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import {
-  FiLifeBuoy, FiPlus, FiMessageSquare, FiImage,
-  FiCalendar, FiLoader, FiSearch, FiX, FiRefreshCw
+  FiLifeBuoy, FiPlus, FiMessageSquare,
+  FiLoader, FiSearch, FiX, FiRefreshCw
 } from 'react-icons/fi';
 import NewTicketModal from '@/component/forms/NewTicketModal';
 
@@ -45,86 +45,66 @@ export default function UserTicketsListPage() {
   });
 
   return (
-    <div className="p-4 w-full space-y-6">
+    <div className="p-4 max-w-5xl mx-auto space-y-4">
       <Toaster position="top-center" />
 
-      {/* Header Banner */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-            <span className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
-              <FiLifeBuoy size={20} />
-            </span>
-            My Support Tickets
-          </h1>
-          <p className="text-slate-500 text-sm pl-11">
-            Track your support inquiries and chat with technical support
-          </p>
+      {/* Clean Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
+        <div>
+          <h1 className="text-xl font-bold text-slate-900">Support Tickets</h1>
+          <p className="text-xs text-slate-500">Track and manage your support inquiries</p>
         </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-auto">
+        <div className="flex items-center gap-2">
           <button
             onClick={fetchTickets}
             disabled={loading}
-            className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl font-semibold transition-all text-xs"
+            className="p-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-xs font-medium transition-colors"
             title="Refresh Tickets"
           >
-            <FiRefreshCw className={loading ? 'animate-spin' : ''} size={16} />
+            <FiRefreshCw className={loading ? 'animate-spin' : ''} size={15} />
           </button>
           <button
             onClick={() => setShowNewModal(true)}
-            className="flex items-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md shrink-0"
+            className="flex items-center gap-1.5 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg font-semibold text-xs transition-colors shadow-sm"
           >
-            <FiPlus size={16} />
+            <FiPlus size={15} />
             New Ticket
           </button>
         </div>
       </div>
 
-      {/* Main List Container */}
-      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden space-y-0">
-        {/* Search Bar */}
-        <div className="p-4 border-b border-slate-100 bg-slate-50/60">
-          <div className="relative max-w-md">
-            <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <input
-              type="text"
-              placeholder="Search my tickets..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="input-style pl-10 pr-9 text-sm py-2"
-            />
-            {search && (
-              <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                <FiX size={14} />
-              </button>
-            )}
-          </div>
-        </div>
+      {/* Search Bar */}
+      <div className="relative max-w-sm">
+        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} />
+        <input
+          type="text"
+          placeholder="Search tickets..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="w-full pl-9 pr-8 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none focus:border-primary"
+        />
+        {search && (
+          <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+            <FiX size={13} />
+          </button>
+        )}
+      </div>
 
-        {/* Content */}
+      {/* Tickets List */}
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
         {loading ? (
-          <div className="py-16 text-center text-slate-400 space-y-3">
-            <FiLoader className="animate-spin mx-auto text-sky-500" size={28} />
-            <p className="text-sm font-medium">Loading your support tickets...</p>
+          <div className="py-12 text-center text-slate-400 space-y-2">
+            <FiLoader className="animate-spin mx-auto text-primary" size={24} />
+            <p className="text-xs">Loading tickets...</p>
           </div>
         ) : filteredTickets.length === 0 ? (
-          <div className="py-16 text-center space-y-4 px-4">
-            <div className="w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
-              <FiMessageSquare size={32} />
-            </div>
-            <div className="space-y-1 max-w-sm mx-auto">
-              <h3 className="font-bold text-slate-800 text-base">No support tickets</h3>
-              <p className="text-xs text-slate-500">
-                {search ? 'No tickets match your search query.' : 'You have not created any support tickets yet.'}
-              </p>
-            </div>
-            <button
-              onClick={() => setShowNewModal(true)}
-              className="text-xs text-sky-600 font-bold hover:underline"
-            >
-              + Create First Ticket
-            </button>
+          <div className="py-12 text-center space-y-2 px-4">
+            <FiMessageSquare className="mx-auto text-slate-300" size={28} />
+            <p className="font-semibold text-slate-700 text-sm">No tickets found</p>
+            <p className="text-xs text-slate-500">
+              {search ? 'No tickets match your search.' : 'You have not submitted any support tickets yet.'}
+            </p>
           </div>
         ) : (
           <div className="divide-y divide-slate-100">
@@ -132,35 +112,26 @@ export default function UserTicketsListPage() {
               <div
                 key={t.id}
                 onClick={() => router.push(`/user/tickets/${t.id}`)}
-                className="p-5 hover:bg-slate-50/80 cursor-pointer transition-all flex items-center justify-between gap-4 group"
+                className="p-4 hover:bg-slate-50 cursor-pointer transition-colors flex items-center justify-between gap-4"
               >
-                <div className="flex items-center gap-4 min-w-0">
-                  <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 font-bold">
-                    <FiMessageSquare size={22} />
+                <div className="min-w-0 space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono font-semibold text-slate-400">#{t.id}</span>
+                    <h3 className="text-sm font-bold text-slate-800 hover:text-primary truncate">
+                      {t.title}
+                    </h3>
                   </div>
-
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-base font-bold text-slate-900 group-hover:text-sky-600 transition-colors truncate">
-                        {t.title}
-                      </h3>
-                      <span className="text-xs font-mono text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">
-                        #{t.id}
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-slate-500 truncate font-medium">
-                      {t.last_message || 'No messages yet'}
-                    </p>
-                  </div>
+                  <p className="text-xs text-slate-500 truncate">
+                    {t.last_message || 'No messages yet'}
+                  </p>
                 </div>
 
                 <div className="text-right shrink-0">
-                  <p className="text-xs font-medium text-slate-400">
+                  <span className="text-[11px] text-slate-400 block">
                     {new Date(t.created_at).toLocaleDateString()}
-                  </p>
-                  <span className="inline-block mt-2 px-4 py-1.5 bg-slate-900 group-hover:bg-sky-600 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
-                    Open Ticket →
+                  </span>
+                  <span className="text-xs font-semibold text-primary hover:underline inline-block mt-0.5">
+                    View Thread →
                   </span>
                 </div>
               </div>

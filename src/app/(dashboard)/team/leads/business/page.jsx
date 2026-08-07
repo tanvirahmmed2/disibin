@@ -116,7 +116,7 @@ export default function BusinessLeadsPage() {
       <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-            <span className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+            <span className="w-9 h-9 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center shrink-0">
               <FiBriefcase size={20} />
             </span>
             Business Leads
@@ -148,7 +148,7 @@ export default function BusinessLeadsPage() {
       {/* Stat Card */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 font-bold">
+          <div className="w-12 h-12 rounded-2xl bg-secondary/10 text-secondary flex items-center justify-center shrink-0 font-bold">
             <FiBriefcase size={22} />
           </div>
           <div>
@@ -158,7 +158,7 @@ export default function BusinessLeadsPage() {
         </div>
 
         <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 font-bold">
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 font-bold">
             <FiMail size={22} />
           </div>
           <div>
@@ -198,7 +198,7 @@ export default function BusinessLeadsPage() {
         {/* Content */}
         {loading ? (
           <div className="py-16 text-center text-slate-400 space-y-3">
-            <FiLoader className="animate-spin mx-auto text-amber-500" size={28} />
+            <FiLoader className="animate-spin mx-auto text-secondary" size={28} />
             <p className="text-sm font-medium">Loading business leads...</p>
           </div>
         ) : filteredLeads.length === 0 ? (
@@ -240,7 +240,7 @@ export default function BusinessLeadsPage() {
 
                   if (isEditing) {
                     return (
-                      <tr key={lead.id} className="bg-amber-50/40">
+                      <tr key={lead.id} className="bg-secondary/10/40">
                         <td className="px-6 py-4">
                           <input
                             type="text"
@@ -316,12 +316,12 @@ export default function BusinessLeadsPage() {
 
                       <td className="px-6 py-4 space-y-1">
                         <div className="flex items-center gap-1.5 text-slate-700 text-xs">
-                          <FiMail className="text-amber-500 shrink-0" size={13} />
+                          <FiMail className="text-secondary shrink-0" size={13} />
                           <a href={`mailto:${lead.email}`} className="hover:underline">{lead.email}</a>
                         </div>
                         {lead.phone && (
                           <div className="flex items-center gap-1.5 text-slate-500 text-xs">
-                            <FiPhone className="text-emerald-500 shrink-0" size={13} />
+                            <FiPhone className="text-primary shrink-0" size={13} />
                             <a href={`tel:${lead.phone}`} className="hover:underline">{lead.phone}</a>
                           </div>
                         )}
@@ -359,7 +359,7 @@ export default function BusinessLeadsPage() {
                       <td className="px-6 py-4 text-right space-x-1">
                         <button
                           onClick={() => startInlineEdit(lead)}
-                          className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all"
+                          className="p-2 text-slate-400 hover:text-secondary hover:bg-secondary/10 rounded-lg transition-all"
                           title="Edit Lead Inline"
                         >
                           <FiEdit2 size={15} />

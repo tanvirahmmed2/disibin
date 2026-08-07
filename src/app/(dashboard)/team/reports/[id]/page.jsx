@@ -126,12 +126,12 @@ export default function ReportDetailPage() {
                 Report #{report.id}
               </span>
               {report.status === 'replied' ? (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20">
                   <FiCheckCircle size={12} />
                   Replied
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-100">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-secondary/10 text-secondary border border-secondary/20">
                   <FiClock size={12} />
                   Pending
                 </span>
@@ -143,7 +143,7 @@ export default function ReportDetailPage() {
           <div className="text-xs text-slate-400 space-y-1">
             <div>Submitted: {new Date(report.created_at).toLocaleString()}</div>
             {report.responder_name && (
-              <div className="text-emerald-600 font-medium">Responded by: {report.responder_name}</div>
+              <div className="text-primary font-medium">Responded by: {report.responder_name}</div>
             )}
           </div>
         </div>
@@ -179,7 +179,7 @@ export default function ReportDetailPage() {
       {/* Reply Composer Card */}
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
         <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-          <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center font-bold">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
             <FiSend size={20} />
           </div>
           <div>
@@ -199,7 +199,7 @@ export default function ReportDetailPage() {
             <button
               type="submit"
               disabled={sending}
-              className="px-6 py-3 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-sm transition-all shadow-md shadow-sky-600/20 disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl font-bold text-sm transition-all shadow-md shadow-primary/20 disabled:opacity-50 flex items-center gap-2"
             >
               {sending ? (
                 <span>Sending Email...</span>

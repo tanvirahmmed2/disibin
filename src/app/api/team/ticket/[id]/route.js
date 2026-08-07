@@ -132,6 +132,29 @@ export async function POST(req, { params }) {
         // Update ticket modified time
         await dbQuery(`UPDATE tickets SET updated_at = now() WHERE id = $1`, [ticketId]);
 
+        // Send in-app notification to ticket user participant
+        const userPart = await dbQuery(
+            `SELECT tp.user_id, t.title 
+             FROM tickets t
+             JOIN ticket_participants tp ON t.id = tp.ticket_id
+             WHERE t.id = $1 AND tp.user_id IS NOT NULL LIMIT 1`,
+            [ticketId]
+        ).catch(() => ({ rows: [] }));
+
+        if (userPart.rows.length > 0 && userPart.rows[0].user_id) {
+            const { user_id, title } = userPart.rows[0];
+            await dbQuery(`
+                INSERT INTO notifications (user_id, title, message, type, link)
+                VALUES ($1, $2, $3, $4, $5)
+            `, [
+                user_id,
+                "Ticket Replied 💬",
+                `Support team replied to "${title || 'Support Ticket'}": "${msgText.substring(0, 80)}${msgText.length > 80 ? '...' : ''}"`,
+                "ticket",
+                `/user/tickets/${ticketId}`
+            ]).catch((err) => console.error("Ticket notification insertion failed:", err));
+        }
+
         return NextResponse.json({
             success: true,
             message: "Reply sent successfully",

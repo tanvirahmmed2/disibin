@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server";
 import { dbQuery } from "@/lib/database/pg";
-import { initLegalTables } from "@/lib/database/initLegalTables";
 
 // GET — Public Terms of Service items (all published records)
 export async function GET() {
     try {
-        await initLegalTables();
-
         const res = await dbQuery(`
             SELECT id, title, content, order_num, created_at, updated_at
             FROM terms_and_conditions

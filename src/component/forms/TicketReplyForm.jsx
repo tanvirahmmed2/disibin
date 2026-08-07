@@ -110,13 +110,13 @@ export default function TicketReplyForm({ ticketId, onSent, isTeam = false }) {
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading || sending}
-          className="p-3 text-slate-400 hover:text-sky-600 hover:bg-sky-50/80 rounded-2xl transition-all disabled:opacity-50 shrink-0"
+          className="p-3 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-2xl transition-all disabled:opacity-50 shrink-0"
           title="Attach image"
         >
-          {uploading ? <FiLoader className="animate-spin text-sky-500" size={19} /> : <FiPaperclip size={19} />}
+          {uploading ? <FiLoader className="animate-spin text-primary" size={19} /> : <FiPaperclip size={19} />}
         </button>
 
-        <div className="flex-1 bg-slate-100/70 focus-within:bg-white rounded-2xl border border-transparent focus-within:border-sky-500 focus-within:ring-4 focus-within:ring-sky-500/10 transition-all p-2.5 shadow-inner">
+        <div className="flex-1 bg-slate-100/70 focus-within:bg-white rounded-2xl border border-transparent focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 transition-all p-2.5 shadow-inner">
           <textarea
             value={message}
             onChange={e => setMessage(e.target.value)}
@@ -135,7 +135,7 @@ export default function TicketReplyForm({ ticketId, onSent, isTeam = false }) {
         <button
           type="submit"
           disabled={(!message.trim() && images.length === 0) || uploading || sending}
-          className="p-3.5 bg-sky-600 hover:bg-sky-700 text-white rounded-2xl font-bold transition-all disabled:opacity-30 disabled:hover:bg-sky-600 shrink-0 shadow-md flex items-center justify-center"
+          className="p-3.5 bg-primary hover:bg-primary-dark text-white rounded-2xl font-bold transition-all disabled:opacity-30 disabled:hover:bg-primary shrink-0 shadow-md flex items-center justify-center"
         >
           {sending ? <FiLoader className="animate-spin" size={18} /> : <FiSend size={18} />}
         </button>

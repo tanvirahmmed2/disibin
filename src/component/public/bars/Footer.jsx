@@ -32,6 +32,8 @@ const Footer = () => {
               <Link href='/faq' className='hover:text-secondary transition-colors'>FAQ</Link>
               <Link href='/contact' className='hover:text-secondary transition-colors'>Support Desk</Link>
               <Link href='/report' className='hover:text-secondary transition-colors'>Report Issue</Link>
+              <Link href='/reviews' className='hover:text-secondary transition-colors'>Reviews</Link>
+              <Link href='/designs' className='hover:text-secondary transition-colors'>Designs</Link>
             </div>
           </div>
 
@@ -39,8 +41,9 @@ const Footer = () => {
             <h4 className='text-xs font-semibold uppercase tracking-widest text-slate-50'>Legal Policies</h4>
             <div className='flex flex-col gap-3 text-sm text-tertiary-light'>
               <Link href='/privacy-policy' className='hover:text-secondary transition-colors'>Privacy Policy</Link>
-              <Link href='/terms-of-service' className='hover:text-secondary transition-colors'>Terms of Service</Link>
+              <Link href='/terms-and-conditions' className='hover:text-secondary transition-colors'>Terms and Conditions</Link>
               <Link href='/refund-policy' className='hover:text-secondary transition-colors'>Refund Policy</Link>
+              
             </div>
           </div>
 
@@ -56,9 +59,8 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Lowest Footer Bar */}
         <div className='pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6'>
-          {/* Brand & Copyright */}
+
           <div className='flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left'>
             <Link href="/" className='text-2xl font-bold tracking-tight text-white font-poppins hover:text-secondary transition-colors'>
               Disibin
@@ -70,7 +72,6 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Social Links */}
           <div className='flex items-center gap-3'>
             <Link
               href="https://x.com/disibin"

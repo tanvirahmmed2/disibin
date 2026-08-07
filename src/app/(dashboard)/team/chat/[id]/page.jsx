@@ -115,7 +115,7 @@ export default function TeamChatDetailPage() {
   if (loading) {
     return (
       <div className="min-h-[65vh] flex flex-col items-center justify-center space-y-3 p-6 text-slate-400">
-        <FiLoader className="animate-spin text-sky-500" size={28} />
+        <FiLoader className="animate-spin text-primary" size={28} />
         <p className="text-sm font-medium">Loading conversation...</p>
       </div>
     );
@@ -126,11 +126,11 @@ export default function TeamChatDetailPage() {
       <div className="p-6 max-w-3xl mx-auto space-y-4 text-center">
         <Toaster position="top-center" />
         <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-          <FiAlertCircle className="mx-auto text-amber-500" size={36} />
+          <FiAlertCircle className="mx-auto text-secondary" size={36} />
           <h2 className="text-lg font-bold text-slate-800">Conversation Not Found</h2>
           <Link
             href="/team/chat"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-sky-600 transition-all shadow-md"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-xs hover:bg-primary transition-all shadow-md"
           >
             <FiArrowLeft size={14} /> Back to Team Messages
           </Link>
@@ -152,14 +152,14 @@ export default function TeamChatDetailPage() {
         <div className="flex items-center gap-3.5 min-w-0">
           <Link
             href="/team/chat"
-            className="p-2 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded-2xl transition-all shrink-0"
+            className="p-2 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-2xl transition-all shrink-0"
             title="Back to messages"
           >
             <FiArrowLeft size={20} />
           </Link>
 
           <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 font-bold ${
-            chat.is_group ? 'bg-amber-50 text-amber-600' : 'bg-sky-50 text-sky-600'
+            chat.is_group ? 'bg-secondary/10 text-secondary' : 'bg-primary/10 text-primary'
           }`}>
             {chat.is_group ? <FiUsers size={20} /> : <FiUser size={20} />}
           </div>
@@ -167,7 +167,7 @@ export default function TeamChatDetailPage() {
           <div className="min-w-0">
             <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 truncate">{chatTitle}</h1>
             <p className="text-xs text-slate-500 flex items-center gap-2">
-              <span className="font-semibold text-sky-600 capitalize">
+              <span className="font-semibold text-primary capitalize">
                 {chat.is_group ? 'Group Conversation' : (otherParticipants[0]?.role || 'Staff')}
               </span>
               <span>· {participants.length} Members</span>
@@ -196,8 +196,8 @@ export default function TeamChatDetailPage() {
                 >
                   {/* Sender Name */}
                   <div className="flex items-center gap-1.5 mb-1 px-1 text-[11px] font-bold">
-                    <span className={isMe ? 'text-sky-600' : 'text-slate-700 flex items-center gap-1'}>
-                      {!isMe && <FiShield className="text-amber-500" size={12} />}
+                    <span className={isMe ? 'text-primary' : 'text-slate-700 flex items-center gap-1'}>
+                      {!isMe && <FiShield className="text-secondary" size={12} />}
                       {isMe ? 'You' : msg.sender_name}
                       {msg.sender_role && (
                         <span className="text-[10px] text-slate-400 uppercase font-semibold">({msg.sender_role})</span>
@@ -280,13 +280,13 @@ export default function TeamChatDetailPage() {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadingImage || sendingMsg}
-              className="p-3 text-slate-400 hover:text-sky-600 hover:bg-sky-50/80 rounded-2xl transition-all disabled:opacity-50 shrink-0"
+              className="p-3 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-2xl transition-all disabled:opacity-50 shrink-0"
               title="Attach image"
             >
-              {uploadingImage ? <FiLoader className="animate-spin text-sky-500" size={19} /> : <FiPaperclip size={19} />}
+              {uploadingImage ? <FiLoader className="animate-spin text-primary" size={19} /> : <FiPaperclip size={19} />}
             </button>
 
-            <div className="flex-1 bg-slate-100/70 focus-within:bg-white rounded-2xl border border-transparent focus-within:border-sky-500 focus-within:ring-4 focus-within:ring-sky-500/10 transition-all p-2.5 shadow-inner">
+            <div className="flex-1 bg-slate-100/70 focus-within:bg-white rounded-2xl border border-transparent focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 transition-all p-2.5 shadow-inner">
               <textarea
                 value={messageText}
                 onChange={e => setMessageText(e.target.value)}
@@ -305,7 +305,7 @@ export default function TeamChatDetailPage() {
             <button
               type="submit"
               disabled={(!messageText.trim() && attachedImages.length === 0) || uploadingImage || sendingMsg}
-              className="p-3.5 bg-sky-600 hover:bg-sky-700 text-white rounded-2xl font-bold transition-all disabled:opacity-30 shrink-0 shadow-md flex items-center justify-center"
+              className="p-3.5 bg-primary hover:bg-primary-dark text-white rounded-2xl font-bold transition-all disabled:opacity-30 shrink-0 shadow-md flex items-center justify-center"
             >
               {sendingMsg ? <FiLoader className="animate-spin" size={18} /> : <FiSend size={18} />}
             </button>

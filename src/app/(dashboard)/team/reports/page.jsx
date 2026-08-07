@@ -71,7 +71,7 @@ export default function TeamReportsPage() {
       {/* Top Banner */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent p-6 rounded-3xl border border-amber-500/20">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/30 shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-secondary/100 text-white flex items-center justify-center shadow-lg shadow-amber-500/30 shrink-0">
             <FiAlertTriangle size={24} />
           </div>
           <div>
@@ -105,20 +105,20 @@ export default function TeamReportsPage() {
 
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-500">Pending Review</span>
-            <h3 className="text-2xl font-extrabold text-amber-600 mt-1">{pendingCount}</h3>
+            <span className="text-xs font-bold uppercase tracking-wider text-secondary">Pending Review</span>
+            <h3 className="text-2xl font-extrabold text-secondary mt-1">{pendingCount}</h3>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+          <div className="w-10 h-10 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center font-bold">
             <FiClock size={18} />
           </div>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-500">Replied / Resolved</span>
-            <h3 className="text-2xl font-extrabold text-emerald-600 mt-1">{repliedCount}</h3>
+            <span className="text-xs font-bold uppercase tracking-wider text-primary">Replied / Resolved</span>
+            <h3 className="text-2xl font-extrabold text-primary mt-1">{repliedCount}</h3>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
             <FiCheckCircle size={18} />
           </div>
         </div>
@@ -188,12 +188,12 @@ export default function TeamReportsPage() {
                   <tr key={report.id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="px-6 py-4">
                       {report.status === 'replied' ? (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20">
                           <FiCheckCircle size={12} />
                           Replied
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-100">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-secondary/10 text-secondary border border-secondary/20">
                           <FiClock size={12} />
                           Pending
                         </span>
@@ -223,7 +223,7 @@ export default function TeamReportsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link
                           href={`/team/reports/${report.id}`}
-                          className="p-2 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 transition-colors"
+                          className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
                           title="View / Reply"
                         >
                           <FiEye size={16} />

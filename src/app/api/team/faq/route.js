@@ -1,23 +1,21 @@
 import { NextResponse } from "next/server";
 import { isTeamLogin, isManager } from "@/lib/auth/team";
 import { dbQuery } from "@/lib/database/pg";
-import { initLegalTables } from "@/lib/database/initLegalTables";
 
 // GET — List all FAQ entries (Team login required)
 export async function GET() {
     try {
-        await initLegalTables();
         const auth = await isTeamLogin();
         if (!auth.success) return NextResponse.json(auth, { status: 401 });
 
         const res = await dbQuery(`
-            SELECT f.id, f.question, f.answer, f.category, f.is_published, f.order_num,
+            SELECT f.id, f.question, f.answer, f.is_published, f.order_num,
                    f.created_at, f.updated_at,
                    t1.name as creator_name, t2.name as updater_name
             FROM faqs f
             LEFT JOIN teams t1 ON f.created_by = t1.id
             LEFT JOIN teams t2 ON f.updated_by = t2.id
-            ORDER BY f.order_num ASC, f.id DESC
+            ORDER BY f.order_num ASC, f.id ASC
         `);
 
         return NextResponse.json({ success: true, data: res.rows });
@@ -29,12 +27,11 @@ export async function GET() {
 // POST — Create FAQ (Manager Only)
 export async function POST(req) {
     try {
-        await initLegalTables();
         const auth = await isManager();
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
         const body = await req.json();
-        const { question, answer, category, is_published, order_num } = body;
+        const { question, answer, is_published, order_num } = body;
 
         if (!question || !question.trim()) {
             return NextResponse.json({ success: false, message: "Question is required" }, { status: 400 });
@@ -43,15 +40,14 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "Answer is required" }, { status: 400 });
         }
 
-        const categoryVal = category?.trim() || 'General';
         const publishedState = is_published !== undefined ? Boolean(is_published) : true;
         const orderVal = Number(order_num) || 0;
 
         const res = await dbQuery(`
-            INSERT INTO faqs (question, answer, category, is_published, order_num, created_by, updated_by)
-            VALUES ($1, $2, $3, $4, $5, $6, $6)
+            INSERT INTO faqs (question, answer, is_published, order_num, created_by, updated_by)
+            VALUES ($1, $2, $3, $4, $5, $5)
             RETURNING *
-        `, [question.trim(), answer.trim(), categoryVal, publishedState, orderVal, auth.data.id]);
+        `, [question.trim(), answer.trim(), publishedState, orderVal, auth.data.id]);
 
         const record = res.rows[0];
 
@@ -70,12 +66,11 @@ export async function POST(req) {
 // PUT — Update FAQ (Manager Only)
 export async function PUT(req) {
     try {
-        await initLegalTables();
         const auth = await isManager();
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 
         const body = await req.json();
-        const { id, question, answer, category, is_published, order_num } = body;
+        const { id, question, answer, is_published, order_num } = body;
 
         if (!id) {
             return NextResponse.json({ success: false, message: "ID is required" }, { status: 400 });
@@ -85,17 +80,15 @@ export async function PUT(req) {
             UPDATE faqs
             SET question = COALESCE(NULLIF($1, ''), question),
                 answer = COALESCE(NULLIF($2, ''), answer),
-                category = COALESCE(NULLIF($3, ''), category),
-                is_published = COALESCE($4, is_published),
-                order_num = COALESCE($5, order_num),
-                updated_by = $6,
+                is_published = COALESCE($3, is_published),
+                order_num = COALESCE($4, order_num),
+                updated_by = $5,
                 updated_at = now()
-            WHERE id = $7
+            WHERE id = $6
             RETURNING *
         `, [
             question?.trim() || '',
             answer?.trim() || '',
-            category?.trim() || '',
             is_published !== undefined ? Boolean(is_published) : null,
             order_num !== undefined ? Number(order_num) : null,
             auth.data.id,
@@ -123,7 +116,6 @@ export async function PUT(req) {
 // DELETE — Delete FAQ (Manager Only)
 export async function DELETE(req) {
     try {
-        await initLegalTables();
         const auth = await isManager();
         if (!auth.success) return NextResponse.json(auth, { status: 403 });
 

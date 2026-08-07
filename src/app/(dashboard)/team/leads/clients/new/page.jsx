@@ -47,7 +47,7 @@ export default function NewClientLeadPage() {
       <div className="space-y-4">
         <Link
           href="/team/leads/clients"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-sky-600 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-primary transition-colors"
         >
           <FiArrowLeft size={16} /> Back to Client Leads
         </Link>
@@ -55,7 +55,7 @@ export default function NewClientLeadPage() {
         <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
           <div className="space-y-1">
             <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-              <span className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
+              <span className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
                 <FiUsers size={20} />
               </span>
               Add New Client Lead
@@ -138,7 +138,7 @@ export default function NewClientLeadPage() {
           <button
             type="submit"
             disabled={loading}
-            className="px-8 py-3 rounded-xl bg-slate-900 hover:bg-sky-600 text-white font-bold transition-all text-sm disabled:opacity-50 flex items-center gap-2 shadow-md"
+            className="px-8 py-3 rounded-xl bg-slate-900 hover:bg-primary text-white font-bold transition-all text-sm disabled:opacity-50 flex items-center gap-2 shadow-md"
           >
             {loading ? <FiLoader className="animate-spin" size={16} /> : <FiPlus size={16} />}
             {loading ? 'Creating...' : 'Create Client Lead'}

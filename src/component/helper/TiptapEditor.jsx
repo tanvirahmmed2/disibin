@@ -12,7 +12,7 @@ const MenuBar = ({ editor }) => {
   }
 
   const btnClass = "p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors";
-  const activeBtnClass = "p-2 rounded-lg text-sky-600 bg-sky-50 transition-colors";
+  const activeBtnClass = "p-2 rounded-lg text-primary bg-primary/10 transition-colors";
 
   return (
     <div className="flex flex-wrap items-center gap-1 p-2 border-b border-slate-200 bg-slate-50/50 rounded-t-2xl">
@@ -140,7 +140,7 @@ const TiptapEditor = ({ value, onChange, placeholder = "Write something...", hid
   }
 
   return (
-    <div className="input-style p-0 overflow-hidden bg-white focus-within:border-sky-400 focus-within:ring-2 focus-within:ring-sky-400/20 transition-all">
+    <div className="input-style p-0 overflow-hidden bg-white focus-within:border-primary-light focus-within:ring-2 focus-within:ring-primary/20 transition-all">
       {!hideToolbar && <MenuBar editor={editor} />}
       <EditorContent editor={editor} />
     </div>

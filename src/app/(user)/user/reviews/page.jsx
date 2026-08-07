@@ -147,8 +147,8 @@ export default function UserReviewsPage() {
 
           {/* Manager Staff Reply */}
           {review.reply && (
-            <div className="bg-sky-50/70 p-5 rounded-2xl border border-sky-100 space-y-2">
-              <div className="flex items-center gap-2 text-xs font-bold text-sky-700">
+            <div className="bg-primary/10/70 p-5 rounded-2xl border border-primary/20 space-y-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-primary-dark">
                 <FiCornerDownRight size={14} />
                 Official Response from Disibin Team
               </div>

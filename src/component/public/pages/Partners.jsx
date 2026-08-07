@@ -72,7 +72,7 @@ export default function Partners() {
           {canScrollLeft && (
             <button
               onClick={() => scroll("left")}
-              className="absolute -left-2 sm:left-0 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-white/90 shadow-md border border-slate-200 text-slate-700 hover:text-sky-600 hover:bg-white hover:scale-110 transition-all focus:outline-none"
+              className="absolute -left-2 sm:left-0 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-white/90 shadow-md border border-slate-200 text-slate-700 hover:text-primary hover:bg-white hover:scale-110 transition-all focus:outline-none cursor-pointer"
               aria-label="Scroll left"
             >
               <FaChevronLeft size={14} />
@@ -82,13 +82,14 @@ export default function Partners() {
           {canScrollRight && (
             <button
               onClick={() => scroll("right")}
-              className="absolute -right-2 sm:right-0 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-white/90 shadow-md border border-slate-200 text-slate-700 hover:text-sky-600 hover:bg-white hover:scale-110 transition-all focus:outline-none"
+              className="absolute -right-2 sm:right-0 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-white/90 shadow-md border border-slate-200 text-slate-700 hover:text-primary hover:bg-white hover:scale-110 transition-all focus:outline-none cursor-pointer"
               aria-label="Scroll right"
             >
               <FaChevronRight size={14} />
             </button>
           )}
 
+          {/* Scrollable Track */}
           <div
             ref={scrollRef}
             onScroll={checkScroll}
@@ -117,7 +118,7 @@ function PartnerCard({ partner }) {
 
   return (
     <div
-      className="group bg-white p-5 w-52 shrink-0 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-sky-200 transition-all flex flex-col items-center justify-center text-center space-y-3 snap-center select-none"
+      className="group bg-white p-5 w-52 shrink-0 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-primary/40 transition-all flex flex-col items-center justify-center text-center space-y-3 snap-center select-none"
     >
       <div className="relative w-16 h-16 flex items-center justify-center">
         {partner.image && !imgErr ? (
@@ -130,19 +131,19 @@ function PartnerCard({ partner }) {
             className="w-full h-full object-contain filter transition-all duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="w-14 h-14 rounded-2xl bg-sky-50 text-sky-600 font-extrabold text-xl flex items-center justify-center">
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary font-extrabold text-xl flex items-center justify-center">
             {partner.company_name?.charAt(0).toUpperCase() || 'P'}
           </div>
         )}
       </div>
 
       <div className="space-y-1 w-full">
-        <p className="font-bold text-slate-800 text-xs truncate group-hover:text-sky-600 transition-colors">
+        <p className="font-bold text-slate-800 text-xs truncate group-hover:text-primary transition-colors">
           {partner.company_name}
         </p>
         <a href={partner.business_url || '#'}
           target="_blank"
-          rel="noopener noreferrer" className="text-[10px] cursor-pointer text-slate-400 font-medium inline-flex items-center gap-1 group-hover:underline">
+          rel="noopener noreferrer" className="text-[10px] cursor-pointer text-slate-400 font-medium inline-flex items-center gap-1 hover:text-primary group-hover:underline">
           Visit <FaExternalLinkAlt size={8} />
         </a>
       </div>
