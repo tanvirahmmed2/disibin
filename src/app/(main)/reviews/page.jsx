@@ -62,7 +62,6 @@ export default function ReviewsPage() {
         </div>
       </div>
 
-      {/* Reviews Grid */}
       {loading ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {[...Array(8)].map((_, i) => (
@@ -108,12 +107,9 @@ export default function ReviewsPage() {
 
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <MdVerifiedUser className="text-primary shrink-0" size={18} />
                   <span className="font-bold text-slate-900 text-sm font-poppins truncate">{r.user_name || 'Verified Client'}</span>
                 </div>
-                <span className="text-[10px] font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20 font-poppins">
-                  Verified
-                </span>
+                
               </div>
             </div>
           ))}
